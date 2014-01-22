@@ -1,14 +1,12 @@
-# sphere-node-sdk [![Build Status](https://secure.travis-ci.org/emmenko/sphere-node-sdk.png?branch=master)](http://travis-ci.org/emmenko/sphere-node-sdk)
+https://admin.sphere.io/assets/images/sphere_logo_rgb_long.png
 
-SPHERE.IO Node.js SDK
+# NODE.JS SDK
+
+[![Build Status](https://secure.travis-ci.org/sphereio/sphere-node-sdk.png?branch=master)](http://travis-ci.org/sphereio/sphere-node-sdk)
+
 
 ## Getting Started
-Install the module with: `npm install sphere-node-sdk`
-
-```javascript
-var sphere_node_sdk = require('sphere-node-sdk');
-sphere_node_sdk.awesome(); // "awesome"
-```
+_(Coming soon)_
 
 ## Documentation
 _(Coming soon)_
