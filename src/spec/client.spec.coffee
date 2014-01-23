@@ -1,12 +1,6 @@
-"use strict"
+SphereClient = require('../lib/client')
 
-sphere_node_sdk = require('../lib/sphere-node-sdk.js')
+describe 'SphereClient', ->
 
-describe "Awesome", ->
-
-  beforeEach (done)->
-    # setup here
-    done()
-
-  it "should print", ->
-    expect(sphere_node_sdk.awesome()).toBe "awesome"
+  it 'should be defined', ->
+    expect(SphereClient).toBeDefined()

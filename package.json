@@ -27,6 +27,11 @@
   "scripts": {
     "test": "grunt coverage"
   },
+  "dependencies": {
+    "q": "~1.0.0",
+    "sphere-node-connect": "~0.2.2",
+    "underscore": "~1.5.2"
+  },
   "devDependencies": {
     "coveralls": "~2.6.1",
     "grunt": "~0.4.1",
