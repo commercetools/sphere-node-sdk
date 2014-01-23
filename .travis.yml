@@ -4,3 +4,12 @@ node_js:
   - '0.10'
 before_script:
   - npm install -g grunt-cli
+notifications:
+  hipchat:
+    rooms:
+      - secure: fa9oSErVMnr149qIdrC7fLY6vDDfmEGei+ubLTNc+/BRLYd0xXq1MycjVc3X3mRoXllAq51c4ZxvwTRsxsLtVdTqT229mN0CIS8KU3SGMEgfvlA+CW5wKi+NC6HE8O7mTbG9BbiLkU1cUd5dIu8sbsVn5Psnbafc+puelwS6wHY=
+    template:
+      - '%{repository}#%{build_number} (%{author}): %{message} (<a href="%{build_url}">Details</a> <a href="%{compare_url}">Compare</a>)'
+    format: html
+    on_success: change
+    on_failure: always
