@@ -2,7 +2,7 @@
 
 # NODE.JS SDK
 
-[![Build Status](https://secure.travis-ci.org/sphereio/sphere-node-sdk.png?branch=master)](http://travis-ci.org/sphereio/sphere-node-sdk)
+[![Build Status](https://secure.travis-ci.org/sphereio/sphere-node-sdk.png?branch=master)](http://travis-ci.org/sphereio/sphere-node-sdk) ![NPM version](https://badge.fury.io/js/sphere-node-sdk.png)](http://badge.fury.io/js/sphere-node-sdk) [![Coverage Status](https://coveralls.io/repos/sphereio/sphere-node-sdk/badge.png?branch=master)](https://coveralls.io/r/sphereio/sphere-node-sdk?branch=master) [![Dependency Status](https://david-dm.org/sphereio/sphere-node-sdk.png?theme=shields.io)](https://david-dm.org/sphereio/sphere-node-sdk) [![devDependency Status](https://david-dm.org/sphereio/sphere-node-sdk/dev-status.png?theme=shields.io)](https://david-dm.org/sphereio/sphere-node-sdk#info=devDependencies)
 
 
 ## Getting Started
