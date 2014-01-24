@@ -8,15 +8,14 @@ class BaseService
 
   ###*
    * Initialize the class.
-   * @param  {Rest} [@_rest] an instance of the Rest client (sphere-node-connect)
+   * @param  {Rest} [_rest] an instance of the Rest client (sphere-node-connect)
    * @return {BaseService}
   ###
   constructor: (@_rest)->
     @_projectEndpoint = '/'
-    @
 
   ###*
-   * Fetch resource defined by [@_projectEndpoint]
+   * Fetch resource defined by [_projectEndpoint]
    * @return {Promise} a promise, fulfilled with an Object or rejected with a SphereError
   ###
   fetch: ->
