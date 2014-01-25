@@ -1,0 +1,10 @@
+node_modules
+npm-debug.log
+src
+test
+config.js
+coverage
+.travis.yml
+.coveralls.yml
+create_config.sh
+*.coffee
