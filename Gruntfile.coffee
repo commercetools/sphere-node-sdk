@@ -10,8 +10,10 @@ module.exports = (grunt)->
       banner: '/* ===========================================================\n' +
         '# <%= pkg.title || pkg.name %> - v<%= pkg.version %>\n' +
         '# ==============================================================\n' +
-        '# Copyright (c) <%= grunt.template.today(\"yyyy\") %> <%= pkg.author.name %>\n' +
+        '# Copyright (c) <%= grunt.template.today(\"yyyy\") %> SPHERE.IO\u2122\n' +
         '# Licensed <%= _.pluck(pkg.licenses, \"type\").join(\", \") %>.\n' +
+        '#\n' +
+        '#    <%= _.pluck(pkg.licenses, \"url\").join(\"\\n\") %>\n' +
         '*/\n'
 
     coffeelint:
