@@ -8,12 +8,18 @@ class ProductService extends BaseService
 
   ###*
    * Initialize the class.
-   * @param  {Rest} [_rest] an instance of the Rest client (sphere-node-connect)
-   * @return {ProductService}
+   * @constructor
+   *
+   * @param  {Rest} [_rest] An instance of the Rest client `sphere-node-connect`
   ###
   constructor: (rest)->
     super(rest)
-    @_projectEndpoint = '/'
+    ###*
+     * @private
+     * Base path for Products endpoint.
+     * @type {String}
+    ###
+    @_projectEndpoint = '/products'
 
 ###*
  * The {@link ProductService} service.

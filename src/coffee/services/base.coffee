@@ -8,15 +8,21 @@ class BaseService
 
   ###*
    * Initialize the class.
-   * @param  {Rest} [_rest] an instance of the Rest client (sphere-node-connect)
-   * @return {BaseService}
+   * @constructor
+   *
+   * @param  {Rest} [_rest] An instance of the Rest client (sphere-node-connect)
   ###
   constructor: (@_rest)->
+    ###*
+     * @private
+     * Base path for a API resource endpoint (to be overriden by specific service)
+     * @type {String}
+    ###
     @_projectEndpoint = '/'
 
   ###*
    * Fetch resource defined by [_projectEndpoint]
-   * @return {Promise} a promise, fulfilled with an Object or rejected with a SphereError
+   * @return {Promise} A promise, fulfilled with an Object or rejected with a SphereError
   ###
   fetch: ->
     deferred = Q.defer()

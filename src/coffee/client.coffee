@@ -7,7 +7,19 @@ ProductService = require('./services/products')
 ###
 class SphereClient
 
+  ###*
+   * Constructs a new client with given API credentials
+   * @constructor
+   *
+   * @param {Object} config An object containing the credentials for the `sphere-node-connect`
+   * {@link https://github.com/emmenko/sphere-node-connect#documentation}
+  ###
   constructor: (config)->
+    ###*
+     * @private
+     * Instance of the Rest client
+     * @type {Rest}
+    ###
     @_rest = new Rest config
 
     # services
