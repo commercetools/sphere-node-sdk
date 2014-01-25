@@ -20,7 +20,7 @@
       "url": "https://github.com/sphereio/sphere-node-sdk/blob/master/LICENSE-MIT"
     }
   ],
-  "main": "./lib",
+  "main": "./lib/client",
   "engines": {
     "node": ">= 0.8.0"
   },
