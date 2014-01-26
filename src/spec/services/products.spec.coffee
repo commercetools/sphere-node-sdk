@@ -12,6 +12,9 @@ describe 'ProductService', ->
       _preRequest: ->
       _doRequest: ->
 
+  afterEach ->
+    @restMock = null
+
   it 'should initialize with Rest client', ->
     products = new ProductService @restMock
     expect(products).toBeDefined()
