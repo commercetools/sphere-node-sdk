@@ -2,5 +2,6 @@ node_modules
 npm-debug.log
 lib
 test
+config.js
 .coveralls.yml
 coverage

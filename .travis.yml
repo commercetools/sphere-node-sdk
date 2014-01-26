@@ -4,6 +4,12 @@ node_js:
   - '0.10'
 before_script:
   - npm install -g grunt-cli
+  - ./create_config.sh
+env:
+  global:
+    - secure: UOJ6BL1hxTANzUMp4uIdSp1GQDdBKFWIS8sfbvHT1itAloc9cZLRqaHmJoNYkqysUVKIoj2IEMZ7lABjcygxZQ7g3BR17IqgH3nrNBsbHbbBCjloYNPKJu9ljiOx0mOsMLmRXx11I40b524DE/l5ia7f8AUIQYWCPB5L/o8a2ZY=
+    - secure: dii4Ls8oiCNMyKrrWqln9sGDOjtE8+VI4YDu/qYPBTIjVp0coZsw7akcKAt55wR0oJFLRlAm8ZKNjZZ5pN896TzKz1pWOkiJ97P9cYZY0uPF6/36FpKYQBCjzyp8rhAjwARsLVumy0t4Vj2qws4G7KlMp4y4BhD7YRzA9el/ekw=
+    - secure: FeY25VlEpv+BzEA6bsw35b7HnnGUliRmpYyFAgyd31qzC9MR1hdHZb3l/Do+eMHpNa9dpm1EElmX/kbOl4r4cIE6sqSHljLy+rdKGUpDR9ym0YK+v/1Ltt0xF2cWzUjHHnp3WLrn0mpxDdPFozE6lKssDPu2HwoUnZt3LiU1+C8=
 notifications:
   hipchat:
     rooms:
