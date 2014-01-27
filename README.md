@@ -1,8 +1,8 @@
 ![SPHERE.IO icon](https://admin.sphere.io/assets/images/sphere_logo_rgb_long.png)
 
-# NODE.JS SDK
+# NODE.JS Client
 
-[![Build Status](https://secure.travis-ci.org/sphereio/sphere-node-sdk.png?branch=master)](http://travis-ci.org/sphereio/sphere-node-sdk) [![Coverage Status](https://coveralls.io/repos/sphereio/sphere-node-sdk/badge.png?branch=master)](https://coveralls.io/r/sphereio/sphere-node-sdk?branch=master) [![Dependency Status](https://david-dm.org/sphereio/sphere-node-sdk.png?theme=shields.io)](https://david-dm.org/sphereio/sphere-node-sdk) [![devDependency Status](https://david-dm.org/sphereio/sphere-node-sdk/dev-status.png?theme=shields.io)](https://david-dm.org/sphereio/sphere-node-sdk#info=devDependencies)
+[![Build Status](https://secure.travis-ci.org/sphereio/sphere-node-client.png?branch=master)](http://travis-ci.org/sphereio/sphere-node-client) [![Coverage Status](https://coveralls.io/repos/sphereio/sphere-node-client/badge.png?branch=master)](https://coveralls.io/r/sphereio/sphere-node-client?branch=master) [![Dependency Status](https://david-dm.org/sphereio/sphere-node-client.png?theme=shields.io)](https://david-dm.org/sphereio/sphere-node-client) [![devDependency Status](https://david-dm.org/sphereio/sphere-node-client/dev-status.png?theme=shields.io)](https://david-dm.org/sphereio/sphere-node-client#info=devDependencies)
 
 
 ## Getting Started
