@@ -4,7 +4,7 @@ SPHERE NODE.JS SDK
 # Usage
 
 ```coffeescript
-Sphere = require('sphere-node-sdk')
+Sphere = require('sphere-node-client')
 
 # create client
 client = Sphere.createClient credentials
