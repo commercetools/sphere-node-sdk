@@ -26,7 +26,8 @@ class BaseService
   ###
   fetch: ->
     deferred = Q.defer()
-    @_rest @_projectEndpoint, (e, r, b)->
+    @_rest.GET @_projectEndpoint, (e, r, b)->
+      # TODO: wrap / handle responses generally
       if e
         deferred.reject e
       else
