@@ -4,11 +4,36 @@
 
 [![Build Status](https://secure.travis-ci.org/sphereio/sphere-node-client.png?branch=master)](http://travis-ci.org/sphereio/sphere-node-client) [![Coverage Status](https://coveralls.io/repos/sphereio/sphere-node-client/badge.png?branch=master)](https://coveralls.io/r/sphereio/sphere-node-client?branch=master) [![Dependency Status](https://david-dm.org/sphereio/sphere-node-client.png?theme=shields.io)](https://david-dm.org/sphereio/sphere-node-client) [![devDependency Status](https://david-dm.org/sphereio/sphere-node-client/dev-status.png?theme=shields.io)](https://david-dm.org/sphereio/sphere-node-client#info=devDependencies)
 
+[SPHERE.IO](http://sphere.io/) is the first **Platform-as-a-Service** solution for eCommerce.
+
+This module is a standalone Node.js client for accessing the Sphere HTTP APIs.
 
 ## Getting Started
-_(Coming soon)_
+Install the module with `npm install sphere-node-client`
+
+```javascript
+var SphereClient = require('sphere-node-client');
+```
 
 ## Documentation
+To start using the Sphere client you need to create an instance of the `SphereClient` by passing the credentials (and other options) in order to connect with the HTTP APIs. Project credentials can be found in the SPHERE.IO [Merchant Center](https://admin.sphere.io/) under `Developers > API clients` section.
+
+> For a list of options to pass to the client, see [`sphere-node-connect`](https://github.com/emmenko/sphere-node-connect#documentation).
+
+```javascript
+var sphere_client = new SphereClient({
+  config: {
+    client_id: "CLIENT_ID_HERE",
+    client_secret: "CLIENT_SECRET_HERE",
+    project_key: "PROJECT_KEY_HERE"
+  }
+})
+```
+
+### Services
+_(Coming soon)_
+
+### Types of requests
 _(Coming soon)_
 
 ## Examples
@@ -28,5 +53,5 @@ grunt release:major // major release
 ```
 
 ## License
-Copyright (c) 2014 Nicola Molinari
-Licensed under the MIT license.
+Copyright (c) 2014 SPHERE.IO
+Licensed under the [MIT license](LICENSE-MIT).
