@@ -18,7 +18,7 @@ class BaseService
    * Initialize the class.
    * @constructor
    *
-   * @param  {Rest} [_rest] An instance of the Rest client (sphere-node-connect)
+   * @param {Rest} [_rest] An instance of the Rest client (sphere-node-connect)
   ###
   constructor: (@_rest)->
     ###*
@@ -30,7 +30,7 @@ class BaseService
 
   ###*
    * Build the endpoint path by appending the given id
-   * @param  {String} id The resource specific id
+   * @param {String} [id] The resource specific id
    * @return {BaseService} Chained instance of this class
   ###
   byId: (id)->
@@ -38,7 +38,7 @@ class BaseService
     this
 
   ###*
-   * Fetch resource defined by [_baseResourceEndpoint]
+   * Fetch resource defined by [_currentEndpoint]
    * @return {Promise} A promise, fulfilled with an Object or rejected with a SphereError
   ###
   fetch: ->
