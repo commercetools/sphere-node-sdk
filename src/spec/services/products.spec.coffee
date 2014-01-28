@@ -15,7 +15,10 @@ describe 'ProductService', ->
   afterEach ->
     @restMock = null
 
+  it 'should have constants defined', ->
+    expect(ProductService.baseResourceEndpoint).toBe '/products'
+
   it 'should initialize with Rest client', ->
     products = new ProductService @restMock
     expect(products).toBeDefined()
-    expect(products._projectEndpoint).toBe '/products'
+    expect(products._currentEndpoint).toBe '/products'

@@ -7,19 +7,12 @@ BaseService = require('./base')
 class ProductService extends BaseService
 
   ###*
-   * Initialize the class.
-   * @constructor
-   *
-   * @param  {Rest} [_rest] An instance of the Rest client `sphere-node-connect`
+   * @const
+   * @private
+   * Base path for a Products API resource endpoint
+   * @type {String}
   ###
-  constructor: (rest)->
-    super(rest)
-    ###*
-     * @private
-     * Base path for Products endpoint.
-     * @type {String}
-    ###
-    @_projectEndpoint = '/products'
+  @baseResourceEndpoint: '/products'
 
 ###*
  * The {@link ProductService} service.

@@ -7,6 +7,14 @@ Q = require('q')
 class BaseService
 
   ###*
+   * @const
+   * @private
+   * Base path for a API resource endpoint (to be overriden by specific service)
+   * @type {String}
+  ###
+  @baseResourceEndpoint: ''
+
+  ###*
    * Initialize the class.
    * @constructor
    *
@@ -15,18 +23,27 @@ class BaseService
   constructor: (@_rest)->
     ###*
      * @private
-     * Base path for a API resource endpoint (to be overriden by specific service)
+     * Current path for a API resource endpoint which can be modified by appending ids, queries, etc
      * @type {String}
     ###
-    @_projectEndpoint = '/'
+    @_currentEndpoint = @constructor.baseResourceEndpoint
 
   ###*
-   * Fetch resource defined by [_projectEndpoint]
+   * Build the endpoint path by appending the given id
+   * @param  {String} id The resource specific id
+   * @return {BaseService} Chained instance of this class
+  ###
+  byId: (id)->
+    @_currentEndpoint = "#{@constructor.baseResourceEndpoint}/#{id}"
+    this
+
+  ###*
+   * Fetch resource defined by [_baseResourceEndpoint]
    * @return {Promise} A promise, fulfilled with an Object or rejected with a SphereError
   ###
   fetch: ->
     deferred = Q.defer()
-    @_rest.GET @_projectEndpoint, (e, r, b)->
+    @_rest.GET @_currentEndpoint, (e, r, b)->
       # TODO: wrap / handle responses generally
       if e
         deferred.reject e
