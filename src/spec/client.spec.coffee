@@ -10,6 +10,11 @@ describe 'SphereClient', ->
   afterEach ->
     @client = null
 
+  it 'should read credentials', ->
+    expect(Config.client_id).toBeDefined()
+    expect(Config.client_secret).toBeDefined()
+    expect(Config.project_key).toBeDefined()
+
   it 'should initialize with credentials', ->
     expect(@client).toBeDefined()
     expect(@client._rest).toBeDefined()
