@@ -30,3 +30,15 @@ describe 'SphereClient', ->
       delete opt[key]
       client = -> new SphereClient config: opt
       expect(client).toThrow new Error("Missing '#{key}'")
+
+
+  describe ':: ProductService', ->
+
+    ID = "1234-abcd-5678-efgh"
+
+    it 'should get resource by id', (done)->
+      spyOn(@client._rest, "GET").andCallFake((endpoint, callback)-> callback(null, {statusCode: 200}, '{"foo": "bar"}'))
+      productService = @client.products
+      productService.byId(ID).fetch().then (result)->
+        expect(result).toEqual foo: 'bar'
+        done()
