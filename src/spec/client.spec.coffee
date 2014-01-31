@@ -34,7 +34,9 @@ describe 'SphereClient', ->
 
   _.each [
     'categories'
+    'orders'
     'products'
+    'productTypes'
   ], (name)->
 
     describe ":: #{name}", ->
