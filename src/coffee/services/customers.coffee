@@ -9,7 +9,7 @@ class CustomerService extends BaseService
   ###*
    * @const
    * @private
-   * Base path for a Products API resource endpoint
+   * Base path for a Customers API resource endpoint
    * @type {String}
   ###
   @baseResourceEndpoint: '/customers'

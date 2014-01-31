@@ -9,7 +9,7 @@ class TaxCategoryService extends BaseService
   ###*
    * @const
    * @private
-   * Base path for a TaxCategorys API resource endpoint
+   * Base path for a TaxCategories API resource endpoint
    * @type {String}
   ###
   @baseResourceEndpoint: '/tax-categories'

@@ -9,7 +9,7 @@ class CategoryService extends BaseService
   ###*
    * @const
    * @private
-   * Base path for a Categories API resource endpoint
+   * Base path for a Customers API resource endpoint
    * @type {String}
   ###
   @baseResourceEndpoint: '/categories'

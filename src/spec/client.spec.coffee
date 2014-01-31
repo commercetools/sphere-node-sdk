@@ -33,6 +33,7 @@ describe 'SphereClient', ->
       expect(client).toThrow new Error("Missing '#{key}'")
 
   _.each [
+    'carts'
     'categories'
     'customers'
     'orders'
