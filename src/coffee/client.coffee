@@ -1,6 +1,7 @@
 Rest = require('sphere-node-connect').Rest
 CategoryService = require('./services/categories')
-ProductService = require('./services/products')
+OrderService    = require('./services/orders')
+ProductService  = require('./services/products')
 
 ###*
  * Defines a SphereClient.
@@ -25,7 +26,8 @@ class SphereClient
 
     # services
     @categories = new CategoryService @_rest
-    @products = new ProductService @_rest
+    @categories = new OrderService @_rest
+    @products   = new ProductService @_rest
 
 ###*
  * The {@link SphereClient} client.
