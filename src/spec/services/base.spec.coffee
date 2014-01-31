@@ -1,15 +1,16 @@
 _ = require('underscore')._
 Q = require('q')
-BaseService        = require('../../lib/services/base')
-CartService        = require('../../lib/services/carts')
-ChannelService     = require('../../lib/services/channels')
-CategoryService    = require('../../lib/services/categories')
-CustomerService    = require('../../lib/services/customers')
-InventoryService   = require('../../lib/services/inventories')
-OrderService       = require('../../lib/services/orders')
-ProductService     = require('../../lib/services/products')
-ProductTypeService = require('../../lib/services/product-types')
-TaxCategoryService = require('../../lib/services/tax-categories')
+BaseService          = require('../../lib/services/base')
+CartService          = require('../../lib/services/carts')
+ChannelService       = require('../../lib/services/channels')
+CategoryService      = require('../../lib/services/categories')
+CustomerService      = require('../../lib/services/customers')
+CustomerGroupService = require('../../lib/services/customer-groups')
+InventoryService     = require('../../lib/services/inventories')
+OrderService         = require('../../lib/services/orders')
+ProductService       = require('../../lib/services/products')
+ProductTypeService   = require('../../lib/services/product-types')
+TaxCategoryService   = require('../../lib/services/tax-categories')
 
 describe 'Service', ->
 
@@ -21,6 +22,7 @@ describe 'Service', ->
     {name: 'ChannelService', service: ChannelService, path: '/channels'}
     {name: 'CategoryService', service: CategoryService, path: '/categories'}
     {name: 'CustomerService', service: CustomerService, path: '/customers'}
+    {name: 'CustomerGroupService', service: CustomerGroupService, path: '/customer-groups'}
     {name: 'InventoryService', service: InventoryService, path: '/inventory'}
     {name: 'OrderService', service: OrderService, path: '/orders'}
     {name: 'ProductService', service: ProductService, path: '/products'}

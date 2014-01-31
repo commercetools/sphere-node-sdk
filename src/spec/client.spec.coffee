@@ -37,6 +37,7 @@ describe 'SphereClient', ->
     'channels'
     'categories'
     'customers'
+    'customerGroups'
     'inventories'
     'orders'
     'products'
