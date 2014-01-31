@@ -36,6 +36,7 @@ describe 'SphereClient', ->
     'carts'
     'categories'
     'customers'
+    'inventories'
     'orders'
     'products'
     'productTypes'

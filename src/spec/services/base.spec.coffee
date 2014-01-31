@@ -4,6 +4,7 @@ BaseService        = require('../../lib/services/base')
 CartService        = require('../../lib/services/carts')
 CategoryService    = require('../../lib/services/categories')
 CustomerService    = require('../../lib/services/customers')
+InventoryService   = require('../../lib/services/inventories')
 OrderService       = require('../../lib/services/orders')
 ProductService     = require('../../lib/services/products')
 ProductTypeService = require('../../lib/services/product-types')
@@ -18,6 +19,7 @@ describe 'Service', ->
     {name: 'CartService', service: CartService, path: '/carts'}
     {name: 'CategoryService', service: CategoryService, path: '/categories'}
     {name: 'CustomerService', service: CustomerService, path: '/customers'}
+    {name: 'InventoryService', service: InventoryService, path: '/inventory'}
     {name: 'OrderService', service: OrderService, path: '/orders'}
     {name: 'ProductService', service: ProductService, path: '/products'}
     {name: 'ProductTypeService', service: ProductTypeService, path: '/product-types'}

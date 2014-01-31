@@ -2,6 +2,7 @@ Rest = require('sphere-node-connect').Rest
 CartService        = require('./services/carts')
 CategoryService    = require('./services/categories')
 CustomerService    = require('./services/customers')
+InventoryService   = require('./services/inventories')
 OrderService       = require('./services/orders')
 ProductService     = require('./services/products')
 ProductTypeService = require('./services/product-types')
@@ -32,6 +33,7 @@ class SphereClient
     @carts         = new CartService @_rest
     @categories    = new CategoryService @_rest
     @customers     = new CustomerService @_rest
+    @inventories   = new InventoryService @_rest
     @orders        = new OrderService @_rest
     @products      = new ProductService @_rest
     @productTypes  = new ProductTypeService @_rest
