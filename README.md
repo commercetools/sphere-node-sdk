@@ -31,7 +31,22 @@ var sphere_client = new SphereClient({
 ```
 
 ### Services
-_(Coming soon)_
+The `SphereClient` provides a set of Services to connect with the related API endpoints. Currently following services are supported:
+
+- `carts`
+- `categories`
+- `channels`
+- `comments`
+- `customObjects`
+- `customers`
+- `customerGroups`
+- `inventories`
+- `orders`
+- `products`
+- `productTypes`
+- `reviews`
+- `shippingMethods`
+- `taxCategories`
 
 ### Types of requests
 _(Coming soon)_
