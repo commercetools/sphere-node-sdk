@@ -12,6 +12,7 @@ InventoryService      = require('../../lib/services/inventories')
 OrderService          = require('../../lib/services/orders')
 ProductService        = require('../../lib/services/products')
 ProductTypeService    = require('../../lib/services/product-types')
+ReviewService         = require('../../lib/services/reviews')
 ShippingMethodService = require('../../lib/services/shipping-methods')
 TaxCategoryService    = require('../../lib/services/tax-categories')
 
@@ -32,6 +33,7 @@ describe 'Service', ->
     {name: 'OrderService', service: OrderService, path: '/orders'}
     {name: 'ProductService', service: ProductService, path: '/products'}
     {name: 'ProductTypeService', service: ProductTypeService, path: '/product-types'}
+    {name: 'ReviewService', service: ReviewService, path: '/reviews'}
     {name: 'ShippingMethodService', service: ShippingMethodService, path: '/shipping-methods'}
     {name: 'TaxCategoryService', service: TaxCategoryService, path: '/tax-categories'}
   ], (o)->

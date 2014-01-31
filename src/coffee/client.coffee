@@ -10,6 +10,7 @@ InventoryService       = require('./services/inventories')
 OrderService           = require('./services/orders')
 ProductService         = require('./services/products')
 ProductTypeService     = require('./services/product-types')
+ReviewService          = require('./services/reviews')
 ShippingMethodService  = require('./services/shipping-methods')
 TaxCategoryService     = require('./services/tax-categories')
 
@@ -46,6 +47,7 @@ class SphereClient
     @orders          = new OrderService @_rest
     @products        = new ProductService @_rest
     @productTypes    = new ProductTypeService @_rest
+    @reviews         = new ReviewService @_rest
     @shippingMethods = new ShippingMethodService @_rest
     @taxCategories   = new TaxCategoryService @_rest
 
