@@ -1,14 +1,15 @@
 Rest = require('sphere-node-connect').Rest
-CartService          = require('./services/carts')
-ChannelService       = require('./services/channels')
-CategoryService      = require('./services/categories')
-CustomerService      = require('./services/customers')
-CustomerGroupService = require('./services/customer-groups')
-InventoryService     = require('./services/inventories')
-OrderService         = require('./services/orders')
-ProductService       = require('./services/products')
-ProductTypeService   = require('./services/product-types')
-TaxCategoryService   = require('./services/tax-categories')
+CartService            = require('./services/carts')
+ChannelService         = require('./services/channels')
+CategoryService        = require('./services/categories')
+CustomerService        = require('./services/customers')
+CustomerGroupService   = require('./services/customer-groups')
+InventoryService       = require('./services/inventories')
+OrderService           = require('./services/orders')
+ProductService         = require('./services/products')
+ProductTypeService     = require('./services/product-types')
+ShippingMethodService  = require('./services/shipping-methods')
+TaxCategoryService     = require('./services/tax-categories')
 
 ###*
  * Defines a SphereClient.
@@ -32,16 +33,17 @@ class SphereClient
     @_rest = new Rest config
 
     # services
-    @carts          = new CartService @_rest
-    @channels       = new ChannelService @_rest
-    @categories     = new CategoryService @_rest
-    @customers      = new CustomerService @_rest
-    @customerGroups = new CustomerService @_rest
-    @inventories    = new InventoryService @_rest
-    @orders         = new OrderService @_rest
-    @products       = new ProductService @_rest
-    @productTypes   = new ProductTypeService @_rest
-    @taxCategories  = new TaxCategoryService @_rest
+    @carts           = new CartService @_rest
+    @channels        = new ChannelService @_rest
+    @categories      = new CategoryService @_rest
+    @customers       = new CustomerService @_rest
+    @customerGroups  = new CustomerService @_rest
+    @inventories     = new InventoryService @_rest
+    @orders          = new OrderService @_rest
+    @products        = new ProductService @_rest
+    @productTypes    = new ProductTypeService @_rest
+    @shippingMethods = new ShippingMethodService @_rest
+    @taxCategories   = new TaxCategoryService @_rest
 
 ###*
  * The {@link SphereClient} client.

@@ -42,6 +42,7 @@ describe 'SphereClient', ->
     'orders'
     'products'
     'productTypes'
+    'shippingMethods'
     'taxCategories'
   ], (name)->
 

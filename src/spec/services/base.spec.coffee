@@ -1,16 +1,17 @@
 _ = require('underscore')._
 Q = require('q')
-BaseService          = require('../../lib/services/base')
-CartService          = require('../../lib/services/carts')
-ChannelService       = require('../../lib/services/channels')
-CategoryService      = require('../../lib/services/categories')
-CustomerService      = require('../../lib/services/customers')
-CustomerGroupService = require('../../lib/services/customer-groups')
-InventoryService     = require('../../lib/services/inventories')
-OrderService         = require('../../lib/services/orders')
-ProductService       = require('../../lib/services/products')
-ProductTypeService   = require('../../lib/services/product-types')
-TaxCategoryService   = require('../../lib/services/tax-categories')
+BaseService           = require('../../lib/services/base')
+CartService           = require('../../lib/services/carts')
+ChannelService        = require('../../lib/services/channels')
+CategoryService       = require('../../lib/services/categories')
+CustomerService       = require('../../lib/services/customers')
+CustomerGroupService  = require('../../lib/services/customer-groups')
+InventoryService      = require('../../lib/services/inventories')
+OrderService          = require('../../lib/services/orders')
+ProductService        = require('../../lib/services/products')
+ProductTypeService    = require('../../lib/services/product-types')
+ShippingMethodService = require('../../lib/services/shipping-methods')
+TaxCategoryService    = require('../../lib/services/tax-categories')
 
 describe 'Service', ->
 
@@ -27,6 +28,7 @@ describe 'Service', ->
     {name: 'OrderService', service: OrderService, path: '/orders'}
     {name: 'ProductService', service: ProductService, path: '/products'}
     {name: 'ProductTypeService', service: ProductTypeService, path: '/product-types'}
+    {name: 'ShippingMethodService', service: ShippingMethodService, path: '/shipping-methods'}
     {name: 'TaxCategoryService', service: TaxCategoryService, path: '/tax-categories'}
   ], (o)->
 
