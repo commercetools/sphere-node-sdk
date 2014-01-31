@@ -18,6 +18,7 @@ describe 'SphereClient', ->
   it 'should initialize with credentials', ->
     expect(@client).toBeDefined()
     expect(@client._rest).toBeDefined()
+    expect(@client.categories).toBeDefined()
     expect(@client.products).toBeDefined()
 
   it 'should throw error if no credentials are given', ->
@@ -31,14 +32,18 @@ describe 'SphereClient', ->
       client = -> new SphereClient config: opt
       expect(client).toThrow new Error("Missing '#{key}'")
 
+  _.each [
+    'categories'
+    'products'
+  ], (name)->
 
-  describe ':: ProductService', ->
+    describe ":: #{name}", ->
 
-    ID = "1234-abcd-5678-efgh"
+      ID = "1234-abcd-5678-efgh"
 
-    it 'should get resource by id', (done)->
-      spyOn(@client._rest, "GET").andCallFake((endpoint, callback)-> callback(null, {statusCode: 200}, '{"foo": "bar"}'))
-      productService = @client.products
-      productService.byId(ID).fetch().then (result)->
-        expect(result).toEqual foo: 'bar'
-        done()
+      it 'should get resource by id', (done)->
+        spyOn(@client._rest, "GET").andCallFake((endpoint, callback)-> callback(null, {statusCode: 200}, '{"foo": "bar"}'))
+        service = @client[name]
+        service.byId(ID).fetch().then (result)->
+          expect(result).toEqual foo: 'bar'
+          done()

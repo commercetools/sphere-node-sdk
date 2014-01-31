@@ -1,4 +1,5 @@
 Rest = require('sphere-node-connect').Rest
+CategoryService = require('./services/categories')
 ProductService = require('./services/products')
 
 ###*
@@ -23,6 +24,7 @@ class SphereClient
     @_rest = new Rest config
 
     # services
+    @categories = new CategoryService @_rest
     @products = new ProductService @_rest
 
 ###*

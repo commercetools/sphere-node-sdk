@@ -1,63 +1,74 @@
+_ = require('underscore')._
 Q = require('q')
-BaseService = require('../../lib/services/base')
+BaseService     = require('../../lib/services/base')
+CategoryService = require('../../lib/services/categories')
+ProductService  = require('../../lib/services/products')
 
-describe 'BaseService', ->
+describe 'Service', ->
 
   ID = "1234-abcd-5678-efgh"
 
-  beforeEach ->
-    @restMock =
-      config: {}
-      GET: (endpoint, callback)->
-      POST: ->
-      PUT: ->
-      DELETE: ->
-      _preRequest: ->
-      _doRequest: ->
-    @base = new BaseService @restMock
+  _.each [
+    {name: 'BaseService', service: BaseService, path: ''}
+    {name: 'CategoryService', service: CategoryService, path: '/categories'}
+    {name: 'ProductService', service: ProductService, path: '/products'}
+  ], (o)->
 
-  afterEach ->
-    @base = null
-    @restMock = null
+    describe ":: #{o.name}", ->
 
-  it 'should have constants defined', ->
-    expect(BaseService.baseResourceEndpoint).toBe ''
+      beforeEach ->
+        @restMock =
+          config: {}
+          GET: (endpoint, callback)->
+          POST: ->
+          PUT: ->
+          DELETE: ->
+          _preRequest: ->
+          _doRequest: ->
+        @service = new o.service @restMock
 
-  it 'should not share variables between instances', ->
-    base1 = new BaseService @restMock
-    base1._currentEndpoint = '/foo/1'
-    base2 = new BaseService @restMock
-    expect(base2._currentEndpoint).toBe ''
+      afterEach ->
+        @service = null
+        @restMock = null
 
-  it 'should initialize with Rest client', ->
-    expect(@base).toBeDefined()
-    expect(@base._currentEndpoint).toBe ''
+      it 'should have constants defined', ->
+        expect(o.service.baseResourceEndpoint).toBe o.path
 
-  it 'should return promise on fetch', ->
-    promise = @base.fetch()
-    expect(Q.isPromise(promise)).toBe true
+      it 'should not share variables between instances', ->
+        base1 = new o.service @restMock
+        base1._currentEndpoint = '/foo/1'
+        base2 = new o.service @restMock
+        expect(base2._currentEndpoint).toBe o.path
 
-  it 'should resolve the promise on fetch', (done)->
-    spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback(null, {statusCode: 200}, '{"foo": "bar"}'))
-    @base.fetch().then (result)->
-      expect(result).toEqual foo: 'bar'
-      done()
+      it 'should initialize with Rest client', ->
+        expect(@service).toBeDefined()
+        expect(@service._currentEndpoint).toBe o.path
 
-  it 'should reject the promise on fetch', (done)->
-    spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback('foo', null, null))
-    @base.fetch().then (result)->
-      expect(result).not.toBeDefined()
-    .fail (e)->
-      expect(e).toBe 'foo'
-      done()
+      it 'should return promise on fetch', ->
+        promise = @service.fetch()
+        expect(Q.isPromise(promise)).toBe true
 
-  it 'should build endpoint with id', ->
-    @base.byId(ID)
-    expect(@base._currentEndpoint).toBe "/#{ID}"
+      it 'should resolve the promise on fetch', (done)->
+        spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback(null, {statusCode: 200}, '{"foo": "bar"}'))
+        @service.fetch().then (result)->
+          expect(result).toEqual foo: 'bar'
+          done()
 
-  it 'should chain "byId"', ->
-    clazz = @base.byId(ID)
-    expect(clazz).toEqual @base
+      it 'should reject the promise on fetch', (done)->
+        spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback('foo', null, null))
+        @service.fetch().then (result)->
+          expect(result).not.toBeDefined()
+        .fail (e)->
+          expect(e).toBe 'foo'
+          done()
 
-    promise = @base.byId(ID).fetch()
-    expect(Q.isPromise(promise)).toBe true
+      it 'should build endpoint with id', ->
+        @service.byId(ID)
+        expect(@service._currentEndpoint).toBe "#{o.path}/#{ID}"
+
+      it 'should chain "byId"', ->
+        clazz = @service.byId(ID)
+        expect(clazz).toEqual @service
+
+        promise = @service.byId(ID).fetch()
+        expect(Q.isPromise(promise)).toBe true
