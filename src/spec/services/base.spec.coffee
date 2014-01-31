@@ -5,6 +5,7 @@ CategoryService    = require('../../lib/services/categories')
 OrderService       = require('../../lib/services/orders')
 ProductService     = require('../../lib/services/products')
 ProductTypeService = require('../../lib/services/product-types')
+TaxCategoryService = require('../../lib/services/tax-categories')
 
 describe 'Service', ->
 
@@ -16,6 +17,7 @@ describe 'Service', ->
     {name: 'OrderService', service: OrderService, path: '/orders'}
     {name: 'ProductService', service: ProductService, path: '/products'}
     {name: 'ProductTypeService', service: ProductTypeService, path: '/product-types'}
+    {name: 'TaxCategoryService', service: TaxCategoryService, path: '/tax-categories'}
   ], (o)->
 
     describe ":: #{o.name}", ->

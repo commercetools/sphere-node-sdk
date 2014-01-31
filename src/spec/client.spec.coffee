@@ -37,6 +37,7 @@ describe 'SphereClient', ->
     'orders'
     'products'
     'productTypes'
+    'taxCategories'
   ], (name)->
 
     describe ":: #{name}", ->
