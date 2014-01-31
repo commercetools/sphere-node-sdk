@@ -2,6 +2,7 @@ _ = require('underscore')._
 Q = require('q')
 BaseService        = require('../../lib/services/base')
 CartService        = require('../../lib/services/carts')
+ChannelService     = require('../../lib/services/channels')
 CategoryService    = require('../../lib/services/categories')
 CustomerService    = require('../../lib/services/customers')
 InventoryService   = require('../../lib/services/inventories')
@@ -17,6 +18,7 @@ describe 'Service', ->
   _.each [
     {name: 'BaseService', service: BaseService, path: ''}
     {name: 'CartService', service: CartService, path: '/carts'}
+    {name: 'ChannelService', service: ChannelService, path: '/channels'}
     {name: 'CategoryService', service: CategoryService, path: '/categories'}
     {name: 'CustomerService', service: CustomerService, path: '/customers'}
     {name: 'InventoryService', service: InventoryService, path: '/inventory'}
