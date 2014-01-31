@@ -4,6 +4,7 @@ BaseService           = require('../../lib/services/base')
 CartService           = require('../../lib/services/carts')
 ChannelService        = require('../../lib/services/channels')
 CategoryService       = require('../../lib/services/categories')
+CustomObjectService   = require('../../lib/services/custom-objects')
 CustomerService       = require('../../lib/services/customers')
 CustomerGroupService  = require('../../lib/services/customer-groups')
 InventoryService      = require('../../lib/services/inventories')
@@ -22,6 +23,7 @@ describe 'Service', ->
     {name: 'CartService', service: CartService, path: '/carts'}
     {name: 'ChannelService', service: ChannelService, path: '/channels'}
     {name: 'CategoryService', service: CategoryService, path: '/categories'}
+    {name: 'CustomObjectService', service: CustomObjectService, path: '/custom-objects'}
     {name: 'CustomerService', service: CustomerService, path: '/customers'}
     {name: 'CustomerGroupService', service: CustomerGroupService, path: '/customer-groups'}
     {name: 'InventoryService', service: InventoryService, path: '/inventory'}
