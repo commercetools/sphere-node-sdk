@@ -43,12 +43,20 @@ class BaseService
   ###
   fetch: ->
     deferred = Q.defer()
-    @_rest.GET @_currentEndpoint, (e, r, b)->
+    @_rest.GET @_currentEndpoint, (e, r, b)=>
       # TODO: wrap / handle responses generally
+      # TODO: returns either the raw body or a parsed JSON
       if e
         deferred.reject e
       else
-        deferred.resolve JSON.parse b
+        if r.statusCode is 404
+          # since the API doesn't return an error message for a resource not found
+          # we return a custom JSON error message
+          deferred.resolve
+            statusCode: 404
+            message: "Endpoint '#{@_currentEndpoint}' not found."
+        else
+          deferred.resolve JSON.parse b
     deferred.promise
 
 ###*

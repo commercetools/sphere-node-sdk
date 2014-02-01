@@ -78,6 +78,14 @@ describe 'Service', ->
           expect(result).toEqual foo: 'bar'
           done()
 
+      it 'should resolve the promise on fetch (404)', (done)->
+        spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback(null, {statusCode: 404}, ''))
+        @service.fetch().then (result)=>
+          expect(result).toEqual
+            statusCode: 404
+            message: "Endpoint '#{@service._currentEndpoint}' not found."
+          done()
+
       it 'should reject the promise on fetch', (done)->
         spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback('foo', null, null))
         @service.fetch().then (result)->
