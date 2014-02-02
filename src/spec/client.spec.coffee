@@ -43,6 +43,7 @@ describe 'SphereClient', ->
     'inventories'
     'orders'
     'products'
+    'productProjections'
     'productTypes'
     'reviews'
     'shippingMethods'

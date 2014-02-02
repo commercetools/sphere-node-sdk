@@ -1,18 +1,19 @@
 Rest = require('sphere-node-connect').Rest
-CartService            = require('./services/carts')
-CategoryService        = require('./services/categories')
-ChannelService         = require('./services/channels')
-CommentService         = require('./services/comments')
-CustomObjectService    = require('./services/custom-objects')
-CustomerService        = require('./services/customers')
-CustomerGroupService   = require('./services/customer-groups')
-InventoryService       = require('./services/inventories')
-OrderService           = require('./services/orders')
-ProductService         = require('./services/products')
-ProductTypeService     = require('./services/product-types')
-ReviewService          = require('./services/reviews')
-ShippingMethodService  = require('./services/shipping-methods')
-TaxCategoryService     = require('./services/tax-categories')
+CartService              = require('./services/carts')
+CategoryService          = require('./services/categories')
+ChannelService           = require('./services/channels')
+CommentService           = require('./services/comments')
+CustomObjectService      = require('./services/custom-objects')
+CustomerService          = require('./services/customers')
+CustomerGroupService     = require('./services/customer-groups')
+InventoryService         = require('./services/inventories')
+OrderService             = require('./services/orders')
+ProductService           = require('./services/products')
+ProductProjectionService = require('./services/product-projections')
+ProductTypeService       = require('./services/product-types')
+ReviewService            = require('./services/reviews')
+ShippingMethodService    = require('./services/shipping-methods')
+TaxCategoryService       = require('./services/tax-categories')
 
 ###*
  * Defines a SphereClient.
@@ -36,20 +37,21 @@ class SphereClient
     @_rest = new Rest config
 
     # services
-    @carts           = new CartService @_rest
-    @categories      = new CategoryService @_rest
-    @channels        = new ChannelService @_rest
-    @comments        = new CommentService @_rest
-    @customObjects   = new CustomObjectService @_rest
-    @customers       = new CustomerService @_rest
-    @customerGroups  = new CustomerService @_rest
-    @inventories     = new InventoryService @_rest
-    @orders          = new OrderService @_rest
-    @products        = new ProductService @_rest
-    @productTypes    = new ProductTypeService @_rest
-    @reviews         = new ReviewService @_rest
-    @shippingMethods = new ShippingMethodService @_rest
-    @taxCategories   = new TaxCategoryService @_rest
+    @carts              = new CartService @_rest
+    @categories         = new CategoryService @_rest
+    @channels           = new ChannelService @_rest
+    @comments           = new CommentService @_rest
+    @customObjects      = new CustomObjectService @_rest
+    @customers          = new CustomerService @_rest
+    @customerGroups     = new CustomerService @_rest
+    @inventories        = new InventoryService @_rest
+    @orders             = new OrderService @_rest
+    @products           = new ProductService @_rest
+    @productProjections = new ProductProjectionService @_rest
+    @productTypes       = new ProductTypeService @_rest
+    @reviews            = new ReviewService @_rest
+    @shippingMethods    = new ShippingMethodService @_rest
+    @taxCategories      = new TaxCategoryService @_rest
 
 ###*
  * The {@link SphereClient} client.
