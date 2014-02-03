@@ -50,7 +50,25 @@ The `SphereClient` provides a set of Services to connect with the related API en
 - `taxCategories`
 
 ### Types of requests
-_(Coming soon)_
+Requests to the HTTP API are obviously asynchronous and they all return a [`Q` promise](https://github.com/kriskowal/q).
+
+```javascript
+var sphere_client = new SphereClient({...})
+
+sphere_client.products.fetch()
+.then(function(result){
+  // a JSON object containing either a result or a SPHERE.IO HTTP error
+})
+.fail(function(error){
+  // either the request failed or was rejected (the response returned an error)
+})
+```
+
+Current functions using promises are:
+
+- `fetch` HTTP `GET` request
+- `save` HTTP `POST` request _(Not implemented yet)_
+
 
 ## Examples
 _(Coming soon)_

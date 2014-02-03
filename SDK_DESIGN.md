@@ -11,13 +11,15 @@ client = Sphere.createClient credentials
 or
 client = new Sphere credentials
 
-# services
-client.products.all().fetch(-> #callback)
-client.products.byId('').fetch(-> #callback)
-
-or (using promises)
+# services (using promises)
 client.products.all().fetch().then()
 client.products.byId('').fetch().then()
+
+# queries (`where`, `sort`, `limit`, `offset`, `staged`)
+client.products.where().sort().page().pageSize().staged()
+
+limit = pageSize or DEFAULT_SIZE
+offset = limit * (page - 1)
 ```
 
 
@@ -36,11 +38,11 @@ class Products
 
   all: ->
     @_projectEndpoint = '/products'
-    @
+    this
 
   byId: (id)->
     @_projectEndpoint = '/products/' + id
-    @
+    this
 
   fetch: ->
     deferred = Q.defer()
