@@ -38,6 +38,41 @@ class BaseService
     this
 
   ###*
+   * Defines a {Predicate} used for quering and filtering a resource.
+   * http://commercetools.de/dev/http-api.html#predicates
+   * @param {String} [predicate] A {Predicate} string for the `where` query parameter.
+   * @return {BaseService} Chained instance of this class
+  ###
+  where: (predicate)->
+    # TODO: use query builder (for specific service) to faciliate build queries
+    # e.g.: `QueryBuilder.product.name('Foo', 'en')`
+    encodedPredicate = encodeURIComponent(predicate)
+    @_query = [] unless @_query
+    @_query.push encodedPredicate
+    this
+
+  ###*
+   * Defines the logical operator to combine multiple `where` query parameters.
+   * @param {String} [operator] a logical operator (default `and`)
+   * @return {BaseService} Chained instance of this class
+  ###
+  whereOperator: (operator = "and")->
+    @_queryOperator = switch operator
+      when 'and', 'or' then operator
+      else 'and'
+    this
+
+  sort: -> # noop
+
+  limit: -> # noop
+
+  page: -> # noop
+
+  perPage: -> # noop
+
+  staged: -> # noop
+
+  ###*
    * Fetch resource defined by [_currentEndpoint]
    * @return {Promise} A promise, fulfilled with an Object or rejected with a SphereError
   ###

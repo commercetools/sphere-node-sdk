@@ -100,9 +100,27 @@ describe 'Service', ->
         @service.byId(ID)
         expect(@service._currentEndpoint).toBe "#{o.path}/#{ID}"
 
-      it 'should chain "byId"', ->
-        clazz = @service.byId(ID)
-        expect(clazz).toEqual @service
+      _.each ['byId', 'where', 'whereOperator'], (f)->
+        it "should chain '#{f}'", ->
+          clazz = @service[f]()
+          expect(clazz).toEqual @service
 
-        promise = @service.byId(ID).fetch()
-        expect(Q.isPromise(promise)).toBe true
+          promise = @service[f]().fetch()
+          expect(Q.isPromise(promise)).toBe true
+
+      it 'should add where predicates to query', ->
+        @service.where('name(en="Foo")')
+        expect(@service._query).toEqual ['name(en%3D%22Foo%22)']
+
+        @service.where('variants is empty')
+        expect(@service._query).toEqual ['name(en%3D%22Foo%22)', 'variants%20is%20empty']
+
+      it 'should set query logical operator', ->
+        @service.whereOperator('or')
+        expect(@service._queryOperator).toBe 'or'
+
+        @service.whereOperator()
+        expect(@service._queryOperator).toBe 'and'
+
+        @service.whereOperator('foo')
+        expect(@service._queryOperator).toBe 'and'
