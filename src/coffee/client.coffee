@@ -37,6 +37,7 @@ class SphereClient
     @_rest = new Rest config
 
     # services
+    # TODO: use functions to return new service instances?
     @carts              = new CartService @_rest
     @categories         = new CategoryService @_rest
     @channels           = new ChannelService @_rest

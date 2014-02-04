@@ -14,6 +14,8 @@ class ProductProjectionService extends BaseService
   ###
   @baseResourceEndpoint: '/product-projections'
 
+  staged: -> # noop
+
 ###*
  * The {@link ProductProjectionService} service.
 ###

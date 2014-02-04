@@ -1,4 +1,6 @@
+_ = require('underscore')._
 Q = require('q')
+Utils = require('../utils')
 
 ###*
  * Creates a new BaseService, containing base functionalities. It should be extended when defining a Service.
@@ -38,7 +40,7 @@ class BaseService
     this
 
   ###*
-   * Defines a {Predicate} used for quering and filtering a resource.
+   * Define a {Predicate} used for quering and filtering a resource.
    * http://commercetools.de/dev/http-api.html#predicates
    * @param {String} [predicate] A {Predicate} string for the `where` query parameter.
    * @return {BaseService} Chained instance of this class
@@ -52,7 +54,7 @@ class BaseService
     this
 
   ###*
-   * Defines the logical operator to combine multiple `where` query parameters.
+   * Define the logical operator to combine multiple `where` query parameters.
    * @param {String} [operator] a logical operator (default `and`)
    * @return {BaseService} Chained instance of this class
   ###
@@ -64,13 +66,34 @@ class BaseService
 
   sort: -> # noop
 
-  limit: -> # noop
+  ###*
+   * Define the page numer to be requested from the complete query result
+   * (used for pagination as `offset`)
+   * @param {Int} [_page] a number > 1 (default is 1)
+   * @return {BaseService} Chained instance of this class
+  ###
+  page: (@_page)-> this
 
-  page: -> # noop
+  ###*
+   * Define the number of results to return from a query
+   * (used for pagination as `limit`)
+   * A limit of `0` returns all results
+   * @param {Int} [_perPage] a number > 0 (default is 100)
+   * @return {BaseService} Chained instance of this class
+  ###
+  perPage: (@_perPage)-> this
 
-  perPage: -> # noop
-
-  staged: -> # noop
+  ###*
+   * Build a query string from (pre)defined params
+   * (to be overriden for custom params)
+   * @return {String} the query string
+  ###
+  queryString: ->
+    Utils.buildQueryString
+      where: @_query
+      whereOperator: @_queryOperator
+      page: @_page
+      perPage: @_perPage
 
   ###*
    * Fetch resource defined by [_currentEndpoint]
@@ -78,7 +101,11 @@ class BaseService
   ###
   fetch: ->
     deferred = Q.defer()
-    @_rest.GET @_currentEndpoint, (e, r, b)=>
+    queryString = @queryString()
+    endpoint = @_currentEndpoint
+    endpoint += "#{@_currentEndpoint}?#{queryString}" if queryString
+    @_rest.GET endpoint, (e, r, b)=>
+      # TODO: reset 'private' variables
       # TODO: wrap / handle responses generally
       # TODO: returns either the raw body or a parsed JSON
       if e

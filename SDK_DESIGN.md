@@ -20,6 +20,8 @@ client.products.where().sort().page().pageSize().staged()
 
 limit = pageSize or DEFAULT_SIZE
 offset = limit * (page - 1)
+
+# reference expansion (noop on base service)
 ```
 
 
