@@ -8,6 +8,17 @@
 
 This module is a standalone Node.js client for accessing the Sphere HTTP APIs.
 
+## Table of Contents
+* [Getting Started](#getting-started)
+* [Documentation](#documentation)
+  * [Services](#services)
+  * [Types of requests](#types-of-requests)
+    * [Query request](#query-request)
+* [Examples](#examples)
+* [Releasing](#releasing)
+* [License](#license)
+
+
 ## Getting Started
 Install the module with `npm install sphere-node-client`
 
