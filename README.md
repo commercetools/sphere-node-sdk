@@ -64,10 +64,49 @@ sphere_client.products.fetch()
 })
 ```
 
-Current functions using promises are:
+Current methods using promises are:
 
 - `fetch` HTTP `GET` request
 - `save` HTTP `POST` request _(Not implemented yet)_
+
+
+#### Query request
+All resource endpoints support queries, returning a list of results of type [PagedQueryResponse](http://commercetools.de/dev/http-api.html#paged-query-response).
+
+> Fetching and endpoint without specifying and `ID` returns a `PagedQueryResponse`
+
+A query request can be configured with following query parameters:
+
+- `where` ([Predicate](http://commercetools.de/dev/http-api.html#predicates))
+- `sort` ([Sort](http://commercetools.de/dev/http-api.html#sorting))
+- `limit` (Number)
+- `offset` (Number)
+
+The `SphereClient` helps you build those requests with following methods:
+
+- `where(predicate)` defines a URI encoded predicate from the given string (can be set multiple times)
+- `whereOperator(operator)` defines the logical operator to combine multiple where parameters
+- `sort` _TBD_
+- `page(n)` defines the page number to be requested from the complete query result (default is `1`)
+- `perPage(n)` defines the number of results to return from a query (default is `100`). If set to `0` all results are returned
+
+> All these methods are chainable
+
+```javascript
+// example
+
+var sphere_client = new SphereClient({...})
+sphere_client.products
+  .where('name(en="Foo")')
+  .where('id="1234567890"')
+  .whereOperator('or')
+  .page(3)
+  .perPage(25)
+  .fetch()
+
+// HTTP request
+// /{project_key}/products?where=name(en%3D%22Foo%22)%20or%20id%3D%221234567890%22&limit=25&offset=50
+```
 
 
 ## Examples

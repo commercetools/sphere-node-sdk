@@ -67,7 +67,7 @@ class BaseService
   sort: -> # noop
 
   ###*
-   * Define the page numer to be requested from the complete query result
+   * Define the page number to be requested from the complete query result
    * (used for pagination as `offset`)
    * @param {Int} [_page] a number > 1 (default is 1)
    * @return {BaseService} Chained instance of this class
@@ -78,7 +78,7 @@ class BaseService
    * Define the number of results to return from a query
    * (used for pagination as `limit`)
    * A limit of `0` returns all results
-   * @param {Int} [_perPage] a number > 0 (default is 100)
+   * @param {Int} [_perPage] a number >= 0 (default is 100)
    * @return {BaseService} Chained instance of this class
   ###
   perPage: (@_perPage)-> this
