@@ -108,12 +108,12 @@ The `SphereClient` helps you build those requests with following methods:
 
 var sphere_client = new SphereClient({...})
 sphere_client.products
-  .where('name(en="Foo")')
-  .where('id="1234567890"')
-  .whereOperator('or')
-  .page(3)
-  .perPage(25)
-  .fetch()
+.where('name(en="Foo")')
+.where('id="1234567890"')
+.whereOperator('or')
+.page(3)
+.perPage(25)
+.fetch()
 
 // HTTP request
 // /{project_key}/products?where=name(en%3D%22Foo%22)%20or%20id%3D%221234567890%22&limit=25&offset=50

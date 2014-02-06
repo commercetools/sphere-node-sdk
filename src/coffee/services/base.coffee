@@ -48,6 +48,7 @@ class BaseService
   where: (predicate)->
     # TODO: use query builder (for specific service) to faciliate build queries
     # e.g.: `QueryBuilder.product.name('Foo', 'en')`
+    return this unless predicate
     encodedPredicate = encodeURIComponent(predicate)
     @_query = [] unless @_query
     @_query.push encodedPredicate
@@ -96,15 +97,15 @@ class BaseService
       perPage: @_perPage
 
   ###*
-   * Fetch resource defined by [_currentEndpoint]
+   * Fetch resource defined by [_currentEndpoint] with query parameters
    * @return {Promise} A promise, fulfilled with an Object or rejected with a SphereError
   ###
   fetch: ->
     deferred = Q.defer()
     queryString = @queryString()
     endpoint = @_currentEndpoint
-    endpoint += "#{@_currentEndpoint}?#{queryString}" if queryString
-    @_rest.GET endpoint, (e, r, b)=>
+    endpoint += "?#{queryString}" if queryString
+    @_rest.GET endpoint, (e, r, b)->
       # TODO: reset 'private' variables
       # TODO: wrap / handle responses generally
       # TODO: returns either the raw body or a parsed JSON
@@ -116,7 +117,7 @@ class BaseService
           # we return a custom JSON error message
           deferred.resolve
             statusCode: 404
-            message: "Endpoint '#{@_currentEndpoint}' not found."
+            message: "Endpoint '#{endpoint}' not found."
         else
           deferred.resolve JSON.parse b
     deferred.promise

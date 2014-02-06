@@ -85,7 +85,19 @@ describe 'Service', ->
         @service.fetch().then (result)=>
           expect(result).toEqual
             statusCode: 404
-            message: "Endpoint '#{@service._currentEndpoint}' not found."
+            message: "Endpoint '#{@service._currentEndpoint}?limit=100' not found."
+          done()
+
+      it 'should return error message for endpoint not found with query', (done)->
+        spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback(null, {statusCode: 404}, ''))
+        @service
+        .where()
+        .page(1)
+        .perPage()
+        .fetch().then (result)=>
+          expect(result).toEqual
+            statusCode: 404
+            message: "Endpoint '#{@service._currentEndpoint}?limit=100' not found."
           done()
 
       it 'should reject the promise on fetch', (done)->
@@ -114,6 +126,10 @@ describe 'Service', ->
 
         @service.where('variants is empty')
         expect(@service._query).toEqual ['name(en%3D%22Foo%22)', 'variants%20is%20empty']
+
+      it 'should not add undefined where predicates', ->
+        @service.where()
+        expect(@service._query).not.toBeDefined()
 
       it 'should set query logical operator', ->
         @service.whereOperator('or')
