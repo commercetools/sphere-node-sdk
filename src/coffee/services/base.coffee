@@ -98,7 +98,7 @@ class BaseService
 
   ###*
    * Fetch resource defined by [_currentEndpoint] with query parameters
-   * @return {Promise} A promise, fulfilled with an Object or rejected with a SphereError
+   * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
   fetch: ->
     deferred = Q.defer()
@@ -121,6 +121,33 @@ class BaseService
         else
           deferred.resolve JSON.parse b
     deferred.promise
+
+  ###*
+   * Save a new resource by sending a payload to the [_currentEndpoint]
+   * @param {Object} [body] The payload as JSON object
+   * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
+  ###
+  save: (body)->
+    throw new Error 'Body payload is required for creating a resource' unless body
+    deferred = Q.defer()
+    payload = JSON.stringify body
+    endpoint = @_currentEndpoint
+    @_rest.POST endpoint, payload, (e, r, b)->
+      # TODO: wrap / handle responses generally
+      # TODO: returns either the raw body or a parsed JSON
+      if e
+        deferred.reject e
+      else
+        if r.statusCode is 404
+          # since the API doesn't return an error message for a resource not found
+          # we return a custom JSON error message
+          deferred.resolve
+            statusCode: 404
+            message: "Endpoint '#{endpoint}' not found."
+        else
+          deferred.resolve JSON.parse b
+    deferred.promise
+
 
 ###*
  * The {@link BaseService} service.

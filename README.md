@@ -78,7 +78,7 @@ sphere_client.products.fetch()
 Current methods using promises are:
 
 - `fetch` HTTP `GET` request
-- `save` HTTP `POST` request _(Not implemented yet)_
+- `save` HTTP `POST` request
 
 
 #### Query request
@@ -119,6 +119,28 @@ sphere_client.products
 // /{project_key}/products?where=name(en%3D%22Foo%22)%20or%20id%3D%221234567890%22&limit=25&offset=50
 ```
 
+#### Create resource
+All endpoints allow a resource to be created by posting a JSON `Representation` of the selected resource as a body payload.
+
+
+```javascript
+var product = {
+  'name': {
+    'en': 'Foo'
+  },
+  'slug': {
+    'en': 'foo'
+  },
+  ...
+}
+sphere_client.products.save(product)
+.then(function(result){
+  // a JSON object containing either a result or a SPHERE.IO HTTP error
+})
+.fail(function(error){
+  // either the request failed or was rejected (the response returned an error)
+})
+```
 
 ## Examples
 _(Coming soon)_

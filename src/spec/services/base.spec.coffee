@@ -46,7 +46,7 @@ describe 'Service', ->
         @restMock =
           config: {}
           GET: (endpoint, callback)->
-          POST: ->
+          POST: -> (endpoint, payload, callback)->
           PUT: ->
           DELETE: ->
           _preRequest: ->
@@ -69,44 +69,6 @@ describe 'Service', ->
       it 'should initialize with Rest client', ->
         expect(@service).toBeDefined()
         expect(@service._currentEndpoint).toBe o.path
-
-      it 'should return promise on fetch', ->
-        promise = @service.fetch()
-        expect(Q.isPromise(promise)).toBe true
-
-      it 'should resolve the promise on fetch', (done)->
-        spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback(null, {statusCode: 200}, '{"foo": "bar"}'))
-        @service.fetch().then (result)->
-          expect(result).toEqual foo: 'bar'
-          done()
-
-      it 'should resolve the promise on fetch (404)', (done)->
-        spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback(null, {statusCode: 404}, ''))
-        @service.fetch().then (result)=>
-          expect(result).toEqual
-            statusCode: 404
-            message: "Endpoint '#{@service._currentEndpoint}?limit=100' not found."
-          done()
-
-      it 'should return error message for endpoint not found with query', (done)->
-        spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback(null, {statusCode: 404}, ''))
-        @service
-        .where()
-        .page(1)
-        .perPage()
-        .fetch().then (result)=>
-          expect(result).toEqual
-            statusCode: 404
-            message: "Endpoint '#{@service._currentEndpoint}?limit=100' not found."
-          done()
-
-      it 'should reject the promise on fetch', (done)->
-        spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback('foo', null, null))
-        @service.fetch().then (result)->
-          expect(result).not.toBeDefined()
-        .fail (e)->
-          expect(e).toBe 'foo'
-          done()
 
       it 'should build endpoint with id', ->
         @service.byId(ID)
@@ -151,3 +113,75 @@ describe 'Service', ->
           .queryString()
 
         expect(queryString).toBe 'where=name(en%3D%22Foo%22)%20or%20id%3D%221234567890%22&limit=25&offset=50'
+
+      describe ':: fetch', ->
+
+        it 'should return promise on fetch', ->
+          promise = @service.fetch()
+          expect(Q.isPromise(promise)).toBe true
+
+        it 'should resolve the promise on fetch', (done)->
+          spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback(null, {statusCode: 200}, '{"foo": "bar"}'))
+          @service.fetch().then (result)->
+            expect(result).toEqual foo: 'bar'
+            done()
+
+        it 'should resolve the promise on fetch (404)', (done)->
+          spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback(null, {statusCode: 404}, ''))
+          @service.fetch().then (result)=>
+            expect(result).toEqual
+              statusCode: 404
+              message: "Endpoint '#{@service._currentEndpoint}?limit=100' not found."
+            done()
+
+        it 'should return error message for endpoint not found with query', (done)->
+          spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback(null, {statusCode: 404}, ''))
+          @service
+          .where()
+          .page(1)
+          .perPage()
+          .fetch().then (result)=>
+            expect(result).toEqual
+              statusCode: 404
+              message: "Endpoint '#{@service._currentEndpoint}?limit=100' not found."
+            done()
+
+        it 'should reject the promise on fetch', (done)->
+          spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback('foo', null, null))
+          @service.fetch().then (result)->
+            expect(result).not.toBeDefined()
+          .fail (e)->
+            expect(e).toBe 'foo'
+            done()
+
+      describe ':: save', ->
+
+        it 'should return promise on save', ->
+          promise = @service.save {foo: 'bar'}
+          expect(Q.isPromise(promise)).toBe true
+
+        it 'should resolve the promise on save', (done)->
+          spyOn(@restMock, 'POST').andCallFake((endpoint, payload, callback)-> callback(null, {statusCode: 200}, '{"foo": "bar"}'))
+          @service.save({foo: 'bar'}).then (result)->
+            expect(result).toEqual foo: 'bar'
+            done()
+
+        it 'should resolve the promise on save (404)', (done)->
+          spyOn(@restMock, 'POST').andCallFake((endpoint, payload, callback)-> callback(null, {statusCode: 404}, ''))
+          @service.save({foo: 'bar'}).then (result)=>
+            expect(result).toEqual
+              statusCode: 404
+              message: "Endpoint '#{@service._currentEndpoint}' not found."
+            done()
+
+        it 'should throw error if payload is missing', ->
+          spyOn(@restMock, 'POST')
+          expect(=> @service.save()).toThrow new Error 'Body payload is required for creating a resource'
+
+        it 'should reject the promise on save', (done)->
+          spyOn(@restMock, 'POST').andCallFake((endpoint, payload, callback)-> callback('foo', null, null))
+          @service.save({foo: 'bar'}).then (result)->
+            expect(result).not.toBeDefined()
+          .fail (e)->
+            expect(e).toBe 'foo'
+            done()
