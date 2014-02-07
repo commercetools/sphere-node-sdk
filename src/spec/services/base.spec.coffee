@@ -127,23 +127,25 @@ describe 'Service', ->
             done()
 
         it 'should resolve the promise on fetch (404)', (done)->
-          spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback(null, {statusCode: 404}, ''))
-          @service.fetch().then (result)=>
+          spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback(null, {statusCode: 404, request: {uri: {path: '/foo'}}}, ''))
+          @service.fetch().then (result)->
             expect(result).toEqual
               statusCode: 404
-              message: "Endpoint '#{@service._currentEndpoint}?limit=100' not found."
+              # message: "Endpoint '#{@service._currentEndpoint}?limit=100' not found."
+              message: "Endpoint '/foo' not found."
             done()
 
         it 'should return error message for endpoint not found with query', (done)->
-          spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback(null, {statusCode: 404}, ''))
+          spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback(null, {statusCode: 404, request: {uri: {path: '/foo'}}}, ''))
           @service
           .where()
           .page(1)
           .perPage()
-          .fetch().then (result)=>
+          .fetch().then (result)->
             expect(result).toEqual
               statusCode: 404
-              message: "Endpoint '#{@service._currentEndpoint}?limit=100' not found."
+              # message: "Endpoint '#{@service._currentEndpoint}?limit=100' not found."
+              message: "Endpoint '/foo' not found."
             done()
 
         it 'should reject the promise on fetch', (done)->
@@ -167,11 +169,12 @@ describe 'Service', ->
             done()
 
         it 'should resolve the promise on save (404)', (done)->
-          spyOn(@restMock, 'POST').andCallFake((endpoint, payload, callback)-> callback(null, {statusCode: 404}, ''))
-          @service.save({foo: 'bar'}).then (result)=>
+          spyOn(@restMock, 'POST').andCallFake((endpoint, payload, callback)-> callback(null, {statusCode: 404, request: {uri: {path: '/foo'}}}, ''))
+          @service.save({foo: 'bar'}).then (result)->
             expect(result).toEqual
               statusCode: 404
-              message: "Endpoint '#{@service._currentEndpoint}' not found."
+              # message: "Endpoint '#{@service._currentEndpoint}' not found."
+              message: "Endpoint '/foo' not found."
             done()
 
         it 'should throw error if payload is missing', ->

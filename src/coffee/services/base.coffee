@@ -105,21 +105,9 @@ class BaseService
     queryString = @queryString()
     endpoint = @_currentEndpoint
     endpoint += "?#{queryString}" if queryString
-    @_rest.GET endpoint, (e, r, b)->
+    @_rest.GET endpoint, =>
       # TODO: reset 'private' variables
-      # TODO: wrap / handle responses generally
-      # TODO: returns either the raw body or a parsed JSON
-      if e
-        deferred.reject e
-      else
-        if r.statusCode is 404
-          # since the API doesn't return an error message for a resource not found
-          # we return a custom JSON error message
-          deferred.resolve
-            statusCode: 404
-            message: "Endpoint '#{endpoint}' not found."
-        else
-          deferred.resolve JSON.parse b
+      @wrapResponse.apply(@, _.union(deferred, arguments))
     deferred.promise
 
   ###*
@@ -132,21 +120,26 @@ class BaseService
     deferred = Q.defer()
     payload = JSON.stringify body
     endpoint = @_currentEndpoint
-    @_rest.POST endpoint, payload, (e, r, b)->
-      # TODO: wrap / handle responses generally
-      # TODO: returns either the raw body or a parsed JSON
-      if e
-        deferred.reject e
-      else
-        if r.statusCode is 404
-          # since the API doesn't return an error message for a resource not found
-          # we return a custom JSON error message
-          deferred.resolve
-            statusCode: 404
-            message: "Endpoint '#{endpoint}' not found."
-        else
-          deferred.resolve JSON.parse b
+    @_rest.POST endpoint, payload, =>
+      @wrapResponse.apply(@, _.union(deferred, arguments))
     deferred.promise
+
+  wrapResponse: (deferred, error, response, body)->
+    # TODO: returns either the raw body or a parsed JSON
+    if error
+      deferred.reject error
+    else
+      if response.statusCode is 404
+        # since the API doesn't return an error message for a resource not found
+        # we return a custom JSON error message
+
+        # TODO: get endpoint from response object
+        endpoint = response.request.uri.path
+        deferred.resolve
+          statusCode: 404
+          message: "Endpoint '#{endpoint}' not found."
+      else
+        deferred.resolve JSON.parse body
 
 
 ###*
