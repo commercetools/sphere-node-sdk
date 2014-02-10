@@ -14,6 +14,7 @@ This module is a standalone Node.js client for accessing the Sphere HTTP APIs.
   * [Services](#services)
   * [Types of requests](#types-of-requests)
     * [Query request](#query-request)
+    * [Create resource](#create-resource)
 * [Examples](#examples)
 * [Releasing](#releasing)
 * [License](#license)
