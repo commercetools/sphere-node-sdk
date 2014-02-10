@@ -70,11 +70,17 @@ describe 'Service', ->
         expect(@service).toBeDefined()
         expect(@service._currentEndpoint).toBe o.path
 
+      it 'should reset default params', ->
+        expect(@service._params).toEqual
+          query:
+            where: []
+            operator: 'and'
+
       it 'should build endpoint with id', ->
         @service.byId(ID)
         expect(@service._currentEndpoint).toBe "#{o.path}/#{ID}"
 
-      _.each ['byId', 'where', 'whereOperator'], (f)->
+      _.each ['byId', 'where', 'whereOperator', 'page', 'perPage'], (f)->
         it "should chain '#{f}'", ->
           clazz = @service[f]()
           expect(clazz).toEqual @service
@@ -84,24 +90,32 @@ describe 'Service', ->
 
       it 'should add where predicates to query', ->
         @service.where('name(en="Foo")')
-        expect(@service._query).toEqual ['name(en%3D%22Foo%22)']
+        expect(@service._params.query.where).toEqual ['name(en%3D%22Foo%22)']
 
         @service.where('variants is empty')
-        expect(@service._query).toEqual ['name(en%3D%22Foo%22)', 'variants%20is%20empty']
+        expect(@service._params.query.where).toEqual ['name(en%3D%22Foo%22)', 'variants%20is%20empty']
 
       it 'should not add undefined where predicates', ->
         @service.where()
-        expect(@service._query).not.toBeDefined()
+        expect(@service._params.query.where).toEqual []
 
       it 'should set query logical operator', ->
         @service.whereOperator('or')
-        expect(@service._queryOperator).toBe 'or'
+        expect(@service._params.query.operator).toBe 'or'
 
         @service.whereOperator()
-        expect(@service._queryOperator).toBe 'and'
+        expect(@service._params.query.operator).toBe 'and'
 
         @service.whereOperator('foo')
-        expect(@service._queryOperator).toBe 'and'
+        expect(@service._params.query.operator).toBe 'and'
+
+      it 'should add page number', ->
+        @service.page(5)
+        expect(@service._params.query.page).toBe 5
+
+      it 'should add perPage number', ->
+        @service.perPage(50)
+        expect(@service._params.query.perPage).toBe 50
 
       it 'should build query string', ->
         queryString = @service
@@ -113,6 +127,13 @@ describe 'Service', ->
           .queryString()
 
         expect(queryString).toBe 'where=name(en%3D%22Foo%22)%20or%20id%3D%221234567890%22&limit=25&offset=50'
+
+      it 'should reset params after resolving a promise', ->
+        spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback(null, {statusCode: 200}, '{"foo": "bar"}'))
+        _service = @service.byId('123-abc')
+        expect(@service._params.id).toBe '123-abc'
+        _service.fetch().then (result)-> #noop
+        expect(@service._params.id).not.toBeDefined()
 
       describe ':: fetch', ->
 
