@@ -147,12 +147,14 @@ describe 'Service', ->
             expect(result).toEqual foo: 'bar'
             done()
 
-        it 'should resolve the promise on fetch (404)', (done)->
+        it 'should reject the promise on fetch (404)', (done)->
           spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback(null, {statusCode: 404, request: {uri: {path: '/foo'}}}, null))
-          @service.fetch().then (result)->
-            expect(result).toEqual
+          @service.fetch()
+          .then (result)->
+            expect(result).not.toBeDefined()
+          .fail (error)->
+            expect(error).toEqual
               statusCode: 404
-              # message: "Endpoint '#{@service._currentEndpoint}?limit=100' not found."
               message: "Endpoint '/foo' not found."
             done()
 
@@ -162,8 +164,11 @@ describe 'Service', ->
           .where()
           .page(1)
           .perPage()
-          .fetch().then (result)->
-            expect(result).toEqual
+          .fetch()
+          .then (result)->
+            expect(result).not.toBeDefined()
+          .fail (error)->
+            expect(error).toEqual
               statusCode: 404
               # message: "Endpoint '#{@service._currentEndpoint}?limit=100' not found."
               message: "Endpoint '/foo' not found."
@@ -173,8 +178,10 @@ describe 'Service', ->
           spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback('foo', null, null))
           @service.fetch().then (result)->
             expect(result).not.toBeDefined()
-          .fail (e)->
-            expect(e).toBe 'foo'
+          .fail (error)->
+            expect(error).toEqual
+              statusCode: 500
+              message: 'foo'
             done()
 
       describe ':: save', ->
@@ -189,10 +196,13 @@ describe 'Service', ->
             expect(result).toEqual foo: 'bar'
             done()
 
-        it 'should resolve the promise on save (404)', (done)->
+        it 'should reject the promise on save (404)', (done)->
           spyOn(@restMock, 'POST').andCallFake((endpoint, payload, callback)-> callback(null, {statusCode: 404, request: {uri: {path: '/foo'}}}, null))
-          @service.save({foo: 'bar'}).then (result)->
-            expect(result).toEqual
+          @service.save({foo: 'bar'})
+          .then (result)->
+            expect(result).not.toBeDefined()
+          .fail (error)->
+            expect(error).toEqual
               statusCode: 404
               # message: "Endpoint '#{@service._currentEndpoint}' not found."
               message: "Endpoint '/foo' not found."
@@ -204,8 +214,11 @@ describe 'Service', ->
 
         it 'should reject the promise on save', (done)->
           spyOn(@restMock, 'POST').andCallFake((endpoint, payload, callback)-> callback('foo', null, null))
-          @service.save({foo: 'bar'}).then (result)->
+          @service.save({foo: 'bar'})
+          .then (result)->
             expect(result).not.toBeDefined()
-          .fail (e)->
-            expect(e).toBe 'foo'
+          .fail (error)->
+            expect(error).toEqual
+              statusCode: 500
+              message: 'foo'
             done()

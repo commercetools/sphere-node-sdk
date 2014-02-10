@@ -15,6 +15,7 @@ This module is a standalone Node.js client for accessing the Sphere HTTP APIs.
   * [Types of requests](#types-of-requests)
     * [Query request](#query-request)
     * [Create resource](#create-resource)
+  * [Error handling](#error-handling)
 * [Examples](#examples)
 * [Releasing](#releasing)
 * [License](#license)
@@ -142,6 +143,43 @@ sphere_client.products.save(product)
   // either the request failed or was rejected (the response returned an error)
 })
 ```
+
+#### Error handling
+As the HTTP API [handles errors](https://github.com/emmenko/sphere-node-connect#error-handling) _gracefully_ by providing a JSON body with error codes and messages, the `SphereClient` handles that by providing an intuitive way of dealing with responses.
+
+Since a Promise can be either resolved or rejected, the result is determined by valuating the `statusCode` of the response:
+- `resolved` everything with a successful HTTP status code
+- `rejected` everything else
+
+**A rejected promise always contains a JSON object as following**
+
+```javascript
+// example
+{
+  "statusCode": 400,
+  "message": "An error message",
+  ... // other fields according to the SPHERE.IO API errors
+}
+```
+
+The client application can then easily decide what to do
+
+```javascript
+sphere_client.products.save({})
+.then (result)->
+  // we know the request was successful (e.g.: 2xx) and `result` is a JSON of a resource representation
+.fail (error)->
+  // something went wrong, either an unexpected error or a HTTP API error response
+  // here we can check the `statusCode` to differentiate the error
+  switch (error.statusCode) {
+    case 400:
+      ...
+    case 500:
+      ...
+    ...
+  }
+```
+
 
 ## Examples
 _(Coming soon)_

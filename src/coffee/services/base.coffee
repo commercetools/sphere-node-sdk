@@ -153,20 +153,22 @@ class BaseService
   _wrapResponse: (deferred, error, response, body)->
     @_setDefaults()
     if error
-      deferred.reject error
+      deferred.reject
+        statusCode: 500
+        message: error
     else
-      if response.statusCode is 404
+      # TODO: check other possible acceptable codes (304, ...)
+      if 200 <= response.statusCode < 300
+        deferred.resolve body
+      else if response.statusCode is 404
         # since the API doesn't return an error message for a resource not found
         # we return a custom JSON error message
-
-        # TODO: get endpoint from response object
         endpoint = response.request.uri.path
-        deferred.resolve
+        deferred.reject
           statusCode: 404
           message: "Endpoint '#{endpoint}' not found."
       else
-        # TODO: returns either the raw body or a parsed JSON (handled by `json` option in `node-connect`)
-        deferred.resolve body
+        deferred.reject body
 
 
 ###*
