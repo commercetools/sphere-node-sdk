@@ -19,12 +19,14 @@ class BaseService
   ###*
    * Initialize the class.
    * @constructor
-   *
    * @param {Rest} [_rest] An instance of the Rest client (sphere-node-connect)
   ###
-  constructor: (@_rest)->
-    @_setDefaults()
+  constructor: (@_rest)-> @_setDefaults()
 
+  ###*
+   * @private
+   * Reset default [_currentEndpoint] and [_params] used to build request endpoints
+  ###
   _setDefaults: ->
     ###*
      * @private
@@ -32,6 +34,11 @@ class BaseService
      * @type {String}
     ###
     @_currentEndpoint = @constructor.baseResourceEndpoint
+    ###*
+     * @private
+     * Container that holds request parameters such `id`, `query`, etc
+     * @type {Object}
+    ###
     @_params =
       query:
         where: []
@@ -96,11 +103,12 @@ class BaseService
     this
 
   ###*
+   * @private
    * Build a query string from (pre)defined params
    * (to be overriden for custom params)
    * @return {String} the query string
   ###
-  queryString: ->
+  _queryString: ->
     Utils.buildQueryString
       where: @_params.query.where
       whereOperator: @_params.query.operator
@@ -113,11 +121,11 @@ class BaseService
   ###
   fetch: ->
     deferred = Q.defer()
-    queryString = @queryString()
+    queryString = @_queryString()
     endpoint = @_currentEndpoint
     endpoint += "?#{queryString}" if queryString
     @_rest.GET endpoint, =>
-      @wrapResponse.apply(@, _.union(deferred, arguments))
+      @_wrapResponse.apply(@, _.union(deferred, arguments))
     deferred.promise
 
   ###*
@@ -131,10 +139,18 @@ class BaseService
     payload = JSON.stringify body
     endpoint = @_currentEndpoint
     @_rest.POST endpoint, payload, =>
-      @wrapResponse.apply(@, _.union(deferred, arguments))
+      @_wrapResponse.apply(@, _.union(deferred, arguments))
     deferred.promise
 
-  wrapResponse: (deferred, error, response, body)->
+  ###*
+   * @private
+   * Wrap responses and decide whether to reject or resolve the promise
+   * @param {Promise} deferred The deferred promise
+   * @param {Object} error An error object when applicable (usually from `http.ClientRequest` object) otherwise `null`
+   * @param {Object} response An `http.IncomingMessage object containing all kind of information about the request / response
+   * @param {Object} body A JSON object containing the HTTP API resource or error messages
+  ###
+  _wrapResponse: (deferred, error, response, body)->
     @_setDefaults()
     if error
       deferred.reject error
