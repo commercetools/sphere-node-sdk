@@ -129,7 +129,7 @@ describe 'Service', ->
         expect(queryString).toBe 'where=name(en%3D%22Foo%22)%20or%20id%3D%221234567890%22&limit=25&offset=50'
 
       it 'should reset params after resolving a promise', ->
-        spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback(null, {statusCode: 200}, '{"foo": "bar"}'))
+        spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback(null, {statusCode: 200}, {foo: 'bar'}))
         _service = @service.byId('123-abc')
         expect(@service._params.id).toBe '123-abc'
         _service.fetch().then (result)-> #noop
@@ -142,13 +142,13 @@ describe 'Service', ->
           expect(Q.isPromise(promise)).toBe true
 
         it 'should resolve the promise on fetch', (done)->
-          spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback(null, {statusCode: 200}, '{"foo": "bar"}'))
+          spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback(null, {statusCode: 200}, {foo: 'bar'}))
           @service.fetch().then (result)->
             expect(result).toEqual foo: 'bar'
             done()
 
         it 'should resolve the promise on fetch (404)', (done)->
-          spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback(null, {statusCode: 404, request: {uri: {path: '/foo'}}}, ''))
+          spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback(null, {statusCode: 404, request: {uri: {path: '/foo'}}}, null))
           @service.fetch().then (result)->
             expect(result).toEqual
               statusCode: 404
@@ -157,7 +157,7 @@ describe 'Service', ->
             done()
 
         it 'should return error message for endpoint not found with query', (done)->
-          spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback(null, {statusCode: 404, request: {uri: {path: '/foo'}}}, ''))
+          spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback(null, {statusCode: 404, request: {uri: {path: '/foo'}}}, null))
           @service
           .where()
           .page(1)
@@ -184,13 +184,13 @@ describe 'Service', ->
           expect(Q.isPromise(promise)).toBe true
 
         it 'should resolve the promise on save', (done)->
-          spyOn(@restMock, 'POST').andCallFake((endpoint, payload, callback)-> callback(null, {statusCode: 200}, '{"foo": "bar"}'))
+          spyOn(@restMock, 'POST').andCallFake((endpoint, payload, callback)-> callback(null, {statusCode: 200}, {foo: 'bar'}))
           @service.save({foo: 'bar'}).then (result)->
             expect(result).toEqual foo: 'bar'
             done()
 
         it 'should resolve the promise on save (404)', (done)->
-          spyOn(@restMock, 'POST').andCallFake((endpoint, payload, callback)-> callback(null, {statusCode: 404, request: {uri: {path: '/foo'}}}, ''))
+          spyOn(@restMock, 'POST').andCallFake((endpoint, payload, callback)-> callback(null, {statusCode: 404, request: {uri: {path: '/foo'}}}, null))
           @service.save({foo: 'bar'}).then (result)->
             expect(result).toEqual
               statusCode: 404

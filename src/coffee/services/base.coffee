@@ -165,8 +165,8 @@ class BaseService
           statusCode: 404
           message: "Endpoint '#{endpoint}' not found."
       else
-        # TODO: returns either the raw body or a parsed JSON
-        deferred.resolve JSON.parse body
+        # TODO: returns either the raw body or a parsed JSON (handled by `json` option in `node-connect`)
+        deferred.resolve body
 
 
 ###*

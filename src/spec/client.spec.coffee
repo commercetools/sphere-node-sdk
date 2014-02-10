@@ -55,7 +55,7 @@ describe 'SphereClient', ->
       ID = "1234-abcd-5678-efgh"
 
       it 'should query resource', (done)->
-        spyOn(@client._rest, "GET").andCallFake((endpoint, callback)-> callback(null, {statusCode: 200}, '{"foo": "bar"}'))
+        spyOn(@client._rest, "GET").andCallFake((endpoint, callback)-> callback(null, {statusCode: 200}, {foo: 'bar'}))
         service = @client[name]
         service
         .where('name(en="Foo")')
@@ -67,14 +67,14 @@ describe 'SphereClient', ->
           done()
 
       it 'should get resource by id', (done)->
-        spyOn(@client._rest, "GET").andCallFake((endpoint, callback)-> callback(null, {statusCode: 200}, '{"foo": "bar"}'))
+        spyOn(@client._rest, "GET").andCallFake((endpoint, callback)-> callback(null, {statusCode: 200}, {foo: 'bar'}))
         service = @client[name]
         service.byId(ID).fetch().then (result)->
           expect(result).toEqual foo: 'bar'
           done()
 
       it 'should save new resource', (done)->
-        spyOn(@client._rest, "POST").andCallFake((endpoint, payload, callback)-> callback(null, {statusCode: 200}, '{"foo": "bar"}'))
+        spyOn(@client._rest, "POST").andCallFake((endpoint, payload, callback)-> callback(null, {statusCode: 200}, {foo: 'bar'}))
         service = @client[name]
         service.save({foo: 'bar'}).then (result)->
           expect(result).toEqual foo: 'bar'
