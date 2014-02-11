@@ -35,7 +35,7 @@
     "underscore": "~1.6.0"
   },
   "devDependencies": {
-    "coveralls": "~2.7.0",
+    "coveralls": "~2.7.1",
     "grunt": "~0.4.2",
     "grunt-bump": "~0.0.13",
     "grunt-coffeelint": "~0.0.8",
