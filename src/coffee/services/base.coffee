@@ -130,6 +130,7 @@ class BaseService
 
   ###*
    * Save a new resource by sending a payload to the [_currentEndpoint]
+   * If the [id] was provided, the API expects this to be a resource update with given {UpdateAction}
    * @param {Object} [body] The payload as JSON object
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
@@ -141,6 +142,13 @@ class BaseService
     @_rest.POST endpoint, payload, =>
       @_wrapResponse.apply(@, _.union(deferred, arguments))
     deferred.promise
+
+  ###*
+   * Alias for {@link save}
+   * (more intuitive way of describing an update, given that an [id] is provided)
+   * e.g.: `{service}.byId({id}).update({actions})`
+  ###
+  update: -> @save.apply(@, arguments)
 
   ###*
    * @private

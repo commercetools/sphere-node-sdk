@@ -32,7 +32,7 @@
   "dependencies": {
     "q": "~1.0.0",
     "sphere-node-connect": "~0.3.0",
-    "underscore": "~1.5.2"
+    "underscore": "~1.6.0"
   },
   "devDependencies": {
     "coveralls": "~2.7.0",

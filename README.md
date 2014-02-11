@@ -15,6 +15,7 @@ This module is a standalone Node.js client for accessing the Sphere HTTP APIs.
   * [Types of requests](#types-of-requests)
     * [Query request](#query-request)
     * [Create resource](#create-resource)
+    * [Update resource](#update-resource)
   * [Error handling](#error-handling)
 * [Examples](#examples)
 * [Releasing](#releasing)
@@ -81,6 +82,7 @@ Current methods using promises are:
 
 - `fetch` HTTP `GET` request
 - `save` HTTP `POST` request
+- `update` HTTP `POST` request (_alias for `save`_)
 
 
 #### Query request
@@ -143,6 +145,53 @@ sphere_client.products.save(product)
   // either the request failed or was rejected (the response returned an error)
 })
 ```
+
+#### Update resource
+Updates are just a POST request to the endpoint specified by an `ID`, provided with a body payload of [Update Actions](http://commercetools.de/dev/http-api.html#partial-updates).
+
+> The `update` method is just an alias for `save`, given the resource `ID`. If no `ID` is provided, it will try to send the request to the base resource endpoint, expecting a new resource to be created, so make sure that the **body** has the correct format (create or update).
+
+```javascript
+// new product
+var product = {
+  'name': {
+    'en': 'Foo'
+  },
+  'slug': {
+    'en': 'foo'
+  },
+  ...
+}
+
+// update action for product name
+var update = {
+  'version': 1,
+  'actions': [
+    {
+      'action': 'changeName',
+      'name': {
+        'en': 'Foo'
+      }
+    }
+  ]
+}
+
+// this will try to create a new product with the correct body
+// -> OK
+sphere_client.products.save(product)
+sphere_client.products.update(product)
+
+// this will try to create a new product with a wrong body
+// -> FAILS
+sphere_client.products.save(update)
+sphere_client.products.update(update)
+
+// this will try to update a product with a correct body
+// -> OK
+sphere_client.products.byId('123-abc').save(update)
+sphere_client.products.byId('123-abc').update(update)
+```
+
 
 #### Error handling
 As the HTTP API [handles errors](https://github.com/emmenko/sphere-node-connect#error-handling) _gracefully_ by providing a JSON body with error codes and messages, the `SphereClient` handles that by providing an intuitive way of dealing with responses.

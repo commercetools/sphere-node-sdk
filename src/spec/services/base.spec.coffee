@@ -222,3 +222,15 @@ describe 'Service', ->
               statusCode: 500
               message: 'foo'
             done()
+
+        it 'should send request with id, if provided', ->
+          spyOn(@restMock, 'POST')
+          @service.byId(ID).save({foo: 'bar'})
+          expect(@restMock.POST).toHaveBeenCalledWith "#{o.path}/#{ID}", JSON.stringify(foo: 'bar'), jasmine.any(Function)
+
+      describe ':: update', ->
+
+        it 'should be an alias for \'save\'', ->
+          spyOn(@service, 'save')
+          @service.update foo: 'bar'
+          expect(@service.save).toHaveBeenCalledWith foo: 'bar'
