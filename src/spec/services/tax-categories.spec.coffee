@@ -1,5 +1,5 @@
-Q = require('q')
-TaxCategoryService = require('../../lib/services/tax-categories')
+Q = require 'q'
+TaxCategoryService = require '../../lib/services/tax-categories'
 
 ###*
  * Describe service specific implementations

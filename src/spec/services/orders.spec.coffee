@@ -1,5 +1,5 @@
-Q = require('q')
-OrderService = require('../../lib/services/orders')
+Q = require 'q'
+OrderService = require '../../lib/services/orders'
 
 ###*
  * Describe service specific implementations

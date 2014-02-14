@@ -1,5 +1,5 @@
-Q = require('q')
-CommentService = require('../../lib/services/comments')
+Q = require 'q'
+CommentService = require '../../lib/services/comments'
 
 ###*
  * Describe service specific implementations

@@ -1,4 +1,4 @@
-SphereClient = require('../lib/client')
+SphereClient = require '../lib/client'
 
 describe "exports", ->
   it "SphereClient", ->

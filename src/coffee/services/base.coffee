@@ -1,6 +1,6 @@
 _ = require('underscore')._
-Q = require('q')
-Utils = require('../utils')
+Q = require 'q'
+Utils = require '../utils'
 
 ###*
  * Creates a new BaseService, containing base functionalities. It should be extended when defining a Service.
@@ -21,7 +21,7 @@ class BaseService
    * @constructor
    * @param {Rest} [_rest] An instance of the Rest client (sphere-node-connect)
   ###
-  constructor: (@_rest)-> @_setDefaults()
+  constructor: (@_rest) -> @_setDefaults()
 
   ###*
    * @private
@@ -49,7 +49,7 @@ class BaseService
    * @param {String} [id] The resource specific id
    * @return {BaseService} Chained instance of this class
   ###
-  byId: (id)->
+  byId: (id) ->
     @_currentEndpoint = "#{@constructor.baseResourceEndpoint}/#{id}"
     @_params.id = id
     this
@@ -60,7 +60,7 @@ class BaseService
    * @param {String} [predicate] A {Predicate} string for the `where` query parameter.
    * @return {BaseService} Chained instance of this class
   ###
-  where: (predicate)->
+  where: (predicate) ->
     # TODO: use query builder (for specific service) to faciliate build queries
     # e.g.: `QueryBuilder.product.name('Foo', 'en')`
     return this unless predicate
@@ -73,7 +73,7 @@ class BaseService
    * @param {String} [operator] a logical operator (default `and`)
    * @return {BaseService} Chained instance of this class
   ###
-  whereOperator: (operator = "and")->
+  whereOperator: (operator = "and") ->
     @_params.query.operator = switch operator
       when 'and', 'or' then operator
       else 'and'
@@ -87,7 +87,7 @@ class BaseService
    * @param {Int} [page] a number > 1 (default is 1)
    * @return {BaseService} Chained instance of this class
   ###
-  page: (page)->
+  page: (page) ->
     @_params.query.page = page
     this
 
@@ -98,7 +98,7 @@ class BaseService
    * @param {Int} [perPage] a number >= 0 (default is 100)
    * @return {BaseService} Chained instance of this class
   ###
-  perPage: (perPage)->
+  perPage: (perPage) ->
     @_params.query.perPage = perPage
     this
 
@@ -134,7 +134,7 @@ class BaseService
    * @param {Object} [body] The payload as JSON object
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
-  save: (body)->
+  save: (body) ->
     throw new Error 'Body payload is required for creating a resource' unless body
     deferred = Q.defer()
     payload = JSON.stringify body
@@ -158,7 +158,7 @@ class BaseService
    * @param {Object} response An `http.IncomingMessage object containing all kind of information about the request / response
    * @param {Object} body A JSON object containing the HTTP API resource or error messages
   ###
-  _wrapResponse: (deferred, error, response, body)->
+  _wrapResponse: (deferred, error, response, body) ->
     @_setDefaults()
     if error
       deferred.reject

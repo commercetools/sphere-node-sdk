@@ -1,4 +1,4 @@
-BaseService = require('./base')
+BaseService = require './base'
 
 ###*
  * Creates a new CategoryService.

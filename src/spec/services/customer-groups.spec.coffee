@@ -1,5 +1,5 @@
-Q = require('q')
-CustomerGroupService = require('../../lib/services/customer-groups')
+Q = require 'q'
+CustomerGroupService = require '../../lib/services/customer-groups'
 
 ###*
  * Describe service specific implementations

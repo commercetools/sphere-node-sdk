@@ -1,5 +1,5 @@
-Q = require('q')
-ReviewService = require('../../lib/services/reviews')
+Q = require 'q'
+ReviewService = require '../../lib/services/reviews'
 
 ###*
  * Describe service specific implementations

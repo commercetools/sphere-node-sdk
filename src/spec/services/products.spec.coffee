@@ -1,5 +1,5 @@
-Q = require('q')
-ProductService = require('../../lib/services/products')
+Q = require 'q'
+ProductService = require '../../lib/services/products'
 
 ###*
  * Describe service specific implementations

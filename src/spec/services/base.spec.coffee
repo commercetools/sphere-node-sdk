@@ -1,25 +1,25 @@
 _ = require('underscore')._
-Q = require('q')
-BaseService              = require('../../lib/services/base')
-CartService              = require('../../lib/services/carts')
-CategoryService          = require('../../lib/services/categories')
-ChannelService           = require('../../lib/services/channels')
-CommentService           = require('../../lib/services/comments')
-CustomObjectService      = require('../../lib/services/custom-objects')
-CustomerService          = require('../../lib/services/customers')
-CustomerGroupService     = require('../../lib/services/customer-groups')
-InventoryService         = require('../../lib/services/inventories')
-OrderService             = require('../../lib/services/orders')
-ProductService           = require('../../lib/services/products')
-ProductProjectionService = require('../../lib/services/product-projections')
-ProductTypeService       = require('../../lib/services/product-types')
-ReviewService            = require('../../lib/services/reviews')
-ShippingMethodService    = require('../../lib/services/shipping-methods')
-TaxCategoryService       = require('../../lib/services/tax-categories')
+Q = require 'q'
+BaseService              = require '../../lib/services/base'
+CartService              = require '../../lib/services/carts'
+CategoryService          = require '../../lib/services/categories'
+ChannelService           = require '../../lib/services/channels'
+CommentService           = require '../../lib/services/comments'
+CustomObjectService      = require '../../lib/services/custom-objects'
+CustomerService          = require '../../lib/services/customers'
+CustomerGroupService     = require '../../lib/services/customer-groups'
+InventoryService         = require '../../lib/services/inventories'
+OrderService             = require '../../lib/services/orders'
+ProductService           = require '../../lib/services/products'
+ProductProjectionService = require '../../lib/services/product-projections'
+ProductTypeService       = require '../../lib/services/product-types'
+ReviewService            = require '../../lib/services/reviews'
+ShippingMethodService    = require '../../lib/services/shipping-methods'
+TaxCategoryService       = require '../../lib/services/tax-categories'
 
 describe 'Service', ->
 
-  ID = "1234-abcd-5678-efgh"
+  ID = '1234-abcd-5678-efgh'
 
   _.each [
     {name: 'BaseService', service: BaseService, path: ''}
@@ -38,15 +38,15 @@ describe 'Service', ->
     {name: 'ReviewService', service: ReviewService, path: '/reviews'}
     {name: 'ShippingMethodService', service: ShippingMethodService, path: '/shipping-methods'}
     {name: 'TaxCategoryService', service: TaxCategoryService, path: '/tax-categories'}
-  ], (o)->
+  ], (o) ->
 
     describe ":: #{o.name}", ->
 
       beforeEach ->
         @restMock =
           config: {}
-          GET: (endpoint, callback)->
-          POST: -> (endpoint, payload, callback)->
+          GET: (endpoint, callback) ->
+          POST: -> (endpoint, payload, callback) ->
           PUT: ->
           DELETE: ->
           _preRequest: ->
@@ -80,7 +80,7 @@ describe 'Service', ->
         @service.byId(ID)
         expect(@service._currentEndpoint).toBe "#{o.path}/#{ID}"
 
-      _.each ['byId', 'where', 'whereOperator', 'page', 'perPage'], (f)->
+      _.each ['byId', 'where', 'whereOperator', 'page', 'perPage'], (f) ->
         it "should chain '#{f}'", ->
           clazz = @service[f]()
           expect(clazz).toEqual @service
@@ -129,10 +129,10 @@ describe 'Service', ->
         expect(queryString).toBe 'where=name(en%3D%22Foo%22)%20or%20id%3D%221234567890%22&limit=25&offset=50'
 
       it 'should reset params after resolving a promise', ->
-        spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback(null, {statusCode: 200}, {foo: 'bar'}))
+        spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {foo: 'bar'})
         _service = @service.byId('123-abc')
         expect(@service._params.id).toBe '123-abc'
-        _service.fetch().then (result)-> #noop
+        _service.fetch().then (result) -> #noop
         expect(@service._params.id).not.toBeDefined()
 
       describe ':: fetch', ->
@@ -141,44 +141,44 @@ describe 'Service', ->
           promise = @service.fetch()
           expect(Q.isPromise(promise)).toBe true
 
-        it 'should resolve the promise on fetch', (done)->
-          spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback(null, {statusCode: 200}, {foo: 'bar'}))
-          @service.fetch().then (result)->
+        it 'should resolve the promise on fetch', (done) ->
+          spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {foo: 'bar'})
+          @service.fetch().then (result) ->
             expect(result).toEqual foo: 'bar'
             done()
 
-        it 'should reject the promise on fetch (404)', (done)->
-          spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback(null, {statusCode: 404, request: {uri: {path: '/foo'}}}, null))
+        it 'should reject the promise on fetch (404)', (done) ->
+          spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 404, request: {uri: {path: '/foo'}}}, null)
           @service.fetch()
-          .then (result)->
+          .then (result) ->
             expect(result).not.toBeDefined()
-          .fail (error)->
+          .fail (error) ->
             expect(error).toEqual
               statusCode: 404
               message: "Endpoint '/foo' not found."
             done()
 
-        it 'should return error message for endpoint not found with query', (done)->
-          spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback(null, {statusCode: 404, request: {uri: {path: '/foo'}}}, null))
+        it 'should return error message for endpoint not found with query', (done) ->
+          spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 404, request: {uri: {path: '/foo'}}}, null)
           @service
           .where()
           .page(1)
           .perPage()
           .fetch()
-          .then (result)->
+          .then (result) ->
             expect(result).not.toBeDefined()
-          .fail (error)->
+          .fail (error) ->
             expect(error).toEqual
               statusCode: 404
               # message: "Endpoint '#{@service._currentEndpoint}?limit=100' not found."
               message: "Endpoint '/foo' not found."
             done()
 
-        it 'should reject the promise on fetch', (done)->
-          spyOn(@restMock, 'GET').andCallFake((endpoint, callback)-> callback('foo', null, null))
-          @service.fetch().then (result)->
+        it 'should reject the promise on fetch', (done) ->
+          spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback('foo', null, null)
+          @service.fetch().then (result) ->
             expect(result).not.toBeDefined()
-          .fail (error)->
+          .fail (error) ->
             expect(error).toEqual
               statusCode: 500
               message: 'foo'
@@ -190,18 +190,18 @@ describe 'Service', ->
           promise = @service.save {foo: 'bar'}
           expect(Q.isPromise(promise)).toBe true
 
-        it 'should resolve the promise on save', (done)->
-          spyOn(@restMock, 'POST').andCallFake((endpoint, payload, callback)-> callback(null, {statusCode: 200}, {foo: 'bar'}))
-          @service.save({foo: 'bar'}).then (result)->
+        it 'should resolve the promise on save', (done) ->
+          spyOn(@restMock, 'POST').andCallFake (endpoint, payload, callback) -> callback(null, {statusCode: 200}, {foo: 'bar'})
+          @service.save({foo: 'bar'}).then (result) ->
             expect(result).toEqual foo: 'bar'
             done()
 
-        it 'should reject the promise on save (404)', (done)->
-          spyOn(@restMock, 'POST').andCallFake((endpoint, payload, callback)-> callback(null, {statusCode: 404, request: {uri: {path: '/foo'}}}, null))
+        it 'should reject the promise on save (404)', (done) ->
+          spyOn(@restMock, 'POST').andCallFake (endpoint, payload, callback) -> callback(null, {statusCode: 404, request: {uri: {path: '/foo'}}}, null)
           @service.save({foo: 'bar'})
-          .then (result)->
+          .then (result) ->
             expect(result).not.toBeDefined()
-          .fail (error)->
+          .fail (error) ->
             expect(error).toEqual
               statusCode: 404
               # message: "Endpoint '#{@service._currentEndpoint}' not found."
@@ -212,12 +212,12 @@ describe 'Service', ->
           spyOn(@restMock, 'POST')
           expect(=> @service.save()).toThrow new Error 'Body payload is required for creating a resource'
 
-        it 'should reject the promise on save', (done)->
-          spyOn(@restMock, 'POST').andCallFake((endpoint, payload, callback)-> callback('foo', null, null))
+        it 'should reject the promise on save', (done) ->
+          spyOn(@restMock, 'POST').andCallFake (endpoint, payload, callback) -> callback('foo', null, null)
           @service.save({foo: 'bar'})
-          .then (result)->
+          .then (result) ->
             expect(result).not.toBeDefined()
-          .fail (error)->
+          .fail (error) ->
             expect(error).toEqual
               statusCode: 500
               message: 'foo'

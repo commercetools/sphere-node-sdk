@@ -1,5 +1,5 @@
-Q = require('q')
-ChannelService = require('../../lib/services/channels')
+Q = require 'q'
+ChannelService = require '../../lib/services/channels'
 
 ###*
  * Describe service specific implementations

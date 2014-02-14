@@ -2,10 +2,10 @@ _ = require('underscore')._
 
 module.exports =
 
-  buildQueryString: (opts = {})->
+  buildQueryString: (opts = {}) ->
     { where, whereOperator, sort, page, perPage } = _.defaults opts,
       where: []
-      whereOperator: "and"
+      whereOperator: 'and'
       perPage: 100 # default API limit
 
     # where param

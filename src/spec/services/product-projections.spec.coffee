@@ -1,5 +1,5 @@
-Q = require('q')
-ProductProjectionService = require('../../lib/services/product-projections')
+Q = require 'q'
+ProductProjectionService = require '../../lib/services/product-projections'
 
 ###*
  * Describe service specific implementations

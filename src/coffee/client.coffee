@@ -1,19 +1,19 @@
-Rest = require('sphere-node-connect').Rest
-CartService              = require('./services/carts')
-CategoryService          = require('./services/categories')
-ChannelService           = require('./services/channels')
-CommentService           = require('./services/comments')
-CustomObjectService      = require('./services/custom-objects')
-CustomerService          = require('./services/customers')
-CustomerGroupService     = require('./services/customer-groups')
-InventoryService         = require('./services/inventories')
-OrderService             = require('./services/orders')
-ProductService           = require('./services/products')
-ProductProjectionService = require('./services/product-projections')
-ProductTypeService       = require('./services/product-types')
-ReviewService            = require('./services/reviews')
-ShippingMethodService    = require('./services/shipping-methods')
-TaxCategoryService       = require('./services/tax-categories')
+{ Rest } = require 'sphere-node-connect'
+CartService              = require './services/carts'
+CategoryService          = require './services/categories'
+ChannelService           = require './services/channels'
+CommentService           = require './services/comments'
+CustomObjectService      = require './services/custom-objects'
+CustomerService          = require './services/customers'
+CustomerGroupService     = require './services/customer-groups'
+InventoryService         = require './services/inventories'
+OrderService             = require './services/orders'
+ProductService           = require './services/products'
+ProductProjectionService = require './services/product-projections'
+ProductTypeService       = require './services/product-types'
+ReviewService            = require './services/reviews'
+ShippingMethodService    = require './services/shipping-methods'
+TaxCategoryService       = require './services/tax-categories'
 
 ###*
  * Defines a SphereClient.
@@ -28,7 +28,7 @@ class SphereClient
    * @param {Object} [config] An object containing the credentials for the `sphere-node-connect`
    * {@link https://github.com/emmenko/sphere-node-connect#documentation}
   ###
-  constructor: (config)->
+  constructor: (config) ->
     ###*
      * @private
      * Instance of the Rest client

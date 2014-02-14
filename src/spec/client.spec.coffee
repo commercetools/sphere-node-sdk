@@ -1,5 +1,5 @@
-_ = require("underscore")._
-SphereClient = require('../lib/client')
+_ = require('underscore')._
+SphereClient = require '../lib/client'
 Config = require('../config').config
 
 describe 'SphereClient', ->
@@ -25,7 +25,7 @@ describe 'SphereClient', ->
     client = -> new SphereClient foo: 'bar'
     expect(client).toThrow new Error('Missing credentials')
 
-  _.each ['client_id', 'client_secret', 'project_key'], (key)->
+  _.each ['client_id', 'client_secret', 'project_key'], (key) ->
     it "should throw error if no '#{key}' is defined", ->
       opt = _.clone(Config)
       delete opt[key]
@@ -48,34 +48,34 @@ describe 'SphereClient', ->
     'reviews'
     'shippingMethods'
     'taxCategories'
-  ], (name)->
+  ], (name) ->
 
     describe ":: #{name}", ->
 
       ID = "1234-abcd-5678-efgh"
 
-      it 'should query resource', (done)->
-        spyOn(@client._rest, "GET").andCallFake((endpoint, callback)-> callback(null, {statusCode: 200}, {foo: 'bar'}))
+      it 'should query resource', (done) ->
+        spyOn(@client._rest, "GET").andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {foo: 'bar'})
         service = @client[name]
         service
         .where('name(en="Foo")')
         .whereOperator('or')
         .page(2)
         .perPage(5)
-        .fetch().then (result)->
+        .fetch().then (result) ->
           expect(result).toEqual foo: 'bar'
           done()
 
-      it 'should get resource by id', (done)->
-        spyOn(@client._rest, "GET").andCallFake((endpoint, callback)-> callback(null, {statusCode: 200}, {foo: 'bar'}))
+      it 'should get resource by id', (done) ->
+        spyOn(@client._rest, "GET").andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {foo: 'bar'})
         service = @client[name]
-        service.byId(ID).fetch().then (result)->
+        service.byId(ID).fetch().then (result) ->
           expect(result).toEqual foo: 'bar'
           done()
 
-      it 'should save new resource', (done)->
-        spyOn(@client._rest, "POST").andCallFake((endpoint, payload, callback)-> callback(null, {statusCode: 200}, {foo: 'bar'}))
+      it 'should save new resource', (done) ->
+        spyOn(@client._rest, "POST").andCallFake (endpoint, payload, callback) -> callback(null, {statusCode: 200}, {foo: 'bar'})
         service = @client[name]
-        service.save({foo: 'bar'}).then (result)->
+        service.save({foo: 'bar'}).then (result) ->
           expect(result).toEqual foo: 'bar'
           done()
