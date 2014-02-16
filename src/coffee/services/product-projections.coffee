@@ -6,6 +6,8 @@ BaseService = require './base'
 ###
 class ProductProjectionService extends BaseService
 
+  _staged = false
+
   ###*
    * @const
    * @private
@@ -14,7 +16,24 @@ class ProductProjectionService extends BaseService
   ###
   @baseResourceEndpoint: '/product-projections'
 
-  staged: -> # noop
+  ###*
+   * Define to fetch only staged products
+   * @return {ProductProjectionService} Chained instance of this class
+  ###
+  staged: ->
+    @_staged = true
+    this
+
+  ###*
+   * @private
+   * Extend the query string by staged param
+   * @return {String} the query string
+  ###
+  _queryString: ->
+    s = super
+    return "#{s}&staged=#{@_staged}" if @_staged
+    s
+
 
 ###*
  * The {@link ProductProjectionService} service.
