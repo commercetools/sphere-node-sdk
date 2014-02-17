@@ -3,10 +3,10 @@ _ = require('underscore')._
 module.exports =
 
   buildQueryString: (opts = {}) ->
-    { where, whereOperator, sortings, page, perPage } = _.defaults opts,
+    { where, whereOperator, sort, page, perPage } = _.defaults opts,
       where: []
       whereOperator: 'and'
-      sortings: []
+      sort: []
       perPage: 100 # default API limit
 
     # where param
@@ -23,5 +23,5 @@ module.exports =
     queryString.push "where=#{whereParam}" if whereParam
     queryString.push "limit=#{perPage}" if perPage >= 0
     queryString.push "offset=#{offsetParam}" if offsetParam > 0
-    queryString = queryString.concat _.map(sortings, (s) -> "sort=#{s}")
+    queryString = queryString.concat _.map(sort, (s) -> "sort=#{s}")
     queryString.join '&'

@@ -75,7 +75,7 @@ describe 'Service', ->
           query:
             where: []
             operator: 'and'
-            sortings: []
+            sort: []
 
       it 'should build endpoint with id', ->
         @service.byId(ID)

@@ -43,7 +43,7 @@ class BaseService
       query:
         where: []
         operator: 'and'
-        sortings: []
+        sort: []
 
   ###*
    * Build the endpoint path by appending the given id
@@ -82,14 +82,14 @@ class BaseService
 
   ###*
    * Define how the query should be sorted.
-   * It is possible to add several sorting criteria, thereby the order is relevant.
+   * It is possible to add several sort criteria, thereby the order is relevant.
    * @param {String} [path] sort path to search for
    * @param {Boolean} [ascending] false indicates descascending. true (default) defines ascending
    * @return {BaseService} Chained instance of this class
   ###
   sort: (path, ascending = true) ->
     direction = if ascending then 'asc' else 'desc'
-    @_params.query.sortings.push encodeURIComponent("#{path} #{direction}")
+    @_params.query.sort.push encodeURIComponent("#{path} #{direction}")
     this
 
   ###*
@@ -125,7 +125,7 @@ class BaseService
       whereOperator: @_params.query.operator
       page: @_params.query.page
       perPage: @_params.query.perPage
-      sortings: @_params.query.sortings
+      sort: @_params.query.sort
 
   ###*
    * Fetch resource defined by [_currentEndpoint] with query parameters
