@@ -14,6 +14,7 @@ This module is a standalone Node.js client for accessing the Sphere HTTP APIs.
   * [Services](#services)
   * [Types of requests](#types-of-requests)
     * [Query request](#query-request)
+      * [Staged products](#staged-products)
     * [Create resource](#create-resource)
     * [Update resource](#update-resource)
   * [Error handling](#error-handling)
@@ -101,7 +102,7 @@ The `SphereClient` helps you build those requests with following methods:
 
 - `where(predicate)` defines a URI encoded predicate from the given string (can be set multiple times)
 - `whereOperator(operator)` defines the logical operator to combine multiple where parameters
-- `sort` _TBD_
+- `sort(path, ascending)` defines how the query result should be sorted - true (default) defines ascending where as false indicates descascending
 - `page(n)` defines the page number to be requested from the complete query result (default is `1`)
 - `perPage(n)` defines the number of results to return from a query (default is `100`). If set to `0` all results are returned
 
@@ -118,7 +119,7 @@ sphere_client.products
 .page(3)
 .perPage(25)
 .sort('name', false)
-.fetch()
+.fetch();
 
 // HTTP request
 // /{project_key}/products?where=name(en%3D%22Foo%22)%20or%20id%3D%221234567890%22&limit=25&offset=50&sort=name%20desc
@@ -129,9 +130,15 @@ sphere_client.products
 The `ProductProjectionService` is by default querying for published products. To query for staged products do:
 
 ```javascript
+// example
+
+var sphere_client = new SphereClient({...})
 sphere_client.productProjections
 .staged()
-.fetch()
+.fetch();
+
+// HTTP request
+// /{project_key}/products-projections?staged=true
 ```
 
 #### Create resource
