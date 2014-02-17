@@ -117,10 +117,21 @@ sphere_client.products
 .whereOperator('or')
 .page(3)
 .perPage(25)
+.sort('name', false)
 .fetch()
 
 // HTTP request
-// /{project_key}/products?where=name(en%3D%22Foo%22)%20or%20id%3D%221234567890%22&limit=25&offset=50
+// /{project_key}/products?where=name(en%3D%22Foo%22)%20or%20id%3D%221234567890%22&limit=25&offset=50&sort=name%20desc
+```
+
+##### Staged products
+
+The `ProductProjectionService` is by default querying for published products. To query for staged products do:
+
+```javascript
+sphere_client.productProjections
+.staged()
+.fetch()
 ```
 
 #### Create resource
