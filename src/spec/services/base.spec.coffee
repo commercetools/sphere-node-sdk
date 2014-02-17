@@ -75,6 +75,7 @@ describe 'Service', ->
           query:
             where: []
             operator: 'and'
+            sortings: []
 
       it 'should build endpoint with id', ->
         @service.byId(ID)
@@ -124,9 +125,10 @@ describe 'Service', ->
           .whereOperator('or')
           .page(3)
           .perPage(25)
+          .sort('attrib', false)
           ._queryString()
 
-        expect(queryString).toBe 'where=name(en%3D%22Foo%22)%20or%20id%3D%221234567890%22&limit=25&offset=50'
+        expect(queryString).toBe 'where=name(en%3D%22Foo%22)%20or%20id%3D%221234567890%22&limit=25&offset=50&sort=attrib%20desc'
 
       it 'should reset params after resolving a promise', ->
         spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {foo: 'bar'})
