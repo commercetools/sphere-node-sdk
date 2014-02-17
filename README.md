@@ -127,7 +127,7 @@ sphere_client.products
 
 ##### Staged products
 
-The `ProductProjectionService` is by default querying for published products. To query for staged products do:
+The `ProductProjectionService` returns a representation of the products called [ProductProjection](http://commercetools.de/dev/http-api-projects-products.html#product-projection) which corresponds basically to a **catalog** or **staged** representation of a product. When using this service you can specify which projection of the product you would like to have by defining a `staged` parameter (default is `true`).
 
 ```javascript
 // example
