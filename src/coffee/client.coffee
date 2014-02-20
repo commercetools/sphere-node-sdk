@@ -31,7 +31,13 @@ class SphereClient
    * {@link https://github.com/emmenko/sphere-node-connect#documentation}
   ###
   constructor: (options = {}) ->
+    ###*
+     * @private
+     * Instance of a Logger
+     * @type {Logger}
+    ###
     @_logger = new Logger options.logConfig
+
     ###*
      * @private
      * Instance of the Rest client

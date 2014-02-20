@@ -20,8 +20,9 @@ class BaseService
    * Initialize the class.
    * @constructor
    * @param {Rest} [_rest] An instance of the Rest client (sphere-node-connect)
+   * @param {Logger} [_logger] An instance of a Logger (https://github.com/emmenko/sphere-node-connect#logging)
   ###
-  constructor: (@_rest) -> @_setDefaults()
+  constructor: (@_rest, @_logger) -> @_setDefaults()
 
   ###*
    * @private
@@ -53,6 +54,7 @@ class BaseService
   byId: (id) ->
     @_currentEndpoint = "#{@constructor.baseResourceEndpoint}/#{id}"
     @_params.id = id
+    @_logger.debug 'Setting endpoint with ID', @_currentEndpoint
     this
 
   ###*
@@ -67,6 +69,7 @@ class BaseService
     return this unless predicate
     encodedPredicate = encodeURIComponent(predicate)
     @_params.query.where.push encodedPredicate
+    @_logger.debug 'Setting \'where\' parameters', @_params.query.where
     this
 
   ###*
@@ -78,6 +81,7 @@ class BaseService
     @_params.query.operator = switch operator
       when 'and', 'or' then operator
       else 'and'
+    @_logger.debug 'Setting \'where\' operator', @_params.query.operator
     this
 
   ###*
@@ -90,6 +94,7 @@ class BaseService
   sort: (path, ascending = true) ->
     direction = if ascending then 'asc' else 'desc'
     @_params.query.sort.push encodeURIComponent("#{path} #{direction}")
+    @_logger.debug 'Setting \'sort\' parameter', @_params.query.sort
     this
 
   ###*
@@ -100,6 +105,7 @@ class BaseService
   ###
   page: (page) ->
     @_params.query.page = page
+    @_logger.debug 'Setting \'page\' parameter', @_params.query.page
     this
 
   ###*
@@ -111,6 +117,7 @@ class BaseService
   ###
   perPage: (perPage) ->
     @_params.query.perPage = perPage
+    @_logger.debug 'Setting \'perPage\' parameter', @_params.query.perPage
     this
 
   ###*
@@ -120,12 +127,14 @@ class BaseService
    * @return {String} the query string
   ###
   _queryString: ->
-    Utils.buildQueryString
+    qs = Utils.buildQueryString
       where: @_params.query.where
       whereOperator: @_params.query.operator
       page: @_params.query.page
       perPage: @_params.query.perPage
       sort: @_params.query.sort
+    @_logger.debug 'Query string generated', qs
+    qs
 
   ###*
    * Fetch resource defined by [_currentEndpoint] with query parameters
@@ -147,7 +156,10 @@ class BaseService
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
   save: (body) ->
-    throw new Error 'Body payload is required for creating a resource' unless body
+    unless body
+      @_logger.error @_currentEndpoint, 'Body payload is required for creating a resource'
+      throw new Error 'Body payload is required for creating a resource'
+
     deferred = Q.defer()
     payload = JSON.stringify body
     endpoint = @_currentEndpoint
@@ -173,6 +185,7 @@ class BaseService
   _wrapResponse: (deferred, error, response, body) ->
     @_setDefaults()
     if error
+      @_logger.error 'Unespected error for request endpoint', @_currentEndpoint
       deferred.reject
         statusCode: 500
         message: error
@@ -181,13 +194,15 @@ class BaseService
       if 200 <= response.statusCode < 300
         deferred.resolve body
       else if response.statusCode is 404
+        endpoint = response.request.uri.path
+        @_logger.debug 'Returning a 404 error response for endpoint', endpoint
         # since the API doesn't return an error message for a resource not found
         # we return a custom JSON error message
-        endpoint = response.request.uri.path
         deferred.reject
           statusCode: 404
           message: "Endpoint '#{endpoint}' not found."
       else
+        @_logger.debug 'HTTP error response', body
         deferred.reject body
 
 

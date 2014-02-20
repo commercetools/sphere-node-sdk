@@ -51,11 +51,19 @@ describe 'Service', ->
           DELETE: ->
           _preRequest: ->
           _doRequest: ->
-        @service = new o.service @restMock
+        @loggerMock =
+          trace: ->
+          debug: ->
+          info: ->
+          warn: ->
+          error: ->
+          fatal: ->
+        @service = new o.service @restMock, @loggerMock
 
       afterEach ->
         @service = null
         @restMock = null
+        @loggerMock = null
 
       it 'should have constants defined', ->
         expect(o.service.baseResourceEndpoint).toBe o.path
