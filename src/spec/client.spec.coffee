@@ -1,6 +1,11 @@
 _ = require('underscore')._
 SphereClient = require '../lib/client'
+Logger = require '../lib/logger'
 Config = require('../config').config
+
+class MyLogger extends Logger
+  @appName: 'foo'
+  @path: './foo-test.log'
 
 describe 'SphereClient', ->
 
@@ -46,10 +51,22 @@ describe 'SphereClient', ->
       expect(client).toThrow new Error("Missing '#{key}'")
 
   it 'should initialize and extend logger', ->
-    expect(@client.logger).toBeDefined()
-    expect(@client.logger.fields.name).toBe 'sphere-node-client'
-    expect(@client.logger.streams[1].path).toBe './sphere-node-client-debug.log'
+    expect(@client._rest.logger).toBeDefined()
+    expect(@client._rest.logger.fields.name).toBe 'sphere-node-client'
+    expect(@client._rest.logger.streams[1].path).toBe './sphere-node-client-debug.log'
     expect(@client._rest.logger.fields.widget_type).toBe 'sphere-node-connect'
+
+  it 'should initialize with given logger', ->
+    existingLogger = new MyLogger()
+    client = new SphereClient
+      config: Config
+      logConfig:
+        logger: existingLogger
+
+    expect(client._logger.fields.name).toBe 'foo'
+    expect(client._logger.streams[1].path).toBe './foo-test.log'
+    expect(client._logger.fields.widget_type).toBe 'sphere-node-client'
+    expect(client._rest.logger.fields.widget_type).toBe 'sphere-node-connect'
 
   _.each [
     'carts'

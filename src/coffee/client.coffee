@@ -27,37 +27,37 @@ class SphereClient
    * Constructs a new client with given API credentials
    * @constructor
    *
-   * @param {Object} [config] An object containing the credentials for the `sphere-node-connect`
+   * @param {Object} [options] An object containing the credentials for the `sphere-node-connect`
    * {@link https://github.com/emmenko/sphere-node-connect#documentation}
   ###
-  constructor: (config) ->
-    @logger = new Logger()
+  constructor: (options = {}) ->
+    @_logger = new Logger options.logConfig
     ###*
      * @private
      * Instance of the Rest client
      * @type {Rest}
     ###
-    @_rest = new Rest _.extend config,
+    @_rest = new Rest _.extend options,
       logConfig:
-        logger: @logger
+        logger: @_logger
 
     # services
     # TODO: use functions to return new service instances?
-    @carts              = new CartService @_rest
-    @categories         = new CategoryService @_rest
-    @channels           = new ChannelService @_rest
-    @comments           = new CommentService @_rest
-    @customObjects      = new CustomObjectService @_rest
-    @customers          = new CustomerService @_rest
-    @customerGroups     = new CustomerService @_rest
-    @inventories        = new InventoryService @_rest
-    @orders             = new OrderService @_rest
-    @products           = new ProductService @_rest
-    @productProjections = new ProductProjectionService @_rest
-    @productTypes       = new ProductTypeService @_rest
-    @reviews            = new ReviewService @_rest
-    @shippingMethods    = new ShippingMethodService @_rest
-    @taxCategories      = new TaxCategoryService @_rest
+    @carts              = new CartService @_rest, @_logger
+    @categories         = new CategoryService @_rest, @_logger
+    @channels           = new ChannelService @_rest, @_logger
+    @comments           = new CommentService @_rest, @_logger
+    @customObjects      = new CustomObjectService @_rest, @_logger
+    @customers          = new CustomerService @_rest, @_logger
+    @customerGroups     = new CustomerService @_rest, @_logger
+    @inventories        = new InventoryService @_rest, @_logger
+    @orders             = new OrderService @_rest, @_logger
+    @products           = new ProductService @_rest, @_logger
+    @productProjections = new ProductProjectionService @_rest, @_logger
+    @productTypes       = new ProductTypeService @_rest, @_logger
+    @reviews            = new ReviewService @_rest, @_logger
+    @shippingMethods    = new ShippingMethodService @_rest, @_logger
+    @taxCategories      = new TaxCategoryService @_rest, @_logger
 
 ###*
  * The {@link SphereClient} client.
