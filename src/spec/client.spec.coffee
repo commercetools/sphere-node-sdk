@@ -18,8 +18,21 @@ describe 'SphereClient', ->
   it 'should initialize with credentials', ->
     expect(@client).toBeDefined()
     expect(@client._rest).toBeDefined()
+    expect(@client.carts).toBeDefined()
     expect(@client.categories).toBeDefined()
+    expect(@client.channels).toBeDefined()
+    expect(@client.comments).toBeDefined()
+    expect(@client.customObjects).toBeDefined()
+    expect(@client.customers).toBeDefined()
+    expect(@client.customerGroups).toBeDefined()
+    expect(@client.inventories).toBeDefined()
+    expect(@client.orders).toBeDefined()
     expect(@client.products).toBeDefined()
+    expect(@client.productProjections).toBeDefined()
+    expect(@client.productTypes).toBeDefined()
+    expect(@client.reviews).toBeDefined()
+    expect(@client.shippingMethods).toBeDefined()
+    expect(@client.taxCategories).toBeDefined()
 
   it 'should throw error if no credentials are given', ->
     client = -> new SphereClient foo: 'bar'
@@ -31,6 +44,12 @@ describe 'SphereClient', ->
       delete opt[key]
       client = -> new SphereClient config: opt
       expect(client).toThrow new Error("Missing '#{key}'")
+
+  it 'should initialize and extend logger', ->
+    expect(@client.logger).toBeDefined()
+    expect(@client.logger.fields.name).toBe 'sphere-node-client'
+    expect(@client.logger.streams[1].path).toBe './sphere-node-client-debug.log'
+    expect(@client._rest.logger.fields.widget_type).toBe 'sphere-node-connect'
 
   _.each [
     'carts'

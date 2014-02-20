@@ -1,4 +1,6 @@
-{ Rest } = require 'sphere-node-connect'
+_ = require('underscore')._
+{Rest} = require 'sphere-node-connect'
+Logger = require './logger'
 CartService              = require './services/carts'
 CategoryService          = require './services/categories'
 ChannelService           = require './services/channels'
@@ -29,12 +31,15 @@ class SphereClient
    * {@link https://github.com/emmenko/sphere-node-connect#documentation}
   ###
   constructor: (config) ->
+    @logger = new Logger()
     ###*
      * @private
      * Instance of the Rest client
      * @type {Rest}
     ###
-    @_rest = new Rest config
+    @_rest = new Rest _.extend config,
+      logConfig:
+        logger: @logger
 
     # services
     # TODO: use functions to return new service instances?
