@@ -221,7 +221,7 @@ describe 'Service', ->
 
         it 'should throw error if payload is missing', ->
           spyOn(@restMock, 'POST')
-          expect(=> @service.save()).toThrow new Error 'Body payload is required for creating a resource'
+          expect(=> @service.save()).toThrow new Error "Body payload is required for creating a resource (endpoint: #{@service._currentEndpoint})"
 
         it 'should reject the promise on save', (done) ->
           spyOn(@restMock, 'POST').andCallFake (endpoint, payload, callback) -> callback('foo', null, null)

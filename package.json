@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "q": "~1.0.0",
-    "sphere-node-connect": "~0.4.2",
+    "sphere-node-connect": "~0.4.3",
     "underscore": "~1.6.0"
   },
   "devDependencies": {

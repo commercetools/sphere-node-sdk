@@ -54,7 +54,7 @@ class BaseService
   byId: (id) ->
     @_currentEndpoint = "#{@constructor.baseResourceEndpoint}/#{id}"
     @_params.id = id
-    @_logger.debug 'Setting endpoint with ID', @_currentEndpoint
+    @_logger.debug @_currentEndpoint, 'Setting endpoint with ID'
     this
 
   ###*
@@ -69,7 +69,7 @@ class BaseService
     return this unless predicate
     encodedPredicate = encodeURIComponent(predicate)
     @_params.query.where.push encodedPredicate
-    @_logger.debug 'Setting \'where\' parameters', @_params.query.where
+    @_logger.debug @_params.query, 'Setting \'where\' parameters'
     this
 
   ###*
@@ -81,7 +81,7 @@ class BaseService
     @_params.query.operator = switch operator
       when 'and', 'or' then operator
       else 'and'
-    @_logger.debug 'Setting \'where\' operator', @_params.query.operator
+    @_logger.debug @_params.query, 'Setting \'where\' operator'
     this
 
   ###*
@@ -94,7 +94,7 @@ class BaseService
   sort: (path, ascending = true) ->
     direction = if ascending then 'asc' else 'desc'
     @_params.query.sort.push encodeURIComponent("#{path} #{direction}")
-    @_logger.debug 'Setting \'sort\' parameter', @_params.query.sort
+    @_logger.debug @_params.query, 'Setting \'sort\' parameter'
     this
 
   ###*
@@ -105,7 +105,7 @@ class BaseService
   ###
   page: (page) ->
     @_params.query.page = page
-    @_logger.debug 'Setting \'page\' parameter', @_params.query.page
+    @_logger.debug @_params.query, 'Setting \'page\' parameter'
     this
 
   ###*
@@ -117,7 +117,7 @@ class BaseService
   ###
   perPage: (perPage) ->
     @_params.query.perPage = perPage
-    @_logger.debug 'Setting \'perPage\' parameter', @_params.query.perPage
+    @_logger.debug @_params.query, 'Setting \'perPage\' parameter'
     this
 
   ###*
@@ -133,7 +133,7 @@ class BaseService
       page: @_params.query.page
       perPage: @_params.query.perPage
       sort: @_params.query.sort
-    @_logger.debug 'Query string generated', qs
+    @_logger.debug qs, 'Query string generated'
     qs
 
   ###*
@@ -157,8 +157,7 @@ class BaseService
   ###
   save: (body) ->
     unless body
-      @_logger.error @_currentEndpoint, 'Body payload is required for creating a resource'
-      throw new Error 'Body payload is required for creating a resource'
+      throw new Error "Body payload is required for creating a resource (endpoint: #{@_currentEndpoint})"
 
     deferred = Q.defer()
     payload = JSON.stringify body
@@ -185,7 +184,6 @@ class BaseService
   _wrapResponse: (deferred, error, response, body) ->
     @_setDefaults()
     if error
-      @_logger.error 'Unespected error for request endpoint', @_currentEndpoint
       deferred.reject
         statusCode: 500
         message: error
@@ -195,14 +193,12 @@ class BaseService
         deferred.resolve body
       else if response.statusCode is 404
         endpoint = response.request.uri.path
-        @_logger.debug 'Returning a 404 error response for endpoint', endpoint
         # since the API doesn't return an error message for a resource not found
         # we return a custom JSON error message
         deferred.reject
           statusCode: 404
           message: "Endpoint '#{endpoint}' not found."
       else
-        @_logger.debug 'HTTP error response', body
         deferred.reject body
 
 
