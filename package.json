@@ -1,7 +1,7 @@
 {
   "name": "sphere-node-client",
   "description": "Officially supported Node.js client library for accessing SPHERE.IO HTTP API, with OAuth2 support.",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "homepage": "https://github.com/sphereio/sphere-node-client",
   "author": {
     "name": "Nicola Molinari",
