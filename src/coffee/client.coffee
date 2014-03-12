@@ -55,7 +55,7 @@ class SphereClient
     @comments           = new CommentService @_rest, @_logger
     @customObjects      = new CustomObjectService @_rest, @_logger
     @customers          = new CustomerService @_rest, @_logger
-    @customerGroups     = new CustomerService @_rest, @_logger
+    @customerGroups     = new CustomerGroupService @_rest, @_logger
     @inventories        = new InventoryService @_rest, @_logger
     @orders             = new OrderService @_rest, @_logger
     @products           = new ProductService @_rest, @_logger
