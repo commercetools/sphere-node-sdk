@@ -218,7 +218,7 @@ Some endpoints (for now) allow a resource to be deleted by providing the `versio
 // assume that we have a product
 sphere_client.products.byId('123-abc').fetch()
 .then(function(product){
-  return sphere_client.products.delete(product.version)
+  return sphere_client.products.byId('123-abc').delete(product.version)
 })
 .then(function(result){
   // a JSON object containing either a result or a SPHERE.IO HTTP error

@@ -255,18 +255,18 @@ describe 'Service', ->
           expect(@restMock.DELETE).not.toHaveBeenCalled()
 
         it 'should return promise on delete', ->
-          promise = @service.delete(1)
+          promise = @service.byId('123-abc').delete(1)
           expect(Q.isPromise(promise)).toBe true
 
         it 'should resolve the promise on delete', (done) ->
           spyOn(@restMock, 'DELETE').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {foo: 'bar'})
-          @service.delete(1).then (result) ->
+          @service.byId('123-abc').delete(1).then (result) ->
             expect(result).toEqual foo: 'bar'
             done()
 
         it 'should reject the promise on delete (404)', (done) ->
           spyOn(@restMock, 'DELETE').andCallFake (endpoint, callback) -> callback(null, {statusCode: 404, request: {uri: {path: '/foo'}}}, null)
-          @service.delete(1)
+          @service.byId('123-abc').delete(1)
           .then (result) ->
             expect(result).not.toBeDefined()
           .fail (error) ->
@@ -277,11 +277,10 @@ describe 'Service', ->
 
         it 'should reject the promise on delete', (done) ->
           spyOn(@restMock, 'DELETE').andCallFake (endpoint, callback) -> callback('foo', null, null)
-          @service.delete(1).then (result) ->
+          @service.byId('123-abc').delete(1).then (result) ->
             expect(result).not.toBeDefined()
           .fail (error) ->
             expect(error).toEqual
               statusCode: 500
               message: 'foo'
             done()
-            

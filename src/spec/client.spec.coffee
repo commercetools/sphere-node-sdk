@@ -119,7 +119,7 @@ describe 'SphereClient', ->
       it 'should delete resource', (done) ->
         spyOn(@client._rest, "DELETE").andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {foo: 'bar'})
         service = @client[name]
-        service.delete(4).then (result) =>
+        service.byId('123-abc').delete(4).then (result) =>
           expect(result).toEqual foo: 'bar'
-          expect(@client._rest.DELETE).toHaveBeenCalledWith "#{service._currentEndpoint}?version=4", jasmine.any(Function)
+          expect(@client._rest.DELETE).toHaveBeenCalledWith "#{service._currentEndpoint}/123-abc?version=4", jasmine.any(Function)
           done()
