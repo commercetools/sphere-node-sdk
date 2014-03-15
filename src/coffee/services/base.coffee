@@ -150,8 +150,10 @@ class BaseService
     deferred.promise
 
   ###*
-   * Save a new resource by sending a payload to the [_currentEndpoint]
-   * If the [id] was provided, the API expects this to be a resource update with given {UpdateAction}
+   * Save a new resource by sending a payload to the [_currentEndpoint], describing
+   * the new resource model.
+   * If the [id] was provided, the API expects the request to be an update by
+   * by providing a payload of {UpdateAction}.
    * @param {Object} [body] The payload as JSON object
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
@@ -167,11 +169,30 @@ class BaseService
     deferred.promise
 
   ###*
-   * Alias for {@link save}
+   * Alias for {@link save}, as it's the same type of HTTP request.
+   * Updating a resource is done by sending a list of {UpdateAction}.
    * (more intuitive way of describing an update, given that an [id] is provided)
    * e.g.: `{service}.byId({id}).update({actions})`
   ###
   update: -> @save.apply(@, arguments)
+
+  ###*
+   * Delete an existing resource of the [_currentEndpoint]
+   * If the [id] was provided, the API expects this to be a resource update with given {UpdateAction}
+   * @param {Number} [version] The current version of the resource
+   * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
+  ###
+  delete: (version) ->
+    # TODO: automatically fetch the resource if no version is given?
+    # TODO: describe which endpoints support this?
+    unless version
+      throw new Error "Version is required for deleting a resource (endpoint: #{@_currentEndpoint})"
+
+    deferred = Q.defer()
+    endpoint = "#{@_currentEndpoint}?version=#{version}"
+    @_rest.DELETE endpoint, =>
+      @_wrapResponse.apply(@, _.union(deferred, arguments))
+    deferred.promise
 
   ###*
    * @private

@@ -17,6 +17,7 @@ This module is a standalone Node.js client for accessing the Sphere HTTP APIs.
       * [Staged products](#staged-products)
     * [Create resource](#create-resource)
     * [Update resource](#update-resource)
+    * [Delete resource](#delete-resource)
   * [Error handling](#error-handling)
 * [Examples](#examples)
 * [Releasing](#releasing)
@@ -210,6 +211,22 @@ sphere_client.products.byId('123-abc').save(update)
 sphere_client.products.byId('123-abc').update(update)
 ```
 
+#### Delete resource
+Some endpoints (for now) allow a resource to be deleted by providing the `version` of current resource as a query parameter.
+
+```javascript
+// assume that we have a product
+sphere_client.products.byId('123-abc').fetch()
+.then(function(product){
+  return sphere_client.products.delete(product.version)
+})
+.then(function(result){
+  // a JSON object containing either a result or a SPHERE.IO HTTP error
+})
+.fail(function(error){
+  // either the request failed or was rejected (the response returned an error)
+})
+```
 
 #### Error handling
 As the HTTP API [handles errors](https://github.com/emmenko/sphere-node-connect#error-handling) _gracefully_ by providing a JSON body with error codes and messages, the `SphereClient` handles that by providing an intuitive way of dealing with responses.

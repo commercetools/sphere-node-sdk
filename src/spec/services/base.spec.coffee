@@ -1,4 +1,4 @@
-_ = require('underscore')._
+_ = require 'underscore'
 Q = require 'q'
 BaseService              = require '../../lib/services/base'
 CartService              = require '../../lib/services/carts'
@@ -48,7 +48,7 @@ describe 'Service', ->
           GET: (endpoint, callback) ->
           POST: -> (endpoint, payload, callback) ->
           PUT: ->
-          DELETE: ->
+          DELETE: -> (endpoint, callback) ->
           _preRequest: ->
           _doRequest: ->
         @loggerMock =
@@ -222,6 +222,7 @@ describe 'Service', ->
         it 'should throw error if payload is missing', ->
           spyOn(@restMock, 'POST')
           expect(=> @service.save()).toThrow new Error "Body payload is required for creating a resource (endpoint: #{@service._currentEndpoint})"
+          expect(@restMock.POST).not.toHaveBeenCalled()
 
         it 'should reject the promise on save', (done) ->
           spyOn(@restMock, 'POST').andCallFake (endpoint, payload, callback) -> callback('foo', null, null)
@@ -245,3 +246,42 @@ describe 'Service', ->
           spyOn(@service, 'save')
           @service.update foo: 'bar'
           expect(@service.save).toHaveBeenCalledWith foo: 'bar'
+
+      describe ':: delete', ->
+
+        it 'should throw error if version is missing', ->
+          spyOn(@restMock, 'DELETE')
+          expect(=> @service.delete()).toThrow new Error "Version is required for deleting a resource (endpoint: #{@service._currentEndpoint})"
+          expect(@restMock.DELETE).not.toHaveBeenCalled()
+
+        it 'should return promise on delete', ->
+          promise = @service.delete(1)
+          expect(Q.isPromise(promise)).toBe true
+
+        it 'should resolve the promise on delete', (done) ->
+          spyOn(@restMock, 'DELETE').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {foo: 'bar'})
+          @service.delete(1).then (result) ->
+            expect(result).toEqual foo: 'bar'
+            done()
+
+        it 'should reject the promise on delete (404)', (done) ->
+          spyOn(@restMock, 'DELETE').andCallFake (endpoint, callback) -> callback(null, {statusCode: 404, request: {uri: {path: '/foo'}}}, null)
+          @service.delete(1)
+          .then (result) ->
+            expect(result).not.toBeDefined()
+          .fail (error) ->
+            expect(error).toEqual
+              statusCode: 404
+              message: "Endpoint '/foo' not found."
+            done()
+
+        it 'should reject the promise on delete', (done) ->
+          spyOn(@restMock, 'DELETE').andCallFake (endpoint, callback) -> callback('foo', null, null)
+          @service.delete(1).then (result) ->
+            expect(result).not.toBeDefined()
+          .fail (error) ->
+            expect(error).toEqual
+              statusCode: 500
+              message: 'foo'
+            done()
+            

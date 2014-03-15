@@ -1,4 +1,4 @@
-_ = require('underscore')._
+_ = require 'underscore'
 SphereClient = require '../lib/client'
 Logger = require '../lib/logger'
 Config = require('../config').config
@@ -114,4 +114,12 @@ describe 'SphereClient', ->
         service = @client[name]
         service.save({foo: 'bar'}).then (result) ->
           expect(result).toEqual foo: 'bar'
+          done()
+
+      it 'should delete resource', (done) ->
+        spyOn(@client._rest, "DELETE").andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {foo: 'bar'})
+        service = @client[name]
+        service.delete(4).then (result) =>
+          expect(result).toEqual foo: 'bar'
+          expect(@client._rest.DELETE).toHaveBeenCalledWith "#{service._currentEndpoint}?version=4", jasmine.any(Function)
           done()
