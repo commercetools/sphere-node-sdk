@@ -1,4 +1,4 @@
-_ = require('underscore')._
+_ = require 'underscore'
 
 module.exports =
 
