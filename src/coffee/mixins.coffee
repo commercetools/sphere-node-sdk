@@ -38,21 +38,22 @@ module.exports =
     totalPromises = _.size(promises)
 
     _processInBatches = (currentPromises, limit, accumulator = []) ->
-      current = _.take currentPromises, limit
+      head = _.head currentPromises, limit
       # TODO: use `allSettled` ?
-      Q.all(current).then (results) ->
+      Q.all(head).then (results) ->
         # notify any handler registered to the promise with
         # the progress percentage and the current results
         deferred.notify
-          percentage: _.percentage(_.size(currentPromises), totalPromises)
+          percentage: _.percentage(totalPromises - _.size(currentPromises), totalPromises)
           value: results
 
         allResults = _.union accumulator, results
-        if _.size(current) < limit
+        if _.size(head) < limit
           # return if there are no more batches
           deferred.resolve allResults
         else
-          _processInBatches _.tail(currentPromises, limit), limit, allResults
+          tail = _.tail currentPromises, limit
+          _processInBatches tail, limit, allResults
       .fail (err) -> deferred.reject err
     _processInBatches(promises, limit)
 
