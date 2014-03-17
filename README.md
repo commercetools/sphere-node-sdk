@@ -19,6 +19,8 @@ This module is a standalone Node.js client for accessing the Sphere HTTP APIs.
     * [Update resource](#update-resource)
     * [Delete resource](#delete-resource)
   * [Error handling](#error-handling)
+  * [Mixins](#mixins)
+    * [Batch processing](#batch-processing)
 * [Examples](#examples)
 * [Releasing](#releasing)
 * [License](#license)
@@ -228,7 +230,7 @@ sphere_client.products.byId('123-abc').fetch()
 })
 ```
 
-#### Error handling
+### Error handling
 As the HTTP API [handles errors](https://github.com/emmenko/sphere-node-connect#error-handling) _gracefully_ by providing a JSON body with error codes and messages, the `SphereClient` handles that by providing an intuitive way of dealing with responses.
 
 Since a Promise can be either resolved or rejected, the result is determined by valuating the `statusCode` of the response:
@@ -250,9 +252,10 @@ The client application can then easily decide what to do
 
 ```javascript
 sphere_client.products.save({})
-.then (result)->
+.then(function(result){
   // we know the request was successful (e.g.: 2xx) and `result` is a JSON of a resource representation
-.fail (error)->
+})
+.fail(function(error){
   // something went wrong, either an unexpected error or a HTTP API error response
   // here we can check the `statusCode` to differentiate the error
   switch (error.statusCode) {
@@ -262,6 +265,48 @@ sphere_client.products.save({})
       ...
     ...
   }
+})
+```
+
+### Mixins
+Mixins are a bunch of functions available within an instance of the `SphereClient` and can be used as standalone _helpers_, meaning they are not dependent on the services.
+
+Current available mixins are:
+- batch processing
+
+#### Batch processing
+Batch processing allows a list of promises to be executed in chunks, by defining a limit to how many requests can be sent in parallel.
+The `batch` function is actually a promise itself which recursively resolves all given promises in batches.
+
+```javascript
+// let's assume we have a bunch of promises (e.g.: 200)
+var allPromises = [p1, p2, p3, ...]
+
+sphere_client.mixins.batch(allPromises)
+.then(function(result){
+
+})
+.fail(function(error){
+
+})
+```
+
+You can also subscribe to **progress notifications** of the promise
+
+```javascript
+sphere_client.mixins.batch(allPromises)
+.then(function(result){
+
+})
+.progress(function(progress){
+  // progress is an object containing the current progress percentage
+  // and the value of the current results (array)
+  // {percentage: 20, value: [r1, r2, r3, ...]}
+
+})
+.fail(function(error){
+
+})
 ```
 
 

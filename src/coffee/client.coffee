@@ -1,4 +1,4 @@
-_ = require('underscore')._
+_ = require 'underscore'
 {Rest} = require 'sphere-node-connect'
 Logger = require './logger'
 CartService              = require './services/carts'
@@ -22,6 +22,8 @@ TaxCategoryService       = require './services/tax-categories'
  * @class SphereClient
 ###
 class SphereClient
+
+  mixins: require './mixins'
 
   ###*
    * Constructs a new client with given API credentials
