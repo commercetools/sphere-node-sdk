@@ -291,6 +291,19 @@ sphere_client.mixins.batch(allPromises)
 })
 ```
 
+Default max number of parallel request is `**50**`, you can configure this in the second argument.
+
+```javascript
+// with custom limit (max number of parallel requests)
+sphere_client.mixins.batch(allPromises, 100)
+.then(function(result){
+
+})
+.fail(function(error){
+
+})
+```
+
 You can also subscribe to **progress notifications** of the promise
 
 ```javascript
