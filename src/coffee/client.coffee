@@ -23,8 +23,6 @@ TaxCategoryService       = require './services/tax-categories'
 ###
 class SphereClient
 
-  mixins: require './mixins'
-
   ###*
    * Constructs a new client with given API credentials
    * @constructor

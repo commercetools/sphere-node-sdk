@@ -19,8 +19,7 @@ This module is a standalone Node.js client for accessing the Sphere HTTP APIs.
     * [Update resource](#update-resource)
     * [Delete resource](#delete-resource)
   * [Error handling](#error-handling)
-  * [Mixins](#mixins)
-    * [Batch processing](#batch-processing)
+  * [Batch processing](#batch-processing)
 * [Examples](#examples)
 * [Releasing](#releasing)
 * [License](#license)
@@ -268,59 +267,9 @@ sphere_client.products.save({})
 })
 ```
 
-### Mixins
-Mixins are a bunch of functions available within an instance of the `SphereClient` and can be used as standalone _helpers_, meaning they are not dependent on the services.
-
-Current available mixins are:
-- batch processing
-
-#### Batch processing
-Batch processing allows a list of promises to be executed in chunks, by defining a limit to how many requests can be sent in parallel.
-The `batch` function is actually a promise itself which recursively resolves all given promises in batches.
-
-```javascript
-// let's assume we have a bunch of promises (e.g.: 200)
-var allPromises = [p1, p2, p3, ...]
-
-sphere_client.mixins.batch(allPromises)
-.then(function(result){
-
-})
-.fail(function(error){
-
-})
-```
-
-Default max number of parallel request is `**50**`, you can configure this in the second argument.
-
-```javascript
-// with custom limit (max number of parallel requests)
-sphere_client.mixins.batch(allPromises, 100)
-.then(function(result){
-
-})
-.fail(function(error){
-
-})
-```
-
-You can also subscribe to **progress notifications** of the promise
-
-```javascript
-sphere_client.mixins.batch(allPromises)
-.then(function(result){
-
-})
-.progress(function(progress){
-  // progress is an object containing the current progress percentage
-  // and the value of the current results (array)
-  // {percentage: 20, value: [r1, r2, r3, ...]}
-
-})
-.fail(function(error){
-
-})
-```
+### Batch processing
+Batch processing allows a list of requests to be executed in chunks, to avoid too many parallel requests.
+There are some [**mixins**](https://github.com/sphereio/sphere-node-utils#mixins) available in the [`sphere-node-utils`](https://github.com/sphereio/sphere-node-utils) repository.
 
 
 ## Examples
