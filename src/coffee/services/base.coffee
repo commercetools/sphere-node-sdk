@@ -104,6 +104,7 @@ class BaseService
    * @return {BaseService} Chained instance of this class
   ###
   page: (page) ->
+    throw new Error 'Page must be a number >= 1' if page < 1
     @_params.query.page = page
     @_logger.debug @_params.query, 'Setting \'page\' parameter'
     this

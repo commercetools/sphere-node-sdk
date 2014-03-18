@@ -122,6 +122,9 @@ describe 'Service', ->
         @service.page(5)
         expect(@service._params.query.page).toBe 5
 
+      it 'should throw if page < 1', ->
+        expect(=> @service.page(0)).toThrow new Error 'Page must be a number >= 1'
+
       it 'should add perPage number', ->
         @service.perPage(50)
         expect(@service._params.query.perPage).toBe 50

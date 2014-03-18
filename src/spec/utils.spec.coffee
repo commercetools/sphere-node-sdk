@@ -16,7 +16,7 @@ describe 'Utils', ->
     expect(query).toBe 'limit=100'
 
   it 'should build query string without (zero) offset', ->
-    query = Utils.buildQueryString page: -10
+    query = Utils.buildQueryString page: 1
     expect(query).toBe 'limit=100'
 
   it 'should build query string with (positive) offset', ->
@@ -30,3 +30,6 @@ describe 'Utils', ->
   it 'should build query string with (default) limit', ->
     query = Utils.buildQueryString perPage: -10
     expect(query).toBe 'limit=100'
+
+  it 'should throw if page is < 1', ->
+    expect(-> Utils.buildQueryString page: 0).toThrow new Error 'Page must be a number >= 1'
