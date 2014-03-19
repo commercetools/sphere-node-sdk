@@ -1,4 +1,4 @@
-{Logger} = require 'sphere-node-connect'
+{Logger} = require 'sphere-node-utils'
 
 module.exports = class extends Logger
 
