@@ -28,8 +28,8 @@ This module is a standalone Node.js client for accessing the Sphere HTTP APIs.
 ## Getting Started
 Install the module with `npm install sphere-node-client`
 
-```javascript
-var SphereClient = require('sphere-node-client');
+```coffeescript
+SphereClient = require 'sphere-node-client'
 ```
 
 ## Documentation
@@ -37,14 +37,12 @@ To start using the Sphere client you need to create an instance of the `SphereCl
 
 > For a list of options to pass to the client, see [`sphere-node-connect`](https://github.com/emmenko/sphere-node-connect#documentation).
 
-```javascript
-var sphere_client = new SphereClient({
-  config: {
-    client_id: "CLIENT_ID_HERE",
-    client_secret: "CLIENT_SECRET_HERE",
+```coffeescript
+client = new SphereClient
+  config:
+    client_id: "CLIENT_ID_HERE"
+    client_secret: "CLIENT_SECRET_HERE"
     project_key: "PROJECT_KEY_HERE"
-  }
-})
 ```
 
 ### Services
@@ -69,16 +67,14 @@ The `SphereClient` provides a set of Services to connect with the related API en
 ### Types of requests
 Requests to the HTTP API are obviously asynchronous and they all return a [`Q` promise](https://github.com/kriskowal/q).
 
-```javascript
-var sphere_client = new SphereClient({...})
+```coffeescript
+client = new SphereClient {...}
 
-sphere_client.products.fetch()
-.then(function(result){
-  // a JSON object containing either a result or a SPHERE.IO HTTP error
-})
-.fail(function(error){
-  // either the request failed or was rejected (the response returned an error)
-})
+client.products.fetch()
+.then (result) ->
+  # a JSON object containing either a result or a SPHERE.IO HTTP error
+.fail (error) ->
+  # either the request failed or was rejected (the response returned an error)
 ```
 
 Current methods using promises are:
@@ -86,6 +82,7 @@ Current methods using promises are:
 - `fetch` HTTP `GET` request
 - `save` HTTP `POST` request
 - `update` HTTP `POST` request (_alias for `save`_)
+- `delete` HTTP `DELETE` request
 
 
 #### Query request
@@ -106,64 +103,87 @@ The `SphereClient` helps you build those requests with following methods:
 - `whereOperator(operator)` defines the logical operator to combine multiple where parameters
 - `sort(path, ascending)` defines how the query result should be sorted - true (default) defines ascending where as false indicates descascending
 - `page(n)` defines the page number to be requested from the complete query result (default is `1`). **If < 1 it throws an error**
-- `perPage(n)` defines the number of results to return from a query (default is `100`). If set to `0` all results are returned
+- `perPage(n)` defines the number of results to return from a query (default is `100`). If set to `0` all results are returned (_more [info](https://github.com/emmenko/sphere-node-connect#paged-requests)_). **If < 0 it throws an error**
 
 > All these methods are chainable
 
-```javascript
-// example
+```coffeescript
+# example
 
-var sphere_client = new SphereClient({...})
-sphere_client.products
+client = new SphereClient {...}
+client.products
 .where('name(en="Foo")')
 .where('id="1234567890"')
 .whereOperator('or')
 .page(3)
 .perPage(25)
 .sort('name', false)
-.fetch();
+.fetch()
 
-// HTTP request
-// /{project_key}/products?where=name(en%3D%22Foo%22)%20or%20id%3D%221234567890%22&limit=25&offset=50&sort=name%20desc
+# HTTP request
+# /{project_key}/products?where=name(en%3D%22Foo%22)%20or%20id%3D%221234567890%22&limit=25&offset=50&sort=name%20desc
 ```
+
+##### Query all (limit=0)
+If you want to retrieve all results of a resource, you can set the `perPage` param to `0`.
+In that case the results are recursively requested in chunks and returned all together once completed.
+
+```coffeescript
+client = new SphereClient {...}
+client.perPage(0).fetch()
+.then (result) -> # `results` is still a `PagedQueryResponse` containing all results of the query
+.fail (error) ->
+```
+
+Since the request is executed recursively until all results are returned, you can **subscribe to the progress notification** in order to follow the progress
+
+```coffeescript
+client = new SphereClient {...}
+client.perPage(0).fetch()
+.then (result) ->
+.progress (progress) ->
+  # progress is an object containing the current progress percentage
+  # and the value of the current results (array)
+  # e.g. {percentage: 20, value: [r1, r2, r3, ...]}
+  console.log "#{progress.percentage}% completed..."
+.fail (error) ->
+```
+
+More info [here](https://github.com/emmenko/sphere-node-connect#paged-requests).
 
 ##### Staged products
 
 The `ProductProjectionService` returns a representation of the products called [ProductProjection](http://commercetools.de/dev/http-api-projects-products.html#product-projection) which corresponds basically to a **catalog** or **staged** representation of a product. When using this service you can specify which projection of the product you would like to have by defining a `staged` parameter (default is `true`).
 
-```javascript
-// example
+```coffeescript
+# example
 
-var sphere_client = new SphereClient({...})
-sphere_client.productProjections
+client = new SphereClient {...}
+client.productProjections
 .staged()
-.fetch();
+.fetch()
 
-// HTTP request
-// /{project_key}/products-projections?staged=true
+# HTTP request
+# /{project_key}/products-projections?staged=true
 ```
 
 #### Create resource
 All endpoints allow a resource to be created by posting a JSON `Representation` of the selected resource as a body payload.
 
 
-```javascript
-var product = {
-  'name': {
-    'en': 'Foo'
-  },
-  'slug': {
-    'en': 'foo'
-  },
+```coffeescript
+product =
+  name:
+    en: 'Foo'
+  slug:
+    en: 'foo'
   ...
-}
-sphere_client.products.save(product)
-.then(function(result){
-  // a JSON object containing either a result or a SPHERE.IO HTTP error
-})
-.fail(function(error){
-  // either the request failed or was rejected (the response returned an error)
-})
+
+client.products.save(product)
+.then (result) ->
+  # a JSON object containing either a result or a SPHERE.IO HTTP error
+.fail (error) ->
+  # either the request failed or was rejected (the response returned an error)
 ```
 
 #### Update resource
@@ -171,62 +191,54 @@ Updates are just a POST request to the endpoint specified by an `ID`, provided w
 
 > The `update` method is just an alias for `save`, given the resource `ID`. If no `ID` is provided, it will try to send the request to the base resource endpoint, expecting a new resource to be created, so make sure that the **body** has the correct format (create or update).
 
-```javascript
-// new product
-var product = {
-  'name': {
-    'en': 'Foo'
-  },
-  'slug': {
-    'en': 'foo'
-  },
+```coffeescript
+# new product
+product =
+  name:
+    en: 'Foo'
+  slug:
+    en: 'foo'
   ...
-}
 
-// update action for product name
-var update = {
-  'version': 1,
-  'actions': [
+# update action for product name
+update =
+  version: 1,
+  actions: [
     {
-      'action': 'changeName',
-      'name': {
-        'en': 'Foo'
-      }
+      action: 'changeName'
+      name:
+        en: 'Foo'
     }
   ]
-}
 
-// this will try to create a new product with the correct body
-// -> OK
-sphere_client.products.save(product)
-sphere_client.products.update(product)
+# this will try to create a new product with the correct body
+# -> OK
+client.products.save(product)
+client.products.update(product)
 
-// this will try to create a new product with a wrong body
-// -> FAILS
-sphere_client.products.save(update)
-sphere_client.products.update(update)
+# this will try to create a new product with a wrong body
+# -> FAILS
+client.products.save(update)
+client.products.update(update)
 
-// this will try to update a product with a correct body
-// -> OK
-sphere_client.products.byId('123-abc').save(update)
-sphere_client.products.byId('123-abc').update(update)
+# this will try to update a product with a correct body
+# -> OK
+client.products.byId('123-abc').save(update)
+client.products.byId('123-abc').update(update)
 ```
 
 #### Delete resource
 Some endpoints (for now) allow a resource to be deleted by providing the `version` of current resource as a query parameter.
 
-```javascript
-// assume that we have a product
-sphere_client.products.byId('123-abc').fetch()
-.then(function(product){
-  return sphere_client.products.byId('123-abc').delete(product.version)
-})
-.then(function(result){
-  // a JSON object containing either a result or a SPHERE.IO HTTP error
-})
-.fail(function(error){
-  // either the request failed or was rejected (the response returned an error)
-})
+```coffeescript
+# assume that we have a product
+client.products.byId('123-abc').fetch()
+.then (product) ->
+  client.products.byId('123-abc').delete(product.version)
+.then (result) ->
+  # a JSON object containing either a result or a SPHERE.IO HTTP error
+.fail (error) ->
+  # either the request failed or was rejected (the response returned an error)
 ```
 
 ### Error handling
@@ -249,22 +261,18 @@ Since a Promise can be either resolved or rejected, the result is determined by 
 
 The client application can then easily decide what to do
 
-```javascript
-sphere_client.products.save({})
-.then(function(result){
-  // we know the request was successful (e.g.: 2xx) and `result` is a JSON of a resource representation
-})
-.fail(function(error){
-  // something went wrong, either an unexpected error or a HTTP API error response
-  // here we can check the `statusCode` to differentiate the error
-  switch (error.statusCode) {
-    case 400:
-      ...
-    case 500:
-      ...
+```coffeescript
+client.products.save({})
+.then (result) ->
+  # we know the request was successful (e.g.: 2xx) and `result` is a JSON of a resource representation
+.fail (error) ->
+  # something went wrong, either an unexpected error or a HTTP API error response
+  # here we can check the `statusCode` to differentiate the error
+  switch error.statusCode
+    when 400 then # do something
+    when 500 then # do something
     ...
-  }
-})
+    else # do something else
 ```
 
 ### Batch processing

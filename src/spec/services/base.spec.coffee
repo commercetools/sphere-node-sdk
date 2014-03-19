@@ -49,6 +49,7 @@ describe 'Service', ->
           POST: -> (endpoint, payload, callback) ->
           PUT: ->
           DELETE: -> (endpoint, callback) ->
+          PAGED: -> (endpoint, callback, notify) ->
           _preRequest: ->
           _doRequest: ->
         @loggerMock =
@@ -129,6 +130,9 @@ describe 'Service', ->
         @service.perPage(50)
         expect(@service._params.query.perPage).toBe 50
 
+      it 'should throw if perPage < 0', ->
+        expect(=> @service.perPage(-1)).toThrow new Error 'PerPage (limit) must be a number >= 0'
+
       it 'should build query string', ->
         queryString = @service
           .where 'name(en="Foo")'
@@ -164,8 +168,7 @@ describe 'Service', ->
         it 'should reject the promise on fetch (404)', (done) ->
           spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 404, request: {uri: {path: '/foo'}}}, null)
           @service.fetch()
-          .then (result) ->
-            expect(result).not.toBeDefined()
+          .then (result) -> done('Should not happen')
           .fail (error) ->
             expect(error).toEqual
               statusCode: 404
@@ -179,8 +182,7 @@ describe 'Service', ->
           .page(1)
           .perPage()
           .fetch()
-          .then (result) ->
-            expect(result).not.toBeDefined()
+          .then (result) -> done('Should not happen')
           .fail (error) ->
             expect(error).toEqual
               statusCode: 404
@@ -190,13 +192,45 @@ describe 'Service', ->
 
         it 'should reject the promise on fetch', (done) ->
           spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback('foo', null, null)
-          @service.fetch().then (result) ->
-            expect(result).not.toBeDefined()
+          @service.fetch()
+          .then (result) -> done('Should not happen')
           .fail (error) ->
             expect(error).toEqual
               statusCode: 500
               message: 'foo'
             done()
+
+        describe ':: paged', ->
+
+          it 'should resolve the promise on (paged) fetch', (done) ->
+            spyOn(@restMock, 'PAGED').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: 1, results: [{foo: 'bar'}]})
+            @service.perPage(0).fetch()
+            .then (result) ->
+              expect(result.total).toBe 1
+              expect(result.results.length).toBe 1
+              expect(result.results[0]).toEqual foo: 'bar'
+              done()
+            .fail (error) -> done(error)
+
+          it 'should reject the promise on (paged) fetch (404)', (done) ->
+            spyOn(@restMock, 'PAGED').andCallFake (endpoint, callback) -> callback(null, {statusCode: 404, request: {uri: {path: '/foo'}}}, null)
+            @service.perPage(0).fetch()
+            .then (result) -> done('Should not happen')
+            .fail (error) ->
+              expect(error).toEqual
+                statusCode: 404
+                message: "Endpoint '/foo' not found."
+              done()
+
+          it 'should reject the promise on (paged) fetch', (done) ->
+            spyOn(@restMock, 'PAGED').andCallFake (endpoint, callback) -> callback('foo', null, null)
+            @service.perPage(0).fetch()
+            .then (result) -> done('Should not happen')
+            .fail (error) ->
+              expect(error).toEqual
+                statusCode: 500
+                message: 'foo'
+              done()
 
       describe ':: save', ->
 
@@ -213,8 +247,7 @@ describe 'Service', ->
         it 'should reject the promise on save (404)', (done) ->
           spyOn(@restMock, 'POST').andCallFake (endpoint, payload, callback) -> callback(null, {statusCode: 404, request: {uri: {path: '/foo'}}}, null)
           @service.save({foo: 'bar'})
-          .then (result) ->
-            expect(result).not.toBeDefined()
+          .then (result) -> done('Should not happen')
           .fail (error) ->
             expect(error).toEqual
               statusCode: 404
@@ -230,8 +263,7 @@ describe 'Service', ->
         it 'should reject the promise on save', (done) ->
           spyOn(@restMock, 'POST').andCallFake (endpoint, payload, callback) -> callback('foo', null, null)
           @service.save({foo: 'bar'})
-          .then (result) ->
-            expect(result).not.toBeDefined()
+          .then (result) -> done('Should not happen')
           .fail (error) ->
             expect(error).toEqual
               statusCode: 500
@@ -270,8 +302,7 @@ describe 'Service', ->
         it 'should reject the promise on delete (404)', (done) ->
           spyOn(@restMock, 'DELETE').andCallFake (endpoint, callback) -> callback(null, {statusCode: 404, request: {uri: {path: '/foo'}}}, null)
           @service.byId('123-abc').delete(1)
-          .then (result) ->
-            expect(result).not.toBeDefined()
+          .then (result) -> done('Should not happen')
           .fail (error) ->
             expect(error).toEqual
               statusCode: 404
@@ -280,8 +311,8 @@ describe 'Service', ->
 
         it 'should reject the promise on delete', (done) ->
           spyOn(@restMock, 'DELETE').andCallFake (endpoint, callback) -> callback('foo', null, null)
-          @service.byId('123-abc').delete(1).then (result) ->
-            expect(result).not.toBeDefined()
+          @service.byId('123-abc').delete(1)
+          .then (result) -> done('Should not happen')
           .fail (error) ->
             expect(error).toEqual
               statusCode: 500

@@ -139,7 +139,7 @@ class BaseService
     qs
 
   ###*
-   * Fetch resource defined by [_currentEndpoint] with query parameters
+   * Fetch resource defined by _currentEndpoint with query parameters
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
   fetch: ->
@@ -147,12 +147,19 @@ class BaseService
     queryString = @_queryString()
     endpoint = @_currentEndpoint
     endpoint += "?#{queryString}" if queryString
-    @_rest.GET endpoint, =>
-      @_wrapResponse.apply(@, _.union(deferred, arguments))
+
+    if @_params.query.perPage is 0
+      # fetch all results in chunks
+      @_rest.PAGED endpoint, =>
+        @_wrapResponse.apply(@, _.union(deferred, arguments))
+      , (progress) -> deferred.notify progress
+    else
+      @_rest.GET endpoint, =>
+        @_wrapResponse.apply(@, _.union(deferred, arguments))
     deferred.promise
 
   ###*
-   * Save a new resource by sending a payload to the [_currentEndpoint], describing
+   * Save a new resource by sending a payload to the _currentEndpoint, describing
    * the new resource model.
    * If the `id` was provided, the API expects the request to be an update by
    * by providing a payload of {UpdateAction}.
@@ -179,7 +186,7 @@ class BaseService
   update: -> @save.apply(@, arguments)
 
   ###*
-   * Delete an existing resource of the [_currentEndpoint]
+   * Delete an existing resource of the _currentEndpoint
    * If the `id` was provided, the API expects this to be a resource update with given {UpdateAction}
    * @param {Number} version The current version of the resource
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
