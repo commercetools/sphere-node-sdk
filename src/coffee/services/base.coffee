@@ -19,14 +19,14 @@ class BaseService
   ###*
    * Initialize the class.
    * @constructor
-   * @param {Rest} [_rest] An instance of the Rest client (sphere-node-connect)
-   * @param {Logger} [_logger] An instance of a Logger (https://github.com/emmenko/sphere-node-connect#logging)
+   * @param {Rest} _rest An instance of the Rest client (sphere-node-connect)
+   * @param {Logger} _logger An instance of a Logger (https://github.com/emmenko/sphere-node-connect#logging)
   ###
   constructor: (@_rest, @_logger) -> @_setDefaults()
 
   ###*
    * @private
-   * Reset default [_currentEndpoint] and [_params] used to build request endpoints
+   * Reset default _currentEndpoint and _params used to build request endpoints
   ###
   _setDefaults: ->
     ###*
@@ -48,7 +48,7 @@ class BaseService
 
   ###*
    * Build the endpoint path by appending the given id
-   * @param {String} [id] The resource specific id
+   * @param {String} id The resource specific id
    * @return {BaseService} Chained instance of this class
   ###
   byId: (id) ->
@@ -59,7 +59,7 @@ class BaseService
 
   ###*
    * Define a {Predicate} used for quering and filtering a resource.
-   * http://commercetools.de/dev/http-api.html#predicates
+   * @link http://commercetools.de/dev/http-api.html#predicates
    * @param {String} [predicate] A {Predicate} string for the `where` query parameter.
    * @return {BaseService} Chained instance of this class
   ###
@@ -87,7 +87,7 @@ class BaseService
   ###*
    * Define how the query should be sorted.
    * It is possible to add several sort criteria, thereby the order is relevant.
-   * @param {String} [path] sort path to search for
+   * @param {String} path sort path to search for
    * @param {Boolean} [ascending] false indicates descascending. true (default) defines ascending
    * @return {BaseService} Chained instance of this class
   ###
@@ -100,7 +100,7 @@ class BaseService
   ###*
    * Define the page number to be requested from the complete query result
    * (used for pagination as `offset`)
-   * @param {Int} [page] a number > 1 (default is 1)
+   * @param {Int} page a number > 1 (default is 1)
    * @return {BaseService} Chained instance of this class
   ###
   page: (page) ->
@@ -112,11 +112,12 @@ class BaseService
   ###*
    * Define the number of results to return from a query
    * (used for pagination as `limit`)
-   * A limit of `0` returns all results
-   * @param {Int} [perPage] a number >= 0 (default is 100)
+   * @see _pagedFetch if limit is `0` (all results)
+   * @param {Int} perPage a number >= 0 (default is 100)
    * @return {BaseService} Chained instance of this class
   ###
   perPage: (perPage) ->
+    throw new Error 'PerPage (limit) must be a number >= 0' if perPage < 0
     @_params.query.perPage = perPage
     @_logger.debug @_params.query, 'Setting \'perPage\' parameter'
     this
@@ -153,9 +154,9 @@ class BaseService
   ###*
    * Save a new resource by sending a payload to the [_currentEndpoint], describing
    * the new resource model.
-   * If the [id] was provided, the API expects the request to be an update by
+   * If the `id` was provided, the API expects the request to be an update by
    * by providing a payload of {UpdateAction}.
-   * @param {Object} [body] The payload as JSON object
+   * @param {Object} body The payload as JSON object
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
   save: (body) ->
@@ -179,8 +180,8 @@ class BaseService
 
   ###*
    * Delete an existing resource of the [_currentEndpoint]
-   * If the [id] was provided, the API expects this to be a resource update with given {UpdateAction}
-   * @param {Number} [version] The current version of the resource
+   * If the `id` was provided, the API expects this to be a resource update with given {UpdateAction}
+   * @param {Number} version The current version of the resource
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
   delete: (version) ->
