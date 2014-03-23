@@ -14,6 +14,15 @@ class OrderService extends BaseService
   ###
   @baseResourceEndpoint: '/orders'
 
+  ###*
+   * Creates directly an Order by importing it instead of creating it from a Cart.
+   * @param {Object} body The payload as JSON object
+   * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
+  ###
+  import: (body) ->
+    @_currentEndpoint = '/orders/import'
+    @save(body)
+
 ###*
  * The {@link OrderService} service.
 ###
