@@ -32,6 +32,7 @@ describe 'SphereClient', ->
     expect(@client.customers).toBeDefined()
     expect(@client.customerGroups).toBeDefined()
     expect(@client.inventoryEntries).toBeDefined()
+    expect(@client.messages).toBeDefined()
     expect(@client.orders).toBeDefined()
     expect(@client.products).toBeDefined()
     expect(@client.productProjections).toBeDefined()
@@ -79,6 +80,7 @@ describe 'SphereClient', ->
     'customers'
     'customerGroups'
     'inventoryEntries'
+    'messages'
     'orders'
     'products'
     'productProjections'
