@@ -8,7 +8,7 @@ CommentService           = require '../../lib/services/comments'
 CustomObjectService      = require '../../lib/services/custom-objects'
 CustomerService          = require '../../lib/services/customers'
 CustomerGroupService     = require '../../lib/services/customer-groups'
-InventoryService         = require '../../lib/services/inventories'
+InventoryEntryService    = require '../../lib/services/inventory-entries'
 OrderService             = require '../../lib/services/orders'
 ProductService           = require '../../lib/services/products'
 ProductProjectionService = require '../../lib/services/product-projections'
@@ -30,7 +30,7 @@ describe 'Service', ->
     {name: 'CustomObjectService', service: CustomObjectService, path: '/custom-objects'}
     {name: 'CustomerService', service: CustomerService, path: '/customers'}
     {name: 'CustomerGroupService', service: CustomerGroupService, path: '/customer-groups'}
-    {name: 'InventoryService', service: InventoryService, path: '/inventory'}
+    {name: 'InventoryEntryService', service: InventoryEntryService, path: '/inventory'}
     {name: 'OrderService', service: OrderService, path: '/orders'}
     {name: 'ProductService', service: ProductService, path: '/products'}
     {name: 'ProductProjectionService', service: ProductProjectionService, path: '/product-projections'}

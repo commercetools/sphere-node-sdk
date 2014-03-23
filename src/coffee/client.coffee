@@ -8,7 +8,7 @@ CommentService           = require './services/comments'
 CustomObjectService      = require './services/custom-objects'
 CustomerService          = require './services/customers'
 CustomerGroupService     = require './services/customer-groups'
-InventoryService         = require './services/inventories'
+InventoryEntryService    = require './services/inventory-entries'
 OrderService             = require './services/orders'
 ProductService           = require './services/products'
 ProductProjectionService = require './services/product-projections'
@@ -56,7 +56,7 @@ class SphereClient
     @customObjects      = new CustomObjectService @_rest, @_logger
     @customers          = new CustomerService @_rest, @_logger
     @customerGroups     = new CustomerGroupService @_rest, @_logger
-    @inventories        = new InventoryService @_rest, @_logger
+    @inventoryEntries   = new InventoryEntryService @_rest, @_logger
     @orders             = new OrderService @_rest, @_logger
     @products           = new ProductService @_rest, @_logger
     @productProjections = new ProductProjectionService @_rest, @_logger
