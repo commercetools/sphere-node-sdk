@@ -17,6 +17,7 @@ This module is a standalone Node.js client for accessing the Sphere HTTP APIs.
       * [Query all (limit 0)](#query-all-limit0)
       * [Staged products](#staged-products)
     * [Create resource](#create-resource)
+      * [Import orders](#import-orders)
     * [Update resource](#update-resource)
     * [Delete resource](#delete-resource)
   * [Error handling](#error-handling)
@@ -54,16 +55,19 @@ The `SphereClient` provides a set of Services to connect with the related API en
 - `channels`
 - `comments`
 - `customObjects`
-- `customers`
 - `customerGroups`
-- `inventories`
+- `customers`
+- `inventoryEntries`
+- `messages`
 - `orders`
-- `products`
 - `productProjections`
 - `productTypes`
+- `products`
 - `reviews`
 - `shippingMethods`
+- `states`
 - `taxCategories`
+- `zones`
 
 ### Types of requests
 Requests to the HTTP API are obviously asynchronous and they all return a [`Q` promise](https://github.com/kriskowal/q).
@@ -153,7 +157,6 @@ client.perPage(0).fetch()
 More info [here](https://github.com/emmenko/sphere-node-connect#paged-requests).
 
 ##### Staged products
-
 The `ProductProjectionService` returns a representation of the products called [ProductProjection](http://commercetools.de/dev/http-api-projects-products.html#product-projection) which corresponds basically to a **catalog** or **staged** representation of a product. When using this service you can specify which projection of the product you would like to have by defining a `staged` parameter (default is `true`).
 
 ```coffeescript
@@ -171,7 +174,6 @@ client.productProjections
 #### Create resource
 All endpoints allow a resource to be created by posting a JSON `Representation` of the selected resource as a body payload.
 
-
 ```coffeescript
 product =
   name:
@@ -185,6 +187,14 @@ client.products.save(product)
   # a JSON object containing either a result or a SPHERE.IO HTTP error
 .fail (error) ->
   # either the request failed or was rejected (the response returned an error)
+```
+
+##### Import orders
+The `OrderService` exposes a specific function to [import orders](http://commercetools.de/dev/http-api-projects-orders-import.html).
+Use it as you would use the `save` function, just internally the correct API endpoint is set.
+
+```coffeescript
+client.orders.import(order)
 ```
 
 #### Update resource
