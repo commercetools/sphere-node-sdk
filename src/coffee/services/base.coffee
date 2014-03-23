@@ -152,11 +152,11 @@ class BaseService
     if @_params.query.perPage is 0
       # fetch all results in chunks
       @_rest.PAGED endpoint, =>
-        @_wrapResponse.apply(@, _.union(deferred, arguments))
+        @_wrapResponse.apply(@, [deferred].concat(_.toArray(arguments)))
       , (progress) -> deferred.notify progress
     else
       @_rest.GET endpoint, =>
-        @_wrapResponse.apply(@, _.union(deferred, arguments))
+        @_wrapResponse.apply(@, [deferred].concat(_.toArray(arguments)))
     deferred.promise
 
   ###*
@@ -175,7 +175,7 @@ class BaseService
     payload = JSON.stringify body
     endpoint = @_currentEndpoint
     @_rest.POST endpoint, payload, =>
-      @_wrapResponse.apply(@, _.union(deferred, arguments))
+      @_wrapResponse.apply(@, [deferred].concat(_.toArray(arguments)))
     deferred.promise
 
   ###*
@@ -201,7 +201,7 @@ class BaseService
     deferred = Q.defer()
     endpoint = "#{@_currentEndpoint}?version=#{version}"
     @_rest.DELETE endpoint, =>
-      @_wrapResponse.apply(@, _.union(deferred, arguments))
+      @_wrapResponse.apply(@, [deferred].concat(_.toArray(arguments)))
     deferred.promise
 
   ###*
