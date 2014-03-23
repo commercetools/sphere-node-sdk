@@ -39,6 +39,7 @@ describe 'SphereClient', ->
     expect(@client.productTypes).toBeDefined()
     expect(@client.reviews).toBeDefined()
     expect(@client.shippingMethods).toBeDefined()
+    expect(@client.states).toBeDefined()
     expect(@client.taxCategories).toBeDefined()
 
   it 'should throw error if no credentials are given', ->
@@ -87,6 +88,7 @@ describe 'SphereClient', ->
     'productTypes'
     'reviews'
     'shippingMethods'
+    'states'
     'taxCategories'
   ], (name) ->
 

@@ -16,6 +16,7 @@ ProductProjectionService = require './services/product-projections'
 ProductTypeService       = require './services/product-types'
 ReviewService            = require './services/reviews'
 ShippingMethodService    = require './services/shipping-methods'
+StateService             = require './services/states'
 TaxCategoryService       = require './services/tax-categories'
 
 ###*
@@ -65,6 +66,7 @@ class SphereClient
     @productTypes       = new ProductTypeService @_rest, @_logger
     @reviews            = new ReviewService @_rest, @_logger
     @shippingMethods    = new ShippingMethodService @_rest, @_logger
+    @states             = new StateService @_rest, @_logger
     @taxCategories      = new TaxCategoryService @_rest, @_logger
 
 ###*
