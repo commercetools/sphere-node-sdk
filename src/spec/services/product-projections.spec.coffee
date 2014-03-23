@@ -7,14 +7,6 @@ ProductProjectionService = require '../../lib/services/product-projections'
 describe 'ProductProjectionService', ->
 
   beforeEach ->
-    @restMock =
-      config: {}
-      GET: (endpoint, callback) ->
-      POST: -> (endpoint, payload, callback) ->
-      PUT: ->
-      DELETE: ->
-      _preRequest: ->
-      _doRequest: ->
     @loggerMock =
       trace: ->
       debug: ->
@@ -22,11 +14,7 @@ describe 'ProductProjectionService', ->
       warn: ->
       error: ->
       fatal: ->
-
-  afterEach ->
-    @restMock = null
-    @loggerMock = null
+    @service = new ProductProjectionService null, @loggerMock
 
   it 'should query for staged', ->
-    service = new ProductProjectionService @restMock, @loggerMock
-    expect(service.staged()._queryString()).toBe 'limit=100&staged=true'
+    expect(@service.staged()._queryString()).toBe 'limit=100&staged=true'
