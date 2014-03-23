@@ -18,6 +18,7 @@ ReviewService            = require '../../lib/services/reviews'
 ShippingMethodService    = require '../../lib/services/shipping-methods'
 StateService             = require '../../lib/services/states'
 TaxCategoryService       = require '../../lib/services/tax-categories'
+ZoneService              = require '../../lib/services/zones'
 
 describe 'Service', ->
 
@@ -42,6 +43,7 @@ describe 'Service', ->
     {name: 'ShippingMethodService', service: ShippingMethodService, path: '/shipping-methods'}
     {name: 'StateService', service: StateService, path: '/states'}
     {name: 'TaxCategoryService', service: TaxCategoryService, path: '/tax-categories'}
+    {name: 'ZoneService', service: ZoneService, path: '/zones'}
   ], (o) ->
 
     describe ":: #{o.name}", ->

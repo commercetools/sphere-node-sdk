@@ -41,6 +41,7 @@ describe 'SphereClient', ->
     expect(@client.shippingMethods).toBeDefined()
     expect(@client.states).toBeDefined()
     expect(@client.taxCategories).toBeDefined()
+    expect(@client.zones).toBeDefined()
 
   it 'should throw error if no credentials are given', ->
     client = -> new SphereClient foo: 'bar'
@@ -90,6 +91,7 @@ describe 'SphereClient', ->
     'shippingMethods'
     'states'
     'taxCategories'
+    'zones'
   ], (name) ->
 
     describe ":: #{name}", ->

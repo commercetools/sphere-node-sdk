@@ -18,6 +18,7 @@ ReviewService            = require './services/reviews'
 ShippingMethodService    = require './services/shipping-methods'
 StateService             = require './services/states'
 TaxCategoryService       = require './services/tax-categories'
+ZoneService              = require './services/zones'
 
 ###*
  * Defines a SphereClient.
@@ -68,6 +69,7 @@ class SphereClient
     @shippingMethods    = new ShippingMethodService @_rest, @_logger
     @states             = new StateService @_rest, @_logger
     @taxCategories      = new TaxCategoryService @_rest, @_logger
+    @zones              = new ZoneService @_rest, @_logger
 
 ###*
  * The {@link SphereClient} client.
