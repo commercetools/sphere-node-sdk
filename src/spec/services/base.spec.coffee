@@ -90,7 +90,7 @@ describe 'Service', ->
         @service.byId(ID)
         expect(@service._currentEndpoint).toBe "#{o.path}/#{ID}"
 
-      _.each ['byId', 'where', 'whereOperator', 'page', 'perPage'], (f) ->
+      _.each ['byId', 'where', 'whereOperator', 'page', 'perPage', 'sort'], (f) ->
         it "should chain '#{f}'", ->
           clazz = @service[f]()
           expect(clazz).toEqual @service

@@ -74,7 +74,7 @@ class BaseService
 
   ###*
    * Define the logical operator to combine multiple `where` query parameters.
-   * @param {String} [operator] a logical operator (default `and`)
+   * @param {String} [operator] A logical operator (default `and`)
    * @return {BaseService} Chained instance of this class
   ###
   whereOperator: (operator = "and") ->
@@ -87,8 +87,9 @@ class BaseService
   ###*
    * Define how the query should be sorted.
    * It is possible to add several sort criteria, thereby the order is relevant.
-   * @param {String} path sort path to search for
-   * @param {Boolean} [ascending] false indicates descascending. true (default) defines ascending
+   * @param {String} path Sort path to search for
+   * @param {Boolean} [ascending] Whether the direction should be ascending or not, (default `asc`)
+   *                              `true` = asc, `false` = desc
    * @return {BaseService} Chained instance of this class
   ###
   sort: (path, ascending = true) ->
@@ -100,7 +101,7 @@ class BaseService
   ###*
    * Define the page number to be requested from the complete query result
    * (used for pagination as `offset`)
-   * @param {Int} page a number > 1 (default is 1)
+   * @param {Int} page A number > 1 (default is 1)
    * @return {BaseService} Chained instance of this class
   ###
   page: (page) ->
@@ -113,7 +114,7 @@ class BaseService
    * Define the number of results to return from a query
    * (used for pagination as `limit`)
    * @see _pagedFetch if limit is `0` (all results)
-   * @param {Int} perPage a number >= 0 (default is 100)
+   * @param {Int} perPage A number >= 0 (default is 100)
    * @return {BaseService} Chained instance of this class
   ###
   perPage: (perPage) ->
@@ -208,7 +209,7 @@ class BaseService
    * Wrap responses and decide whether to reject or resolve the promise
    * @param {Promise} deferred The deferred promise
    * @param {Object} error An error object when applicable (usually from `http.ClientRequest` object) otherwise `null`
-   * @param {Object} response An `http.IncomingMessage object containing all kind of information about the request / response
+   * @param {Object} response An `http.IncomingMessage` object containing all kind of information about the request / response
    * @param {Object} body A JSON object containing the HTTP API resource or error messages
   ###
   _wrapResponse: (deferred, error, response, body) ->
