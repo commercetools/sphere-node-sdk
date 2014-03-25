@@ -87,8 +87,8 @@ class BaseService
     this
 
   ###*
-   * This is a convinient method to query for the latest changes.
-   * @param {String} [period] time period of format "numberX" where "X" is one of the follwing units:
+   * This is a convenient method to query for the latest changes.
+   * @param {String} period time period of format "numberX" where "X" is one of the follwing units:
    * s -> seconds
    * m -> minutes
    * h -> hours
