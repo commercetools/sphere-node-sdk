@@ -8,6 +8,9 @@ Utils = require '../utils'
 ###
 class BaseService
 
+  ###*
+   * RegEx to parse time period for last function.
+  ###
   REGEX_LAST = /^(\d+)([s|m|h|d])$/
 
   ###*
