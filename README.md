@@ -106,6 +106,7 @@ The `SphereClient` helps you build those requests with following methods:
 
 - `where(predicate)` defines a URI encoded predicate from the given string (can be set multiple times)
 - `whereOperator(operator)` defines the logical operator to combine multiple where parameters
+- `last(period)` defines a time period for a query on the `lastModifiedAt` attribute of all resources
 - `sort(path, ascending)` defines how the query result should be sorted - true (default) defines ascending where as false indicates descascending
 - `page(n)` defines the page number to be requested from the complete query result (default is `1`). **If < 1 it throws an error**
 - `perPage(n)` defines the number of results to return from a query (default is `100`). If set to `0` all results are returned (_more [info](https://github.com/emmenko/sphere-node-connect#paged-requests)_). **If < 0 it throws an error**
@@ -155,6 +156,25 @@ client.perPage(0).fetch()
 ```
 
 More info [here](https://github.com/emmenko/sphere-node-connect#paged-requests).
+
+##### Query for modifications
+If you want to retrieve only those resources that changed over a given time, you can chain the `last` functions,
+that builds a query for you based on the `lastModifiedAt` attribute.
+
+The format of the `period` parameter is a number followed by one of the following characters:
+- `s` for seconds - eg. `30s`
+- `m` for minutes - eg. `15m`
+- `h` for hours - eg. `6h`
+- `d` for days - eg. `7d`
+
+```coffeescript
+# example
+
+client = new SphereClient {...}
+client.orders.last('2h').fetch()
+```
+
+> Please be aware that `last` is just another `where` clause and thus depends on the `operator` you choose - default is `and`.
 
 ##### Staged products
 The `ProductProjectionService` returns a representation of the products called [ProductProjection](http://commercetools.de/dev/http-api-projects-products.html#product-projection) which corresponds basically to a **catalog** or **staged** representation of a product. When using this service you can specify which projection of the product you would like to have by defining a `staged` parameter (default is `true`).
