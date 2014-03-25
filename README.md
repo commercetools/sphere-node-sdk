@@ -107,7 +107,7 @@ The `SphereClient` helps you build those requests with following methods:
 
 - `where(predicate)` defines a URI encoded predicate from the given string (can be set multiple times)
 - `whereOperator(operator)` defines the logical operator to combine multiple where parameters
-- `last(period)` defines a time period for a query on the `lastModifiedAt` attribute of all resources
+- `last(period)` defines a [time period](#query-for-modifications) for a query on the `lastModifiedAt` attribute of all resources
 - `sort(path, ascending)` defines how the query result should be sorted - true (default) defines ascending where as false indicates descascending
 - `page(n)` defines the page number to be requested from the complete query result (default is `1`). **If < 1 it throws an error**
 - `perPage(n)` defines the number of results to return from a query (default is `100`). If set to `0` all results are returned (_more [info](https://github.com/emmenko/sphere-node-connect#paged-requests)_). **If < 0 it throws an error**
