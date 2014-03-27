@@ -9,6 +9,11 @@ Utils = require '../utils'
 class BaseService
 
   ###*
+   * RegEx to parse time period for last function.
+  ###
+  REGEX_LAST = /^(\d+)([s|m|h|d])$/
+
+  ###*
    * @const
    * @private
    * Base path for a API resource endpoint (to be overriden by specific service)
@@ -83,6 +88,34 @@ class BaseService
       else 'and'
     @_logger.debug @_params.query, 'Setting \'where\' operator'
     this
+
+  ###*
+   * This is a convenient method to query for the latest changes.
+   * @param {String} period time period of format "numberX" where "X" is one of the follwing units:
+   * s -> seconds
+   * m -> minutes
+   * h -> hours
+   * d -> days
+   * @return {BaseService} Chained instance of this class
+  ###
+  last: (period) ->
+    throw new Error "Can not parse period '#{period}'" unless REGEX_LAST.test(period)
+
+    matches = REGEX_LAST.exec(period)
+    amount = matches[1]
+    kind = matches[2]
+
+    millis = switch kind
+      when 's' then amount * 1000
+      when 'm' then amount * 1000 * 60
+      when 'h' then amount * 1000 * 60 * 60
+      when 'd' then amount * 1000 * 60 * 60 * 24
+      else 0
+
+    now = new Date().getTime()
+    queryData = new Date(now - millis).toISOString()
+
+    @where("lastModifiedAt > \"#{queryData}\"")
 
   ###*
    * Define how the query should be sorted.

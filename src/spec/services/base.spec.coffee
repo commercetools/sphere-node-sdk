@@ -125,6 +125,25 @@ describe 'Service', ->
         @service.whereOperator('foo')
         expect(@service._params.query.operator).toBe 'and'
 
+      it 'should allow to query for last second', ->
+        @service.last('30s')
+        expect(@service._params.query.where[0]).toMatch /lastModifiedAt%20%3E%20%22201\d-\d\d-\d\dT\d\d%3A\d\d%3A\d\d.\d\d\dZ%22/
+
+      it 'should allow to query for last minutes', ->
+        @service.last('15m')
+        expect(@service._params.query.where[0]).toMatch /lastModifiedAt%20%3E%20%22201\d-\d\d-\d\dT\d\d%3A\d\d%3A\d\d.\d\d\dZ%22/
+
+      it 'should allow to query for last hours', ->
+        @service.last('12h')
+        expect(@service._params.query.where[0]).toMatch /lastModifiedAt%20%3E%20%22201\d-\d\d-\d\dT\d\d%3A\d\d%3A\d\d.\d\d\dZ%22/
+
+      it 'should allow to query for last days', ->
+        @service.last('7d')
+        expect(@service._params.query.where[0]).toMatch /lastModifiedAt%20%3E%20%22201\d-\d\d-\d\dT\d\d%3A\d\d%3A\d\d.\d\d\dZ%22/
+
+      it 'should throw an exception when the period for last can not be parsed', ->
+        expect(=> @service.last('30')).toThrow new Error "Can not parse period '30'"
+
       it 'should add page number', ->
         @service.page(5)
         expect(@service._params.query.page).toBe 5
