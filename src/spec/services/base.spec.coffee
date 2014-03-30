@@ -143,6 +143,11 @@ describe 'Service', ->
 
       it 'should throw an exception when the period for last can not be parsed', ->
         expect(=> @service.last('30')).toThrow new Error "Can not parse period '30'"
+        expect(=> @service.last('-1h')).toThrow new Error "Can not parse period '-1h'"
+
+      it 'should do nothing for 0 as input', ->
+        @service.last('0m')
+        expect(_.size @service._params.query.where).toBe 0
 
       it 'should add page number', ->
         @service.page(5)

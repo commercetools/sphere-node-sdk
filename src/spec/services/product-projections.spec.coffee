@@ -18,3 +18,6 @@ describe 'ProductProjectionService', ->
 
   it 'should query for staged', ->
     expect(@service.staged()._queryString()).toBe 'limit=100&staged=true'
+
+  it 'should query for published', ->
+    expect(@service.staged(false)._queryString()).toBe 'limit=100'

@@ -18,10 +18,11 @@ class ProductProjectionService extends BaseService
 
   ###*
    * Define to fetch only staged products
+   * @param Boolean [queryStaged] true to query staged products (default). False to query published products
    * @return {ProductProjectionService} Chained instance of this class
   ###
-  staged: ->
-    @_staged = true
+  staged: (queryStaged = true) ->
+    @_staged = queryStaged
     this
 
   ###*

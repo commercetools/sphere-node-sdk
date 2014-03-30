@@ -103,8 +103,11 @@ class BaseService
 
     matches = REGEX_LAST.exec(period)
     amount = matches[1]
-    kind = matches[2]
 
+    if amount is '0'
+      return this
+
+    kind = matches[2]
     millis = switch kind
       when 's' then amount * 1000
       when 'm' then amount * 1000 * 60
@@ -114,7 +117,6 @@ class BaseService
 
     now = new Date().getTime()
     queryData = new Date(now - millis).toISOString()
-
     @where("lastModifiedAt > \"#{queryData}\"")
 
   ###*
