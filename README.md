@@ -13,6 +13,7 @@ This module is a standalone Node.js client for accessing the Sphere HTTP APIs.
 * [Documentation](#documentation)
   * [Services](#services)
   * [Types of requests](#types-of-requests)
+    * [Responses](#responses)
     * [Query request](#query-request)
       * [Query all (limit 0)](#query-all-limit0)
       * [Query for modifications](#query-for-modifications)
@@ -78,9 +79,27 @@ client = new SphereClient {...}
 
 client.products.fetch()
 .then (result) ->
-  # a JSON object containing either a result or a SPHERE.IO HTTP error
+  # a JSON object containing a statusCode and a body of either a result or a SPHERE.IO HTTP error
 .fail (error) ->
   # either the request failed or was rejected (the response returned an error)
+```
+
+#### Responses
+When a [`Q` promise](https://github.com/kriskowal/q) is resolved or rejected a JSON object is always returned and it contains a `statusCode` plus the response body or error messages
+
+```coffeescript
+# promise resolved
+{
+  statusCode: 200 # or other successful status codes
+  body: { ... } # the body of the response coming from SPHERE.IO
+}
+
+# promise rejected
+{
+  statusCode: 400 # or other error codes
+  message: 'Oops, something went wrong' # see http://commercetools.de/dev/http-api-errors.html
+  ...
+}
 ```
 
 Current methods using promises are:

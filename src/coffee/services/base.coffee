@@ -256,7 +256,9 @@ class BaseService
     else
       # TODO: check other possible acceptable codes (304, ...)
       if 200 <= response.statusCode < 300
-        deferred.resolve body
+        deferred.resolve
+          statusCode: response.statusCode
+          body: body
       else if response.statusCode is 404
         endpoint = response.request.uri.path
         # since the API doesn't return an error message for a resource not found
@@ -265,6 +267,7 @@ class BaseService
           statusCode: 404
           message: "Endpoint '#{endpoint}' not found."
       else
+        # a ShereError response e.g.: {statusCode: 400, message: 'Oops, something went wrong'}
         deferred.reject body
 
 

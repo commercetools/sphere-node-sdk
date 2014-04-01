@@ -107,27 +107,31 @@ describe 'SphereClient', ->
         .page(2)
         .perPage(5)
         .fetch().then (result) ->
-          expect(result).toEqual foo: 'bar'
+          expect(result.statusCode).toBe 200
+          expect(result.body).toEqual foo: 'bar'
           done()
 
       it 'should get resource by id', (done) ->
         spyOn(@client._rest, "GET").andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {foo: 'bar'})
         service = @client[name]
         service.byId(ID).fetch().then (result) ->
-          expect(result).toEqual foo: 'bar'
+          expect(result.statusCode).toBe 200
+          expect(result.body).toEqual foo: 'bar'
           done()
 
       it 'should save new resource', (done) ->
         spyOn(@client._rest, "POST").andCallFake (endpoint, payload, callback) -> callback(null, {statusCode: 200}, {foo: 'bar'})
         service = @client[name]
         service.save({foo: 'bar'}).then (result) ->
-          expect(result).toEqual foo: 'bar'
+          expect(result.statusCode).toBe 200
+          expect(result.body).toEqual foo: 'bar'
           done()
 
       it 'should delete resource', (done) ->
         spyOn(@client._rest, "DELETE").andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {foo: 'bar'})
         service = @client[name]
         service.byId('123-abc').delete(4).then (result) =>
-          expect(result).toEqual foo: 'bar'
+          expect(result.statusCode).toBe 200
+          expect(result.body).toEqual foo: 'bar'
           expect(@client._rest.DELETE).toHaveBeenCalledWith "#{service._currentEndpoint}/123-abc?version=4", jasmine.any(Function)
           done()

@@ -192,7 +192,8 @@ describe 'Service', ->
         it 'should resolve the promise on fetch', (done) ->
           spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {foo: 'bar'})
           @service.fetch().then (result) ->
-            expect(result).toEqual foo: 'bar'
+            expect(result.statusCode).toBe 200
+            expect(result.body).toEqual foo: 'bar'
             done()
 
         it 'should reject the promise on fetch (404)', (done) ->
@@ -236,9 +237,10 @@ describe 'Service', ->
             spyOn(@restMock, 'PAGED').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: 1, results: [{foo: 'bar'}]})
             @service.perPage(0).fetch()
             .then (result) ->
-              expect(result.total).toBe 1
-              expect(result.results.length).toBe 1
-              expect(result.results[0]).toEqual foo: 'bar'
+              expect(result.statusCode).toBe 200
+              expect(result.body.total).toBe 1
+              expect(result.body.results.length).toBe 1
+              expect(result.body.results[0]).toEqual foo: 'bar'
               done()
             .fail (error) -> done(error)
 
@@ -271,7 +273,8 @@ describe 'Service', ->
         it 'should resolve the promise on save', (done) ->
           spyOn(@restMock, 'POST').andCallFake (endpoint, payload, callback) -> callback(null, {statusCode: 200}, {foo: 'bar'})
           @service.save({foo: 'bar'}).then (result) ->
-            expect(result).toEqual foo: 'bar'
+            expect(result.statusCode).toBe 200
+            expect(result.body).toEqual foo: 'bar'
             done()
 
         it 'should reject the promise on save (404)', (done) ->
@@ -326,7 +329,8 @@ describe 'Service', ->
         it 'should resolve the promise on delete', (done) ->
           spyOn(@restMock, 'DELETE').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {foo: 'bar'})
           @service.byId('123-abc').delete(1).then (result) ->
-            expect(result).toEqual foo: 'bar'
+            expect(result.statusCode).toBe 200
+            expect(result.body).toEqual foo: 'bar'
             done()
 
         it 'should reject the promise on delete (404)', (done) ->
