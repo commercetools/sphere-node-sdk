@@ -27,7 +27,7 @@ class BaseService
    * @param {Rest} _rest An instance of the Rest client (sphere-node-connect)
    * @param {Logger} _logger An instance of a Logger (https://github.com/emmenko/sphere-node-connect#logging)
   ###
-  constructor: (@_rest, @_logger) -> @_setDefaults()
+  constructor: (@_rest, @_logger, @_task) -> @_setDefaults()
 
   ###*
    * @private
@@ -233,10 +233,11 @@ class BaseService
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
   _get: (endpoint) ->
-    deferred = Q.defer()
-    @_rest.GET endpoint, =>
-      @_wrapResponse.apply(@, [deferred].concat(_.toArray(arguments)))
-    deferred.promise
+    @_task.addTask =>
+      deferred = Q.defer()
+      @_rest.GET endpoint, =>
+        @_wrapResponse.apply(@, [deferred].concat(_.toArray(arguments)))
+      deferred.promise
 
   ###*
    * Return a {Promise} for a PAGED call. It can be overridden for custom logic.
@@ -244,12 +245,13 @@ class BaseService
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
   _paged: (endpoint) ->
-    deferred = Q.defer()
-    # fetch all results in chunks
-    @_rest.PAGED endpoint, =>
-      @_wrapResponse.apply(@, [deferred].concat(_.toArray(arguments)))
-    , (progress) -> deferred.notify progress
-    deferred.promise
+    @_task.addTask =>
+      deferred = Q.defer()
+      # fetch all results in chunks
+      @_rest.PAGED endpoint, =>
+        @_wrapResponse.apply(@, [deferred].concat(_.toArray(arguments)))
+      , (progress) -> deferred.notify progress
+      deferred.promise
 
   ###*
    * Return a {Promise} for a POST call. It can be overridden for custom logic.
@@ -258,10 +260,11 @@ class BaseService
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
   _save: (endpoint, payload) ->
-    deferred = Q.defer()
-    @_rest.POST endpoint, payload, =>
-      @_wrapResponse.apply(@, [deferred].concat(_.toArray(arguments)))
-    deferred.promise
+    @_task.addTask =>
+      deferred = Q.defer()
+      @_rest.POST endpoint, payload, =>
+        @_wrapResponse.apply(@, [deferred].concat(_.toArray(arguments)))
+      deferred.promise
 
   ###*
    * Return a {Promise} for a DELETE call. It can be overridden for custom logic.
@@ -269,10 +272,11 @@ class BaseService
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
   _delete: (endpoint) ->
-    deferred = Q.defer()
-    @_rest.DELETE endpoint, =>
-      @_wrapResponse.apply(@, [deferred].concat(_.toArray(arguments)))
-    deferred.promise
+    @_task.addTask =>
+      deferred = Q.defer()
+      @_rest.DELETE endpoint, =>
+        @_wrapResponse.apply(@, [deferred].concat(_.toArray(arguments)))
+      deferred.promise
 
   ###*
    * @private

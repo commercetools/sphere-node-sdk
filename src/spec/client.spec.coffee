@@ -1,5 +1,7 @@
 Q = require 'q'
 _ = require 'underscore'
+{Rest} = require 'sphere-node-connect'
+{TaskQueue} = require 'sphere-node-utils'
 SphereClient = require '../lib/client'
 Logger = require '../lib/logger'
 Config = require('../config').config
@@ -24,6 +26,8 @@ describe 'SphereClient', ->
   it 'should initialize with credentials', ->
     expect(@client).toBeDefined()
     expect(@client._rest).toBeDefined()
+    expect(@client._logger).toBeDefined()
+    expect(@client._task).toBeDefined()
     expect(@client.carts).toBeDefined()
     expect(@client.categories).toBeDefined()
     expect(@client.channels).toBeDefined()
@@ -54,13 +58,13 @@ describe 'SphereClient', ->
       client = -> new SphereClient config: opt
       expect(client).toThrow new Error("Missing '#{key}'")
 
-  it 'should initialize and extend logger', ->
+  it 'should initialize and extend Logger', ->
     expect(@client._rest.logger).toBeDefined()
     expect(@client._rest.logger.fields.name).toBe 'sphere-node-client'
     expect(@client._rest.logger.streams[1].path).toBe './sphere-node-client-debug.log'
     expect(@client._rest.logger.fields.widget_type).toBe 'sphere-node-connect'
 
-  it 'should initialize with given logger', ->
+  it 'should initialize with given Logger', ->
     existingLogger = new MyLogger()
     client = new SphereClient
       config: Config
@@ -71,6 +75,18 @@ describe 'SphereClient', ->
     expect(client._logger.streams[1].path).toBe './foo-test.log'
     expect(client._logger.fields.widget_type).toBe 'sphere-node-client'
     expect(client._rest.logger.fields.widget_type).toBe 'sphere-node-connect'
+
+  it 'should initialize and given Rest', ->
+    existingRest = new Rest config: Config
+    client = new SphereClient rest: existingRest
+    expect(client._rest).toEqual existingRest
+
+  it 'should initialize and given TaskQueue', ->
+    existingTaskQueue = new TaskQueue
+    client = new SphereClient
+      config: Config
+      task: existingTaskQueue
+    expect(client._task).toEqual existingTaskQueue
 
 
   _.each [

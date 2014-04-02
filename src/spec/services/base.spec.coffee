@@ -1,5 +1,6 @@
 _ = require 'underscore'
 Q = require 'q'
+{TaskQueue} = require 'sphere-node-utils'
 BaseService              = require '../../lib/services/base'
 CartService              = require '../../lib/services/carts'
 CategoryService          = require '../../lib/services/categories'
@@ -65,12 +66,14 @@ describe 'Service', ->
           warn: ->
           error: ->
           fatal: ->
-        @service = new o.service @restMock, @loggerMock
+        @task = new TaskQueue
+        @service = new o.service @restMock, @loggerMock, @task
 
       afterEach ->
         @service = null
         @restMock = null
         @loggerMock = null
+        @task = null
 
       it 'should have constants defined', ->
         expect(o.service.baseResourceEndpoint).toBe o.path
