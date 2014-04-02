@@ -200,7 +200,6 @@ describe 'Service', ->
             expect(result).toEqual ['done']
             done()
           .fail (err) ->
-            console.err err
             done err
 
         it 'should should call process function for several page', (done) ->
@@ -215,7 +214,6 @@ describe 'Service', ->
             expect(result[2]).toMatch /\?limit=20&offset=80$/
             done()
           .fail (err) ->
-            console.err err
             done err
 
         it 'should fail if the process functions rejects', (done) ->
@@ -239,7 +237,6 @@ describe 'Service', ->
             expect(result[1]).toMatch /\?where=foo%3Dbar&limit=20&offset=20&sort=name%20DESC%20asc$/
             done()
           .fail (err) ->
-            console.err err
             done err
 
       describe ':: fetch', ->
