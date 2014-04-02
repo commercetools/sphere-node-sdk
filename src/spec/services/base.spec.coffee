@@ -186,6 +186,62 @@ describe 'Service', ->
         _service.fetch().then (result) -> #noop
         expect(@service._params.id).not.toBeDefined()
 
+      describe ':: process', ->
+        it 'should return promise', ->
+          promise = @service.process( -> )
+          expect(Q.isPromise(promise)).toBe true
+
+        it 'should should call process function for one page', (done) ->
+          spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: 1, results: []})
+          fn = (payload) ->
+            Q 'done'
+          @service.process(fn)
+          .then (result) ->
+            expect(result).toEqual ['done']
+            done()
+          .fail (err) ->
+            console.err err
+            done err
+
+        it 'should should call process function for several page', (done) ->
+          spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: 90, endpoint: endpoint})
+          fn = (payload) ->
+            Q payload.body.endpoint
+          @service.page(3).perPage(20).process(fn)
+          .then (result) ->
+            expect(_.size result).toBe 3
+            expect(result[0]).toMatch /\?limit=20&offset=40$/
+            expect(result[1]).toMatch /\?limit=20&offset=60$/
+            expect(result[2]).toMatch /\?limit=20&offset=80$/
+            done()
+          .fail (err) ->
+            console.err err
+            done err
+
+        it 'should fail if the process functions rejects', (done) ->
+          spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: 100})
+          fn = (payload) ->
+            Q.reject 'shit happens'
+          @service.process(fn)
+          .then (result) ->
+            done 'not expected!'
+          .fail (err) ->
+            done()
+
+        it 'should call each page with the same query', (done) ->
+          spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: 21, endpoint: endpoint})
+          fn = (payload) ->
+            Q payload.body.endpoint
+          @service.where('foo=bar').whereOperator('or').sort('name DESC').process(fn)
+          .then (result) ->
+            expect(_.size result).toBe 2
+            expect(result[0]).toMatch /\?where=foo%3Dbar&limit=20&sort=name%20DESC%20asc$/
+            expect(result[1]).toMatch /\?where=foo%3Dbar&limit=20&offset=20&sort=name%20DESC%20asc$/
+            done()
+          .fail (err) ->
+            console.err err
+            done err
+
       describe ':: fetch', ->
 
         it 'should return promise on fetch', ->

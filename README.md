@@ -327,12 +327,26 @@ client.products.save({})
 ```
 
 ### Batch processing
-Batch processing allows a list of requests to be executed in chunks, to avoid too many parallel requests.
-There are some [**mixins**](https://github.com/sphereio/sphere-node-utils#mixins) available in the [`sphere-node-utils`](https://github.com/sphereio/sphere-node-utils) repository.
-
+Batch processing allows to process a lot of resources in chunks.
+Using this approach you can balance between memory usage and parallelism
 
 ## Examples
-_(Coming soon)_
+```coffeescript
+fn = (payload) ->
+  deferred = Q.defer()
+  # do something with the payload
+  if # something unexpected happens
+    deferred.reject 'BAD'
+  else # good case
+    deferred.resolve 'OK'
+  deferred.promise
+
+client.products.perPage(20).process(fn)
+.then (result) ->
+  # result is an array - eg ['OK', 'OK', 'OK'] if you have 41 to 60 products - the function fn is called three times
+.fail (error) ->
+  # eg 'BAD'
+```
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
