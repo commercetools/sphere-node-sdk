@@ -38,7 +38,7 @@ describe 'Integration Channels', ->
       done()
     .fail (error) =>
       @logger.error error
-      done(error)
+      done(JSON.stringify(error))
 
   afterEach (done) ->
     @client.states.byId(@state.id).delete(@state.version)
@@ -48,7 +48,7 @@ describe 'Integration Channels', ->
       done()
     .fail (error) =>
       @logger.error error
-      done(error)
+      done(JSON.stringify(error))
 
   it 'should update a state', (done) ->
     @client.states.byId(@state.id).update(updateState(@state.version))
@@ -60,7 +60,7 @@ describe 'Integration Channels', ->
       done()
     .fail (error) =>
       @logger.error error
-      done(error)
+      done(JSON.stringify(error))
 
   it 'should create some states and use them as transitions references', (done) ->
     Q.all _.map [1..101], => @client.states.save(newState())
@@ -86,5 +86,5 @@ describe 'Integration Channels', ->
         done()
     .fail (error) =>
       @logger.error error
-      done(error)
+      done(JSON.stringify(error))
 
