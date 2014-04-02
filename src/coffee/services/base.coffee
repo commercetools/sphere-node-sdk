@@ -179,20 +179,14 @@ class BaseService
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
   fetch: ->
-    deferred = Q.defer()
     queryString = @_queryString()
     endpoint = @_currentEndpoint
     endpoint += "?#{queryString}" if queryString
 
     if @_params.query.perPage is 0
-      # fetch all results in chunks
-      @_rest.PAGED endpoint, =>
-        @_wrapResponse.apply(@, [deferred].concat(_.toArray(arguments)))
-      , (progress) -> deferred.notify progress
+      @_paged(endpoint)
     else
-      @_rest.GET endpoint, =>
-        @_wrapResponse.apply(@, [deferred].concat(_.toArray(arguments)))
-    deferred.promise
+      @_get(endpoint)
 
   ###*
    * Save a new resource by sending a payload to the _currentEndpoint, describing
@@ -206,12 +200,9 @@ class BaseService
     unless body
       throw new Error "Body payload is required for creating a resource (endpoint: #{@_currentEndpoint})"
 
-    deferred = Q.defer()
     payload = JSON.stringify body
     endpoint = @_currentEndpoint
-    @_rest.POST endpoint, payload, =>
-      @_wrapResponse.apply(@, [deferred].concat(_.toArray(arguments)))
-    deferred.promise
+    @_save(endpoint, payload)
 
   ###*
    * Alias for {@link save}, as it's the same type of HTTP request.
@@ -233,8 +224,52 @@ class BaseService
     unless version
       throw new Error "Version is required for deleting a resource (endpoint: #{@_currentEndpoint})"
 
-    deferred = Q.defer()
     endpoint = "#{@_currentEndpoint}?version=#{version}"
+    @_delete(endpoint)
+
+  ###*
+   * Return a {Promise} for a GET call. It can be overridden for custom logic.
+   * @param {String} endpoint The resource endpoint
+   * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
+  ###
+  _get: (endpoint) ->
+    deferred = Q.defer()
+    @_rest.GET endpoint, =>
+      @_wrapResponse.apply(@, [deferred].concat(_.toArray(arguments)))
+    deferred.promise
+
+  ###*
+   * Return a {Promise} for a PAGED call. It can be overridden for custom logic.
+   * @param {String} endpoint The resource endpoint
+   * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
+  ###
+  _paged: (endpoint) ->
+    deferred = Q.defer()
+    # fetch all results in chunks
+    @_rest.PAGED endpoint, =>
+      @_wrapResponse.apply(@, [deferred].concat(_.toArray(arguments)))
+    , (progress) -> deferred.notify progress
+    deferred.promise
+
+  ###*
+   * Return a {Promise} for a POST call. It can be overridden for custom logic.
+   * @param {String} endpoint The resource endpoint
+   * @param {String} payload The body payload as a String
+   * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
+  ###
+  _save: (endpoint, payload) ->
+    deferred = Q.defer()
+    @_rest.POST endpoint, payload, =>
+      @_wrapResponse.apply(@, [deferred].concat(_.toArray(arguments)))
+    deferred.promise
+
+  ###*
+   * Return a {Promise} for a DELETE call. It can be overridden for custom logic.
+   * @param {String} endpoint The resource endpoint
+   * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
+  ###
+  _delete: (endpoint) ->
+    deferred = Q.defer()
     @_rest.DELETE endpoint, =>
       @_wrapResponse.apply(@, [deferred].concat(_.toArray(arguments)))
     deferred.promise
