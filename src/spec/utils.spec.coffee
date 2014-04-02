@@ -13,11 +13,11 @@ describe 'Utils', ->
 
   it 'should build query string without params', ->
     query = Utils.buildQueryString()
-    expect(query).toBe 'limit=100'
+    expect(query).toBe ''
 
   it 'should build query string without (zero) offset', ->
     query = Utils.buildQueryString page: 1
-    expect(query).toBe 'limit=100'
+    expect(query).toBe ''
 
   it 'should build query string with (positive) offset', ->
     query = Utils.buildQueryString page: 10, perPage: 20
@@ -27,9 +27,8 @@ describe 'Utils', ->
     query = Utils.buildQueryString perPage: 0
     expect(query).toBe 'limit=0'
 
-  it 'should build query string with (default) limit', ->
-    query = Utils.buildQueryString perPage: -10
-    expect(query).toBe 'limit=100'
+  it 'should throw if perPage is < 1', ->
+    expect(-> Utils.buildQueryString perPage: -1).toThrow new Error 'PerPage (limit) must be a number >= 0'
 
   it 'should throw if page is < 1', ->
     expect(-> Utils.buildQueryString page: 0).toThrow new Error 'Page must be a number >= 1'

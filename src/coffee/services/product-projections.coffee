@@ -1,3 +1,4 @@
+_ = require 'underscore'
 BaseService = require './base'
 
 ###*
@@ -32,7 +33,7 @@ class ProductProjectionService extends BaseService
   ###
   _queryString: ->
     s = super
-    return "#{s}&staged=#{@_staged}" if @_staged
+    return _.compact([s, "staged=#{@_staged}"]).join('&') if @_staged
     s
 
 

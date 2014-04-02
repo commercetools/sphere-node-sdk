@@ -231,6 +231,11 @@ describe 'Service', ->
               message: 'foo'
             done()
 
+        it 'should send request with id, if provided', ->
+          spyOn(@restMock, 'GET')
+          @service.byId(ID).fetch()
+          expect(@restMock.GET).toHaveBeenCalledWith "#{o.path}/#{ID}", jasmine.any(Function)
+
         describe ':: paged', ->
 
           it 'should resolve the promise on (paged) fetch', (done) ->

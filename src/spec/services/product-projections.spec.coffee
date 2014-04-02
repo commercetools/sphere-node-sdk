@@ -17,7 +17,7 @@ describe 'ProductProjectionService', ->
     @service = new ProductProjectionService null, @loggerMock
 
   it 'should query for staged', ->
-    expect(@service.staged()._queryString()).toBe 'limit=100&staged=true'
+    expect(@service.staged()._queryString()).toBe 'staged=true'
 
   it 'should query for published', ->
-    expect(@service.staged(false)._queryString()).toBe 'limit=100'
+    expect(@service.staged(false)._queryString()).toBe ''
