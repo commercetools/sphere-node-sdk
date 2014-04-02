@@ -63,28 +63,29 @@ describe 'Integration Channels', ->
       done(JSON.stringify(error))
 
   it 'should create some states and use them as transitions references', (done) ->
-    Q.all _.map [1..101], => @client.states.save(newState())
+    Q.all _.map [1..51], => @client.states.save(newState())
     .then (results) =>
-      mainState = _.head results
+      mainState = _.head(results).body
       otherStates = _.tail results
       transitions = _.map otherStates, (r) ->
         id: r.body.id
         typeId: 'state'
-      @client.states.byId(mainState.body.id).update
-        version: mainState.body.version
+      @client.states.byId(mainState.id).update
+        version: mainState.version
         actions: [
           {action: 'setTransitions', transitions: transitions}
         ]
       .then (result) =>
         expect(result.statusCode).toBe 200
         mainState = result.body
-        expect(mainState.transitions.length).toBe 100
+        expect(mainState.transitions.length).toBe 50
 
         # delete states
-        Q.all _.map results, (r) => @client.states.byId(r.body.id).delete(r.body.version)
+        @client.states.byId(mainState.id).delete(mainState.version)
+      .then (result) =>
+        Q.all _.map otherStates, (r) => @client.states.byId(r.body.id).delete(r.body.version)
       .then (results) ->
         done()
     .fail (error) =>
       @logger.error error
       done(JSON.stringify(error))
-
