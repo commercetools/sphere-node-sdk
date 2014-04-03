@@ -205,10 +205,15 @@ class BaseService
     @_save(endpoint, payload)
 
   ###*
+   * Alias for {@link save}.
+  ###
+  create: -> @save.apply(@, arguments)
+
+  ###*
    * Alias for {@link save}, as it's the same type of HTTP request.
    * Updating a resource is done by sending a list of {UpdateAction}.
    * (more intuitive way of describing an update, given that an [id] is provided)
-   * e.g.: `{service}.byId({id}).update({actions})`
+   * @example `{service}.byId({id}).update({actions})`
   ###
   update: -> @save.apply(@, arguments)
 

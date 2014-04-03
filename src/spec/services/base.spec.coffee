@@ -316,6 +316,13 @@ describe 'Service', ->
           @service.byId(ID).save({foo: 'bar'})
           expect(@restMock.POST).toHaveBeenCalledWith "#{o.path}/#{ID}", JSON.stringify(foo: 'bar'), jasmine.any(Function)
 
+      describe ':: create', ->
+
+        it 'should be an alias for \'save\'', ->
+          spyOn(@service, 'save')
+          @service.create foo: 'bar'
+          expect(@service.save).toHaveBeenCalledWith foo: 'bar'
+
       describe ':: update', ->
 
         it 'should be an alias for \'save\'', ->
