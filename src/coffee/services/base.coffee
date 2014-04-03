@@ -192,42 +192,37 @@ class BaseService
    * Process the resources for each page separatly using the function fn.
    * The function fn will then be called once for per page.
    * The function fn has to return a promise that should be resolved when all elements of the page are processed.
-   * E.g. page(3).perPage(5) will start processing at element 10, gives you a payload of 5 elements per call of fn again and again until all elements are processed.
    * @param {Function} the function to process a page that returns a promise
    * @return {Promise} A promise, fulfilled with an array of the resolved results of function fn or the rejected result of fn
+   * @example
+   *   page(3).perPage(5) will start processing at element 10, gives you a payload of 5 elements per call of fn again and again until all elements are processed.
   ###
   process: (fn) ->
-    unless _.isFunction fn
-      throw new Error 'Please provide a function to process the elements'
+    throw new Error 'Please provide a function to process the elements' unless _.isFunction fn
 
     deferred = Q.defer()
-
     endpoint = @_currentEndpoint
-    where = @_params.query.where
-    whereOperator = @_params.query.operator
-    sort = @_params.query.sort
+    originalQuery = @_params.query
 
-    processPage = (page, perPage, total, acc = []) =>
+    _processPage = (page, perPage, total, acc = []) =>
       if total? and (page - 1) * perPage > total
         deferred.resolve acc
       else
-        @_params.query.where = where
-        @_params.query.operator = whereOperator
-        @_params.query.sort = sort
-        @_params.query.page = page
-        @_params.query.perPage = perPage
+        @_params.query = _.extend {}, originalQuery,
+          page: page
+          perPage: perPage
         queryString = @_queryString()
 
         @_get("#{endpoint}?#{queryString}")
         .then (payload) ->
           fn(payload)
           .then (result) ->
-            processPage page + 1, perPage, payload.body.total, acc.concat(result)
+            _processPage page + 1, perPage, payload.body.total, acc.concat(result)
         .fail (error) ->
           deferred.reject error
         .done()
 
-    processPage(@_params.query.page or 1, @_params.query.perPage or 20)
+    _processPage(@_params.query.page or 1, @_params.query.perPage or 20)
     deferred.promise
 
   ###*
