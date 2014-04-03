@@ -229,6 +229,8 @@ client.products.save(product)
   # either the request failed or was rejected (the response returned an error)
 ```
 
+> You can use also `create` instead of `save` (it's an alias)
+
 ##### Import orders
 The `OrderService` exposes a specific function to [import orders](http://commercetools.de/dev/http-api-projects-orders-import.html).
 Use it as you would use the `save` function, just internally the correct API endpoint is set.
