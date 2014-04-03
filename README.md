@@ -328,10 +328,10 @@ client.products.save({})
 
 ### Batch processing
 Batch processing allows to process a lot of resources in chunks.
-Using this approach you can balance between memory usage and parallelism
+Using this approach you can balance between memory usage and parallelism.
 
-## Examples
 ```coffeescript
+# Define your custom function, which returns a promise
 fn = (payload) ->
   deferred = Q.defer()
   # do something with the payload
@@ -347,6 +347,9 @@ client.products.perPage(20).process(fn)
 .fail (error) ->
   # eg 'BAD'
 ```
+
+## Examples
+_(Coming soon)_
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
