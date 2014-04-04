@@ -239,6 +239,11 @@ describe 'Service', ->
           .fail (err) ->
             done err
 
+        it 'should throw error if function is missing', ->
+          spyOn(@restMock, 'GET')
+          expect(=> @service.process()).toThrow new Error 'Please provide a function to process the elements'
+          expect(@restMock.GET).not.toHaveBeenCalled()
+
       describe ':: fetch', ->
 
         it 'should return promise on fetch', ->
