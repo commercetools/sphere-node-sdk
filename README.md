@@ -17,13 +17,13 @@ This module is a standalone Node.js client for accessing the Sphere HTTP APIs.
     * [Query request](#query-request)
       * [Query all (limit 0)](#query-all-limit0)
       * [Query for modifications](#query-for-modifications)
+      * [Query and process in batches](#query-and-process-in-batches)
       * [Staged products](#staged-products)
     * [Create resource](#create-resource)
       * [Import orders](#import-orders)
     * [Update resource](#update-resource)
     * [Delete resource](#delete-resource)
   * [Error handling](#error-handling)
-  * [Batch processing](#batch-processing)
 * [Examples](#examples)
 * [Releasing](#releasing)
 * [License](#license)
@@ -196,6 +196,33 @@ client.orders.last('2h').fetch()
 
 > Please be aware that `last` is just another `where` clause and thus depends on the `operator` you choose - default is `and`.
 
+##### Query and process in batches
+Sometimes you need to query all results (or some pages) of a resource and do some other operations with those infos.
+That means that you would need to fetch lots of data (see [query with limit 0](#query-all-limit0)) and have it all saved in memory, which can be quite dangerous and not really performant.
+To help you with that, we provide you a `process` function to work with batches.  
+> Batch processing allows to process a lot of resources in chunks. Using this approach you can balance between memory usage and parallelism.
+
+The `process` function takes a function `fn` (which returns a _Promise_) and will start **fetching** resources in [pages](http://commercetools.de/dev/http-api.html#paged-query-response). On each page, the `fn` function will be executed and once it gets resolved, the next page will be fetched and so on.
+
+```coffeescript
+# Define your custom function, which returns a promise
+fn = (payload) ->
+  deferred = Q.defer()
+  # do something with the payload
+  if # something unexpected happens
+    deferred.reject 'BAD'
+  else # good case
+    deferred.resolve 'OK'
+  deferred.promise
+
+client.products.perPage(20).process(fn)
+.then (result) ->
+  # here we get the total result, which is just an array of all pages accumulated 
+  # eg: ['OK', 'OK', 'OK'] if you have 41 to 60 products - the function fn is called three times
+.fail (error) ->
+  # eg: 'BAD'
+```
+
 ##### Staged products
 The `ProductProjectionService` returns a representation of the products called [ProductProjection](http://commercetools.de/dev/http-api-projects-products.html#product-projection) which corresponds basically to a **catalog** or **staged** representation of a product. When using this service you can specify which projection of the product you would like to have by defining a `staged` parameter (default is `true`).
 
@@ -326,28 +353,6 @@ client.products.save({})
     when 500 then # do something
     ...
     else # do something else
-```
-
-### Batch processing
-Batch processing allows to process a lot of resources in chunks.
-Using this approach you can balance between memory usage and parallelism.
-
-```coffeescript
-# Define your custom function, which returns a promise
-fn = (payload) ->
-  deferred = Q.defer()
-  # do something with the payload
-  if # something unexpected happens
-    deferred.reject 'BAD'
-  else # good case
-    deferred.resolve 'OK'
-  deferred.promise
-
-client.products.perPage(20).process(fn)
-.then (result) ->
-  # result is an array - eg ['OK', 'OK', 'OK'] if you have 41 to 60 products - the function fn is called three times
-.fail (error) ->
-  # eg 'BAD'
 ```
 
 ## Examples
