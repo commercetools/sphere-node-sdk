@@ -30,7 +30,7 @@ describe 'Integration Categories', ->
         levelFile: 'error'
     @logger = @client._logger
 
-    @logger.info 'Creating 500 categories'
+    @logger.info 'Creating 50 categories'
     Q.all _.map [1..50], => @client.categories.save(newCategory())
     .then (results) =>
       @logger.info "Created #{results.length} categories"
@@ -54,7 +54,7 @@ describe 'Integration Categories', ->
     .fail (error) =>
       @logger.error error
       done(_.prettifyError(error))
-  , 60000 # 1min
+  , 120000 # 2min
 
   it 'should update descriptions with process', (done) ->
     @client.categories.sort('id').perPage(1).process (payload) =>
