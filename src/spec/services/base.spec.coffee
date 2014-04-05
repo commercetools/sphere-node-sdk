@@ -109,7 +109,7 @@ describe 'Service', ->
         ['sort', 'createdAt']
         ['parallel', 10]
       ], (f) ->
-        it "should chain '#{f}'", ->
+        it "should chain '#{f[0]}'", ->
           clazz = @service[f[0]](f[1])
           expect(clazz).toEqual @service
 
@@ -192,15 +192,41 @@ describe 'Service', ->
         @service.parallel(5)
         expect(@service._params.maxParallel).toBe 5
 
+      it 'should use default maxParallel requests if not specified', ->
+        @service.parallel(5).fetch()
+        expect(@service._task._options.maxParallel).toBe 5
+        @service.fetch()
+        expect(@service._task._options.maxParallel).toBe 20
+
       it 'should throw if maxParallel < 1', ->
         expect(=> @service.parallel(0)).toThrow new Error 'MaxParallel must be a number >= 1'
 
-      it 'should reset params after resolving a promise', ->
-        spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {foo: 'bar'})
-        _service = @service.byId('123-abc')
-        expect(@service._params.id).toBe '123-abc'
-        _service.fetch().then (result) -> #noop
-        expect(@service._params.id).not.toBeDefined()
+      _.each [
+        ['fetch']
+        ['save', {foo: 'bar'}]
+        ['delete', 2]
+      ], (f) ->
+        it 'should reset params after creating a promise for #{f[0]}', ->
+          _service = @service.byId('123-abc').where('name = "foo"').page(2).perPage(10).parallel(1).sort('id')
+          expect(@service._params).toEqual
+            id: '123-abc'
+            maxParallel: 1
+            query:
+              where: [encodeURIComponent('name = "foo"')]
+              operator: 'and'
+              sort: [encodeURIComponent('id asc')]
+              page: 2
+              perPage: 10
+          if f[1]
+            _service[f[0]](f[1])
+          else
+            _service[f[0]]()
+          expect(@service._params).toEqual
+            maxParallel: 20
+            query:
+              where: []
+              operator: 'and'
+              sort: []
 
       describe ':: process', ->
         it 'should return promise', ->

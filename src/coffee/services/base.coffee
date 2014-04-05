@@ -214,8 +214,9 @@ class BaseService
     throw new Error 'Please provide a function to process the elements' unless _.isFunction fn
 
     deferred = Q.defer()
-    endpoint = @_currentEndpoint
+    endpoint = @constructor.baseResourceEndpoint
     originalQuery = @_params.query
+    originalMaxParallel = @_params.maxParallel
 
     _processPage = (page, perPage, total, acc = []) =>
       @_logger.debug
@@ -231,6 +232,7 @@ class BaseService
           page: page
           perPage: perPage
         queryString = @_queryString()
+        @_params.maxParallel = originalMaxParallel
 
         @_get("#{endpoint}?#{queryString}")
         .then (payload) ->
@@ -296,6 +298,7 @@ class BaseService
   _get: (endpoint) ->
     @_task._options.maxParallel = @_params.maxParallel
     @_task.addTask =>
+      @_setDefaults()
       deferred = Q.defer()
       @_rest.GET endpoint, =>
         @_wrapResponse.apply(@, [deferred].concat(_.toArray(arguments)))
@@ -309,6 +312,7 @@ class BaseService
   _paged: (endpoint) ->
     @_task._options.maxParallel = @_params.maxParallel
     @_task.addTask =>
+      @_setDefaults()
       deferred = Q.defer()
       # fetch all results in chunks
       @_rest.PAGED endpoint, =>
@@ -325,6 +329,7 @@ class BaseService
   _save: (endpoint, payload) ->
     @_task._options.maxParallel = @_params.maxParallel
     @_task.addTask =>
+      @_setDefaults()
       deferred = Q.defer()
       id = JSON.parse(payload).id
       @_rest.POST endpoint, payload, =>
@@ -339,6 +344,7 @@ class BaseService
   _delete: (endpoint) ->
     @_task._options.maxParallel = @_params.maxParallel
     @_task.addTask =>
+      @_setDefaults()
       deferred = Q.defer()
       @_rest.DELETE endpoint, =>
         @_wrapResponse.apply(@, [deferred].concat(_.toArray(arguments)))
@@ -353,7 +359,6 @@ class BaseService
    * @param {Object} body A JSON object containing the HTTP API resource or error messages
   ###
   _wrapResponse: (deferred, error, response, body) ->
-    @_setDefaults()
     if error
       deferred.reject
         statusCode: 500
