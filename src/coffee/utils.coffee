@@ -16,7 +16,7 @@ module.exports =
     limitParam = perPage if _.isNumber(perPage)
 
     # offset param
-    throw new Error 'Page must be a number >= 1' if _.isNumber(perPage) and page < 1
+    throw new Error 'Page must be a number >= 1' if _.isNumber(page) and page < 1
     offsetParam = (perPage or 100) * (page - 1)
 
     queryString = []
