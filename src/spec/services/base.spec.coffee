@@ -194,9 +194,9 @@ describe 'Service', ->
 
       it 'should use default maxParallel requests if not specified', ->
         @service.parallel(5).fetch()
-        expect(@service._task._options.maxParallel).toBe 5
+        expect(@service._task._maxParallel).toBe 5
         @service.fetch()
-        expect(@service._task._options.maxParallel).toBe 20
+        expect(@service._task._maxParallel).toBe 20
 
       it 'should throw if maxParallel < 1', ->
         expect(=> @service.parallel(0)).toThrow new Error 'MaxParallel must be a number >= 1'
