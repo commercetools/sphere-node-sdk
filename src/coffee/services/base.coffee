@@ -3,15 +3,16 @@ Q = require 'q'
 Utils = require '../utils'
 
 ###*
+ * @const
+ * RegExp to parse time period for last function.
+###
+REGEX_LAST = /^(\d+)([s|m|h|d])$/
+
+###*
  * Creates a new BaseService, containing base functionalities. It should be extended when defining a Service.
  * @class BaseService
 ###
 class BaseService
-
-  ###*
-   * RegEx to parse time period for last function.
-  ###
-  REGEX_LAST = /^(\d+)([s|m|h|d])$/
 
   ###*
    * @const
@@ -46,6 +47,7 @@ class BaseService
      * @type {Object}
     ###
     @_params =
+      maxParallel: 20
       query:
         where: []
         operator: 'and'
@@ -82,7 +84,7 @@ class BaseService
    * @param {String} [operator] A logical operator (default `and`)
    * @return {BaseService} Chained instance of this class
   ###
-  whereOperator: (operator = "and") ->
+  whereOperator: (operator = 'and') ->
     @_params.query.operator = switch operator
       when 'and', 'or' then operator
       else 'and'
@@ -99,7 +101,7 @@ class BaseService
    * @return {BaseService} Chained instance of this class
   ###
   last: (period) ->
-    throw new Error "Can not parse period '#{period}'" unless REGEX_LAST.test(period)
+    throw new Error "Cannot parse period '#{period}'" unless REGEX_LAST.test(period)
 
     matches = REGEX_LAST.exec(period)
     amount = matches[1]
@@ -136,11 +138,11 @@ class BaseService
   ###*
    * Define the page number to be requested from the complete query result
    * (used for pagination as `offset`)
-   * @param {Int} page A number > 1 (default is 1)
+   * @param {Number} page A number >= 1 (default is 1)
    * @return {BaseService} Chained instance of this class
   ###
   page: (page) ->
-    throw new Error 'Page must be a number >= 1' if page < 1
+    throw new Error 'Page must be a number >= 1' if _.isNumber(page) and page < 1
     @_params.query.page = page
     @_logger.debug @_params.query, 'Setting \'page\' parameter'
     this
@@ -149,13 +151,24 @@ class BaseService
    * Define the number of results to return from a query
    * (used for pagination as `limit`)
    * @see _pagedFetch if limit is `0` (all results)
-   * @param {Int} perPage A number >= 0 (default is 100)
+   * @param {Number} perPage A number >= 0 (default is 100)
    * @return {BaseService} Chained instance of this class
   ###
   perPage: (perPage) ->
-    throw new Error 'PerPage (limit) must be a number >= 0' if perPage < 0
+    throw new Error 'PerPage (limit) must be a number >= 0' if _.isNumber(perPage) and perPage < 0
     @_params.query.perPage = perPage
     @_logger.debug @_params.query, 'Setting \'perPage\' parameter'
+    this
+
+  ###*
+   * Define max parallel request to be sent on each request from the {TaskQueue}
+   * @param {Number} maxParallel A number >= 1 (default is 20)
+   * @return {BaseService} Chained instance of this class
+  ###
+  parallel: (maxParallel) ->
+    throw new Error 'MaxParallel must be a number >= 1' if _.isNumber(maxParallel) and maxParallel < 1
+    @_params.maxParallel = maxParallel
+    @_logger.debug @_params.maxParallel, 'Setting \'maxParallel\' parameter'
     this
 
   ###*
@@ -205,7 +218,13 @@ class BaseService
     originalQuery = @_params.query
 
     _processPage = (page, perPage, total, acc = []) =>
-      if total? and (page - 1) * perPage > total
+      @_logger.debug
+        page: page
+        perPage: perPage,
+        offset: (page - 1) * perPage
+        total: total
+      , 'Processing next page'
+      if total? and (page - 1) * perPage >= total
         deferred.resolve acc
       else
         @_params.query = _.extend {}, originalQuery,
@@ -275,6 +294,7 @@ class BaseService
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
   _get: (endpoint) ->
+    @_task._options.maxParallel = @_params.maxParallel
     @_task.addTask =>
       deferred = Q.defer()
       @_rest.GET endpoint, =>
@@ -287,6 +307,7 @@ class BaseService
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
   _paged: (endpoint) ->
+    @_task._options.maxParallel = @_params.maxParallel
     @_task.addTask =>
       deferred = Q.defer()
       # fetch all results in chunks
@@ -302,8 +323,10 @@ class BaseService
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
   _save: (endpoint, payload) ->
+    @_task._options.maxParallel = @_params.maxParallel
     @_task.addTask =>
       deferred = Q.defer()
+      id = JSON.parse(payload).id
       @_rest.POST endpoint, payload, =>
         @_wrapResponse.apply(@, [deferred].concat(_.toArray(arguments)))
       deferred.promise
@@ -314,6 +337,7 @@ class BaseService
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
   _delete: (endpoint) ->
+    @_task._options.maxParallel = @_params.maxParallel
     @_task.addTask =>
       deferred = Q.defer()
       @_rest.DELETE endpoint, =>

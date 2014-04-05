@@ -90,6 +90,7 @@ describe 'Service', ->
 
       it 'should reset default params', ->
         expect(@service._params).toEqual
+          maxParallel: 20
           query:
             where: []
             operator: 'and'
@@ -99,12 +100,20 @@ describe 'Service', ->
         @service.byId(ID)
         expect(@service._currentEndpoint).toBe "#{o.path}/#{ID}"
 
-      _.each ['byId', 'where', 'whereOperator', 'page', 'perPage', 'sort'], (f) ->
+      _.each [
+        ['byId', '1234567890']
+        ['where', 'key = "foo"']
+        ['whereOperator', 'and']
+        ['page', 2]
+        ['perPage', 5]
+        ['sort', 'createdAt']
+        ['parallel', 10]
+      ], (f) ->
         it "should chain '#{f}'", ->
-          clazz = @service[f]()
+          clazz = @service[f[0]](f[1])
           expect(clazz).toEqual @service
 
-          promise = @service[f]().fetch()
+          promise = @service[f[0]](f[1]).fetch()
           expect(Q.isPromise(promise)).toBe true
 
       it 'should add where predicates to query', ->
@@ -145,8 +154,8 @@ describe 'Service', ->
         expect(@service._params.query.where[0]).toMatch /lastModifiedAt%20%3E%20%22201\d-\d\d-\d\dT\d\d%3A\d\d%3A\d\d.\d\d\dZ%22/
 
       it 'should throw an exception when the period for last can not be parsed', ->
-        expect(=> @service.last('30')).toThrow new Error "Can not parse period '30'"
-        expect(=> @service.last('-1h')).toThrow new Error "Can not parse period '-1h'"
+        expect(=> @service.last('30')).toThrow new Error "Cannot parse period '30'"
+        expect(=> @service.last('-1h')).toThrow new Error "Cannot parse period '-1h'"
 
       it 'should do nothing for 0 as input', ->
         @service.last('0m')
@@ -178,6 +187,13 @@ describe 'Service', ->
           ._queryString()
 
         expect(queryString).toBe 'where=name(en%3D%22Foo%22)%20or%20id%3D%221234567890%22&limit=25&offset=50&sort=attrib%20desc&sort=createdAt%20asc'
+
+      it 'should set maxParallel requests', ->
+        @service.parallel(5)
+        expect(@service._params.maxParallel).toBe 5
+
+      it 'should throw if maxParallel < 1', ->
+        expect(=> @service.parallel(0)).toThrow new Error 'MaxParallel must be a number >= 1'
 
       it 'should reset params after resolving a promise', ->
         spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {foo: 'bar'})
