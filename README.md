@@ -13,7 +13,7 @@ This module is a standalone Node.js client for accessing the Sphere HTTP APIs.
 * [Documentation](#documentation)
   * [Services](#services)
   * [Types of requests](#types-of-requests)
-    * [Responses](#responses)
+    * [Task Queue](#task-queue)
     * [Query request](#query-request)
       * [Query all (limit 0)](#query-all-limit0)
       * [Query for modifications](#query-for-modifications)
@@ -23,6 +23,7 @@ This module is a standalone Node.js client for accessing the Sphere HTTP APIs.
       * [Import orders](#import-orders)
     * [Update resource](#update-resource)
     * [Delete resource](#delete-resource)
+  * [Types of responses](#types-of-responses)
   * [Error handling](#error-handling)
 * [Examples](#examples)
 * [Releasing](#releasing)
@@ -84,24 +85,6 @@ client.products.fetch()
   # either the request failed or was rejected (the response returned an error)
 ```
 
-#### Responses
-When a [`Q` promise](https://github.com/kriskowal/q) is resolved or rejected a JSON object is always returned and it contains a `statusCode` plus the response body or error messages
-
-```coffeescript
-# promise resolved
-{
-  statusCode: 200 # or other successful status codes
-  body: { ... } # the body of the response coming from SPHERE.IO
-}
-
-# promise rejected
-{
-  statusCode: 400 # or other error codes
-  message: 'Oops, something went wrong' # see http://commercetools.de/dev/http-api-errors.html
-  ...
-}
-```
-
 Current methods using promises are:
 
 - `fetch` HTTP `GET` request
@@ -109,6 +92,28 @@ Current methods using promises are:
 - `update` HTTP `POST` request (_alias for `save`_)
 - `delete` HTTP `DELETE` request
 
+#### Task Queue
+To optimize processing lots of requests all together, e.g.: avoiding connection timeouts, we introduces [TaskQueue](https://github.com/sphereio/sphere-node-utils#taskqueue).
+
+Every request is internally pushed in a queue which automatically starts resolving promises (requests) and will process concurrently some of them based on the `maxParallel` parameter. You can set this parameter by chaining the following method
+- `parallel(n)` defines the number of max parallel requests to be processed by the [TaskQueue](https://github.com/sphereio/sphere-node-utils#taskqueue) (default is `20`). **If < 1 it throws an error**
+
+```coffeescript
+client = new SphereClient {...} # a TaskQueue is internally initialized at this point
+
+# let's trigger 100 parallel requests with `Q.all`, but process them max 5 at a time
+Q.all _.map [1..100], -> client.products.parallel(5).byId('123-abc').fetch()
+.then (results) ->
+```
+
+> You can pass an existing `TaskQueue` object when initializing the `SphereClient`
+
+```coffeescript
+{TaskQueue} = require 'sphere-node-utils'
+taskQueue = new TaskQueue maxParallel: 10
+client = new SphereClient
+  task: taskQueue
+```
 
 #### Query request
 All resource endpoints support queries, returning a list of results of type [PagedQueryResponse](http://commercetools.de/dev/http-api.html#paged-query-response).
@@ -199,7 +204,7 @@ client.orders.last('2h').fetch()
 ##### Query and process in batches
 Sometimes you need to query all results (or some pages) of a resource and do some other operations with those infos.
 That means that you would need to fetch lots of data (see [query with limit 0](#query-all-limit0)) and have it all saved in memory, which can be quite dangerous and not really performant.
-To help you with that, we provide you a `process` function to work with batches.  
+To help you with that, we provide you a `process` function to work with batches.
 > Batch processing allows to process a lot of resources in chunks. Using this approach you can balance between memory usage and parallelism.
 
 The `process` function takes a function `fn` (which returns a _Promise_) and will start **fetching** resources in [pages](http://commercetools.de/dev/http-api.html#paged-query-response). On each page, the `fn` function will be executed and once it gets resolved, the next page will be fetched and so on.
@@ -217,7 +222,7 @@ fn = (payload) ->
 
 client.products.perPage(20).process(fn)
 .then (result) ->
-  # here we get the total result, which is just an array of all pages accumulated 
+  # here we get the total result, which is just an array of all pages accumulated
   # eg: ['OK', 'OK', 'OK'] if you have 41 to 60 products - the function fn is called three times
 .fail (error) ->
   # eg: 'BAD'
@@ -319,6 +324,24 @@ client.products.byId('123-abc').fetch()
   # a JSON object containing either a result or a SPHERE.IO HTTP error
 .fail (error) ->
   # either the request failed or was rejected (the response returned an error)
+```
+
+#### Types of responses
+When a [`Q` promise](https://github.com/kriskowal/q) is resolved or rejected a JSON object is always returned and it contains a `statusCode` plus the response body or error messages
+
+```coffeescript
+# promise resolved
+{
+  statusCode: 200 # or other successful status codes
+  body: { ... } # the body of the response coming from SPHERE.IO
+}
+
+# promise rejected
+{
+  statusCode: 400 # or other error codes
+  message: 'Oops, something went wrong' # see http://commercetools.de/dev/http-api-errors.html
+  ...
+}
 ```
 
 ### Error handling
