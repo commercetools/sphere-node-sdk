@@ -303,7 +303,7 @@ class BaseService
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
   _get: (endpoint) ->
-    @_task._options.maxParallel = @_params.maxParallel
+    @_task.setMaxParallel @_params.maxParallel
     @_task.addTask =>
       @_setDefaults()
       deferred = Q.defer()
@@ -317,7 +317,7 @@ class BaseService
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
   _paged: (endpoint) ->
-    @_task._options.maxParallel = @_params.maxParallel
+    @_task.setMaxParallel @_params.maxParallel
     @_task.addTask =>
       @_setDefaults()
       deferred = Q.defer()
@@ -334,7 +334,7 @@ class BaseService
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
   _save: (endpoint, payload) ->
-    @_task._options.maxParallel = @_params.maxParallel
+    @_task.setMaxParallel @_params.maxParallel
     @_task.addTask =>
       @_setDefaults()
       deferred = Q.defer()
@@ -349,7 +349,7 @@ class BaseService
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
   _delete: (endpoint) ->
-    @_task._options.maxParallel = @_params.maxParallel
+    @_task.setMaxParallel @_params.maxParallel
     @_task.addTask =>
       @_setDefaults()
       deferred = Q.defer()

@@ -1,5 +1,6 @@
 _ = require 'underscore'
 Q = require 'q'
+_.mixin require('sphere-node-utils')._u
 SphereClient = require '../../lib/client'
 Config = require('../../config').config
 
@@ -36,7 +37,7 @@ describe 'Integration Channels', ->
       done()
     .fail (error) =>
       @logger.error error
-      done('Oops')
+      done(_.prettifyError(error))
 
   afterEach (done) ->
     @client.states.byId(@state.id).delete(@state.version)
@@ -46,7 +47,7 @@ describe 'Integration Channels', ->
       done()
     .fail (error) =>
       @logger.error error
-      done('Oops')
+      done(_.prettifyError(error))
 
   it 'should update a state', (done) ->
     @client.states.byId(@state.id).update(updateState(@state.version))
@@ -58,7 +59,7 @@ describe 'Integration Channels', ->
       done()
     .fail (error) =>
       @logger.error error
-      done('Oops')
+      done(_.prettifyError(error))
 
   it 'should create some states and use them as transitions references', (done) ->
     Q.all _.map [1..51], => @client.states.save(newState())
@@ -86,5 +87,5 @@ describe 'Integration Channels', ->
         done()
     .fail (error) =>
       @logger.error error
-      done('Oops')
+      done(_.prettifyError(error))
   , 20000 # 20sec

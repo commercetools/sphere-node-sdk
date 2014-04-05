@@ -1,4 +1,5 @@
 _ = require 'underscore'
+_.mixin require('sphere-node-utils')._u
 SphereClient = require '../../lib/client'
 Config = require('../../config').config
 
@@ -34,7 +35,7 @@ describe 'Integration Channels', ->
       done()
     .fail (error) =>
       @logger.error error
-      done('Oops')
+      done(_.prettifyError(error))
 
   afterEach (done) ->
     @client.channels.byId(@channel.id).delete(@channel.version)
@@ -44,7 +45,7 @@ describe 'Integration Channels', ->
       done()
     .fail (error) =>
       @logger.error error
-      done('Oops')
+      done(_.prettifyError(error))
 
   it 'should update a channel', (done) ->
     @client.channels.byId(@channel.id).update(updateChannel(@channel.version))
@@ -57,4 +58,4 @@ describe 'Integration Channels', ->
       done()
     .fail (error) =>
       @logger.error error
-      done('Oops')
+      done(_.prettifyError(error))
