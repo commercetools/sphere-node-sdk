@@ -93,7 +93,7 @@ Current methods using promises are:
 - `delete` HTTP `DELETE` request
 
 #### Task Queue
-To optimize processing lots of requests all together, e.g.: avoiding connection timeouts, we introduces [TaskQueue](https://github.com/sphereio/sphere-node-utils#taskqueue).
+To optimize processing lots of requests all together, e.g.: avoiding connection timeouts, we introduced [TaskQueue](https://github.com/sphereio/sphere-node-utils#taskqueue).
 
 Every request is internally pushed in a queue which automatically starts resolving promises (requests) and will process concurrently some of them based on the `maxParallel` parameter. You can set this parameter by chaining the following method
 - `parallel(n)` defines the number of max parallel requests to be processed by the [TaskQueue](https://github.com/sphereio/sphere-node-utils#taskqueue) (default is `20`). **If < 1 it throws an error**
