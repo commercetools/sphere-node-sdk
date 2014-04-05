@@ -34,7 +34,7 @@ describe 'Integration Channels', ->
       done()
     .fail (error) =>
       @logger.error error
-      done(error)
+      done('Oops')
 
   afterEach (done) ->
     @client.channels.byId(@channel.id).delete(@channel.version)
@@ -44,7 +44,7 @@ describe 'Integration Channels', ->
       done()
     .fail (error) =>
       @logger.error error
-      done(error)
+      done('Oops')
 
   it 'should update a channel', (done) ->
     @client.channels.byId(@channel.id).update(updateChannel(@channel.version))
@@ -57,4 +57,4 @@ describe 'Integration Channels', ->
       done()
     .fail (error) =>
       @logger.error error
-      done(error)
+      done('Oops')

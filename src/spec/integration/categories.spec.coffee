@@ -18,8 +18,6 @@ updateCategory = (version, parentId) ->
     {action: 'changeParent', parent: {typeId: 'category', id: parentId}}
   ]
 
-# Increase timeout
-jasmine.getEnv().defaultTimeoutInterval = 180000 # 3min
 
 describe 'Integration Categories', ->
 
@@ -38,7 +36,8 @@ describe 'Integration Categories', ->
       done()
     .fail (error) =>
       @logger.error error
-      done(error)
+      done('Oops')
+  , 30000 # 30sec
 
   afterEach (done) ->
     @logger.info 'About to delete all categories'
@@ -53,7 +52,8 @@ describe 'Integration Categories', ->
     # .progress (progress) => @logger.info "Deleting: #{progress.percentage}% completed"
     .fail (error) =>
       @logger.error error
-      done(error)
+      done('Oops')
+  , 60000 # 1min
 
   it 'should update descriptions with process', (done) ->
     @client.categories.sort('id').perPage(1).process (payload) =>
@@ -72,4 +72,5 @@ describe 'Integration Categories', ->
       done()
     .fail (error) =>
       @logger.error error
-      done(error)
+      done('Oops')
+  , 60000 # 1min

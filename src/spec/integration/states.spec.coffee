@@ -17,8 +17,6 @@ updateState = (version) ->
     {action: 'setDescription', description: {en: 'This is a State'}}
   ]
 
-# Increase timeout
-jasmine.getEnv().defaultTimeoutInterval = 10000
 
 describe 'Integration Channels', ->
 
@@ -38,7 +36,7 @@ describe 'Integration Channels', ->
       done()
     .fail (error) =>
       @logger.error error
-      done(JSON.stringify(error))
+      done('Oops')
 
   afterEach (done) ->
     @client.states.byId(@state.id).delete(@state.version)
@@ -48,7 +46,7 @@ describe 'Integration Channels', ->
       done()
     .fail (error) =>
       @logger.error error
-      done(JSON.stringify(error))
+      done('Oops')
 
   it 'should update a state', (done) ->
     @client.states.byId(@state.id).update(updateState(@state.version))
@@ -60,7 +58,7 @@ describe 'Integration Channels', ->
       done()
     .fail (error) =>
       @logger.error error
-      done(JSON.stringify(error))
+      done('Oops')
 
   it 'should create some states and use them as transitions references', (done) ->
     Q.all _.map [1..51], => @client.states.save(newState())
@@ -88,4 +86,5 @@ describe 'Integration Channels', ->
         done()
     .fail (error) =>
       @logger.error error
-      done(JSON.stringify(error))
+      done('Oops')
+  , 20000 # 20sec
