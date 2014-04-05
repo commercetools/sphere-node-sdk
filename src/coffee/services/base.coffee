@@ -98,6 +98,7 @@ class BaseService
    * m -> minutes
    * h -> hours
    * d -> days
+   * @throws {Error} If period cannot be parsed
    * @return {BaseService} Chained instance of this class
   ###
   last: (period) ->
@@ -139,6 +140,7 @@ class BaseService
    * Define the page number to be requested from the complete query result
    * (used for pagination as `offset`)
    * @param {Number} page A number >= 1 (default is 1)
+   * @throws {Error} If argument is not a number >= 1
    * @return {BaseService} Chained instance of this class
   ###
   page: (page) ->
@@ -152,6 +154,7 @@ class BaseService
    * (used for pagination as `limit`)
    * @see _pagedFetch if limit is `0` (all results)
    * @param {Number} perPage A number >= 0 (default is 100)
+   * @throws {Error} If argument is not a number >= 0
    * @return {BaseService} Chained instance of this class
   ###
   perPage: (perPage) ->
@@ -163,6 +166,7 @@ class BaseService
   ###*
    * Define max parallel request to be sent on each request from the {TaskQueue}
    * @param {Number} maxParallel A number >= 1 (default is 20)
+   * @throws {Error} If argument is not a number >= 1
    * @return {BaseService} Chained instance of this class
   ###
   parallel: (maxParallel) ->
@@ -206,6 +210,7 @@ class BaseService
    * The function fn will then be called once for per page.
    * The function fn has to return a promise that should be resolved when all elements of the page are processed.
    * @param {Function} the function to process a page that returns a promise
+   * @throws {Error} If argument is not a function
    * @return {Promise} A promise, fulfilled with an array of the resolved results of function fn or the rejected result of fn
    * @example
    *   page(3).perPage(5) will start processing at element 10, gives you a payload of 5 elements per call of fn again and again until all elements are processed.
@@ -252,6 +257,7 @@ class BaseService
    * If the `id` was provided, the API expects the request to be an update by
    * by providing a payload of {UpdateAction}.
    * @param {Object} body The payload as JSON object
+   * @throws {Error} If body is not given
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
   save: (body) ->
@@ -279,6 +285,7 @@ class BaseService
    * Delete an existing resource of the _currentEndpoint
    * If the `id` was provided, the API expects this to be a resource update with given {UpdateAction}
    * @param {Number} version The current version of the resource
+   * @throws {Error} If version is not given
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
   delete: (version) ->

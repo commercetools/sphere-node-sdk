@@ -2,6 +2,13 @@ _ = require 'underscore'
 
 module.exports =
 
+  ###*
+   * Build a query string from given parameters
+   * @param {Object} opts A JSON object containing query parameters
+   * @throws {Error} If perPage is not a number >= 0
+   * @throws {Error} If page is not a number >= 1
+   * @return {String} The built encoded query string
+  ###
   buildQueryString: (opts = {}) ->
     { where, whereOperator, sort, page, perPage } = _.defaults opts,
       where: []
