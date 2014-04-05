@@ -54,7 +54,7 @@ describe 'Integration Categories', ->
     .fail (error) =>
       @logger.error error
       done(_.prettifyError(error))
-  , 120000 # 2min
+  , 60000 # 1min
 
   it 'should update descriptions with process', (done) ->
     @client.categories.sort('id').perPage(1).process (payload) =>
@@ -74,4 +74,4 @@ describe 'Integration Categories', ->
     .fail (error) =>
       @logger.error error
       done(_.prettifyError(error))
-  , 60000 # 1min
+  , 120000 # 2min
