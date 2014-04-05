@@ -6,7 +6,7 @@ Utils = require '../utils'
  * @const
  * RegExp to parse time period for last function.
 ###
-REGEX_LAST = /^(\d+)([s|m|h|d])$/
+REGEX_LAST = /^(\d+)([s|m|h|d|w])$/
 
 ###*
  * Creates a new BaseService, containing base functionalities. It should be extended when defining a Service.
@@ -98,6 +98,7 @@ class BaseService
    * m -> minutes
    * h -> hours
    * d -> days
+   * w -> weeks
    * @throws {Error} If period cannot be parsed
    * @return {BaseService} Chained instance of this class
   ###
@@ -110,17 +111,10 @@ class BaseService
     if amount is '0'
       return this
 
-    kind = matches[2]
-    millis = switch kind
-      when 's' then amount * 1000
-      when 'm' then amount * 1000 * 60
-      when 'h' then amount * 1000 * 60 * 60
-      when 'd' then amount * 1000 * 60 * 60 * 24
-      else 0
-
+    before = Utils.getTime amount, matches[2]
     now = new Date().getTime()
-    queryData = new Date(now - millis).toISOString()
-    @where("lastModifiedAt > \"#{queryData}\"")
+    dateTime = new Date(now - before).toISOString()
+    @where("lastModifiedAt > \"#{dateTime}\"")
 
   ###*
    * Define how the query should be sorted.

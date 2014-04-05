@@ -32,3 +32,23 @@ module.exports =
     queryString.push "offset=#{offsetParam}" if offsetParam > 0
     queryString = queryString.concat _.map(sort, (s) -> "sort=#{s}")
     queryString.join '&'
+
+  ###*
+   * Return the value time in milliseconds based on the given type
+   * @param {Number} amount The given amount
+   * @param {String} type The type of time unit
+   *   s -> seconds
+   *   m -> minutes
+   *   h -> hours
+   *   d -> days
+   *   w -> weeks
+   * @return {Number} The milliseconds value
+  ###
+  getTime: (amount, type) ->
+    switch type
+      when 's' then amount * 1000
+      when 'm' then amount * 1000 * 60
+      when 'h' then amount * 1000 * 60 * 60
+      when 'd' then amount * 1000 * 60 * 60 * 24
+      when 'w' then amount * 1000 * 60 * 60 * 24 * 7
+      else 0
