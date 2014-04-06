@@ -37,7 +37,7 @@ describe 'Integration Categories', ->
       done()
     .fail (error) =>
       @logger.error error
-      done(_.prettifyError(error))
+      done(_.prettify(error))
   , 30000 # 30sec
 
   afterEach (done) ->
@@ -54,7 +54,7 @@ describe 'Integration Categories', ->
     # .progress (progress) => @logger.info "Deleting: #{progress.percentage}% completed"
     .fail (error) =>
       @logger.error error
-      done(_.prettifyError(error))
+      done(_.prettify(error))
   , 60000 # 1min
 
   it 'should update descriptions with process', (done) ->
@@ -74,5 +74,5 @@ describe 'Integration Categories', ->
       done()
     .fail (error) =>
       @logger.error error
-      done(_.prettifyError(error))
+      done(_.prettify(error))
   , 120000 # 2min
