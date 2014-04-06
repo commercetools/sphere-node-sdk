@@ -47,7 +47,6 @@ class BaseService
      * @type {Object}
     ###
     @_params =
-      maxParallel: 20
       query:
         where: []
         operator: 'and'
@@ -158,18 +157,6 @@ class BaseService
     this
 
   ###*
-   * Define max parallel request to be sent on each request from the {TaskQueue}
-   * @param {Number} maxParallel A number >= 1 (default is 20)
-   * @throws {Error} If argument is not a number >= 1
-   * @return {BaseService} Chained instance of this class
-  ###
-  parallel: (maxParallel) ->
-    throw new Error 'MaxParallel must be a number >= 1' if _.isNumber(maxParallel) and maxParallel < 1
-    @_params.maxParallel = maxParallel
-    @_logger.debug @_params.maxParallel, 'Setting \'maxParallel\' parameter'
-    this
-
-  ###*
    * @private
    * Build a query string from (pre)defined params
    * (to be overriden for custom params)
@@ -215,7 +202,6 @@ class BaseService
     deferred = Q.defer()
     endpoint = @constructor.baseResourceEndpoint
     originalQuery = @_params.query
-    originalMaxParallel = @_params.maxParallel
 
     _processPage = (page, perPage, total, acc = []) =>
       @_logger.debug
@@ -231,7 +217,6 @@ class BaseService
           page: page
           perPage: perPage
         queryString = @_queryString()
-        @_params.maxParallel = originalMaxParallel
 
         @_get("#{endpoint}?#{queryString}")
         .then (payload) ->
@@ -297,7 +282,6 @@ class BaseService
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
   _get: (endpoint) ->
-    @_task.setMaxParallel @_params.maxParallel
     @_task.addTask =>
       @_setDefaults()
       deferred = Q.defer()
@@ -311,7 +295,6 @@ class BaseService
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
   _paged: (endpoint) ->
-    @_task.setMaxParallel @_params.maxParallel
     @_task.addTask =>
       @_setDefaults()
       deferred = Q.defer()
@@ -328,7 +311,6 @@ class BaseService
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
   _save: (endpoint, payload) ->
-    @_task.setMaxParallel @_params.maxParallel
     @_task.addTask =>
       @_setDefaults()
       deferred = Q.defer()
@@ -343,7 +325,6 @@ class BaseService
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
   _delete: (endpoint) ->
-    @_task.setMaxParallel @_params.maxParallel
     @_task.addTask =>
       @_setDefaults()
       deferred = Q.defer()

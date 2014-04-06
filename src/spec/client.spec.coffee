@@ -76,17 +76,25 @@ describe 'SphereClient', ->
     expect(client._logger.fields.widget_type).toBe 'sphere-node-client'
     expect(client._rest.logger.fields.widget_type).toBe 'sphere-node-connect'
 
-  it 'should initialize and given Rest', ->
+  it 'should initialize with given Rest', ->
     existingRest = new Rest config: Config
     client = new SphereClient rest: existingRest
     expect(client._rest).toEqual existingRest
 
-  it 'should initialize and given TaskQueue', ->
+  it 'should initialize with given TaskQueue', ->
     existingTaskQueue = new TaskQueue
     client = new SphereClient
       config: Config
       task: existingTaskQueue
     expect(client._task).toEqual existingTaskQueue
+
+  it 'should set maxParallel requests globally', ->
+    @client.setMaxParallel(5)
+    expect(@client._task._maxParallel).toBe 5
+
+  it 'should throw if maxParallel < 1 or > 100', ->
+    expect(=> @client.setMaxParallel(0)).toThrow new Error 'MaxParallel must be a number between 1 and 100'
+    expect(=> @client.setMaxParallel(101)).toThrow new Error 'MaxParallel must be a number between 1 and 100'
 
 
   _.each [

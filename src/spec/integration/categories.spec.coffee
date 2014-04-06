@@ -44,9 +44,10 @@ describe 'Integration Categories', ->
     @logger.info 'About to delete all categories'
     @client.categories.perPage(0).fetch()
     .then (payload) =>
-      @logger.info "Deleting #{payload.body.total} categories"
+      @logger.info "Deleting #{payload.body.total} categories (maxParallel: 1)"
+      @client.setMaxParallel(1)
       Q.all _.map payload.body.results, (category) =>
-        @client.categories.parallel(1).byId(category.id).delete(category.version)
+        @client.categories.byId(category.id).delete(category.version)
     .then (results) =>
       @logger.info "Deleted #{results.length} categories"
       done()

@@ -90,7 +90,6 @@ describe 'Service', ->
 
       it 'should reset default params', ->
         expect(@service._params).toEqual
-          maxParallel: 20
           query:
             where: []
             operator: 'and'
@@ -107,7 +106,6 @@ describe 'Service', ->
         ['page', 2]
         ['perPage', 5]
         ['sort', 'createdAt']
-        ['parallel', 10]
       ], (f) ->
         it "should chain '#{f[0]}'", ->
           clazz = @service[f[0]](f[1])
@@ -177,29 +175,15 @@ describe 'Service', ->
 
         expect(queryString).toBe 'where=name(en%3D%22Foo%22)%20or%20id%3D%221234567890%22&limit=25&offset=50&sort=attrib%20desc&sort=createdAt%20asc'
 
-      it 'should set maxParallel requests', ->
-        @service.parallel(5)
-        expect(@service._params.maxParallel).toBe 5
-
-      it 'should use default maxParallel requests if not specified', ->
-        @service.parallel(5).fetch()
-        expect(@service._task._maxParallel).toBe 5
-        @service.fetch()
-        expect(@service._task._maxParallel).toBe 20
-
-      it 'should throw if maxParallel < 1', ->
-        expect(=> @service.parallel(0)).toThrow new Error 'MaxParallel must be a number >= 1'
-
       _.each [
         ['fetch']
         ['save', {foo: 'bar'}]
         ['delete', 2]
       ], (f) ->
         it 'should reset params after creating a promise for #{f[0]}', ->
-          _service = @service.byId('123-abc').where('name = "foo"').page(2).perPage(10).parallel(1).sort('id')
+          _service = @service.byId('123-abc').where('name = "foo"').page(2).perPage(10).sort('id')
           expect(@service._params).toEqual
             id: '123-abc'
-            maxParallel: 1
             query:
               where: [encodeURIComponent('name = "foo"')]
               operator: 'and'
@@ -211,7 +195,6 @@ describe 'Service', ->
           else
             _service[f[0]]()
           expect(@service._params).toEqual
-            maxParallel: 20
             query:
               where: []
               operator: 'and'

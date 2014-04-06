@@ -79,6 +79,12 @@ class SphereClient
     @taxCategories      = new TaxCategoryService @_rest, @_logger, @_task
     @zones              = new ZoneService @_rest, @_logger, @_task
 
+  ###*
+   * Define max parallel request to be sent on each request from the {TaskQueue}
+   * @param {Number} maxParallel A number between 1 and 100 (default is 20)
+  ###
+  setMaxParallel: (maxParallel) -> @_task.setMaxParallel maxParallel
+
 ###*
  * The {@link SphereClient} client.
 ###
