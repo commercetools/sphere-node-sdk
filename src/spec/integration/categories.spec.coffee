@@ -51,7 +51,6 @@ describe 'Integration Categories', ->
     .then (results) =>
       @logger.info "Deleted #{results.length} categories"
       done()
-    # .progress (progress) => @logger.info "Deleting: #{progress.percentage}% completed"
     .fail (error) =>
       @logger.error error
       done(_.prettify(error))
