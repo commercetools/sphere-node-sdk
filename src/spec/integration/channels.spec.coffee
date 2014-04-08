@@ -8,6 +8,7 @@ Config = require('../../config').config
 CHANNEL_KEY = 'OrderXmlFileExport'
 ROLE_ORDER_EXPORT = 'OrderExport'
 ROLE_INVENTORY_SUPPLY = 'InventorySupply'
+ROLE_PRIMARY = 'Primary'
 
 uniqueId = (prefix) ->
   _.uniqueId "#{prefix}#{new Date().getTime()}_"
@@ -81,7 +82,7 @@ describe 'Integration Channels', ->
 
     @client.channels.byKeyOrCreate(@channel.key, ROLE_ORDER_EXPORT)
     .then (result) =>
-      @client.channels.byKeyOrCreate(@channel.key, 'Primary')
+      @client.channels.byKeyOrCreate(@channel.key, ROLE_PRIMARY)
       .then (result) ->
       expect(result.body.roles).toEqual [ROLE_INVENTORY_SUPPLY, ROLE_ORDER_EXPORT]
       done()
