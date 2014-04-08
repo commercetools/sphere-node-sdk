@@ -1,4 +1,5 @@
 BaseService = require './base'
+Q = require 'q'
 
 ###*
  * Creates a new ChannelService.
@@ -19,7 +20,7 @@ class ChannelService extends BaseService
    * Retrieves the first found channel result for a given key and role.
    * If not existing, the channel will be created or the channel role will be
    * added if absent.
-   
+
    * @param {String} key Channel needs to have this key.
    * @param {String} role Channel needs to have this role.
    * @return {Promise Result}
@@ -27,8 +28,7 @@ class ChannelService extends BaseService
   byKeyOrCreate: (key, role) ->
     deferred = Q.defer()
 
-    @client.channels
-    .where("key=\"#{key}\"")
+    @where("key=\"#{key}\"")
     .page(1).fetch()
     .then (result) =>
       if result.body.total is 1
@@ -39,18 +39,19 @@ class ChannelService extends BaseService
             actions: [
               {
                 action: 'addRoles'
-                roles: role
+                roles: [role]
               }
             ]
-
-          deferred.resolve @client.channels.byId(channel.id).update(update)
+          deferred.resolve @byId(channel.id).update(update)
         else
-          deferred.resolve result
+          deferred.resolve
+            statusCode: result.statusCode
+            body: channel
       else
         channel =
           key: key
           roles: [role]
-        deferred.resolve @client.channels.save(channel)
+        deferred.resolve @save(channel)
 
     .fail (result) ->
       deferred.reject result
