@@ -382,10 +382,10 @@ client.products.save({})
 
 ### Channels
 
-The channel service provides a convenience method to load a channel by givn key/role or create it in single method call.
+The channel service provides a convenience method to retrieve a channel with given key/role. The method ensures, that the requested channel can be returned in case it's not existing or doesn't have the requried role yet.
 
 ```coffeescript
-# load or create channel with key 'orderexport' and role 'OrderExport'
+# load or create channel with key 'OrderFileExport' and role 'OrderExport'
 client.channels.byKeyOrCreate('OrderFileExport', 'OrderExport').fetch()
 .then (result) ->
   # pretty print channel instance
