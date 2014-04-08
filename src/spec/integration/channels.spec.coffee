@@ -2,8 +2,6 @@ _ = require 'underscore'
 _.mixin require('sphere-node-utils')._u
 SphereClient = require '../../lib/client'
 Config = require('../../config').config
-{_u} = require('sphere-node-utils')
-
 
 CHANNEL_KEY = 'OrderXmlFileExport'
 ROLE_ORDER_EXPORT = 'OrderExport'
@@ -43,7 +41,7 @@ describe 'Integration Channels', ->
       @logger.info @channel, 'New channel created'
       done()
     .fail (error) ->
-      done _u.prettify(error)
+      done _.prettify(error)
 
   afterEach (done) ->
     @client.channels.byId(@channel.id).delete(@channel.version)
@@ -52,7 +50,7 @@ describe 'Integration Channels', ->
       expect(result.statusCode).toBe 200
       done()
     .fail (error) ->
-      done _u.prettify(error)
+      done _.prettify(error)
 
   it 'should update a channel', (done) ->
     @client.channels.byId(@channel.id).update(updateChannel(@channel.version))
@@ -64,7 +62,7 @@ describe 'Integration Channels', ->
       expect(@channel.roles).toEqual [ROLE_INVENTORY_SUPPLY, ROLE_ORDER_EXPORT]
       done()
     .fail (error) ->
-      done _u.prettify(error)
+      done _.prettify(error)
 
   it 'should create a new channel with given role and return it', (done) ->
     key = uniqueId "channel"
@@ -76,7 +74,7 @@ describe 'Integration Channels', ->
       expect(result.body.roles).toEqual [ROLE_ORDER_EXPORT]
       done()
     .fail (error) ->
-      done _u.prettify(err)
+      done _.prettify(err)
 
   it 'should fetch an existing channel, add given role and return it', (done) ->
 
@@ -87,7 +85,7 @@ describe 'Integration Channels', ->
       expect(result.body.roles).toEqual [ROLE_INVENTORY_SUPPLY, ROLE_ORDER_EXPORT]
       done()
     .fail (error) ->
-      done _u.prettify(err)
+      done _.prettify(err)
 
   it 'should fetch an existing channel and return it', (done) ->
 
@@ -101,7 +99,7 @@ describe 'Integration Channels', ->
       expect(result.body.roles).toEqual @channel.roles
       done()
     .fail (error) ->
-      done _u.prettify(err)
+      done _.prettify(err)
 
   it 'should fail if role value is not supported', (done) ->
     @client.channels.byKeyOrCreate(@channel.key, 'undefined-role')
