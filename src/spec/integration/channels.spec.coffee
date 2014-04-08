@@ -67,7 +67,7 @@ describe 'Integration Channels', ->
       done _u.prettify(error)
 
   it 'should create a new channel with given role and return it', (done) ->
-    key = "channel-#{new Date().getTime()}"
+    key = uniqueId "channel"
     @client.channels.byKeyOrCreate(key, ROLE_ORDER_EXPORT)
     .then (result) ->
       channels.push result.body
