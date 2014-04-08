@@ -380,6 +380,20 @@ client.products.save({})
     else # do something else
 ```
 
+### Channels
+
+The channel service provides a convenience method to load a channel by givn key/role or create it in single method call.
+
+```coffeescript
+# load or create channel with key 'orderexport' and role 'OrderExport'
+client.channels.byKeyOrCreate('OrderFileExport', 'OrderExport').fetch()
+.then (result) ->
+  # pretty print channel instance
+  console.log _u.prettify(result.body)
+.fail (error) ->
+  # either the request failed or was rejected (the response returned an error)
+```
+
 ## Examples
 _(Coming soon)_
 
