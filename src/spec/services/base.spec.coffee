@@ -205,7 +205,7 @@ describe 'Service', ->
           promise = @service.process( -> )
           expect(Q.isPromise(promise)).toBe true
 
-        it 'should should call process function for one page', (done) ->
+        it 'should call process function for one page', (done) ->
           spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: 1, results: []})
           fn = (payload) ->
             Q 'done'
@@ -216,7 +216,7 @@ describe 'Service', ->
           .fail (err) ->
             done err
 
-        it 'should should call process function for several page', (done) ->
+        it 'should call process function for several page', (done) ->
           spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: 90, endpoint: endpoint})
           fn = (payload) ->
             Q payload.body.endpoint
@@ -257,6 +257,17 @@ describe 'Service', ->
           spyOn(@restMock, 'GET')
           expect(=> @service.process()).toThrow new Error 'Please provide a function to process the elements'
           expect(@restMock.GET).not.toHaveBeenCalled()
+
+        it 'should handle pagination for changes in total', (done) ->
+          total = 5
+          spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: total--, results: []})
+          fn = (payload) -> Q 'done'
+          @service.perPage(1).process(fn)
+          .then (result) ->
+            expect(result).toEqual _.map [0..5], -> 'done'
+            done()
+          .fail (err) ->
+            done err
 
       describe ':: fetch', ->
 

@@ -219,10 +219,20 @@ class BaseService
         queryString = @_queryString()
 
         @_get("#{endpoint}?#{queryString}")
-        .then (payload) ->
+        .then (payload) =>
           fn(payload)
-          .then (result) ->
-            _processPage page + 1, perPage, payload.body.total, acc.concat(result)
+          .then (result) =>
+            newTotal = payload.body.total
+            if not total or total is newTotal
+              nextPage = page + 1
+            else if total < newTotal
+              nextPage = page
+              @_logger.debug "Total is bigger then before, assuming something has been newly created. Processing the same page (#{nextPage})."
+            else
+              nextPage = page - 1
+              nextPage = 1 if nextPage < 1
+              @_logger.debug "Total is lesser then before, assuming something has been deleted. Reducing page to #{nextPage} (min 1)."
+            _processPage nextPage, perPage, newTotal, acc.concat(result)
         .fail (error) ->
           deferred.reject error
         .done()
