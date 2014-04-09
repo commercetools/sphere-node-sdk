@@ -57,11 +57,13 @@ class ChannelService extends BaseService
           deferred.resolve
             statusCode: result.statusCode
             body: channel
-      else
+      else if result.body.total is 0
         channel =
           key: key
           roles: [role]
         deferred.resolve @save(channel)
+      else
+        deferred.reject new Error "#{result.body.total} channels with key = '#{key}' found (key should be unique for a project)."
 
     .fail (result) ->
       deferred.reject result
