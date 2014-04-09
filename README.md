@@ -387,7 +387,7 @@ The channel service provides a convenience method to retrieve a channel with giv
 
 ```coffeescript
 # makes sure a channel with key 'OrderFileExport' and role 'OrderExport' exists
-client.channels.ensure('OrderFileExport', 'OrderExport').fetch()
+client.channels.ensure('OrderFileExport', 'OrderExport')
 .then (result) ->
   # pretty print channel instance
   console.log _u.prettify(result.body)
