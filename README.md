@@ -27,6 +27,7 @@ This module is a standalone Node.js client for accessing the Sphere HTTP APIs.
     * [Delete resource](#delete-resource)
   * [Types of responses](#types-of-responses)
   * [Error handling](#error-handling)
+  * [Channels](#channels)
 * [Examples](#examples)
 * [Releasing](#releasing)
 * [License](#license)
@@ -378,6 +379,20 @@ client.products.save({})
     when 500 then # do something
     ...
     else # do something else
+```
+
+### Channels
+
+The channel service provides a convenience method to retrieve a channel with given key/role. The method ensures, that the requested channel can be returned in case it's not existing or doesn't have the requried role yet.
+
+```coffeescript
+# makes sure a channel with key 'OrderFileExport' and role 'OrderExport' exists
+client.channels.ensure('OrderFileExport', 'OrderExport')
+.then (result) ->
+  # pretty print channel instance
+  console.log _u.prettify(result.body)
+.fail (error) ->
+  # either the request failed or was rejected (the response returned an error)
 ```
 
 ## Examples
