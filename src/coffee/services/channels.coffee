@@ -26,7 +26,7 @@ class ChannelService extends BaseService
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with
    *           a {SphereError}
   ###
-  byKeyOrCreate: (key, role) ->
+  ensure: (key, role) ->
 
     deferred = Q.defer()
 

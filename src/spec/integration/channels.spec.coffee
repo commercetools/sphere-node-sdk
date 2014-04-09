@@ -65,7 +65,7 @@ describe 'Integration Channels', ->
       done _.prettify(error)
 
   it 'should fail if key is not defined', (done) ->
-    @client.channels.byKeyOrCreate(undefined, ROLE_ORDER_EXPORT)
+    @client.channels.ensure(undefined, ROLE_ORDER_EXPORT)
     .then (result) ->
       done 'Error must be thrown if key is not defined'
     .fail (error) ->
@@ -74,7 +74,7 @@ describe 'Integration Channels', ->
       done()
 
   it 'should fail if role is not defined', (done) ->
-    @client.channels.byKeyOrCreate('key', undefined)
+    @client.channels.ensure('key', undefined)
     .then (result) ->
       console.log 1
       done 'Error must be thrown if role is not defined'
@@ -86,7 +86,7 @@ describe 'Integration Channels', ->
 
   it 'should create a new channel with given role and return it', (done) ->
     key = uniqueId "channel"
-    @client.channels.byKeyOrCreate(key, ROLE_ORDER_EXPORT)
+    @client.channels.ensure(key, ROLE_ORDER_EXPORT)
     .then (result) ->
       channels.push result.body
       expect(result.body).toBeDefined()
@@ -98,9 +98,9 @@ describe 'Integration Channels', ->
 
   it 'should fetch an existing channel, add given role and return it', (done) ->
 
-    @client.channels.byKeyOrCreate(@channel.key, ROLE_ORDER_EXPORT)
+    @client.channels.ensure(@channel.key, ROLE_ORDER_EXPORT)
     .then (result) =>
-      @client.channels.byKeyOrCreate(@channel.key, ROLE_PRIMARY)
+      @client.channels.ensure(@channel.key, ROLE_PRIMARY)
       .then (result) ->
       expect(result.body.roles).toEqual [ROLE_INVENTORY_SUPPLY, ROLE_ORDER_EXPORT]
       done()
@@ -112,7 +112,7 @@ describe 'Integration Channels', ->
     @client.channels.byId(@channel.id).update(updateChannel(@channel.version))
     .then (result) =>
       @channel = result.body
-      @client.channels.byKeyOrCreate(@channel.key, ROLE_ORDER_EXPORT)
+      @client.channels.ensure(@channel.key, ROLE_ORDER_EXPORT)
     .then (result) =>
       expect(result.body).toBeDefined()
       expect(result.body.id).toEqual @channel.id
@@ -122,7 +122,7 @@ describe 'Integration Channels', ->
       done _.prettify(err)
 
   it 'should fail if role value is not supported', (done) ->
-    @client.channels.byKeyOrCreate(@channel.key, 'undefined-role')
+    @client.channels.ensure(@channel.key, 'undefined-role')
     .then (result) ->
       done 'Role value not supported.'
     .fail (error) ->
