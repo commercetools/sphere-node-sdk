@@ -39,7 +39,12 @@ class ChannelService extends BaseService
       return deferred.promise
 
     @where("key=\"#{key}\"")
-    .page(1).fetch()
+      .page(1).perPage(1)
+
+    queryString = @_queryString()
+    endpoint = "#{@_currentEndpoint}?#{@_queryString()}"
+
+    @_get(endpoint)
     .then (result) =>
       if result.body.total is 1
         channel = result.body.results[0]
