@@ -23,6 +23,7 @@ class ChannelService extends BaseService
 
    * @param {String} key A unique identifier for channel within the project.
    * @param {ChannelRole} role The ChannelRole the channel must have ().
+   * @throws {Error} If a required argument is missing
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with
    *           a {SphereError}
   ###
@@ -31,12 +32,10 @@ class ChannelService extends BaseService
     deferred = Q.defer()
 
     unless key
-      deferred.reject new Error 'Key is required.'
-      return deferred.promise
+      throw new Error 'Key is required.'
 
     unless role
-      deferred.reject new Error 'Role is required.'
-      return deferred.promise
+      throw new Error 'Role is required.'
 
     @where("key=\"#{key}\"")
       .page(1).perPage(1)
