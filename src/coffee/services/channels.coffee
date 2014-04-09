@@ -37,6 +37,8 @@ class ChannelService extends BaseService
     unless role
       throw new Error 'Role is required.'
 
+    @_setDefaults()
+
     @where("key=\"#{key}\"")
       .page(1).perPage(1)
 
