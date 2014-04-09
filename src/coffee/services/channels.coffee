@@ -21,12 +21,22 @@ class ChannelService extends BaseService
    * If not existing, the channel will be created or the channel role will be
    * added if absent.
 
-   * @param {String} key Channel needs to have this key.
-   * @param {String} role Channel needs to have this role.
-   * @return {Promise Result}
+   * @param {String} key A unique identifier for channel within the project.
+   * @param {ChannelRole} role The ChannelRole the channel must have ().
+   * @return {Promise} A promise, fulfilled with an {Object} or rejected with
+   *           a {SphereError}
   ###
   byKeyOrCreate: (key, role) ->
+
     deferred = Q.defer()
+
+    unless key
+      deferred.reject new Error 'Key is required.'
+      return deferred.promise
+
+    unless role
+      deferred.reject new Error 'Role is required.'
+      return deferred.promise
 
     @where("key=\"#{key}\"")
     .page(1).fetch()

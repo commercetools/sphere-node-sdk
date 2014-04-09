@@ -64,6 +64,26 @@ describe 'Integration Channels', ->
     .fail (error) ->
       done _.prettify(error)
 
+  it 'should fail if key is not defined', (done) ->
+    @client.channels.byKeyOrCreate(undefined, ROLE_ORDER_EXPORT)
+    .then (result) ->
+      done 'Error must be thrown if key is not defined'
+    .fail (error) ->
+      expect(error.message).toBeDefined()
+      expect(error.message).toEqual 'Key is required.'
+      done()
+
+  it 'should fail if role is not defined', (done) ->
+    @client.channels.byKeyOrCreate('key', undefined)
+    .then (result) ->
+      console.log 1
+      done 'Error must be thrown if role is not defined'
+    .fail (error) ->
+      console.log 2
+      expect(error.message).toBeDefined()
+      expect(error.message).toEqual 'Role is required.'
+      done()
+
   it 'should create a new channel with given role and return it', (done) ->
     key = uniqueId "channel"
     @client.channels.byKeyOrCreate(key, ROLE_ORDER_EXPORT)
