@@ -385,8 +385,8 @@ client.products.save({})
 The channel service provides a convenience method to retrieve a channel with given key/role. The method ensures, that the requested channel can be returned in case it's not existing or doesn't have the requried role yet.
 
 ```coffeescript
-# load or create channel with key 'OrderFileExport' and role 'OrderExport'
-client.channels.byKeyOrCreate('OrderFileExport', 'OrderExport').fetch()
+# makes sure a channel with key 'OrderFileExport' and role 'OrderExport' exists
+client.channels.ensure('OrderFileExport', 'OrderExport').fetch()
 .then (result) ->
   # pretty print channel instance
   console.log _u.prettify(result.body)
