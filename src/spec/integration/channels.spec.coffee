@@ -40,8 +40,7 @@ describe 'Integration Channels', ->
       @channel = result.body
       @logger.info @channel, 'New channel created'
       done()
-    .fail (error) ->
-      done _.prettify(error)
+    .fail (error) -> done _.prettify(error)
 
   afterEach (done) ->
     @client.channels.byId(@channel.id).delete(@channel.version)
@@ -49,8 +48,7 @@ describe 'Integration Channels', ->
       @logger.info "Channel deleted: #{@channel.id}"
       expect(result.statusCode).toBe 200
       done()
-    .fail (error) ->
-      done _.prettify(error)
+    .fail (error) -> done _.prettify(error)
 
   it 'should update a channel', (done) ->
     @client.channels.byId(@channel.id).update(updateChannel(@channel.version))
@@ -61,8 +59,7 @@ describe 'Integration Channels', ->
       expect(@channel.description).toEqual {en: 'This is a Channel'}
       expect(@channel.roles).toEqual [ROLE_INVENTORY_SUPPLY, ROLE_ORDER_EXPORT]
       done()
-    .fail (error) ->
-      done _.prettify(error)
+    .fail (error) -> done _.prettify(error)
 
   it 'should create a new channel with given role and return it', (done) ->
     key = uniqueId "channel"
@@ -73,8 +70,7 @@ describe 'Integration Channels', ->
       expect(result.body.key).toEqual key
       expect(result.body.roles).toEqual [ROLE_ORDER_EXPORT]
       done()
-    .fail (error) ->
-      done _.prettify(err)
+    .fail (error) -> done _.prettify(error)
 
   it 'should fetch an existing channel, add given role and return it', (done) ->
 
@@ -84,8 +80,8 @@ describe 'Integration Channels', ->
       .then (result) ->
       expect(result.body.roles).toEqual [ROLE_INVENTORY_SUPPLY, ROLE_ORDER_EXPORT]
       done()
-    .fail (error) ->
-      done _.prettify(err)
+    .fail (error) -> done _.prettify(error)
+  , 10000 # 10sec
 
   it 'should fetch an existing channel and return it', (done) ->
 
@@ -98,12 +94,13 @@ describe 'Integration Channels', ->
       expect(result.body.id).toEqual @channel.id
       expect(result.body.roles).toEqual @channel.roles
       done()
-    .fail (error) ->
-      done _.prettify(err)
+    .fail (error) -> done _.prettify(error)
+  , 10000 # 10sec
 
   it 'should fail if role value is not supported', (done) ->
     @client.channels.ensure(@channel.key, 'undefined-role')
     .then (result) ->
       done 'Role value not supported.'
     .fail (error) ->
+      expect(error).toBeDefined
       done()

@@ -1,5 +1,8 @@
-BaseService = require './base'
 Q = require 'q'
+_ = require 'underscore'
+_.mixin containsAll: (from, to) ->
+  _.all from, (x) -> _.contains to, x
+BaseService = require './base'
 
 ###*
  * Creates a new ChannelService.
@@ -17,30 +20,26 @@ class ChannelService extends BaseService
 
 
   ###*
-   * Retrieves the first found channel result for a given key and role.
-   * If not existing, the channel will be created or the channel role will be
+   * Retrieves the first found channel result for a given key and roles.
+   * If not existing, the channel will be created or the channel roles will be
    * added if absent.
 
    * @param {String} key A unique identifier for channel within the project.
-   * @param {ChannelRole} role The ChannelRole the channel must have ().
+   * @param {Array} roles A list of {ChannelRole} the channel must have.
    * @throws {Error} If a required argument is missing
-   * @return {Promise} A promise, fulfilled with an {Object} or rejected with
-   *           a {SphereError}
+   * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
-  ensure: (key, role) ->
+  ensure: (key, roles) ->
 
     deferred = Q.defer()
 
-    unless key
-      throw new Error 'Key is required.'
-
-    unless role
-      throw new Error 'Role is required.'
+    throw new Error 'Key is required.'unless key
+    throw new Error 'Role is required.'unless roles
+    roles = _.flatten [roles]
 
     @_setDefaults()
 
-    @where("key=\"#{key}\"")
-      .page(1).perPage(1)
+    @where("key=\"#{key}\"").page(1).perPage(1)
 
     queryString = @_queryString()
     endpoint = "#{@_currentEndpoint}?#{@_queryString()}"
@@ -49,14 +48,11 @@ class ChannelService extends BaseService
     .then (result) =>
       if result.body.total is 1
         channel = result.body.results[0]
-        if role not in channel.roles
+        if not _.containsAll roles, channel.roles
           update =
             version: channel.version
             actions: [
-              {
-                action: 'addRoles'
-                roles: [role]
-              }
+              { action: 'addRoles', roles: _.difference(roles, channel.roles) }
             ]
           deferred.resolve @byId(channel.id).update(update)
         else
@@ -66,14 +62,12 @@ class ChannelService extends BaseService
       else if result.body.total is 0
         channel =
           key: key
-          roles: [role]
+          roles: roles
         deferred.resolve @save(channel)
       else
         deferred.reject new Error "#{result.body.total} channels with key = '#{key}' found (key should be unique for a project)."
 
-    .fail (result) ->
-      deferred.reject result
-
+    .fail (result) -> deferred.reject result
     deferred.promise
 
 ###*
