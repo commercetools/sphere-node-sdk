@@ -348,6 +348,8 @@ When a [`Q` promise](https://github.com/kriskowal/q) is resolved or rejected a J
 }
 ```
 
+> When a promise is rejected, the response object contains a field `originalRequest`, providing some information about the related request (`endpoint`, `payload`). This is useful to better understand the error in relation with the failed request.
+
 ### Error handling
 As the HTTP API [handles errors](https://github.com/sphereio/sphere-node-connect#error-handling) _gracefully_ by providing a JSON body with error codes and messages, the `SphereClient` handles that by providing an intuitive way of dealing with responses.
 
