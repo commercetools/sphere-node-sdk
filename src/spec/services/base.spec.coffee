@@ -94,6 +94,7 @@ describe 'Service', ->
             where: []
             operator: 'and'
             sort: []
+            expand: []
 
       it 'should build endpoint with id', ->
         @service.byId(ID)
@@ -186,7 +187,7 @@ describe 'Service', ->
         ['delete', 2]
       ], (f) ->
         it "should reset params after creating a promise for #{f[0]}", ->
-          _service = @service.byId('123-abc').where('name = "foo"').page(2).perPage(10).sort('id')
+          _service = @service.byId('123-abc').where('name = "foo"').page(2).perPage(10).sort('id').expand('foo.bar')
           expect(@service._params).toEqual
             id: '123-abc'
             query:
@@ -195,6 +196,7 @@ describe 'Service', ->
               sort: [encodeURIComponent('id asc')]
               page: 2
               perPage: 10
+              expand: [encodeURIComponent('foo.bar')]
           if f[1]
             _service[f[0]](f[1])
           else
@@ -204,6 +206,7 @@ describe 'Service', ->
               where: []
               operator: 'and'
               sort: []
+              expand: []
 
       it 'should pass original request to failed response', (done) ->
         spyOn(@service._rest, 'POST').andCallFake (endpoint, payload, callback) -> callback(null, {statusCode: 400}, {statusCode: 400, message: 'Oops, something went wrong'})

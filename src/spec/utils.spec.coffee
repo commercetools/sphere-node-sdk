@@ -11,8 +11,11 @@ describe 'Utils', ->
         whereOperator: 'or'
         page: 2
         perPage: 5
+        sort: ['foo+asc', 'bar+desc']
+        expand: ['foo.bar', 'hello%5B*%5D.world']
 
-      expect(query).toBe 'where=masterData(current(name(en%3D%22Foo%22)))%20or%20id%3D%22123-abc-456-def-789-ghi%22&limit=5&offset=5'
+      expect(query).toBe 'where=masterData(current(name(en%3D%22Foo%22)))%20or%20id%3D%22123-abc-456-def-789-ghi%22' +
+        '&limit=5&offset=5&sort=foo+asc&sort=bar+desc&expand=foo.bar&expand=hello%5B*%5D.world'
 
     it 'should build query string without params', ->
       query = Utils.buildQueryString()

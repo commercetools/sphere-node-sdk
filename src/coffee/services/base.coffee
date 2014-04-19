@@ -51,6 +51,7 @@ class BaseService
         where: []
         operator: 'and'
         sort: []
+        expand: []
 
   ###*
    * Build the endpoint path by appending the given id
@@ -75,7 +76,7 @@ class BaseService
     return this unless predicate
     encodedPredicate = encodeURIComponent(predicate)
     @_params.query.where.push encodedPredicate
-    @_logger.debug @_params.query, 'Setting \'where\' parameters'
+    @_logger.debug @_params.query, 'Setting \'where\' parameter'
     this
 
   ###*
@@ -160,6 +161,19 @@ class BaseService
    * Alias for {@link perPage(0)}.
   ###
   all: -> @perPage(0)
+
+  ###*
+   * Define an {ExpansionPath} used for expanding {Reference}s of a resource.
+   * @link http://commercetools.de/dev/http-api.html#reference-expansion
+   * @param {String} [expansionPath] An {ExpansionPath} string for the `expand` query parameter.
+   * @return {BaseService} Chained instance of this class
+  ###
+  expand: (expansionPath) ->
+    return this unless expansionPath
+    encodedExpansionPath = encodeURIComponent(expansionPath)
+    @_params.query.expand.push encodedExpansionPath
+    @_logger.debug @_params.query, 'Setting \'expand\' parameter'
+    this
 
   ###*
    * @private

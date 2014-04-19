@@ -10,10 +10,11 @@ module.exports =
    * @return {String} The built encoded query string
   ###
   buildQueryString: (opts = {}) ->
-    { where, whereOperator, sort, page, perPage } = _.defaults opts,
+    {where, whereOperator, sort, page, perPage, expand} = _.defaults opts,
       where: []
       whereOperator: 'and'
       sort: []
+      expand: []
 
     # where param
     whereParam = where.join(encodeURIComponent(" #{whereOperator} "))
@@ -31,6 +32,7 @@ module.exports =
     queryString.push "limit=#{limitParam}" if _.isNumber(limitParam)
     queryString.push "offset=#{offsetParam}" if offsetParam > 0
     queryString = queryString.concat _.map(sort, (s) -> "sort=#{s}")
+    queryString = queryString.concat _.map(expand, (e) -> "expand=#{e}")
     queryString.join '&'
 
   ###*
