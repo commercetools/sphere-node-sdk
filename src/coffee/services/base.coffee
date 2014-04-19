@@ -201,8 +201,11 @@ class BaseService
    * @example
    *   page(3).perPage(5) will start processing at element 10, gives you a payload of 5 elements per call of fn again and again until all elements are processed.
   ###
-  process: (fn) ->
+  process: (fn, options = {}) ->
     throw new Error 'Please provide a function to process the elements' unless _.isFunction fn
+
+    options = _.defaults options,
+      accumulate: true # whether the results should be accumulated or not
 
     deferred = Q.defer()
     endpoint = @constructor.baseResourceEndpoint
@@ -237,7 +240,8 @@ class BaseService
               nextPage = page - 1
               nextPage = 1 if nextPage < 1
               @_logger.debug "Total is lesser then before, assuming something has been deleted. Reducing page to #{nextPage} (min 1)."
-            _processPage nextPage, perPage, newTotal, acc.concat(result)
+            accumulated = acc.concat(result) if options.accumulate
+            _processPage nextPage, perPage, newTotal, accumulated
         .fail (error) ->
           deferred.reject error
         .done()

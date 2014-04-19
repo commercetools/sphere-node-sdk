@@ -288,6 +288,16 @@ describe 'Service', ->
           .fail (err) ->
             done err
 
+        it 'should not accumulate results if explicitly set', (done) ->
+          spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: 10, results: [1..10]})
+          fn = (payload) -> Q 'done'
+          @service.perPage(1).process(fn, accumulate: false)
+          .then (result) ->
+            expect(result).toEqual []
+            done()
+          .fail (err) ->
+            done err
+
       describe ':: fetch', ->
 
         it 'should return promise on fetch', ->
