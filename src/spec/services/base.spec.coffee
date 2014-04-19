@@ -162,6 +162,11 @@ describe 'Service', ->
       it 'should throw if perPage < 0', ->
         expect(=> @service.perPage(-1)).toThrow new Error 'PerPage (limit) must be a number >= 0'
 
+      it 'should alias \'all\' for \'perPage(0)\'', ->
+        spyOn(@service, 'perPage')
+        @service.all()
+        expect(@service.perPage).toHaveBeenCalledWith 0
+
       it 'should build query string', ->
         queryString = @service
           .where 'name(en="Foo")'
@@ -180,7 +185,7 @@ describe 'Service', ->
         ['save', {foo: 'bar'}]
         ['delete', 2]
       ], (f) ->
-        it 'should reset params after creating a promise for #{f[0]}', ->
+        it "should reset params after creating a promise for #{f[0]}", ->
           _service = @service.byId('123-abc').where('name = "foo"').page(2).perPage(10).sort('id')
           expect(@service._params).toEqual
             id: '123-abc'

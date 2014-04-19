@@ -157,6 +157,11 @@ class BaseService
     this
 
   ###*
+   * Alias for {@link perPage(0)}.
+  ###
+  all: -> @perPage(0)
+
+  ###*
    * @private
    * Build a query string from (pre)defined params
    * (to be overriden for custom params)
