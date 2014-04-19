@@ -30,23 +30,23 @@
     "test": "grunt coverage"
   },
   "dependencies": {
-    "q": "~1.0.0",
-    "sphere-node-connect": "~0.5.6",
-    "sphere-node-utils": "~0.4.1",
-    "underscore": "~1.6.0"
+    "q": "1.0.1",
+    "sphere-node-connect": "0.5.6",
+    "sphere-node-utils": "0.4.9",
+    "underscore": "1.6.0"
   },
   "devDependencies": {
-    "coveralls": "~2.10.0",
-    "grunt": "~0.4.4",
-    "grunt-bump": "~0.0.13",
-    "grunt-coffeelint": "~0.0.8",
-    "grunt-contrib-clean": "~0.5.0",
-    "grunt-contrib-coffee": "~0.10.1",
-    "grunt-contrib-concat": "~0.4.0",
-    "grunt-contrib-watch": "~0.6.1",
-    "grunt-shell": "~0.6.4",
-    "istanbul": "~0.2.7",
-    "jasmine-node": "~1.13.1",
+    "coveralls": "2.10.0",
+    "grunt": "0.4.4",
+    "grunt-bump": "0.0.13",
+    "grunt-coffeelint": "0.0.8",
+    "grunt-contrib-clean": "0.5.0",
+    "grunt-contrib-coffee": "0.10.1",
+    "grunt-contrib-concat": "0.4.0",
+    "grunt-contrib-watch": "0.6.1",
+    "grunt-shell": "0.6.4",
+    "istanbul": "0.2.7",
+    "jasmine-node": "1.13.1",
     "sphere-coffeelint": "git://github.com/sphereio/sphere-coffeelint.git#master"
   },
   "keywords": [
