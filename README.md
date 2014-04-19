@@ -129,6 +129,7 @@ A query request can be configured with following query parameters:
 - `sort` ([Sort](http://commercetools.de/dev/http-api.html#sorting))
 - `limit` (Number)
 - `offset` (Number)
+- `expand` ([Expansion Path](http://commercetools.de/dev/http-api.html#reference-expansion))
 
 The `SphereClient` helps you build those requests with following methods:
 
@@ -139,6 +140,7 @@ The `SphereClient` helps you build those requests with following methods:
 - `page(n)` defines the page number to be requested from the complete query result (default is `1`). **If < 1 it throws an error**
 - `perPage(n)` defines the number of results to return from a query (default is `100`). If set to `0` all results are returned (_more [info](https://github.com/sphereio/sphere-node-connect#paged-requests)_). **If < 0 it throws an error**
 - `all()` alias for `perPage(0)`
+- `expand(expansionPath)` defines a URI encoded expansion path from the given string (can be set multiple times) used for expanding references of a resource
 
 > All these methods are chainable
 
@@ -153,6 +155,8 @@ client.products
 .page(3)
 .perPage(25)
 .sort('name', false)
+.expand('masterData.staged.productType')
+.expand('masterData.staged.categories[*]')
 .fetch()
 
 # HTTP request
