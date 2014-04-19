@@ -232,6 +232,9 @@ client.products.perPage(20).process(fn)
   # eg: 'BAD'
 ```
 
+You can pass some options as second argument:
+- `accumulate` whether the results should be accumulated or not (default `true`). If not, an empty array will be returned from the resolved promise.
+
 ##### Staged products
 The `ProductProjectionService` returns a representation of the products called [ProductProjection](http://commercetools.de/dev/http-api-projects-products.html#product-projection) which corresponds basically to a **catalog** or **staged** representation of a product. When using this service you can specify which projection of the product you would like to have by defining a `staged` parameter (default is `true`).
 
