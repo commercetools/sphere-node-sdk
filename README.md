@@ -43,7 +43,7 @@ SphereClient = require 'sphere-node-client'
 ## Documentation
 To start using the Sphere client you need to create an instance of the `SphereClient` by passing the credentials (and other options) in order to connect with the HTTP APIs. Project credentials can be found in the SPHERE.IO [Merchant Center](https://admin.sphere.io/) under `Developers > API clients` section.
 
-> For a list of options to pass to the client, see [`sphere-node-connect`](https://github.com/emmenko/sphere-node-connect#documentation).
+> For a list of options to pass to the client, see [`sphere-node-connect`](https://github.com/sphereio/sphere-node-connect#documentation).
 
 ```coffeescript
 client = new SphereClient
@@ -137,7 +137,8 @@ The `SphereClient` helps you build those requests with following methods:
 - `last(period)` defines a [time period](#query-for-modifications) for a query on the `lastModifiedAt` attribute of all resources
 - `sort(path, ascending)` defines how the query result should be sorted - true (default) defines ascending where as false indicates descascending
 - `page(n)` defines the page number to be requested from the complete query result (default is `1`). **If < 1 it throws an error**
-- `perPage(n)` defines the number of results to return from a query (default is `100`). If set to `0` all results are returned (_more [info](https://github.com/emmenko/sphere-node-connect#paged-requests)_). **If < 0 it throws an error**
+- `perPage(n)` defines the number of results to return from a query (default is `100`). If set to `0` all results are returned (_more [info](https://github.com/sphereio/sphere-node-connect#paged-requests)_). **If < 0 it throws an error**
+- `all()` alias for `perPage(0)`
 
 > All these methods are chainable
 
@@ -159,7 +160,7 @@ client.products
 ```
 
 ##### Query all (limit=0)
-If you want to retrieve all results of a resource, you can set the `perPage` param to `0`.
+If you want to retrieve all results of a resource, you can set the `perPage` param to `0`, or use the alias function `all()`.
 In that case the results are recursively requested in chunks and returned all together once completed.
 
 ```coffeescript
@@ -183,7 +184,7 @@ client.perPage(0).fetch()
 .fail (error) ->
 ```
 
-More info [here](https://github.com/emmenko/sphere-node-connect#paged-requests).
+More info [here](https://github.com/sphereio/sphere-node-connect#paged-requests).
 
 ##### Query for modifications
 If you want to retrieve only those resources that changed over a given time, you can chain the `last` functions,
@@ -348,7 +349,7 @@ When a [`Q` promise](https://github.com/kriskowal/q) is resolved or rejected a J
 ```
 
 ### Error handling
-As the HTTP API [handles errors](https://github.com/emmenko/sphere-node-connect#error-handling) _gracefully_ by providing a JSON body with error codes and messages, the `SphereClient` handles that by providing an intuitive way of dealing with responses.
+As the HTTP API [handles errors](https://github.com/sphereio/sphere-node-connect#error-handling) _gracefully_ by providing a JSON body with error codes and messages, the `SphereClient` handles that by providing an intuitive way of dealing with responses.
 
 Since a Promise can be either resolved or rejected, the result is determined by valuating the `statusCode` of the response:
 - `resolved` everything with a successful HTTP status code
