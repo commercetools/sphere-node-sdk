@@ -200,6 +200,20 @@ describe 'Service', ->
               operator: 'and'
               sort: []
 
+      it 'should pass original request to failed response', (done) ->
+        spyOn(@service._rest, 'POST').andCallFake (endpoint, payload, callback) -> callback(null, {statusCode: 400}, {statusCode: 400, message: 'Oops, something went wrong'})
+        @service.save({foo: 'bar'})
+        .then -> done('Should not happen')
+        .fail (error) ->
+          expect(error).toEqual
+            statusCode: 400
+            message: 'Oops, something went wrong'
+            originalRequest:
+              endpoint: o.path
+              payload: JSON.stringify(foo: 'bar')
+          done()
+        .done()
+
       describe ':: process', ->
         it 'should return promise', ->
           promise = @service.process( -> )
@@ -290,6 +304,8 @@ describe 'Service', ->
             expect(error).toEqual
               statusCode: 404
               message: "Endpoint '/foo' not found."
+              originalRequest:
+                endpoint: o.path
             done()
 
         it 'should return error message for endpoint not found with query', (done) ->
@@ -305,6 +321,8 @@ describe 'Service', ->
               statusCode: 404
               # message: "Endpoint '#{@service._currentEndpoint}?limit=100' not found."
               message: "Endpoint '/foo' not found."
+              originalRequest:
+                endpoint: o.path
             done()
 
         it 'should reject the promise on fetch', (done) ->
@@ -315,6 +333,8 @@ describe 'Service', ->
             expect(error).toEqual
               statusCode: 500
               message: 'foo'
+              originalRequest:
+                endpoint: o.path
             done()
 
         it 'should send request with id, if provided', ->
@@ -343,6 +363,8 @@ describe 'Service', ->
               expect(error).toEqual
                 statusCode: 404
                 message: "Endpoint '/foo' not found."
+                originalRequest:
+                  endpoint: "#{o.path}?limit=0"
               done()
 
           it 'should reject the promise on (paged) fetch', (done) ->
@@ -353,6 +375,8 @@ describe 'Service', ->
               expect(error).toEqual
                 statusCode: 500
                 message: 'foo'
+                originalRequest:
+                  endpoint: "#{o.path}?limit=0"
               done()
 
       describe ':: save', ->
@@ -377,6 +401,9 @@ describe 'Service', ->
               statusCode: 404
               # message: "Endpoint '#{@service._currentEndpoint}' not found."
               message: "Endpoint '/foo' not found."
+              originalRequest:
+                endpoint: o.path
+                payload: JSON.stringify(foo: 'bar')
             done()
 
         it 'should throw error if payload is missing', ->
@@ -392,6 +419,9 @@ describe 'Service', ->
             expect(error).toEqual
               statusCode: 500
               message: 'foo'
+              originalRequest:
+                endpoint: o.path
+                payload: JSON.stringify(foo: 'bar')
             done()
 
         it 'should send request with id, if provided', ->
@@ -439,6 +469,8 @@ describe 'Service', ->
             expect(error).toEqual
               statusCode: 404
               message: "Endpoint '/foo' not found."
+              originalRequest:
+                endpoint: "#{o.path}/123-abc?version=1"
             done()
 
         it 'should reject the promise on delete', (done) ->
@@ -449,4 +481,6 @@ describe 'Service', ->
             expect(error).toEqual
               statusCode: 500
               message: 'foo'
+              originalRequest:
+                endpoint: "#{o.path}/123-abc?version=1"
             done()

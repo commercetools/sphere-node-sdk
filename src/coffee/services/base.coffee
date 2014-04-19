@@ -190,7 +190,7 @@ class BaseService
    * Process the resources for each page separatly using the function fn.
    * The function fn will then be called once for per page.
    * The function fn has to return a promise that should be resolved when all elements of the page are processed.
-   * @param {Function} the function to process a page that returns a promise
+   * @param {Function} fn The function to process a page that returns a promise
    * @throws {Error} If argument is not a function
    * @return {Promise} A promise, fulfilled with an array of the resolved results of function fn or the rejected result of fn
    * @example
@@ -294,9 +294,11 @@ class BaseService
   _get: (endpoint) ->
     @_task.addTask =>
       @_setDefaults()
+      originalRequest =
+        endpoint: endpoint
       deferred = Q.defer()
       @_rest.GET endpoint, =>
-        @_wrapResponse.apply(@, [deferred].concat(_.toArray(arguments)))
+        @_wrapResponse.apply(@, [deferred, originalRequest].concat(_.toArray(arguments)))
       deferred.promise
 
   ###*
@@ -307,10 +309,12 @@ class BaseService
   _paged: (endpoint) ->
     @_task.addTask =>
       @_setDefaults()
+      originalRequest =
+        endpoint: endpoint
       deferred = Q.defer()
       # fetch all results in chunks
       @_rest.PAGED endpoint, =>
-        @_wrapResponse.apply(@, [deferred].concat(_.toArray(arguments)))
+        @_wrapResponse.apply(@, [deferred, originalRequest].concat(_.toArray(arguments)))
       , (progress) -> deferred.notify progress
       deferred.promise
 
@@ -323,10 +327,13 @@ class BaseService
   _save: (endpoint, payload) ->
     @_task.addTask =>
       @_setDefaults()
+      originalRequest =
+        endpoint: endpoint
+        payload: payload
       deferred = Q.defer()
       id = JSON.parse(payload).id
       @_rest.POST endpoint, payload, =>
-        @_wrapResponse.apply(@, [deferred].concat(_.toArray(arguments)))
+        @_wrapResponse.apply(@, [deferred, originalRequest].concat(_.toArray(arguments)))
       deferred.promise
 
   ###*
@@ -337,9 +344,11 @@ class BaseService
   _delete: (endpoint) ->
     @_task.addTask =>
       @_setDefaults()
+      originalRequest =
+        endpoint: endpoint
       deferred = Q.defer()
       @_rest.DELETE endpoint, =>
-        @_wrapResponse.apply(@, [deferred].concat(_.toArray(arguments)))
+        @_wrapResponse.apply(@, [deferred, originalRequest].concat(_.toArray(arguments)))
       deferred.promise
 
   ###*
@@ -350,11 +359,12 @@ class BaseService
    * @param {Object} response An `http.IncomingMessage` object containing all kind of information about the request / response
    * @param {Object} body A JSON object containing the HTTP API resource or error messages
   ###
-  _wrapResponse: (deferred, error, response, body) ->
+  _wrapResponse: (deferred, originalRequest, error, response, body) ->
     if error
       deferred.reject
         statusCode: 500
         message: error
+        originalRequest: originalRequest
     else
       # TODO: check other possible acceptable codes (304, ...)
       if 200 <= response.statusCode < 300
@@ -368,9 +378,10 @@ class BaseService
         deferred.reject
           statusCode: 404
           message: "Endpoint '#{endpoint}' not found."
+          originalRequest: originalRequest
       else
         # a ShereError response e.g.: {statusCode: 400, message: 'Oops, something went wrong'}
-        deferred.reject body
+        deferred.reject _.extend body, {originalRequest: originalRequest}
 
 
 ###*
