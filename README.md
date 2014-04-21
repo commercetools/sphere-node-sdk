@@ -21,6 +21,7 @@ This module is a standalone Node.js client for accessing the Sphere HTTP APIs.
       * [Query for modifications](#query-for-modifications)
       * [Query and process in batches](#query-and-process-in-batches)
       * [Staged products](#staged-products)
+    * [Search request](#search-request)
     * [Create resource](#create-resource)
       * [Import orders](#import-orders)
     * [Update resource](#update-resource)
@@ -252,6 +253,54 @@ client.productProjections
 
 # HTTP request
 # /{project_key}/products-projections?staged=true
+```
+
+#### Search request
+The `ProductProjectionService` supports **searching**, returning a list of results of type [PagedQueryResponse](http://commercetools.de/dev/http-api.html#paged-query-response).
+
+A search request can be configured with following query parameters:
+
+- `lang` (ISO language tag)
+- `text` (String)
+- `filter` ([Filter](http://commercetools.de/dev/http-api-projects-products.html#search-filters))
+- `filter.query` ([Filter](http://commercetools.de/dev/http-api-projects-products.html#search-filters))
+- `filter.facets` ([Filter](http://commercetools.de/dev/http-api-projects-products.html#search-filters))
+- `facet` ([Facet](http://commercetools.de/dev/http-api-projects-products.html#search-facets))
+- `sort` ([Sort](http://commercetools.de/dev/http-api.html#sorting))
+- `limit` (Number)
+- `offset` (Number)
+- `staged` (Boolean)
+
+The `SphereClient` helps you build those requests with following methods:
+
+- `lang(language)` defines the ISO language tag
+- `text(text)` defines the text to analyze and search for
+- `filter(filter)` defines a URI encoded string for the `filter` parameter (can be set multiple times)
+- `filterByQuery(filter)` defines a URI encoded string for the `filter.query` parameter (can be set multiple times)
+- `filterByFacets(filter)` defines a URI encoded string for the `filter.facets` parameter (can be set multiple times)
+- `facet(facet)` defines a URI encoded string for the `facet` parameter (can be set multiple times)
+- `sort(path, ascending)` defines how the query result should be sorted - true (default) defines ascending where as false indicates descascending
+- `page(n)` defines the page number to be requested from the complete query result (default is `1`). **If < 1 it throws an error**
+- `perPage(n)` defines the number of results to return from a query (default is `100`). If set to `0` all results are returned (_more [info](https://github.com/sphereio/sphere-node-connect#paged-requests)_). **If < 0 it throws an error**
+- `staged(staged)` defines whether to search for staged or current projection (see [Staged products](#staged-products))
+
+> All these methods are chainable
+
+```coffeescript
+# example
+
+client = new SphereClient {...}
+client.productProjections
+.page(3)
+.perPage(25)
+.sort('createdAt')
+.lang('de')
+.text('T-shirt')
+.filter('variants.attributes.color:red')
+.filterByQuery('variants.attributes.color:red')
+.filterByFacets('variants.attributes.color:red')
+.facet('variants.attributes.color:red')
+.search()
 ```
 
 #### Create resource
