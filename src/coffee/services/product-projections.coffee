@@ -15,6 +15,10 @@ class ProductProjectionService extends BaseService
   ###
   @baseResourceEndpoint: '/product-projections'
 
+  ###*
+   * @private
+   * Reset default query/search params
+  ###
   _setDefaults: ->
     super()
     @_customParams =
@@ -26,7 +30,7 @@ class ProductProjectionService extends BaseService
         facet: []
 
   ###*
-   * Define to fetch only staged products
+   * Define whether to query for staged or current product projection.
    * @param Boolean [staged] true to query staged products (default). False to query published products
    * @return {ProductProjectionService} Chained instance of this class
   ###
@@ -35,18 +39,34 @@ class ProductProjectionService extends BaseService
     @_logger.debug @_customParams.query, 'Setting \'staged\' parameter'
     this
 
+  ###*
+   * Define the language tag used for searching product projection.
+   * @param {String} language An ISO language tag, used for search, for the 'lang' search parameter.
+   * @return {ProductProjectionService} Chained instance of this class
+  ###
   lang: (language) ->
     throw new Error 'Language parameter is required for searching' unless language
     @_customParams.query.lang = language
     @_logger.debug @_customParams.query, 'Setting \'lang\' parameter'
     this
 
+  ###*
+   * Define the text to analyze and search.
+   * @param {String} [text] A string for the `text` search parameter.
+   * @return {ProductProjectionService} Chained instance of this class
+  ###
   text: (text) ->
     return this unless text
     @_customParams.query.text = text
     @_logger.debug @_customParams.query, 'Setting \'text\' parameter'
     this
 
+  ###*
+   * Define a {Filter} used for filtering searched product projections.
+   * @link http://commercetools.de/dev/http-api-projects-products.html#search-filters
+   * @param {String} [filter] A {Filter} string for the `filter` search parameter.
+   * @return {ProductProjectionService} Chained instance of this class
+  ###
   filter: (filter) ->
     return this unless filter
     encodedFilter = encodeURIComponent(filter)
@@ -54,6 +74,12 @@ class ProductProjectionService extends BaseService
     @_logger.debug @_customParams.query, 'Setting \'filter\' parameter'
     this
 
+  ###*
+   * Define a {Filter} (applied to query result) used for filtering searched product projections.
+   * @link http://commercetools.de/dev/http-api-projects-products.html#search-filters
+   * @param {String} [filter] A {Filter} string for the `filter.query` search parameter.
+   * @return {ProductProjectionService} Chained instance of this class
+  ###
   filterByQuery: (filter) ->
     return this unless filter
     encodedFilter = encodeURIComponent(filter)
@@ -61,6 +87,12 @@ class ProductProjectionService extends BaseService
     @_logger.debug @_customParams.query, 'Setting \'filter.query\' parameter'
     this
 
+  ###*
+   * Define a {Filter} (applied to facet calculation) used for filtering searched product projections.
+   * @link http://commercetools.de/dev/http-api-projects-products.html#search-filters
+   * @param {String} [filter] A {Filter} string for the `filter.facets` search parameter.
+   * @return {ProductProjectionService} Chained instance of this class
+  ###
   filterByFacets: (filter) ->
     return this unless filter
     encodedFilter = encodeURIComponent(filter)
@@ -68,6 +100,12 @@ class ProductProjectionService extends BaseService
     @_logger.debug @_customParams.query, 'Setting \'filter.facets\' parameter'
     this
 
+  ###*
+   * Define a {Facet} used for calculating statistical counts for searched product projections.
+   * @link http://commercetools.de/dev/http-api-projects-products.html#search-facets
+   * @param {String} [facet] A {Facet} string for the `facet` search parameter.
+   * @return {ProductProjectionService} Chained instance of this class
+  ###
   facet: (facet) ->
     return this unless facet
     encodedFacet = encodeURIComponent(facet)
@@ -77,7 +115,7 @@ class ProductProjectionService extends BaseService
 
   ###*
    * @private
-   * Extend the query string by staged param
+   * Build a query string from (pre)defined params and custom search params.
    * @return {String} the query string
   ###
   _queryString: ->
@@ -112,7 +150,7 @@ class ProductProjectionService extends BaseService
     _.compact([super()].concat(customQueryString)).join '&'
 
   ###*
-   * Fetch resource defined by _currentEndpoint with query parameters
+   * Search product projections with search parameters
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
   search: ->
