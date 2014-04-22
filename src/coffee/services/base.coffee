@@ -276,9 +276,8 @@ class BaseService
     unless body
       throw new Error "Body payload is required for creating a resource (endpoint: #{@_currentEndpoint})"
 
-    payload = JSON.stringify body
     endpoint = @_currentEndpoint
-    @_save(endpoint, payload)
+    @_save(endpoint, body)
 
   ###*
    * Alias for {@link save}.
@@ -354,7 +353,6 @@ class BaseService
         endpoint: endpoint
         payload: payload
       deferred = Q.defer()
-      id = JSON.parse(payload).id
       @_rest.POST endpoint, payload, =>
         @_wrapResponse.apply(@, [deferred, originalRequest].concat(_.toArray(arguments)))
       deferred.promise

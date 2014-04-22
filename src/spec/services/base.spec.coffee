@@ -218,7 +218,8 @@ describe 'Service', ->
             message: 'Oops, something went wrong'
             originalRequest:
               endpoint: o.path
-              payload: JSON.stringify(foo: 'bar')
+              payload:
+                foo: 'bar'
           done()
         .done()
 
@@ -417,11 +418,11 @@ describe 'Service', ->
           .fail (error) ->
             expect(error).toEqual
               statusCode: 404
-              # message: "Endpoint '#{@service._currentEndpoint}' not found."
               message: "Endpoint '/foo' not found."
               originalRequest:
                 endpoint: o.path
-                payload: JSON.stringify(foo: 'bar')
+                payload:
+                  foo: 'bar'
             done()
 
         it 'should throw error if payload is missing', ->
@@ -439,13 +440,14 @@ describe 'Service', ->
               message: 'foo'
               originalRequest:
                 endpoint: o.path
-                payload: JSON.stringify(foo: 'bar')
+                payload:
+                  foo: 'bar'
             done()
 
         it 'should send request with id, if provided', ->
           spyOn(@restMock, 'POST')
           @service.byId(ID).save({foo: 'bar'})
-          expect(@restMock.POST).toHaveBeenCalledWith "#{o.path}/#{ID}", JSON.stringify(foo: 'bar'), jasmine.any(Function)
+          expect(@restMock.POST).toHaveBeenCalledWith "#{o.path}/#{ID}", {foo: 'bar'}, jasmine.any(Function)
 
       describe ':: create', ->
 
