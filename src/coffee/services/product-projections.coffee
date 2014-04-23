@@ -21,13 +21,12 @@ class ProductProjectionService extends BaseService
   ###
   _setDefaults: ->
     super()
-    @_customParams =
-      query:
-        staged: false
-        filter: []
-        filterByQuery: []
-        filterByFacets: []
-        facet: []
+    _.extend @_params.query,
+      staged: false
+      filter: []
+      filterByQuery: []
+      filterByFacets: []
+      facet: []
 
   ###*
    * Define whether to query for staged or current product projection.
@@ -35,8 +34,8 @@ class ProductProjectionService extends BaseService
    * @return {ProductProjectionService} Chained instance of this class
   ###
   staged: (staged = true) ->
-    @_customParams.query.staged = staged
-    @_logger.debug @_customParams.query, 'Setting \'staged\' parameter'
+    @_params.query.staged = staged
+    @_logger.debug @_params.query, 'Setting \'staged\' parameter'
     this
 
   ###*
@@ -46,8 +45,8 @@ class ProductProjectionService extends BaseService
   ###
   lang: (language) ->
     throw new Error 'Language parameter is required for searching' unless language
-    @_customParams.query.lang = language
-    @_logger.debug @_customParams.query, 'Setting \'lang\' parameter'
+    @_params.query.lang = language
+    @_logger.debug @_params.query, 'Setting \'lang\' parameter'
     this
 
   ###*
@@ -57,8 +56,8 @@ class ProductProjectionService extends BaseService
   ###
   text: (text) ->
     return this unless text
-    @_customParams.query.text = text
-    @_logger.debug @_customParams.query, 'Setting \'text\' parameter'
+    @_params.query.text = text
+    @_logger.debug @_params.query, 'Setting \'text\' parameter'
     this
 
   ###*
@@ -70,8 +69,8 @@ class ProductProjectionService extends BaseService
   filter: (filter) ->
     return this unless filter
     encodedFilter = encodeURIComponent(filter)
-    @_customParams.query.filter.push encodedFilter
-    @_logger.debug @_customParams.query, 'Setting \'filter\' parameter'
+    @_params.query.filter.push encodedFilter
+    @_logger.debug @_params.query, 'Setting \'filter\' parameter'
     this
 
   ###*
@@ -83,8 +82,8 @@ class ProductProjectionService extends BaseService
   filterByQuery: (filter) ->
     return this unless filter
     encodedFilter = encodeURIComponent(filter)
-    @_customParams.query.filterByQuery.push encodedFilter
-    @_logger.debug @_customParams.query, 'Setting \'filter.query\' parameter'
+    @_params.query.filterByQuery.push encodedFilter
+    @_logger.debug @_params.query, 'Setting \'filter.query\' parameter'
     this
 
   ###*
@@ -96,8 +95,8 @@ class ProductProjectionService extends BaseService
   filterByFacets: (filter) ->
     return this unless filter
     encodedFilter = encodeURIComponent(filter)
-    @_customParams.query.filterByFacets.push encodedFilter
-    @_logger.debug @_customParams.query, 'Setting \'filter.facets\' parameter'
+    @_params.query.filterByFacets.push encodedFilter
+    @_logger.debug @_params.query, 'Setting \'filter.facets\' parameter'
     this
 
   ###*
@@ -109,8 +108,8 @@ class ProductProjectionService extends BaseService
   facet: (facet) ->
     return this unless facet
     encodedFacet = encodeURIComponent(facet)
-    @_customParams.query.facet.push encodedFacet
-    @_logger.debug @_customParams.query, 'Setting \'facet\' parameter'
+    @_params.query.facet.push encodedFacet
+    @_logger.debug @_params.query, 'Setting \'facet\' parameter'
     this
 
   ###*
@@ -119,7 +118,7 @@ class ProductProjectionService extends BaseService
    * @return {String} the query string
   ###
   _queryString: ->
-    {staged, lang, text, filter, filterByQuery, filterByFacets, facet} = _.defaults @_customParams.query,
+    {staged, lang, text, filter, filterByQuery, filterByFacets, facet} = _.defaults @_params.query,
       staged: false
       filter: []
       filterByQuery: 'and'

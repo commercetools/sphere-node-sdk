@@ -29,8 +29,12 @@ describe 'ProductProjectionService', ->
     @service = new ProductProjectionService @restMock, @loggerMock, @task
 
   it 'should reset default params', ->
-    expect(@service._customParams).toEqual
+    expect(@service._params).toEqual
       query:
+        where: []
+        operator: 'and'
+        sort: []
+        expand: []
         staged: false
         filter: []
         filterByQuery: []
@@ -107,8 +111,14 @@ describe 'ProductProjectionService', ->
       .filterByQuery('foo:bar')
       .filterByFacets('foo:bar')
       .facet('foo:bar')
-    expect(@service._customParams).toEqual
+    expect(@service._params).toEqual
       query:
+        where: []
+        operator: 'and'
+        sort: [encodeURIComponent('createdAt asc')]
+        expand: []
+        page: 3
+        perPage: 25
         staged: true
         lang: 'de'
         text: 'foo'
@@ -117,8 +127,12 @@ describe 'ProductProjectionService', ->
         filterByFacets: [encodeURIComponent('foo:bar')]
         facet: [encodeURIComponent('foo:bar')]
     _service.search()
-    expect(@service._customParams).toEqual
+    expect(@service._params).toEqual
       query:
+        where: []
+        operator: 'and'
+        sort: []
+        expand: []
         staged: false
         filter: []
         filterByQuery: []
@@ -132,3 +146,18 @@ describe 'ProductProjectionService', ->
       @service.lang('de').filter('foo:bar').search()
       expect(@service.fetch).toHaveBeenCalled()
       expect(@service._currentEndpoint).toBe '/product-projections/search'
+
+  describe ':: process', ->
+
+    it 'should call each page with the same query', (done) ->
+      spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: 21, endpoint: endpoint})
+      fn = (payload) ->
+        Q payload.body.endpoint
+      @service.where('foo=bar').whereOperator('or').staged(true).sort('name DESC').process(fn)
+      .then (result) ->
+        expect(_.size result).toBe 2
+        expect(result[0]).toMatch /\?where=foo%3Dbar&limit=20&sort=name%20DESC%20asc&staged=true$/
+        expect(result[1]).toMatch /\?where=foo%3Dbar&limit=20&offset=20&sort=name%20DESC%20asc&staged=true$/
+        done()
+      .fail (err) ->
+        done err
