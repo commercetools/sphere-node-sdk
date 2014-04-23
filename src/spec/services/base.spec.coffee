@@ -89,12 +89,10 @@ describe 'Service', ->
         expect(@service._currentEndpoint).toBe o.path
 
       it 'should reset default params', ->
-        expect(@service._params).toEqual
-          query:
-            where: []
-            operator: 'and'
-            sort: []
-            expand: []
+        expect(@service._params.query.where).toEqual []
+        expect(@service._params.query.operator).toBe 'and'
+        expect(@service._params.query.sort).toEqual []
+        expect(@service._params.query.expand).toEqual []
 
       it 'should build endpoint with id', ->
         @service.byId(ID)
@@ -188,25 +186,21 @@ describe 'Service', ->
       ], (f) ->
         it "should reset params after creating a promise for #{f[0]}", ->
           _service = @service.byId('123-abc').where('name = "foo"').page(2).perPage(10).sort('id').expand('foo.bar')
-          expect(@service._params).toEqual
-            id: '123-abc'
-            query:
-              where: [encodeURIComponent('name = "foo"')]
-              operator: 'and'
-              sort: [encodeURIComponent('id asc')]
-              page: 2
-              perPage: 10
-              expand: [encodeURIComponent('foo.bar')]
+          expect(@service._params.id).toBe '123-abc'
+          expect(@service._params.query.where).toEqual [encodeURIComponent('name = "foo"')]
+          expect(@service._params.query.operator).toBe 'and'
+          expect(@service._params.query.sort).toEqual [encodeURIComponent('id asc')]
+          expect(@service._params.query.page).toBe 2
+          expect(@service._params.query.perPage).toBe 10
+          expect(@service._params.query.expand).toEqual [encodeURIComponent('foo.bar')]
           if f[1]
             _service[f[0]](f[1])
           else
             _service[f[0]]()
-          expect(@service._params).toEqual
-            query:
-              where: []
-              operator: 'and'
-              sort: []
-              expand: []
+          expect(@service._params.query.where).toEqual []
+          expect(@service._params.query.operator).toBe 'and'
+          expect(@service._params.query.sort).toEqual []
+          expect(@service._params.query.expand).toEqual []
 
       it 'should pass original request to failed response', (done) ->
         spyOn(@service._rest, 'POST').andCallFake (endpoint, payload, callback) -> callback(null, {statusCode: 400}, {statusCode: 400, message: 'Oops, something went wrong'})
