@@ -385,6 +385,7 @@ class BaseService
       deferred.reject
         statusCode: 500
         message: error
+        body: body
         originalRequest: originalRequest
     else
       # TODO: check other possible acceptable codes (304, ...)
