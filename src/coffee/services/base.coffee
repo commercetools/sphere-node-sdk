@@ -382,11 +382,12 @@ class BaseService
   ###
   _wrapResponse: (deferred, originalRequest, error, response, body) ->
     if error
-      deferred.reject
+      errorResp =
         statusCode: 500
         message: error
-        body: body
         originalRequest: originalRequest
+      errorResp.body = body if body
+      deferred.reject errorResp
     else
       # TODO: check other possible acceptable codes (304, ...)
       if 200 <= response.statusCode < 300
