@@ -175,9 +175,10 @@ describe 'Service', ->
           .perPage 25
           .sort 'attrib', false
           .sort 'createdAt'
+          .expand 'lineItems[*].state[*].state'
           ._queryString()
 
-        expect(queryString).toBe 'where=name(en%3D%22Foo%22)%20or%20id%3D%221234567890%22&limit=25&offset=50&sort=attrib%20desc&sort=createdAt%20asc'
+        expect(queryString).toBe 'where=name(en%3D%22Foo%22)%20or%20id%3D%221234567890%22&limit=25&offset=50&sort=attrib%20desc&sort=createdAt%20asc&expand=lineItems%5B*%5D.state%5B*%5D.state'
 
       _.each [
         ['fetch']
