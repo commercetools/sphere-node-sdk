@@ -188,6 +188,7 @@ class BaseService
       page: @_params.query.page
       perPage: @_params.query.perPage
       sort: @_params.query.sort
+      expand: @_params.query.expand
     @_logger.debug qs, 'Query string generated'
     qs
 
