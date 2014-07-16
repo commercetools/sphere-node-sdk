@@ -234,16 +234,30 @@ describe 'Service', ->
           .fail (err) ->
             done err
 
-        it 'should call process function for several page', (done) ->
+        it 'should call process function for several pages (default sorting)', (done) ->
           spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: 90, endpoint: endpoint})
           fn = (payload) ->
             Q payload.body.endpoint
           @service.page(3).perPage(20).process(fn)
           .then (result) ->
             expect(_.size result).toBe 3
-            expect(result[0]).toMatch /\?limit=20&offset=40$/
-            expect(result[1]).toMatch /\?limit=20&offset=60$/
-            expect(result[2]).toMatch /\?limit=20&offset=80$/
+            expect(result[0]).toMatch /\?limit=20&offset=40&sort=id%20asc$/
+            expect(result[1]).toMatch /\?limit=20&offset=60&sort=id%20asc$/
+            expect(result[2]).toMatch /\?limit=20&offset=80&sort=id%20asc$/
+            done()
+          .fail (err) ->
+            done err
+
+        it 'should call process function for several pages (given sorting)', (done) ->
+          spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: 90, endpoint: endpoint})
+          fn = (payload) ->
+            Q payload.body.endpoint
+          @service.page(3).perPage(20).sort('foo').process(fn)
+          .then (result) ->
+            expect(_.size result).toBe 3
+            expect(result[0]).toMatch /\?limit=20&offset=40&sort=foo%20asc$/
+            expect(result[1]).toMatch /\?limit=20&offset=60&sort=foo%20asc$/
+            expect(result[2]).toMatch /\?limit=20&offset=80&sort=foo%20asc$/
             done()
           .fail (err) ->
             done err
@@ -378,7 +392,7 @@ describe 'Service', ->
                 statusCode: 404
                 message: "Endpoint '/foo' not found."
                 originalRequest:
-                  endpoint: "#{o.path}?limit=0"
+                  endpoint: "#{o.path}?limit=0&sort=id%20asc"
               done()
 
           it 'should reject the promise on (paged) fetch', (done) ->
@@ -390,8 +404,18 @@ describe 'Service', ->
                 statusCode: 500
                 message: 'foo'
                 originalRequest:
-                  endpoint: "#{o.path}?limit=0"
+                  endpoint: "#{o.path}?limit=0&sort=id%20asc"
               done()
+
+          it 'should set default sorting if not provided (fetching all)', ->
+            spyOn(@service, '_paged')
+            @service.all().fetch()
+            expect(@service._paged).toHaveBeenCalledWith "#{o.path}?limit=0&sort=id%20asc"
+
+          it 'should not set default sorting if provided (fetching all)', ->
+            spyOn(@service, '_paged')
+            @service.all().sort('foo').fetch()
+            expect(@service._paged).toHaveBeenCalledWith "#{o.path}?limit=0&sort=foo%20asc"
 
       describe ':: save', ->
 

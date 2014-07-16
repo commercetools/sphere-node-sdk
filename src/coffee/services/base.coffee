@@ -197,14 +197,18 @@ class BaseService
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
   fetch: ->
-    queryString = @_queryString()
-    endpoint = @_currentEndpoint
-    endpoint += "?#{queryString}" if queryString
+    _getEndpoint = =>
+      queryString = @_queryString()
+      endpoint = @_currentEndpoint
+      endpoint += "?#{queryString}" if queryString
+      endpoint
 
     if @_params.query.perPage is 0
-      @_paged(endpoint)
+      # we should provide a default sorting when fetching all results
+      @sort 'id' if _.isEmpty @_params.query.sort
+      @_paged(_getEndpoint())
     else
-      @_get(endpoint)
+      @_get(_getEndpoint())
 
   ###*
    * Process the resources for each page separatly using the function fn.
@@ -239,6 +243,7 @@ class BaseService
         @_params.query = _.extend {}, originalQuery,
           page: page
           perPage: perPage
+        @sort 'id' if _.isEmpty @_params.query.sort
         queryString = @_queryString()
 
         @_get("#{endpoint}?#{queryString}")
