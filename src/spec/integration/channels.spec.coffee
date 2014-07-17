@@ -11,6 +11,7 @@ ROLE_PRIMARY = 'Primary'
 uniqueId = (prefix) ->
   _.uniqueId "#{prefix}#{new Date().getTime()}_"
 
+# 'InventorySupply' is provided by default
 newChannel = ->
   key: uniqueId 'c'
 
@@ -37,27 +38,30 @@ describe 'Integration Channels', ->
     @client.channels.save(newChannel())
     .then (result) =>
       expect(result.statusCode).toBe 201
-      @channel = result.body
-      @logger.info @channel, 'New channel created'
+      @channelId = result.body.id
+      @logger.info @channel, "New channel created: #{@channelId}"
       done()
     .fail (error) -> done _.prettify(error)
 
   afterEach (done) ->
-    @client.channels.byId(@channel.id).delete(@channel.version)
+    @client.channels.byId(@channelId).fetch()
     .then (result) =>
-      @logger.info "Channel deleted: #{@channel.id}"
+      @client.channels.byId(@channelId).delete(result.body.version)
+    .then (result) =>
+      @logger.info "Channel deleted: #{@channelId}"
       expect(result.statusCode).toBe 200
       done()
     .fail (error) -> done _.prettify(error)
 
   it 'should update a channel', (done) ->
-    @client.channels.byId(@channel.id).update(updateChannel(@channel.version))
+    @client.channels.byId(@channelId).fetch()
     .then (result) =>
+      @client.channels.byId(@channelId).update(updateChannel(result.body.version))
+    .then (result) ->
       expect(result.statusCode).toBe 200
-      @channel = result.body
-      expect(@channel.name).toEqual {en: 'A Channel'}
-      expect(@channel.description).toEqual {en: 'This is a Channel'}
-      expect(@channel.roles).toEqual [ROLE_INVENTORY_SUPPLY, ROLE_ORDER_EXPORT]
+      expect(result.body.name).toEqual {en: 'A Channel'}
+      expect(result.body.description).toEqual {en: 'This is a Channel'}
+      expect(result.body.roles).toEqual [ROLE_INVENTORY_SUPPLY, ROLE_ORDER_EXPORT]
       done()
     .fail (error) -> done _.prettify(error)
 
@@ -65,7 +69,6 @@ describe 'Integration Channels', ->
     key = uniqueId "channel"
     @client.channels.ensure(key, ROLE_ORDER_EXPORT)
     .then (result) ->
-      channels.push result.body
       expect(result.body).toBeDefined()
       expect(result.body.key).toEqual key
       expect(result.body.roles).toEqual [ROLE_ORDER_EXPORT]
@@ -73,32 +76,21 @@ describe 'Integration Channels', ->
     .fail (error) -> done _.prettify(error)
 
   it 'should fetch an existing channel, add given role and return it', (done) ->
-
-    @client.channels.ensure(@channel.key, ROLE_ORDER_EXPORT)
+    @client.channels.byId(@channelId).fetch()
     .then (result) =>
-      @client.channels.ensure(@channel.key, ROLE_PRIMARY)
-      .then (result) ->
-      expect(result.body.roles).toEqual [ROLE_INVENTORY_SUPPLY, ROLE_ORDER_EXPORT]
-      done()
-    .fail (error) -> done _.prettify(error)
-  , 10000 # 10sec
-
-  it 'should fetch an existing channel and return it', (done) ->
-
-    @client.channels.byId(@channel.id).update(updateChannel(@channel.version))
+      @client.channels.ensure(result.body.key, ROLE_ORDER_EXPORT)
     .then (result) =>
-      @channel = result.body
-      @client.channels.ensure(@channel.key, ROLE_ORDER_EXPORT)
-    .then (result) =>
-      expect(result.body).toBeDefined()
-      expect(result.body.id).toEqual @channel.id
-      expect(result.body.roles).toEqual @channel.roles
+      @client.channels.ensure(result.body.key, ROLE_PRIMARY)
+    .then (result) ->
+      expect(result.body.roles).toEqual [ROLE_INVENTORY_SUPPLY, ROLE_ORDER_EXPORT, ROLE_PRIMARY]
       done()
     .fail (error) -> done _.prettify(error)
   , 10000 # 10sec
 
   it 'should fail if role value is not supported', (done) ->
-    @client.channels.ensure(@channel.key, 'undefined-role')
+    @client.channels.byId(@channelId).fetch()
+    .then (result) =>
+      @client.channels.ensure(result.body.key, 'undefined-role')
     .then (result) ->
       done 'Role value not supported.'
     .fail (error) ->
