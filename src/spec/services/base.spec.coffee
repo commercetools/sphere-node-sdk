@@ -276,11 +276,11 @@ describe 'Service', ->
           spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: 21, endpoint: endpoint})
           fn = (payload) ->
             Q payload.body.endpoint
-          @service.where('foo=bar').whereOperator('or').sort('name DESC').process(fn)
+          @service.where('foo=bar').whereOperator('or').sort('name', false).process(fn)
           .then (result) ->
             expect(_.size result).toBe 2
-            expect(result[0]).toMatch /\?where=foo%3Dbar&limit=20&sort=name%20DESC%20asc$/
-            expect(result[1]).toMatch /\?where=foo%3Dbar&limit=20&offset=20&sort=name%20DESC%20asc$/
+            expect(result[0]).toMatch /\?where=foo%3Dbar&limit=20&sort=name%20desc$/
+            expect(result[1]).toMatch /\?where=foo%3Dbar&limit=20&offset=20&sort=name%20desc$/
             done()
           .fail (err) ->
             done err
