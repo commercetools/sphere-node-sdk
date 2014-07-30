@@ -99,14 +99,15 @@ Current methods using promises are:
 #### Task Queue
 To optimize processing lots of requests all together, e.g.: avoiding connection timeouts, we introduced [TaskQueue](https://github.com/sphereio/sphere-node-utils#taskqueue).
 
-Every request is internally pushed in a queue which automatically starts resolving promises (requests) and will process concurrently some of them based on the `maxParallel` parameter. You can set this parameter by chaining the following method
-- `parallel(n)` defines the number of max parallel requests to be processed by the [TaskQueue](https://github.com/sphereio/sphere-node-utils#taskqueue) (default is `20`). **If < 1 it throws an error**
+Every request is internally pushed in a queue which automatically starts resolving promises (requests) and will process concurrently some of them based on the `maxParallel` parameter. You can set this parameter by calling the following method
+- `setMaxParallel(n)` defines the number of max parallel requests to be processed by the [TaskQueue](https://github.com/sphereio/sphere-node-utils#taskqueue) (default is `20`). **If < 1 it throws an error**
 
 ```coffeescript
-client = new SphereClient {...} # a TaskQueue is internally initialized at this point
+client = new SphereClient {...} # a TaskQueue is internally initialized at this point with maxParallel of 20
+client.setMaxParallel 5
 
 # let's trigger 100 parallel requests with `Q.all`, but process them max 5 at a time
-Q.all _.map [1..100], -> client.products.parallel(5).byId('123-abc').fetch()
+Q.all _.map [1..100], -> client.products.byId('123-abc').fetch()
 .then (results) ->
 ```
 
