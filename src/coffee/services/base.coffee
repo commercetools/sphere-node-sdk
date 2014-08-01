@@ -280,9 +280,9 @@ class BaseService
   ###
   save: (body) ->
     unless body
-      throw new Error "Body payload is required for creating a resource (endpoint: #{@_currentEndpoint})"
+      throw new Error "Body payload is required for creating a resource (endpoint: #{@constructor.baseResourceEndpoint})"
 
-    endpoint = @_currentEndpoint
+    endpoint = @constructor.baseResourceEndpoint
     @_save(endpoint, body)
 
   ###*
@@ -296,7 +296,13 @@ class BaseService
    * (more intuitive way of describing an update, given that an [id] is provided)
    * @example `{service}.byId({id}).update({actions})`
   ###
-  update: -> @save.apply(@, arguments)
+  update: (body) ->
+    throw new Error "Missing resource id. You can set it by chaining '.byId(ID)'" unless @_params.id
+    unless body
+      throw new Error "Body payload is required for creating a resource (endpoint: #{@_currentEndpoint})"
+
+    endpoint = @_currentEndpoint
+    @_save(endpoint, body)
 
   ###*
    * Delete an existing resource of the _currentEndpoint
@@ -320,8 +326,8 @@ class BaseService
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
   _get: (endpoint) ->
+    @_setDefaults()
     @_task.addTask =>
-      @_setDefaults()
       originalRequest =
         endpoint: endpoint
       deferred = Q.defer()
@@ -335,8 +341,8 @@ class BaseService
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
   _paged: (endpoint) ->
+    @_setDefaults()
     @_task.addTask =>
-      @_setDefaults()
       originalRequest =
         endpoint: endpoint
       deferred = Q.defer()
@@ -353,8 +359,8 @@ class BaseService
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
   _save: (endpoint, payload) ->
+    @_setDefaults()
     @_task.addTask =>
-      @_setDefaults()
       originalRequest =
         endpoint: endpoint
         payload: payload
@@ -369,8 +375,8 @@ class BaseService
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
   _delete: (endpoint) ->
+    @_setDefaults()
     @_task.addTask =>
-      @_setDefaults()
       originalRequest =
         endpoint: endpoint
       deferred = Q.defer()

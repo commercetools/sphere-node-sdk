@@ -446,7 +446,7 @@ describe 'Service', ->
 
         it 'should throw error if payload is missing', ->
           spyOn(@restMock, 'POST')
-          expect(=> @service.save()).toThrow new Error "Body payload is required for creating a resource (endpoint: #{@service._currentEndpoint})"
+          expect(=> @service.save()).toThrow new Error "Body payload is required for creating a resource (endpoint: #{@service.constructor.baseResourceEndpoint})"
           expect(@restMock.POST).not.toHaveBeenCalled()
 
         it 'should reject the promise on save', (done) ->
@@ -463,10 +463,10 @@ describe 'Service', ->
                   foo: 'bar'
             done()
 
-        it 'should send request with id, if provided', ->
+        it 'should send request for base endpoint', ->
           spyOn(@restMock, 'POST')
-          @service.byId(ID).save({foo: 'bar'})
-          expect(@restMock.POST).toHaveBeenCalledWith "#{o.path}/#{ID}", {foo: 'bar'}, jasmine.any(Function)
+          @service.save({foo: 'bar'})
+          expect(@restMock.POST).toHaveBeenCalledWith o.path, {foo: 'bar'}, jasmine.any(Function)
 
       describe ':: create', ->
 
@@ -477,10 +477,36 @@ describe 'Service', ->
 
       describe ':: update', ->
 
-        it 'should be an alias for \'save\'', ->
-          spyOn(@service, 'save')
-          @service.update foo: 'bar'
-          expect(@service.save).toHaveBeenCalledWith foo: 'bar'
+        it 'should send request for current endpoint', ->
+          spyOn(@restMock, 'POST')
+          @service.byId(ID).update({foo: 'bar'})
+          expect(@restMock.POST).toHaveBeenCalledWith "#{o.path}/#{ID}", {foo: 'bar'}, jasmine.any(Function)
+
+        it 'should throw error if id is missing', ->
+          spyOn(@restMock, 'POST')
+          expect(=> @service.update()).toThrow new Error "Missing resource id. You can set it by chaining '.byId(ID)'"
+          expect(@restMock.POST).not.toHaveBeenCalled()
+
+        it 'should throw error if payload is missing', ->
+          spyOn(@restMock, 'POST')
+          expect(=> @service.byId(ID).update()).toThrow new Error "Body payload is required for creating a resource (endpoint: #{@service._currentEndpoint}/#{ID})"
+          expect(@restMock.POST).not.toHaveBeenCalled()
+
+        it 'should use correct endpoints when calling update and create', ->
+          spyOn(@restMock, 'POST')
+          @service.byId(ID).update({foo: 'bar1'})
+          @service.create({foo: 'bar2'})
+          @service.byId(ID).update({foo: 'bar3'})
+          @service.create({foo: 'bar4'})
+          expect(@restMock.POST.calls.length).toBe 4
+          expect(@restMock.POST.calls[0].args[0]).toEqual "#{o.path}/#{ID}"
+          expect(@restMock.POST.calls[0].args[1]).toEqual {foo: 'bar1'}
+          expect(@restMock.POST.calls[1].args[0]).toEqual o.path
+          expect(@restMock.POST.calls[1].args[1]).toEqual {foo: 'bar2'}
+          expect(@restMock.POST.calls[2].args[0]).toEqual "#{o.path}/#{ID}"
+          expect(@restMock.POST.calls[2].args[1]).toEqual {foo: 'bar3'}
+          expect(@restMock.POST.calls[3].args[0]).toEqual o.path
+          expect(@restMock.POST.calls[3].args[1]).toEqual {foo: 'bar4'}
 
       describe ':: delete', ->
 

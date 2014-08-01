@@ -93,7 +93,8 @@ Current methods using promises are:
 
 - `fetch` HTTP `GET` request
 - `save` HTTP `POST` request
-- `update` HTTP `POST` request (_alias for `save`_)
+- `create` HTTP `POST` request (_alias for `save`_)
+- `update` HTTP `POST` request
 - `delete` HTTP `DELETE` request
 
 #### Task Queue
@@ -335,7 +336,7 @@ client.orders.import(order)
 #### Update resource
 Updates are just a POST request to the endpoint specified by an `ID`, provided with a body payload of [Update Actions](http://commercetools.de/dev/http-api.html#partial-updates).
 
-> The `update` method is just an alias for `save`, given the resource `ID`. If no `ID` is provided, it will try to send the request to the base resource endpoint, expecting a new resource to be created, so make sure that the **body** has the correct format (create or update).
+> The `update` method requires that the given resource `ID` is set. If no `ID` is provided it will throw an Error.
 
 ```coffeescript
 # new product
@@ -357,20 +358,11 @@ update =
     }
   ]
 
-# this will try to create a new product with the correct body
-# -> OK
-client.products.save(product)
-client.products.update(product)
-
-# this will try to create a new product with a wrong body
-# -> FAILS
-client.products.save(update)
-client.products.update(update)
-
-# this will try to update a product with a correct body
-# -> OK
-client.products.byId('123-abc').save(update)
-client.products.byId('123-abc').update(update)
+client.products.byId('123-abc').update(product)
+.then (result) ->
+  # a JSON object containing either a result or a SPHERE.IO HTTP error
+.fail (error) ->
+  # either the request failed or was rejected (the response returned an error)
 ```
 
 #### Delete resource
