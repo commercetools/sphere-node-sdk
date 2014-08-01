@@ -20,8 +20,10 @@ class OrderService extends BaseService
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
   import: (body) ->
-    @_currentEndpoint = '/orders/import'
-    @save(body)
+    endpoint = '/orders/import'
+    unless body
+      throw new Error "Body payload is required for creating a resource (endpoint: #{endpoint})"
+    @_save(endpoint, body)
 
 ###*
  * The {@link OrderService} service.

@@ -1,4 +1,5 @@
 Q = require 'q'
+{TaskQueue} = require 'sphere-node-utils'
 OrderService = require '../../lib/services/orders'
 
 ###*
@@ -7,10 +8,26 @@ OrderService = require '../../lib/services/orders'
 describe 'OrderService', ->
 
   beforeEach ->
-    @service = new OrderService
+    @restMock =
+      config: {}
+      GET: (endpoint, callback) ->
+      POST: -> (endpoint, payload, callback) ->
+      PUT: ->
+      DELETE: -> (endpoint, callback) ->
+      PAGED: -> (endpoint, callback, notify) ->
+      _preRequest: ->
+      _doRequest: ->
+    @loggerMock =
+      trace: ->
+      debug: ->
+      info: ->
+      warn: ->
+      error: ->
+      fatal: ->
+    @task = new TaskQueue
+    @service = new OrderService @restMock, @loggerMock, @task
 
-  it 'should call \'save\' after setting import endpoint', ->
-    spyOn(@service, 'save')
-    @service.import foo: 'bar'
-    expect(@service.save).toHaveBeenCalledWith foo: 'bar'
-    expect(@service._currentEndpoint).toBe '/orders/import'
+  it 'should send request for import endpoint', ->
+    spyOn(@restMock, 'POST')
+    @service.import({foo: 'bar'})
+    expect(@restMock.POST).toHaveBeenCalledWith '/orders/import', {foo: 'bar'}, jasmine.any(Function)
