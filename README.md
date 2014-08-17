@@ -68,6 +68,7 @@ The `SphereClient` provides a set of Services to connect with the related API en
 - `inventoryEntries`
 - `messages`
 - `orders`
+- `productDiscounts`
 - `productProjections`
 - `productTypes`
 - `products`

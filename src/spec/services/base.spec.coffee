@@ -13,6 +13,7 @@ InventoryEntryService    = require '../../lib/services/inventory-entries'
 MessageService           = require '../../lib/services/messages'
 OrderService             = require '../../lib/services/orders'
 ProductService           = require '../../lib/services/products'
+ProductDiscountService   = require '../../lib/services/product-discounts'
 ProductProjectionService = require '../../lib/services/product-projections'
 ProductTypeService       = require '../../lib/services/product-types'
 ReviewService            = require '../../lib/services/reviews'
@@ -38,6 +39,7 @@ describe 'Service', ->
     {name: 'MessageService', service: MessageService, path: '/messages'}
     {name: 'OrderService', service: OrderService, path: '/orders'}
     {name: 'ProductService', service: ProductService, path: '/products'}
+    {name: 'ProductDiscountService', service: ProductDiscountService, path: '/product-discounts'}
     {name: 'ProductProjectionService', service: ProductProjectionService, path: '/product-projections'}
     {name: 'ProductTypeService', service: ProductTypeService, path: '/product-types'}
     {name: 'ReviewService', service: ReviewService, path: '/reviews'}

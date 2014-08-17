@@ -12,6 +12,7 @@ CustomerGroupService     = require './services/customer-groups'
 InventoryEntryService    = require './services/inventory-entries'
 MessageService           = require './services/messages'
 OrderService             = require './services/orders'
+ProductDiscountService   = require './services/product-discounts'
 ProductService           = require './services/products'
 ProductProjectionService = require './services/product-projections'
 ProductTypeService       = require './services/product-types'
@@ -83,6 +84,7 @@ class SphereClient
     @messages           = new MessageService _serviceOptions
     @orders             = new OrderService _serviceOptions
     @products           = new ProductService _serviceOptions
+    @productDiscounts   = new ProductDiscountService _serviceOptions
     @productProjections = new ProductProjectionService _serviceOptions
     @productTypes       = new ProductTypeService _serviceOptions
     @reviews            = new ReviewService _serviceOptions
