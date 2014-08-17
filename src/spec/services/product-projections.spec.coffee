@@ -27,7 +27,12 @@ describe 'ProductProjectionService', ->
       error: ->
       fatal: ->
     @task = new TaskQueue
-    @service = new ProductProjectionService @restMock, @loggerMock, @task
+    @service = new ProductProjectionService
+      _rest: @restMock
+      _task: @task
+      _logger: @loggerMock
+      _stats:
+        includeHeaders: false
 
   it 'should reset default params', ->
     expect(@service._params).toEqual

@@ -122,6 +122,14 @@ describe 'SphereClient', ->
 
       ID = "1234-abcd-5678-efgh"
 
+      it 'should enable statistic (headers)', ->
+        expect(@client[name]._stats.includeHeaders).toBe false
+        client = new SphereClient
+          config: Config
+          stats:
+            includeHeaders: true
+        expect(client[name]._stats.includeHeaders).toBe true
+
       it 'should query resource', (done) ->
         spyOn(@client._rest, "GET").andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {foo: 'bar'})
         service = @client[name]

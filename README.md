@@ -24,11 +24,12 @@ This module is a standalone Node.js client for accessing the Sphere HTTP APIs.
     * [Search request](#search-request)
     * [Create resource](#create-resource)
       * [Import orders](#import-orders)
+      * [Ensure channels](#ensure-channels)
     * [Update resource](#update-resource)
     * [Delete resource](#delete-resource)
   * [Types of responses](#types-of-responses)
   * [Error handling](#error-handling)
-  * [Channels](#channels)
+  * [Statistics](#statistics)
 * [Examples](#examples)
 * [Releasing](#releasing)
 * [License](#license)
@@ -333,6 +334,19 @@ Use it as you would use the `save` function, just internally the correct API end
 client.orders.import(order)
 ```
 
+##### Ensure channels
+The `ChannelService` provides a convenience method to retrieve a channel with given key/role. The method ensures, that the requested channel can be returned in case it's not existing or doesn't have the requried role yet.
+
+```coffeescript
+# makes sure a channel with key 'OrderFileExport' and role 'OrderExport' exists
+client.channels.ensure('OrderFileExport', 'OrderExport')
+.then (result) ->
+  # pretty print channel instance
+  console.log _u.prettify(result.body)
+.fail (error) ->
+  # either the request failed or was rejected (the response returned an error)
+```
+
 #### Update resource
 Updates are just a POST request to the endpoint specified by an `ID`, provided with a body payload of [Update Actions](http://commercetools.de/dev/http-api.html#partial-updates).
 
@@ -433,18 +447,59 @@ client.products.save({})
     else # do something else
 ```
 
-### Channels
+### Statistics
+You can retrieve some statistics (more to come) by passing some options when creating a new `SphereClient` instance.
 
-The channel service provides a convenience method to retrieve a channel with given key/role. The method ensures, that the requested channel can be returned in case it's not existing or doesn't have the requried role yet.
+Current options are available:
 
-```coffeescript
-# makes sure a channel with key 'OrderFileExport' and role 'OrderExport' exists
-client.channels.ensure('OrderFileExport', 'OrderExport')
-.then (result) ->
-  # pretty print channel instance
-  console.log _u.prettify(result.body)
-.fail (error) ->
-  # either the request failed or was rejected (the response returned an error)
+- `includeHeaders` will include some HTTP header information in the [response](#types-of-responses), wrapped in a JSON object called `http`
+
+```javascript
+{
+  "http": { // HTTP header information
+    "request": {
+      "method": "GET",
+      "httpVersion": "1.1",
+      "uri": {
+        "protocol": "https:",
+        "slashes": true,
+        "auth": null,
+        "host": "api.sphere.io",
+        "port": 443,
+        "hostname": "api.sphere.io",
+        "hash": null,
+        "search": null,
+        "query": null,
+        "pathname": "/foo/bar",
+        "path": "/foo/bar",
+        "href": "https://api.sphere.io/foo/bar",
+      },
+      "header": "GET /foo/bar HTTP/1.1\r\nUser-Agent: sphere-node-client\r\nAuthorization: Bearer XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\r\nhost: api.sphere.io\r\naccept: application/json\r\nConnection: keep-alive\r\n\r\n",
+      "headers": {
+        "User-Agent": "sphere-node-client",
+        "Authorization": "Bearer XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "accept": "application/json"
+      }
+    },
+    "response": {
+      "headers": {
+        "server": "nginx",
+        "date": "Wed, 01 Jan 2014 12:00:00 GMT",
+        "content-type": "application/json; charset=utf-8",
+        "transfer-encoding": "chunked",
+        "connection": "keep-alive",
+        "x-served-by": "app2.sphere.prod.commercetools.de",
+        "x-served-config": "sphere-projects-ws-1.0",
+        "access-control-allow-origin": "*",
+        "access-control-allow-headers": "Accept, Authorization, Content-Type, Origin",
+        "access-control-allow-methods": "GET, POST, DELETE, OPTIONS"
+      }
+    }
+  }
+  "statusCode": 200
+  "body": { ... }
+}
+
 ```
 
 ## Examples

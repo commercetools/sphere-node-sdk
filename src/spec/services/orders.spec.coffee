@@ -25,7 +25,12 @@ describe 'OrderService', ->
       error: ->
       fatal: ->
     @task = new TaskQueue
-    @service = new OrderService @restMock, @loggerMock, @task
+    @service = new OrderService
+      _rest: @restMock
+      _task: @task
+      _logger: @loggerMock
+      _stats:
+        includeHeaders: false
 
   it 'should send request for import endpoint', ->
     spyOn(@restMock, 'POST')

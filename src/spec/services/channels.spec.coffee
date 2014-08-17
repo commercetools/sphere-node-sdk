@@ -16,7 +16,12 @@ describe 'ChannelService', ->
       warn: ->
       error: ->
       fatal: ->
-    @channels = new ChannelService null, @loggerMock
+    @channels = new ChannelService
+      _rest: null
+      _task: null
+      _logger: @loggerMock
+      _stats:
+        includeHeaders: false
 
   it 'should fail if key is not defined', ->
     expect(=> @channels.ensure(undefined, 'role'))

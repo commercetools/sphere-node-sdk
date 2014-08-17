@@ -28,7 +28,9 @@ class BaseService
    * @param {Rest} _rest An instance of the Rest client (sphere-node-connect)
    * @param {Logger} _logger An instance of a Logger (https://github.com/emmenko/sphere-node-connect#logging)
   ###
-  constructor: (@_rest, @_logger, @_task) -> @_setDefaults()
+  constructor: (opts = {}) ->
+    {@_rest, @_logger, @_task, @_stats} = opts
+    @_setDefaults()
 
   ###*
    * @private
@@ -393,30 +395,43 @@ class BaseService
    * @param {Object} body A JSON object containing the HTTP API resource or error messages
   ###
   _wrapResponse: (deferred, originalRequest, error, response, body) ->
+    responseJson =
+      if @_stats.includeHeaders
+        http:
+          request:
+            method: response.request.method
+            httpVersion: response.httpVersion
+            uri: response.request.uri
+            header: response.req._header
+            headers: response.request.headers
+          response:
+            headers: response.headers
+      else {}
+
     if error
       errorResp =
         statusCode: 500
         message: error
         originalRequest: originalRequest
       errorResp.body = body if body
-      deferred.reject errorResp
+      deferred.reject _.extend(responseJson, errorResp)
     else
       # TODO: check other possible acceptable codes (304, ...)
       if 200 <= response.statusCode < 300
-        deferred.resolve
+        deferred.resolve _.extend responseJson,
           statusCode: response.statusCode
           body: body
       else if response.statusCode is 404
         endpoint = response.request.uri.path
         # since the API doesn't return an error message for a resource not found
         # we return a custom JSON error message
-        deferred.reject
+        deferred.reject _.extend responseJson,
           statusCode: 404
           message: "Endpoint '#{endpoint}' not found."
           originalRequest: originalRequest
       else
         # a ShereError response e.g.: {statusCode: 400, message: 'Oops, something went wrong'}
-        deferred.reject _.extend body, {originalRequest: originalRequest}
+        deferred.reject _.extend responseJson, body, {originalRequest: originalRequest}
 
 
 ###*

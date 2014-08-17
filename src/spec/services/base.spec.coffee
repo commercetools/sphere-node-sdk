@@ -67,7 +67,12 @@ describe 'Service', ->
           error: ->
           fatal: ->
         @task = new TaskQueue
-        @service = new o.service @restMock, @loggerMock, @task
+        @service = new o.service
+          _rest: @restMock,
+          _logger: @loggerMock,
+          _task: @task
+          _stats:
+            includeHeaders: false
 
       afterEach ->
         @service = null
@@ -204,7 +209,8 @@ describe 'Service', ->
           expect(@service._params.query.expand).toEqual []
 
       it 'should pass original request to failed response', (done) ->
-        spyOn(@service._rest, 'POST').andCallFake (endpoint, payload, callback) -> callback(null, {statusCode: 400}, {statusCode: 400, message: 'Oops, something went wrong'})
+        spyOn(@service._rest, 'POST').andCallFake (endpoint, payload, callback) ->
+          callback null, {statusCode: 400}, {statusCode: 400, message: 'Oops, something went wrong'}
         @service.save({foo: 'bar'})
         .then -> done('Should not happen')
         .fail (error) ->
@@ -216,6 +222,39 @@ describe 'Service', ->
               payload:
                 foo: 'bar'
           done()
+        .done()
+
+      it 'should pass headers info', (done) ->
+        @service._stats.includeHeaders = true
+        spyOn(@service._rest, 'POST').andCallFake (endpoint, payload, callback) ->
+          callback null,
+            statusCode: 200
+            httpVersion: '1.1'
+            request:
+              method: 'POST'
+              uri: {}
+              headers: {}
+            req:
+              _header: 'POST /foo HTTP/1.1'
+            headers: {}
+          , {foo: 'bar'}
+        @service.save({foo: 'bar'})
+        .then (result) ->
+          expect(result).toEqual
+            http:
+              request:
+                method: 'POST'
+                httpVersion: '1.1'
+                uri: {}
+                header: 'POST /foo HTTP/1.1'
+                headers: {}
+              response:
+                headers: {}
+            statusCode: 200
+            body:
+              foo: 'bar'
+          done()
+        .fail (error) -> done(error)
         .done()
 
       describe ':: process', ->

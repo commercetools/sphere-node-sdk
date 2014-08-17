@@ -58,26 +58,38 @@ class SphereClient
       logConfig:
         logger: @_logger
 
+    ###*
+     * @private
+     * Wrapper to pass different options to new service instances
+     * @type {Object}
+    ###
+    _serviceOptions =
+      _rest: @_rest
+      _task: @_task
+      _logger: @_logger
+      _stats: _.defaults options.stats or {},
+        includeHeaders: false
+
     # services
     # TODO: use functions to return new service instances?
-    @carts              = new CartService @_rest, @_logger, @_task
-    @categories         = new CategoryService @_rest, @_logger, @_task
-    @channels           = new ChannelService @_rest, @_logger, @_task
-    @comments           = new CommentService @_rest, @_logger, @_task
-    @customObjects      = new CustomObjectService @_rest, @_logger, @_task
-    @customers          = new CustomerService @_rest, @_logger, @_task
-    @customerGroups     = new CustomerGroupService @_rest, @_logger, @_task
-    @inventoryEntries   = new InventoryEntryService @_rest, @_logger, @_task
-    @messages           = new MessageService @_rest, @_logger, @_task
-    @orders             = new OrderService @_rest, @_logger, @_task
-    @products           = new ProductService @_rest, @_logger, @_task
-    @productProjections = new ProductProjectionService @_rest, @_logger, @_task
-    @productTypes       = new ProductTypeService @_rest, @_logger, @_task
-    @reviews            = new ReviewService @_rest, @_logger, @_task
-    @shippingMethods    = new ShippingMethodService @_rest, @_logger, @_task
-    @states             = new StateService @_rest, @_logger, @_task
-    @taxCategories      = new TaxCategoryService @_rest, @_logger, @_task
-    @zones              = new ZoneService @_rest, @_logger, @_task
+    @carts              = new CartService _serviceOptions
+    @categories         = new CategoryService _serviceOptions
+    @channels           = new ChannelService _serviceOptions
+    @comments           = new CommentService _serviceOptions
+    @customObjects      = new CustomObjectService _serviceOptions
+    @customers          = new CustomerService _serviceOptions
+    @customerGroups     = new CustomerGroupService _serviceOptions
+    @inventoryEntries   = new InventoryEntryService _serviceOptions
+    @messages           = new MessageService _serviceOptions
+    @orders             = new OrderService _serviceOptions
+    @products           = new ProductService _serviceOptions
+    @productProjections = new ProductProjectionService _serviceOptions
+    @productTypes       = new ProductTypeService _serviceOptions
+    @reviews            = new ReviewService _serviceOptions
+    @shippingMethods    = new ShippingMethodService _serviceOptions
+    @states             = new StateService _serviceOptions
+    @taxCategories      = new TaxCategoryService _serviceOptions
+    @zones              = new ZoneService _serviceOptions
 
   ###*
    * Define max parallel request to be sent on each request from the {TaskQueue}
