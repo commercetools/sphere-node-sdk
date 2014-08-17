@@ -32,7 +32,7 @@
   "dependencies": {
     "q": "1.0.1",
     "sphere-node-connect": "0.5.6",
-    "sphere-node-utils": "0.4.9",
+    "sphere-node-utils": "0.4.12",
     "underscore": "1.6.0"
   },
   "devDependencies": {
