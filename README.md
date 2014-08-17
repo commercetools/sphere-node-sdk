@@ -455,6 +455,13 @@ Current options are available:
 
 - `includeHeaders` will include some HTTP header information in the [response](#types-of-responses), wrapped in a JSON object called `http`
 
+```coffeescript
+client = new SphereClient
+  config: # credentials
+  stats:
+    includeHeaders: true
+```
+
 ```javascript
 {
   "http": { // HTTP header information
