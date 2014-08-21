@@ -29,6 +29,7 @@ This module is a standalone Node.js client for accessing the Sphere HTTP APIs.
     * [Delete resource](#delete-resource)
   * [Types of responses](#types-of-responses)
   * [Error handling](#error-handling)
+  * [Logging](#logging)
   * [Statistics](#statistics)
 * [Examples](#examples)
 * [Releasing](#releasing)
@@ -447,6 +448,50 @@ client.products.save({})
     ...
     else # do something else
 ```
+
+### Logging
+Logging is supported by the lightweight JSON logging module called [Bunyan](https://github.com/trentm/node-bunyan).
+The `SphereClient` uses by default an easier implementation of bunyan in order to provide an easier interface for sharing a logger across multiple modules that supports this. You can see the documentation [here](https://github.com/sphereio/sphere-node-utils#logger) for full configuration.
+
+Examples:
+```coffeescript
+# this will logs to stdout with level INFO and to a log file with level ERROR
+client = new SphereClient
+  logConfig:
+    levelStream: 'info'
+    levelFile: 'error'
+
+# this will logs only to stdout with level INFO
+client = new SphereClient
+  logConfig:
+    streams: [
+      {level: 'info', stream: process.stdout}
+    ]
+
+# this will logs only to file with level DEBUG
+client = new SphereClient
+  logConfig:
+    path: './sphere-node-utils-debug.log'
+    levelFile: 'debug'
+```
+
+> You can pass an existing `Logger` object when initializing the `SphereClient`
+
+```coffeescript
+{Logger} = require 'sphere-node-utils'
+class MyCustomLogger extends Logger
+  @appName: 'my-application-name'
+
+myLogger = new MyCustomLogger logConfig
+
+# assume we have a component which already implements logging
+client = new SphereClient
+  logConfig:
+    logger: myLogger
+```
+
+
+> If you want to wrap additional fields to the logged JSON object, you can use our [ExtendedLogger](https://github.com/sphereio/sphere-node-utils#extendedlogger)
 
 ### Statistics
 You can retrieve some statistics (more to come) by passing some options when creating a new `SphereClient` instance.
