@@ -73,11 +73,14 @@ The `SphereClient` provides a set of Services to connect with the related API en
 - `productProjections`
 - `productTypes`
 - `products`
+- `project`
 - `reviews`
 - `shippingMethods`
 - `states`
 - `taxCategories`
 - `zones`
+
+> Note that not all services support the common (CRUD) verbs, it depends on the resource endpoint itself. Please refer to the [HTTP API Documentation](http://dev.sphere.io/).
 
 ### Types of requests
 Requests to the HTTP API are obviously asynchronous and they all return a [`Q` promise](https://github.com/kriskowal/q).
