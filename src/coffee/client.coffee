@@ -16,6 +16,7 @@ ProductDiscountService   = require './services/product-discounts'
 ProductService           = require './services/products'
 ProductProjectionService = require './services/product-projections'
 ProductTypeService       = require './services/product-types'
+ProjectService           = require './services/project'
 ReviewService            = require './services/reviews'
 ShippingMethodService    = require './services/shipping-methods'
 StateService             = require './services/states'
@@ -87,6 +88,7 @@ class SphereClient
     @productDiscounts   = new ProductDiscountService _serviceOptions
     @productProjections = new ProductProjectionService _serviceOptions
     @productTypes       = new ProductTypeService _serviceOptions
+    @project            = new ProjectService _serviceOptions
     @reviews            = new ReviewService _serviceOptions
     @shippingMethods    = new ShippingMethodService _serviceOptions
     @states             = new StateService _serviceOptions
