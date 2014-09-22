@@ -1,8 +1,8 @@
 Q = require 'q'
 _ = require 'underscore'
-{Rest} = require 'sphere-node-connect'
 {TaskQueue} = require 'sphere-node-utils'
 SphereClient = require '../lib/client'
+Rest = require '../lib/connect/rest'
 Logger = require '../lib/logger'
 Config = require('../config').config
 
@@ -63,7 +63,7 @@ describe 'SphereClient', ->
     expect(@client._rest.logger).toBeDefined()
     expect(@client._rest.logger.fields.name).toBe 'sphere-node-client'
     expect(@client._rest.logger.streams[1].path).toBe './sphere-node-client-debug.log'
-    expect(@client._rest.logger.fields.widget_type).toBe 'sphere-node-connect'
+    expect(@client._rest.logger.fields.widget_type).toBe 'sphere-node-client'
 
   it 'should initialize with given Logger', ->
     existingLogger = new MyLogger()
@@ -75,7 +75,7 @@ describe 'SphereClient', ->
     expect(client._logger.fields.name).toBe 'foo'
     expect(client._logger.streams[1].path).toBe './foo-test.log'
     expect(client._logger.fields.widget_type).toBe 'sphere-node-client'
-    expect(client._rest.logger.fields.widget_type).toBe 'sphere-node-connect'
+    expect(client._rest.logger.fields.widget_type).toBe 'sphere-node-client'
 
   it 'should initialize with given Rest', ->
     existingRest = new Rest config: Config
