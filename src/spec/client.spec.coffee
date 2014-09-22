@@ -1,8 +1,8 @@
 Q = require 'q'
 _ = require 'underscore'
-{TaskQueue} = require 'sphere-node-utils'
 SphereClient = require '../lib/client'
 Rest = require '../lib/connect/rest'
+TaskQueue = require '../lib/task-queue'
 Logger = require '../lib/logger'
 Config = require('../config').config
 

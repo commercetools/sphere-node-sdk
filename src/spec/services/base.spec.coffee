@@ -1,6 +1,6 @@
 _ = require 'underscore'
 Q = require 'q'
-{TaskQueue} = require 'sphere-node-utils'
+TaskQueue = require '../../lib/task-queue'
 BaseService              = require '../../lib/services/base'
 CartService              = require '../../lib/services/carts'
 CategoryService          = require '../../lib/services/categories'

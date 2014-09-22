@@ -1,5 +1,5 @@
 Q = require 'q'
-{TaskQueue} = require 'sphere-node-utils'
+TaskQueue = require '../../lib/task-queue'
 OrderService = require '../../lib/services/orders'
 
 ###*

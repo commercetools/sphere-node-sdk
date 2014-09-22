@@ -1,6 +1,6 @@
 _ = require 'underscore'
-{TaskQueue} = require 'sphere-node-utils'
 Rest = require './connect/rest'
+TaskQueue = require './task-queue'
 Logger = require './logger'
 CartService              = require './services/carts'
 CategoryService          = require './services/categories'
