@@ -1,3 +1,4 @@
+debug = require('debug')('spec-sphere-client-channels')
 _ = require 'underscore'
 _.mixin require('underscore-mixins')
 SphereClient = require '../../lib/client'
@@ -29,13 +30,12 @@ describe 'Integration Channels', ->
 
   beforeEach (done) ->
     @client = new SphereClient config: Config
-    @logger = @client._logger
 
     @client.channels.save(newChannel())
     .then (result) =>
       expect(result.statusCode).toBe 201
       @channelId = result.body.id
-      @logger.info @channel, "New channel created: #{@channelId}"
+      debug 'New channel created: %j', result.body
       done()
     .fail (error) -> done _.prettify(error)
 
@@ -44,7 +44,7 @@ describe 'Integration Channels', ->
     .then (result) =>
       @client.channels.byId(@channelId).delete(result.body.version)
     .then (result) =>
-      @logger.info "Channel deleted: #{@channelId}"
+      debug "Channel deleted: #{@channelId}"
       expect(result.statusCode).toBe 200
       done()
     .fail (error) -> done _.prettify(error)

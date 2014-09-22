@@ -1,3 +1,4 @@
+debug = require('debug')('sphere-client')
 _ = require 'underscore'
 Q = require 'q'
 Utils = require '../utils'
@@ -25,11 +26,10 @@ class BaseService
   ###*
    * Initialize the class.
    * @constructor
-   * @param {Rest} _rest An instance of the Rest client (sphere-node-connect)
-   * @param {Logger} _logger An instance of a Logger (https://github.com/emmenko/sphere-node-connect#logging)
+   * @param {Object} opts An object containing configuration option and/or instances of {Rest}, {TaskQueue}
   ###
   constructor: (opts = {}) ->
-    {@_rest, @_logger, @_task, @_stats} = opts
+    {@_rest, @_task, @_stats} = opts
     @_setDefaults()
 
   ###*
@@ -63,7 +63,7 @@ class BaseService
   byId: (id) ->
     @_currentEndpoint = "#{@constructor.baseResourceEndpoint}/#{id}"
     @_params.id = id
-    @_logger.debug @_currentEndpoint, 'Setting endpoint with ID'
+    debug 'setting endpoint id: %j', @_currentEndpoint
     this
 
   ###*
@@ -78,7 +78,7 @@ class BaseService
     return this unless predicate
     encodedPredicate = encodeURIComponent(predicate)
     @_params.query.where.push encodedPredicate
-    @_logger.debug @_params.query, 'Setting \'where\' parameter'
+    debug 'setting predicate: %s', predicate
     this
 
   ###*
@@ -90,7 +90,7 @@ class BaseService
     @_params.query.operator = switch operator
       when 'and', 'or' then operator
       else 'and'
-    @_logger.debug @_params.query, 'Setting \'where\' operator'
+    debug 'setting where operator: %s', operator
     this
 
   ###*
@@ -129,7 +129,7 @@ class BaseService
   sort: (path, ascending = true) ->
     direction = if ascending then 'asc' else 'desc'
     @_params.query.sort.push encodeURIComponent("#{path} #{direction}")
-    @_logger.debug @_params.query, 'Setting \'sort\' parameter'
+    debug 'setting sort: %s %s', path, direction
     this
 
   ###*
@@ -142,7 +142,7 @@ class BaseService
   page: (page) ->
     throw new Error 'Page must be a number >= 1' if _.isNumber(page) and page < 1
     @_params.query.page = page
-    @_logger.debug @_params.query, 'Setting \'page\' parameter'
+    debug 'setting page: %s', page
     this
 
   ###*
@@ -156,7 +156,7 @@ class BaseService
   perPage: (perPage) ->
     throw new Error 'PerPage (limit) must be a number >= 0' if _.isNumber(perPage) and perPage < 0
     @_params.query.perPage = perPage
-    @_logger.debug @_params.query, 'Setting \'perPage\' parameter'
+    debug 'setting perPage: %s', perPage
     this
 
   ###*
@@ -174,7 +174,7 @@ class BaseService
     return this unless expansionPath
     encodedExpansionPath = encodeURIComponent(expansionPath)
     @_params.query.expand.push encodedExpansionPath
-    @_logger.debug @_params.query, 'Setting \'expand\' parameter'
+    debug 'setting expand: %s', expansionPath
     this
 
   ###*
@@ -191,7 +191,7 @@ class BaseService
       perPage: @_params.query.perPage
       sort: @_params.query.sort
       expand: @_params.query.expand
-    @_logger.debug qs, 'Query string generated'
+    debug 'query string: %s', qs
     qs
 
   ###*
@@ -233,12 +233,11 @@ class BaseService
     originalQuery = @_params.query
 
     _processPage = (page, perPage, total, acc = []) =>
-      @_logger.debug
+      debug 'processing next page with params: %j',
         page: page
         perPage: perPage,
         offset: (page - 1) * perPage
         total: total
-      , 'Processing next page'
       if total? and (page - 1) * perPage >= total
         deferred.resolve acc
       else
@@ -249,19 +248,19 @@ class BaseService
         queryString = @_queryString()
 
         @_get("#{endpoint}?#{queryString}")
-        .then (payload) =>
+        .then (payload) ->
           fn(payload)
-          .then (result) =>
+          .then (result) ->
             newTotal = payload.body.total
             if not total or total is newTotal
               nextPage = page + 1
             else if total < newTotal
               nextPage = page
-              @_logger.debug "Total is bigger then before, assuming something has been newly created. Processing the same page (#{nextPage})."
+              debug 'Total is bigger then before, assuming something has been newly created. Processing the same page (%s).', nextPage
             else
               nextPage = page - 1
               nextPage = 1 if nextPage < 1
-              @_logger.debug "Total is lesser then before, assuming something has been deleted. Reducing page to #{nextPage} (min 1)."
+              debug 'Total is lesser then before, assuming something has been deleted. Reducing page to %s (min 1).', nextPage
             accumulated = acc.concat(result) if options.accumulate
             _processPage nextPage, perPage, newTotal, accumulated
         .fail (error) ->

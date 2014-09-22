@@ -19,18 +19,10 @@ describe 'ProductProjectionService', ->
       PAGED: -> (endpoint, callback, notify) ->
       _preRequest: ->
       _doRequest: ->
-    @loggerMock =
-      trace: ->
-      debug: ->
-      info: ->
-      warn: ->
-      error: ->
-      fatal: ->
     @task = new TaskQueue
     @service = new ProductProjectionService
       _rest: @restMock
       _task: @task
-      _logger: @loggerMock
       _stats:
         includeHeaders: false
 

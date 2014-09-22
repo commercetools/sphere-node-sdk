@@ -1,7 +1,7 @@
+debug = require('debug')('sphere-connect-oauth2')
 _ = require 'underscore'
 _.mixin require('underscore-mixins')
 request = require 'request'
-Logger = require '../logger'
 
 ###*
  * Creates a new OAuth2 instance, used to connect to https://auth.sphere.io
@@ -22,8 +22,6 @@ class OAuth2
     throw new Error('Missing \'client_secret\'') unless config.client_secret
     throw new Error('Missing \'project_key\'') unless config.project_key
 
-    @logger = if opts.logger instanceof Logger then opts.logger else new Logger opts.logger
-
     rejectUnauthorized = if _.isUndefined(opts.rejectUnauthorized) then true else opts.rejectUnauthorized
     @_options =
       config: config
@@ -32,7 +30,7 @@ class OAuth2
       timeout: opts.timeout or 20000
       rejectUnauthorized: rejectUnauthorized
 
-    @logger.debug @_options, 'New OAuth object'
+    debug 'oauth2 options: %j', @_options
     return
 
   ###*
@@ -56,7 +54,7 @@ class OAuth2
       timeout: @_options.timeout
       rejectUnauthorized: @_options.rejectUnauthorized
 
-    @logger.debug request_options, 'Retrieving access_token...'
+    debug 'access_token request options: %j', request_options
     @_doRequest(request_options, callback)
 
   ###*
@@ -66,9 +64,8 @@ class OAuth2
    * @param {Function} callback A function fulfilled with `error, response, body` arguments.
   ###
   _doRequest: (options, callback) ->
-    request options, (e, r, b) =>
-      @logger.error e if e
-      @logger.debug {request: r?.request, response: r}, 'OAuth response'
+    request options, (e, r, b) ->
+      debug('error on request: %j', e) if e
       callback(e, r, b)
 
 ###

@@ -3,14 +3,7 @@ _ = require 'underscore'
 SphereClient = require '../lib/client'
 Rest = require '../lib/connect/rest'
 TaskQueue = require '../lib/task-queue'
-Logger = require '../lib/logger'
 Config = require('../config').config
-
-class MyLogger
-  debug: (msg, opts) -> 'debug'
-  info: (msg, opts) -> 'info'
-  warn: (msg, opts) -> 'warn'
-  error: (msg, opts) -> 'error'
 
 describe 'SphereClient', ->
 
@@ -28,7 +21,6 @@ describe 'SphereClient', ->
   it 'should initialize with credentials', ->
     expect(@client).toBeDefined()
     expect(@client._rest).toBeDefined()
-    expect(@client._logger).toBeDefined()
     expect(@client._task).toBeDefined()
     expect(@client.carts).toBeDefined()
     expect(@client.categories).toBeDefined()
@@ -60,34 +52,6 @@ describe 'SphereClient', ->
       delete opt[key]
       client = -> new SphereClient config: opt
       expect(client).toThrow new Error("Missing '#{key}'")
-
-  it 'should initialize Logger interface', ->
-    expectedLogOutput =
-      debug: null
-      info: null
-      warn: null
-      error: null
-    client = new SphereClient
-      config: Config
-      logger:
-        debug: (opts, msg) -> expectedLogOutput.debug = {msg: msg, opts: opts}
-        info: (opts, msg) -> expectedLogOutput.info = {msg: msg, opts: opts}
-        warn: (opts, msg) -> expectedLogOutput.warn = {msg: msg, opts: opts}
-        error: (opts, msg) -> expectedLogOutput.error = {msg: msg, opts: opts}
-
-    client._logger.debug({foo: 'bar'}, 'This is foo:bar')
-    expect(expectedLogOutput.debug.msg).toBe 'This is foo:bar'
-    expect(expectedLogOutput.debug.opts).toEqual log_source: 'sphere-node-client', data: {foo: 'bar'}
-    client._logger.info({foo: 'bar'}, 'This is foo:bar')
-    expect(expectedLogOutput.info.msg).toBe 'This is foo:bar'
-    expect(expectedLogOutput.info.opts).toEqual log_source: 'sphere-node-client', data: {foo: 'bar'}
-    client._logger.warn({foo: 'bar'}, 'This is foo:bar')
-    expect(expectedLogOutput.warn.msg).toBe 'This is foo:bar'
-    expect(expectedLogOutput.warn.opts).toEqual log_source: 'sphere-node-client', data: {foo: 'bar'}
-    client._logger.error({foo: 'bar'}, 'This is foo:bar')
-    expect(expectedLogOutput.error.msg).toBe 'This is foo:bar'
-    expect(expectedLogOutput.error.opts).toEqual log_source: 'sphere-node-client', data: {foo: 'bar'}
-
 
   it 'should initialize with given Rest', ->
     existingRest = new Rest config: Config

@@ -30,6 +30,7 @@
     "test": "grunt coverage"
   },
   "dependencies": {
+    "debug": "2.0.0",
     "q": "1.0.1",
     "sphere-node-utils": "0.4.13",
     "request": "2.40.0",

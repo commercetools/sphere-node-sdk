@@ -1,3 +1,4 @@
+debug = require('debug')('spec-sphere-client-categories')
 _ = require 'underscore'
 Q = require 'q'
 _.mixin require('underscore-mixins')
@@ -23,32 +24,27 @@ describe 'Integration Categories', ->
 
   beforeEach (done) ->
     @client = new SphereClient config: Config
-    @logger = @client._logger
 
-    @logger.info 'Creating 50 categories'
+    debug 'Creating 50 categories'
     Q.all _.map [1..50], => @client.categories.save(newCategory())
-    .then (results) =>
-      @logger.info "Created #{results.length} categories"
+    .then (results) ->
+      debug "Created #{results.length} categories"
       done()
-    .fail (error) =>
-      @logger.error error
-      done(_.prettify(error))
+    .fail (error) -> done(_.prettify(error))
   , 30000 # 30sec
 
   afterEach (done) ->
-    @logger.info 'About to delete all categories'
+    debug 'About to delete all categories'
     @client.categories.perPage(0).fetch()
     .then (payload) =>
-      @logger.info "Deleting #{payload.body.total} categories (maxParallel: 1)"
+      debug "Deleting #{payload.body.total} categories (maxParallel: 1)"
       @client.setMaxParallel(1)
       Q.all _.map payload.body.results, (category) =>
         @client.categories.byId(category.id).delete(category.version)
-    .then (results) =>
-      @logger.info "Deleted #{results.length} categories"
+    .then (results) ->
+      debug "Deleted #{results.length} categories"
       done()
-    .fail (error) =>
-      @logger.error error
-      done(_.prettify(error))
+    .fail (error) -> done(_.prettify(error))
   , 60000 # 1min
 
   it 'should update descriptions with process', (done) ->
@@ -61,12 +57,10 @@ describe 'Integration Categories', ->
             {action: 'setDescription', description: {en: 'A new description'}}
           ]
       else
-        @logger.warn 'No category found, skipping...'
+        debug 'No category found, skipping...'
         Q()
     .then (results) ->
       expect(results.length).toBe 50
       done()
-    .fail (error) =>
-      @logger.error error
-      done(_.prettify(error))
+    .fail (error) -> done(_.prettify(error))
   , 120000 # 2min

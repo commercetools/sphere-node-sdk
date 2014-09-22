@@ -63,17 +63,9 @@ describe 'Service', ->
           PAGED: -> (endpoint, callback, notify) ->
           _preRequest: ->
           _doRequest: ->
-        @loggerMock =
-          trace: ->
-          debug: ->
-          info: ->
-          warn: ->
-          error: ->
-          fatal: ->
         @task = new TaskQueue
         @service = new o.service
           _rest: @restMock,
-          _logger: @loggerMock,
           _task: @task
           _stats:
             includeHeaders: false
@@ -81,7 +73,6 @@ describe 'Service', ->
       afterEach ->
         @service = null
         @restMock = null
-        @loggerMock = null
         @task = null
 
       it 'should have constants defined', ->

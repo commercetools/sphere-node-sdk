@@ -9,17 +9,9 @@ ChannelService = require '../../lib/services/channels'
 describe 'ChannelService', ->
 
   beforeEach ->
-    @loggerMock =
-      trace: ->
-      debug: ->
-      info: ->
-      warn: ->
-      error: ->
-      fatal: ->
     @channels = new ChannelService
       _rest: null
       _task: null
-      _logger: @loggerMock
       _stats:
         includeHeaders: false
 

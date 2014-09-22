@@ -1,3 +1,4 @@
+debug = require('debug')('sphere-client')
 _ = require 'underscore'
 BaseService = require './base'
 
@@ -35,7 +36,7 @@ class ProductProjectionService extends BaseService
   ###
   staged: (staged = true) ->
     @_params.query.staged = staged
-    @_logger.debug @_params.query, 'Setting \'staged\' parameter'
+    debug 'setting staged: %s', staged
     this
 
   ###*
@@ -46,7 +47,7 @@ class ProductProjectionService extends BaseService
   lang: (language) ->
     throw new Error 'Language parameter is required for searching' unless language
     @_params.query.lang = language
-    @_logger.debug @_params.query, 'Setting \'lang\' parameter'
+    debug 'setting lang: %s', language
     this
 
   ###*
@@ -57,7 +58,7 @@ class ProductProjectionService extends BaseService
   text: (text) ->
     return this unless text
     @_params.query.text = text
-    @_logger.debug @_params.query, 'Setting \'text\' parameter'
+    debug 'setting text: %s', text
     this
 
   ###*
@@ -70,7 +71,7 @@ class ProductProjectionService extends BaseService
     return this unless filter
     encodedFilter = encodeURIComponent(filter)
     @_params.query.filter.push encodedFilter
-    @_logger.debug @_params.query, 'Setting \'filter\' parameter'
+    debug 'setting filter: %s', filter
     this
 
   ###*
@@ -83,7 +84,7 @@ class ProductProjectionService extends BaseService
     return this unless filter
     encodedFilter = encodeURIComponent(filter)
     @_params.query.filterByQuery.push encodedFilter
-    @_logger.debug @_params.query, 'Setting \'filter.query\' parameter'
+    debug 'setting filter.query: %s', filter
     this
 
   ###*
@@ -96,7 +97,7 @@ class ProductProjectionService extends BaseService
     return this unless filter
     encodedFilter = encodeURIComponent(filter)
     @_params.query.filterByFacets.push encodedFilter
-    @_logger.debug @_params.query, 'Setting \'filter.facets\' parameter'
+    debug 'setting filter.facets: %s', filter
     this
 
   ###*
@@ -109,7 +110,7 @@ class ProductProjectionService extends BaseService
     return this unless facet
     encodedFacet = encodeURIComponent(facet)
     @_params.query.facet.push encodedFacet
-    @_logger.debug @_params.query, 'Setting \'facet\' parameter'
+    debug 'setting facet: %s', facet
     this
 
   ###*

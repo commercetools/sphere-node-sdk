@@ -1,3 +1,4 @@
+debug = require('debug')('spec-sphere-client-states')
 _ = require 'underscore'
 Q = require 'q'
 _.mixin require('underscore-mixins')
@@ -23,27 +24,22 @@ describe 'Integration Channels', ->
 
   beforeEach (done) ->
     @client = new SphereClient config: Config
-    @logger = @client._logger
 
     @client.states.save(newState())
     .then (result) =>
       expect(result.statusCode).toBe 201
       @state = result.body
-      @logger.info @state, 'New state created'
+      debug 'New state created: %j', @state
       done()
-    .fail (error) =>
-      @logger.error error
-      done(_.prettify(error))
+    .fail (error) -> done _.prettify(error)
 
   afterEach (done) ->
     @client.states.byId(@state.id).delete(@state.version)
     .then (result) =>
-      @logger.info "State deleted: #{@state.id}"
+      debug "State deleted: #{@state.id}"
       expect(result.statusCode).toBe 200
       done()
-    .fail (error) =>
-      @logger.error error
-      done(_.prettify(error))
+    .fail (error) -> done _.prettify(error)
 
   it 'should update a state', (done) ->
     @client.states.byId(@state.id).update(updateState(@state.version))
@@ -53,9 +49,7 @@ describe 'Integration Channels', ->
       expect(@state.name).toEqual {en: 'A State'}
       expect(@state.description).toEqual {en: 'This is a State'}
       done()
-    .fail (error) =>
-      @logger.error error
-      done(_.prettify(error))
+    .fail (error) -> done _.prettify(error)
 
   it 'should create some states and use them as transitions references', (done) ->
     Q.all _.map [1..51], => @client.states.save(newState())
@@ -81,7 +75,5 @@ describe 'Integration Channels', ->
         Q.all _.map otherStates, (r) => @client.states.byId(r.body.id).delete(r.body.version)
       .then (results) ->
         done()
-    .fail (error) =>
-      @logger.error error
-      done(_.prettify(error))
+    .fail (error) -> done _.prettify(error)
   , 20000 # 20sec

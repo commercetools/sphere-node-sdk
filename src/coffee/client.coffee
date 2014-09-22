@@ -1,7 +1,6 @@
 _ = require 'underscore'
 Rest = require './connect/rest'
 TaskQueue = require './task-queue'
-Logger = require './logger'
 CartService              = require './services/carts'
 CategoryService          = require './services/categories'
 ChannelService           = require './services/channels'
@@ -39,13 +38,6 @@ class SphereClient
   constructor: (options = {}) ->
     ###*
      * @private
-     * Instance of a Logger object
-     * @type {Logger}
-    ###
-    @_logger = new Logger options.logger
-
-    ###*
-     * @private
      * Instance of a TaskQueue
      * @type {TaskQueue}
     ###
@@ -56,8 +48,7 @@ class SphereClient
      * Instance of the Rest client
      * @type {Rest}
     ###
-    @_rest = options.rest or new Rest _.extend options,
-      logger: @_logger
+    @_rest = options.rest or new Rest options
 
     ###*
      * @private
@@ -67,7 +58,6 @@ class SphereClient
     _serviceOptions =
       _rest: @_rest
       _task: @_task
-      _logger: @_logger
       _stats: _.defaults options.stats or {},
         includeHeaders: false
 

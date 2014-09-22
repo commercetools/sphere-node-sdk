@@ -1,8 +1,8 @@
+debug = require('debug')('sphere-connect-rest')
 _ = require 'underscore'
 _.mixin require('underscore-mixins')
 request = require 'request'
 OAuth2 = require './oauth2'
-Logger = require '../logger'
 
 ###*
  * Creates a new Rest instance, used to connect to https://api.sphere.io
@@ -22,8 +22,6 @@ class Rest
     throw new Error('Missing \'client_id\'') unless config.client_id
     throw new Error('Missing \'client_secret\'') unless config.client_secret
     throw new Error('Missing \'project_key\'') unless config.project_key
-
-    @logger = if opts.logger instanceof Logger then opts.logger else new Logger opts.logger
 
     rejectUnauthorized = if _.isUndefined(opts.rejectUnauthorized) then true else opts.rejectUnauthorized
     userAgent = if _.isUndefined(opts.user_agent) then 'sphere-node-connect' else opts.user_agent
@@ -45,7 +43,7 @@ class Rest
     if @_options.access_token
       @_options.headers['Authorization'] = "Bearer #{@_options.access_token}"
 
-    @logger.debug @_options, 'New Rest object'
+    debug 'rest options: %j', @_options
     return
 
   ###*
@@ -57,7 +55,7 @@ class Rest
     params =
       method: 'GET'
       resource: resource
-    @logger.debug _.extend {}, params,
+    debug 'GET request params: %j', _.extend {}, params,
       project: @_options.config.project_key
     @_preRequest(params, callback)
 
@@ -72,7 +70,7 @@ class Rest
       method: 'POST'
       resource: resource
       body: payload
-    @logger.debug _.extend {}, params,
+    debug 'POST request params: %j', _.extend {}, params,
       project: @_options.config.project_key
     @_preRequest(params, callback)
 
@@ -85,7 +83,7 @@ class Rest
     params =
       method: 'DELETE'
       resource: resource
-    @logger.debug _.extend {}, params,
+    debug 'DELETE request params: %j', _.extend {}, params,
       project: @_options.config.project_key
     @_preRequest(params, callback)
 
@@ -109,7 +107,7 @@ class Rest
               throw new Error 'Error on retrieving access_token after 10 attempts.\n' +
                 "Error: #{error}\n"
             else
-              @logger.debug "Failed to retrieve access_token, retrying...#{retry + 1}"
+              debug "Failed to retrieve access_token (error: %j), retrying...#{retry + 1}", error
               return _req(retry + 1)
           if response.statusCode isnt 200
             # try again to get an access token
@@ -118,13 +116,13 @@ class Rest
                 "Status code: #{response.statusCode}\n" +
                 "Body: #{body}\n"
             else
-              @logger.debug "Failed to retrieve access_token, retrying...#{retry + 1}"
+              debug "Failed to retrieve access_token (statusCode: #{response.statusCode}), retrying...#{retry + 1}"
               _req(retry + 1)
           else
             access_token = body.access_token
             @_options.access_token = access_token
             @_options.headers['Authorization'] = "Bearer #{@_options.access_token}"
-            @logger.debug 'New access_token received', access_token
+            debug 'new access_token received: %s', access_token
             # call itself again (this time with the access_token)
             _req(0)
       else
@@ -139,6 +137,7 @@ class Rest
         if params.body
           request_options.body = params.body
 
+        debug 'rest request options: %j', request_options
         @_doRequest(request_options, callback)
 
     _req(0)
@@ -150,9 +149,8 @@ class Rest
    * @param {Function} callback A function fulfilled with `error, response, body` arguments.
   ###
   _doRequest: (options, callback) ->
-    request options, (e, r, b) =>
-      @logger.error e if e
-      @logger.debug {request: r?.request, response: r}, 'Rest response'
+    request options, (e, r, b) ->
+      debug('error on request: %j', e) if e
       callback(e, r, b)
 
   ###*
@@ -175,6 +173,7 @@ class Rest
       limit: 50 # limit used for batches
       offset: 0
     limit = params.limit
+    debug 'PAGED request params: %j', params
 
     _buildPagedQueryResponse = (results) ->
       tot = _.size(results)
@@ -187,6 +186,7 @@ class Rest
     tmpResponse = {}
 
     _page = (offset, total, accumulator = []) =>
+      debug 'PAGED iteration (offset: %s, total: %s)', offset, total
       if total? and (offset + limit) >= total + limit
         notify(percentage: 100, value: accumulator) if notify
         # return if there are no more pages
