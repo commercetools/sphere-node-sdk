@@ -12,7 +12,7 @@ SPHERE CLIENT
   * [Rest](#rest)
     * [Paged requests](#paged-requests)
   * [Error handling](#error-handling)
-* [Logging & debugging](docs/DEBUGGING.md)
+* [Logging & debugging](DEBUGGING.md)
 * [Examples](#examples)
 
 ## Documentation

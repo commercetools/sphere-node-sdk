@@ -24,7 +24,7 @@ SPHERE CLIENT
   * [Types of responses](#types-of-responses)
   * [Error handling](#error-handling)
   * [Statistics](#statistics)
-* [Logging & debugging](docs/DEBUGGING.md)
+* [Logging & debugging](DEBUGGING.md)
 
 
 ## Documentation
