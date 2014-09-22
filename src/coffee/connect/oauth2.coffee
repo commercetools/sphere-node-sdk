@@ -1,5 +1,5 @@
 _ = require 'underscore'
-_.mixin require('sphere-node-utils')._u
+_.mixin require('underscore-mixins')
 request = require 'request'
 Logger = require '../logger'
 

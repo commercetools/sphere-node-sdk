@@ -33,7 +33,8 @@
     "q": "1.0.1",
     "sphere-node-utils": "0.4.13",
     "request": "2.40.0",
-    "underscore": "1.6.0"
+    "underscore": "1.7.0",
+    "underscore-mixins": "0.1.0"
   },
   "devDependencies": {
     "coveralls": "2.10.0",

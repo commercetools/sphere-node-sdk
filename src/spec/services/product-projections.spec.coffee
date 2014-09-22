@@ -1,6 +1,6 @@
 Q = require 'q'
 _ = require 'underscore'
-_.mixin require('sphere-node-utils')._u
+_.mixin require('underscore-mixins')
 {TaskQueue} = require 'sphere-node-utils'
 ProductProjectionService = require '../../lib/services/product-projections'
 
