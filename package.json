@@ -32,7 +32,6 @@
   "dependencies": {
     "debug": "2.0.0",
     "q": "1.0.1",
-    "sphere-node-utils": "0.4.13",
     "request": "2.40.0",
     "underscore": "1.7.0",
     "underscore-mixins": "0.1.0"
