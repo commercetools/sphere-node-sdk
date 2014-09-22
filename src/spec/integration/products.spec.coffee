@@ -66,11 +66,7 @@ updatePublish = (version) ->
 describe 'Integration Products', ->
 
   beforeEach (done) ->
-    @client = new SphereClient
-      config: Config
-      logConfig:
-        levelStream: 'info'
-        levelFile: 'error'
+    @client = new SphereClient config: Config
     @logger = @client._logger
 
     @logger.debug 'Creating a ProductType'

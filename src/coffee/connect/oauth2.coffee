@@ -22,7 +22,7 @@ class OAuth2
     throw new Error('Missing \'client_secret\'') unless config.client_secret
     throw new Error('Missing \'project_key\'') unless config.project_key
 
-    @logger = new Logger opts.logConfig
+    @logger = if opts.logger instanceof Logger then opts.logger else new Logger opts.logger
 
     rejectUnauthorized = if _.isUndefined(opts.rejectUnauthorized) then true else opts.rejectUnauthorized
     @_options =

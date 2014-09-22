@@ -28,11 +28,7 @@ describe 'Integration Channels', ->
   channels = []
 
   beforeEach (done) ->
-    @client = new SphereClient
-      config: Config
-      logConfig:
-        levelStream: 'info'
-        levelFile: 'error'
+    @client = new SphereClient config: Config
     @logger = @client._logger
 
     @client.channels.save(newChannel())

@@ -39,10 +39,10 @@ class SphereClient
   constructor: (options = {}) ->
     ###*
      * @private
-     * Instance of a Logger
+     * Instance of a Logger object
      * @type {Logger}
     ###
-    @_logger = new Logger options.logConfig
+    @_logger = new Logger options.logger
 
     ###*
      * @private
@@ -57,8 +57,7 @@ class SphereClient
      * @type {Rest}
     ###
     @_rest = options.rest or new Rest _.extend options,
-      logConfig:
-        logger: @_logger
+      logger: @_logger
 
     ###*
      * @private

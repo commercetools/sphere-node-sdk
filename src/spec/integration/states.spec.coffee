@@ -22,11 +22,7 @@ updateState = (version) ->
 describe 'Integration Channels', ->
 
   beforeEach (done) ->
-    @client = new SphereClient
-      config: Config
-      logConfig:
-        levelStream: 'info'
-        levelFile: 'error'
+    @client = new SphereClient config: Config
     @logger = @client._logger
 
     @client.states.save(newState())

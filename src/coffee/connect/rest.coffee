@@ -23,7 +23,7 @@ class Rest
     throw new Error('Missing \'client_secret\'') unless config.client_secret
     throw new Error('Missing \'project_key\'') unless config.project_key
 
-    @logger = new Logger opts.logConfig
+    @logger = if opts.logger instanceof Logger then opts.logger else new Logger opts.logger
 
     rejectUnauthorized = if _.isUndefined(opts.rejectUnauthorized) then true else opts.rejectUnauthorized
     userAgent = if _.isUndefined(opts.user_agent) then 'sphere-node-connect' else opts.user_agent
@@ -37,7 +37,7 @@ class Rest
         'User-Agent': userAgent
     @_options.uri = "https://#{@_options.host}/#{@_options.config.project_key}"
 
-    oauth_options = _.clone(opts)
+    oauth_options = _.deepClone(opts)
     _.extend oauth_options,
       host: opts.oauth_host
     @_oauth = new OAuth2 oauth_options

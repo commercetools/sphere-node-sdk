@@ -19,15 +19,10 @@ updateCategory = (version, parentId) ->
     {action: 'changeParent', parent: {typeId: 'category', id: parentId}}
   ]
 
-
 describe 'Integration Categories', ->
 
   beforeEach (done) ->
-    @client = new SphereClient
-      config: Config
-      logConfig:
-        levelStream: 'info'
-        levelFile: 'error'
+    @client = new SphereClient config: Config
     @logger = @client._logger
 
     @logger.info 'Creating 50 categories'
