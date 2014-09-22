@@ -1,4 +1,4 @@
-debug = require('debug')('sphere-connect-rest')
+debug = require('debug')('sphere-connect:rest')
 _ = require 'underscore'
 _.mixin require('underscore-mixins')
 request = require 'request'

@@ -12,6 +12,7 @@ SPHERE CLIENT
   * [Rest](#rest)
     * [Paged requests](#paged-requests)
   * [Error handling](#error-handling)
+* [Logging & debugging](docs/DEBUGGING.md)
 * [Examples](#examples)
 
 ## Documentation
@@ -120,11 +121,6 @@ It's always a good practice to check first for the existence of an `error` objec
     else
       # do something else
 ```
-
-### Logging
-
-See [`sphere-node-utils`](https://github.com/sphereio/sphere-node-utils)
-
 
 ## Examples
 

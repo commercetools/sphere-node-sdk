@@ -1,4 +1,4 @@
-debug = require('debug')('sphere-connect-oauth2')
+debug = require('debug')('sphere-connect:oauth2')
 _ = require 'underscore'
 _.mixin require('underscore-mixins')
 request = require 'request'

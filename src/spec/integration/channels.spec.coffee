@@ -1,4 +1,4 @@
-debug = require('debug')('spec-sphere-client-channels')
+debug = require('debug')('spec-sphere-client:channels')
 _ = require 'underscore'
 _.mixin require('underscore-mixins')
 SphereClient = require '../../lib/client'

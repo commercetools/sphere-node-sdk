@@ -1,4 +1,4 @@
-debug = require('debug')('spec-sphere-client-products')
+debug = require('debug')('spec-sphere-client:products')
 _ = require 'underscore'
 Q = require 'q'
 _.mixin require('underscore-mixins')
