@@ -218,7 +218,7 @@ xdescribe 'Integration test :: Products', ->
       done()
     .fail (error) -> done(_.prettify(error))
 
-describe 'Integration test :: Products :: between projects', ->
+xdescribe 'Integration test :: Products :: between projects', ->
 
   beforeEach ->
     logger = new Logger

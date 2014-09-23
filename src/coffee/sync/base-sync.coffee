@@ -1,3 +1,4 @@
+debug = require('debug')('sphere-sync')
 _ = require 'underscore'
 BaseUtils = require './utils/base'
 
@@ -39,7 +40,7 @@ class BaseSync
 
     # diff 'em
     diff = @_utils.diff(old_obj, new_obj)
-    @_logger.debug diff, "JSON diff for #{@constructor.name} object"
+    debug 'JSON diff for %s Sync: %j', @constructor.name, diff
     update = undefined
     if diff
       actions = @_doMapActions(diff, new_obj, old_obj)
@@ -50,7 +51,7 @@ class BaseSync
     @_data =
       update: update
       updateId: old_obj.id
-    @_logger.debug @_data, "Data update for #{@constructor.name} object"
+    debug 'JSON data update for %s Sync: %j', @constructor.name, @_data
     this
 
   ###*

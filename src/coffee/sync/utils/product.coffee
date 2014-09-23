@@ -1,8 +1,6 @@
 _ = require 'underscore'
 _.mixin require 'underscore-mixins'
-jsondiffpatch = require 'jsondiffpatch'
 BaseUtils = require './base'
-helper = require '../helper'
 
 REGEX_NUMBER = new RegExp /^\d+$/
 REGEX_UNDERSCORE_NUMBER = new RegExp /^\_\d+$/
@@ -183,7 +181,7 @@ class ProductUtils extends BaseUtils
             if not _.isArray variant
               prices = variant.prices
               if prices
-                _.each prices, (value, key) ->
+                _.each prices, (value, key) =>
                   if REGEX_NUMBER.test key
                     # key is index of new price
                     index = key

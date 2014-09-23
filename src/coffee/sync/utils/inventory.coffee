@@ -1,7 +1,5 @@
 _ = require 'underscore'
-jsondiffpatch = require 'jsondiffpatch'
 BaseUtils = require './base'
-helper = require '../helper'
 
 ###
 Inventory Utils class

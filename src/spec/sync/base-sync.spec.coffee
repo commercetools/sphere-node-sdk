@@ -28,7 +28,7 @@ describe 'BaseSync', ->
 
     it 'should build all actions if config is not defined', ->
       spyOn(@sync, '_doMapActions').andReturn [{foo: 'bar'}]
-      update = @sync.config().buildActions({foo: 'bar'}, {foo: 'qux', version: 1}).get()
+      update = @sync.config().buildActions({foo: 'bar'}, {foo: 'qux', version: 1}).getUpdatePayload()
       expected_update =
         actions: [
           {foo: 'bar'}
@@ -38,7 +38,10 @@ describe 'BaseSync', ->
 
     it 'should throw if given group is not supported', ->
       spyOn(@sync, '_doMapActions').andCallFake (type, fn) => @sync._mapActionOrNot 'base', -> [{foo: 'bar'}]
-      expect(=> @sync.config([{type: 'base', group: 'foo'}]).buildActions({foo: 'bar'}, {foo: 'qux', version: 1})).toThrow new Error 'Action group \'foo\' not supported. Please use black or white.'
+      expect(=>
+        @sync.config([{type: 'base', group: 'foo'}])
+        .buildActions({foo: 'bar'}, {foo: 'qux', version: 1})
+      ).toThrow new Error 'Action group \'foo\' not supported. Please use black or white.'
 
 
   describe ':: buildActions', ->
@@ -48,7 +51,7 @@ describe 'BaseSync', ->
       expect(s).toEqual @sync
 
     it 'should build empty action update', ->
-      update = @sync.buildActions(NEW_OBJ, OLD_OBJ).get()
+      update = @sync.buildActions(NEW_OBJ, OLD_OBJ).getUpdatePayload()
       expect(update).not.toBeDefined()
 
   describe ':: filterActions', ->
@@ -62,13 +65,13 @@ describe 'BaseSync', ->
       spyOn(@sync, '_doMapActions').andReturn builtActions
       update = @sync.buildActions(NEW_OBJ, OLD_OBJ).filterActions (a) ->
         a isnt 'bar'
-      .get()
+      .getUpdatePayload()
       expect(update.actions).toEqual ['foo']
 
     it 'should work with no difference', ->
       update = @sync.buildActions({}, {}).filterActions (a) ->
         true
-      .get()
+      .getUpdatePayload()
       expect(update).toBeUndefined()
 
     it 'should set update to undefined if filter returns empty action list', ->
@@ -76,7 +79,7 @@ describe 'BaseSync', ->
       spyOn(@sync, '_doMapActions').andReturn builtActions
       update = @sync.buildActions(NEW_OBJ, OLD_OBJ).filterActions (a) ->
         false
-      .get()
+      .getUpdatePayload()
       expect(update).toBeUndefined()
 
   xdescribe ':: shouldUpdate', ->

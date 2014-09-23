@@ -30,7 +30,7 @@ describe 'OrderSync', ->
         {type: 'returnInfo', group: 'black'}
       ]
       spyOn(@sync._utils, 'actionsMapReturnInfo').andReturn [{action: 'addReturnInfo', returnTrackingId: '1234', items: []}]
-      update = @sync.config(opts).buildActions(NEW_ORDER, OLD_ORDER).get()
+      update = @sync.config(opts).buildActions(NEW_ORDER, OLD_ORDER).getUpdatePayload()
       expected_update =
         actions: [
           { action: 'changeOrderState', orderState: 'Complete' }
@@ -43,7 +43,7 @@ describe 'OrderSync', ->
   describe ':: buildActions', ->
 
     it 'should build the action update', ->
-      update = @sync.buildActions(NEW_ORDER, OLD_ORDER).get()
+      update = @sync.buildActions(NEW_ORDER, OLD_ORDER).getUpdatePayload()
       expected_update =
         actions: [
           { action: 'changeOrderState', orderState: 'Complete' }

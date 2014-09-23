@@ -95,7 +95,7 @@ describe 'ProductSync', ->
         {type: 'base', group: 'white'}
         {type: 'prices', group: 'black'}
       ]
-      update = @sync.config(opts).buildActions(NEW_PRODUCT, OLD_PRODUCT).get()
+      update = @sync.config(opts).buildActions(NEW_PRODUCT, OLD_PRODUCT).getUpdatePayload()
       expected_update =
         actions: [
           { action: 'changeName', name: {en: 'Foo', de: undefined, it: 'Boo'} }
@@ -109,7 +109,7 @@ describe 'ProductSync', ->
   describe ':: buildActions', ->
 
     it 'should build the action update', ->
-      update = @sync.buildActions(NEW_PRODUCT, OLD_PRODUCT).get()
+      update = @sync.buildActions(NEW_PRODUCT, OLD_PRODUCT).getUpdatePayload()
       expected_update =
         actions: [
           { action: 'changeName', name: {en: 'Foo', de: undefined, it: 'Boo'} }
@@ -160,7 +160,7 @@ describe 'ProductSync', ->
           { id: 3, sku: 'v4', attributes: [{name: 'foo', value: 'i dont care'}] }
           { id: 4, sku: 'v3', attributes: [{name: 'foo', value: 'yet another'}] }
         ]
-      update = @sync.buildActions(newProduct, oldProduct).get()
+      update = @sync.buildActions(newProduct, oldProduct).getUpdatePayload()
       expected_update =
         actions: [
           { action: 'setAttribute', variantId: 1, name: 'foo', value: 'new value' }
