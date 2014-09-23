@@ -1,12 +1,15 @@
-{SphereClient, OAuth2, Rest} = require '../lib/main'
+{SphereClient, OAuth2, Rest, ProductSync, OrderSync, InventorySync} = require '../lib/main'
 
 describe "exports", ->
 
-  it "SphereClient", ->
-    expect(SphereClient).toBeDefined()
+  it "SphereClient", -> expect(SphereClient).toBeDefined()
 
-  it "OAuth2", ->
-    expect(OAuth2).toBeDefined()
+  it "OAuth2", -> expect(OAuth2).toBeDefined()
 
-  it "Rest", ->
-    expect(Rest).toBeDefined()
+  it "Rest", -> expect(Rest).toBeDefined()
+
+  it "ProductSync", -> expect(ProductSync).toBeDefined()
+
+  it "OrderSync", -> expect(OrderSync).toBeDefined()
+
+  it "InventorySync", -> expect(InventorySync).toBeDefined()
