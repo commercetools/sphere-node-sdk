@@ -1,9 +1,9 @@
 Q = require 'q'
 _ = require 'underscore'
-SphereClient = require '../lib/client'
-Rest = require '../lib/connect/rest'
-TaskQueue = require '../lib/task-queue'
-Config = require('../config').config
+SphereClient = require '../../lib/client'
+Rest = require '../../lib/connect/rest'
+TaskQueue = require '../../lib/task-queue'
+Config = require('../../config').config
 
 describe 'SphereClient', ->
 

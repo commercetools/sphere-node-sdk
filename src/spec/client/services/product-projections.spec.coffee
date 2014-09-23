@@ -1,8 +1,8 @@
 Q = require 'q'
 _ = require 'underscore'
 _.mixin require('underscore-mixins')
-TaskQueue = require '../../lib/task-queue'
-ProductProjectionService = require '../../lib/services/product-projections'
+TaskQueue = require '../../../lib/task-queue'
+ProductProjectionService = require '../../../lib/services/product-projections'
 
 ###*
  * Describe service specific implementations

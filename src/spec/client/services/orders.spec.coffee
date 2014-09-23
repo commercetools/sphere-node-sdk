@@ -1,6 +1,6 @@
 Q = require 'q'
-TaskQueue = require '../../lib/task-queue'
-OrderService = require '../../lib/services/orders'
+TaskQueue = require '../../../lib/task-queue'
+OrderService = require '../../../lib/services/orders'
 
 ###*
  * Describe service specific implementations

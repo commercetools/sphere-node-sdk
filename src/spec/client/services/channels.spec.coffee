@@ -1,7 +1,7 @@
 Q = require 'q'
 _ = require 'underscore'
 _.mixin require('underscore-mixins')
-ChannelService = require '../../lib/services/channels'
+ChannelService = require '../../../lib/services/channels'
 
 ###*
  * Describe service specific implementations
