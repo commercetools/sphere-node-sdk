@@ -7,9 +7,15 @@ Base Utils class
 class BaseUtils
 
   diff: (old_obj, new_obj) ->
-    # provide a hash function to work with objects in arrays
-    jsondiffpatch.config.objectHash = (obj) -> obj._MATCH_CRITERIA or obj.id or obj.name
-    jsondiffpatch.diff(old_obj, new_obj)
+    diffpatcher = jsondiffpatch.create
+      # provide a hash function to work with objects in arrays
+      objectHash: (obj) ->
+        obj._MATCH_CRITERIA or obj.id or obj.name
+      arrays:
+        detectMove: true # detect items moved inside the array
+        includeValueOnMove: false  # value of items moved is not included in deltas
+
+    diffpatcher.diff(old_obj, new_obj)
 
   getDeltaValue: (arr) ->
     size = arr.length

@@ -6,6 +6,16 @@ Order Utils class
 ###
 class OrderUtils extends BaseUtils
 
+  diff: (old_obj, new_obj) ->
+    patchReturnInfos = (order) ->
+      _.each order.returnInfo, (info, index) ->
+        info._MATCH_CRITERIA = "#{index}"
+
+    patchReturnInfos old_obj
+    patchReturnInfos new_obj
+
+    super old_obj, new_obj
+
   ###
   Create list of actions for syncing order status values.
   @param {object} diff Result of jsondiffpatch tool.

@@ -17,13 +17,14 @@ class ProductUtils extends BaseUtils
     patchPrices = (variant) ->
       if variant.prices
         _.each variant.prices, (price, index) ->
-          price._MATCH_CRITERIA = index
+          price._MATCH_CRITERIA = "#{index}"
 
     # Let's compare variants with their SKU, if present.
     # Otherwise let's use the provided id.
     # If there is no SKU and no ID present, throw an error
     patchVariantId = (variant, index) ->
-      variant._MATCH_CRITERIA = variant.id
+      if variant.id?
+        variant._MATCH_CRITERIA = "#{variant.id}"
       if variant.sku?
         variant._MATCH_CRITERIA = variant.sku
       if not variant._MATCH_CRITERIA?
@@ -50,13 +51,19 @@ class ProductUtils extends BaseUtils
                 else # if we can't find key and label it isn't an (l)enum set and we can stop immediately
                   return
 
+    patchImages = (variant) ->
+      if variant.images
+        _.each variant.images, (image, index) ->
+          image._MATCH_CRITERIA = "#{index}"
+
     patch = (obj, arrayIndexFieldName) ->
       _.each allVariants(obj), (variant, index) ->
         patchPrices variant
         patchEnums variant
+        patchImages variant
         patchVariantId variant, index
         if index > 0
-          variant[arrayIndexFieldName] = index - 1 # for variants we store the actual index in the array
+          variant[arrayIndexFieldName] = "#{index - 1}" # for variants we store the actual index in the array
 
     patch old_obj, '_EXISTING_ARRAY_INDEX'
     patch new_obj, '_NEW_ARRAY_INDEX'
@@ -314,7 +321,8 @@ class ProductUtils extends BaseUtils
 
   _buildVariantImagesAction: (images, old_variant, new_variant) ->
     actions = []
-    _.each images, (img, key) =>
+    _.each images, (image, key) =>
+      delete image._MATCH_CRITERIA
       if REGEX_NUMBER.test key
         unless _.isEmpty old_variant.images
           action = @_buildRemoveImageAction old_variant, old_variant.images[key]
@@ -331,6 +339,7 @@ class ProductUtils extends BaseUtils
 
   _buildAddExternalImageAction: (variant, image) ->
     if image
+      delete image._MATCH_CRITERIA
       action =
         action: 'addExternalImage'
         variantId: variant.id

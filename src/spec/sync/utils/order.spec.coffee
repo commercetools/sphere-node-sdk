@@ -69,6 +69,7 @@ ORDER =
         quantity: 1
       }]
       parcels: [{
+        id: uniqueId 'pc'
         measurements: {
           heightInMillimeter: 200
           lengthInMillimeter: 200

@@ -470,20 +470,38 @@ describe 'ProductUtils', ->
           sku: [ 'mySKU1', 'mySKU2' ]
           _MATCH_CRITERIA: [ 'mySKU1', 'mySKU2' ]
         variants:
-          0: [{ id: 2, sku: 'mySKU1', _MATCH_CRITERIA: 'mySKU1', _NEW_ARRAY_INDEX: 0 }],
-          _t: 'a',
-          _0: [{ id: 3, sku: 'mySKU2', _MATCH_CRITERIA: 'mySKU2', _EXISTING_ARRAY_INDEX: 0 }, 0, 0]
+          0: [
+            {
+              id: 2
+              sku: 'mySKU1'
+              _MATCH_CRITERIA: 'mySKU1'
+              _NEW_ARRAY_INDEX: '0'
+            }
+          ]
+          _t: 'a'
+          _0: [
+            {
+              id: 3
+              sku: 'mySKU2'
+              _MATCH_CRITERIA: 'mySKU2'
+              _EXISTING_ARRAY_INDEX: '0'
+            },
+            0,
+            0
+          ]
 
       expect(delta).toEqual expected_delta
 
-    it 'should throw an Error if variant has wheter ID nor SKU', ->
+    it 'should throw an Error if variant has no ID nor SKU', ->
       OLD =
         id: 'xyz'
         variants: [
-          { }
+          {attributes: [foo: 'bar']}
         ]
       NEW =
         id: 'xyz'
+        masterVariant:
+          attributes: [foo: 'bar']
       expect(=> @utils.diff(OLD, NEW)).toThrow new Error 'A variant must either have an ID or an SKU.'
 
     it 'should diff basic attributes (name, slug, description)', ->
@@ -543,8 +561,8 @@ describe 'ProductUtils', ->
             _t: 'a'
         variants:
           0:
-            _NEW_ARRAY_INDEX: [0]
-            _EXISTING_ARRAY_INDEX: [0, 0, 0]
+            _NEW_ARRAY_INDEX: ['0']
+            _EXISTING_ARRAY_INDEX: ['0', 0, 0]
           1:
             prices:
               0:
@@ -553,20 +571,20 @@ describe 'ProductUtils', ->
                 customerGroup:
                   id: ['123', '987']
               _t: 'a'
-            _NEW_ARRAY_INDEX: [1]
-            _EXISTING_ARRAY_INDEX: [1, 0, 0]
+            _NEW_ARRAY_INDEX: ['1']
+            _EXISTING_ARRAY_INDEX: ['1', 0, 0]
           2:
             prices:
               _t: 'a'
-              _0: [ { value: { currencyCode: 'YEN', centAmount: 7777 }, _MATCH_CRITERIA: 0 }, 0, 0 ]
-            _NEW_ARRAY_INDEX: [2]
-            _EXISTING_ARRAY_INDEX: [2, 0, 0]
+              _0: [ { value: { currencyCode: 'YEN', centAmount: 7777 }, _MATCH_CRITERIA: '0' }, 0, 0 ]
+            _NEW_ARRAY_INDEX: ['2']
+            _EXISTING_ARRAY_INDEX: ['2', 0, 0]
           3:
             prices:
-              0: [ { value: { currencyCode: 'EUR', centAmount: 999 }, _MATCH_CRITERIA: 0 } ]
+              0: [ { value: { currencyCode: 'EUR', centAmount: 999 }, _MATCH_CRITERIA: '0' } ]
               _t: 'a'
-            _NEW_ARRAY_INDEX: [3]
-            _EXISTING_ARRAY_INDEX: [3, 0, 0]
+            _NEW_ARRAY_INDEX: ['3']
+            _EXISTING_ARRAY_INDEX: ['3', 0, 0]
           _t: 'a'
       expect(delta).toEqual expected_delta
 
@@ -607,8 +625,8 @@ describe 'ProductUtils', ->
                   _t: 'a'
                   _0: ['tag1', 0, 0]
               _t: 'a'
-            _NEW_ARRAY_INDEX: [0]
-            _EXISTING_ARRAY_INDEX: [0, 0, 0]
+            _NEW_ARRAY_INDEX: ['0']
+            _EXISTING_ARRAY_INDEX: ['0', 0, 0]
           _t: 'a'
 
       expect(delta).toEqual expected_delta
@@ -717,21 +735,21 @@ describe 'ProductUtils', ->
       delta = @utils.diff OLD_VARIANT, NEW_VARIANT
       expected_delta =
         variants:
-          0: [ { id: 2, sku: 'SKUadded', _MATCH_CRITERIA: 'SKUadded', _NEW_ARRAY_INDEX: 0 } ]
-          1: { attributes: { 0: { value: [ 'bar', 'CHANGED' ] }, _t: 'a' }, _NEW_ARRAY_INDEX: [1], _EXISTING_ARRAY_INDEX: [1, 0, 0] }
-          2: [ { id: 6, sku: 'SKUchanged!', _MATCH_CRITERIA: 'SKUchanged!', _NEW_ARRAY_INDEX: 2 } ]
-          3: [ { id: 7, attributes: [ { name: 'foo', value: 'bar' } ], _MATCH_CRITERIA: 7, _NEW_ARRAY_INDEX: 3 } ]
-          4: [ { id: 8, attributes: [ { name: 'some', value: 'thing' } ], _MATCH_CRITERIA: 8, _NEW_ARRAY_INDEX: 4 } ]
-          5: [ { id: 9, attributes: [ { name: 'yet', value: 'another' } ], _MATCH_CRITERIA: 9, _NEW_ARRAY_INDEX: 5 } ]
-          6: [ { sku: 'v10', attributes: [ { name: 'something', value: 'else' } ], _MATCH_CRITERIA: 'v10', _NEW_ARRAY_INDEX: 6 } ]
-          7: [ { id: 100, sku: 'SKUwins', _MATCH_CRITERIA: 'SKUwins', _NEW_ARRAY_INDEX: 7 } ]
+          0: [ { id: 2, sku: 'SKUadded', _MATCH_CRITERIA: 'SKUadded', _NEW_ARRAY_INDEX: '0' } ]
+          1: { attributes: { 0: { value: [ 'bar', 'CHANGED' ] }, _t: 'a' }, _NEW_ARRAY_INDEX: ['1'], _EXISTING_ARRAY_INDEX: ['1', 0, 0] }
+          2: [ { id: 6, sku: 'SKUchanged!', _MATCH_CRITERIA: 'SKUchanged!', _NEW_ARRAY_INDEX: '2' } ]
+          3: [ { id: 7, attributes: [ { name: 'foo', value: 'bar' } ], _MATCH_CRITERIA: '7', _NEW_ARRAY_INDEX: '3' } ]
+          4: [ { id: 8, attributes: [ { name: 'some', value: 'thing' } ], _MATCH_CRITERIA: '8', _NEW_ARRAY_INDEX: '4' } ]
+          5: [ { id: 9, attributes: [ { name: 'yet', value: 'another' } ], _MATCH_CRITERIA: '9', _NEW_ARRAY_INDEX: '5' } ]
+          6: [ { sku: 'v10', attributes: [ { name: 'something', value: 'else' } ], _MATCH_CRITERIA: 'v10', _NEW_ARRAY_INDEX: '6' } ]
+          7: [ { id: 100, sku: 'SKUwins', _MATCH_CRITERIA: 'SKUwins', _NEW_ARRAY_INDEX: '7' } ]
 
           _t: 'a'
-          _0: [ { id: 2, _MATCH_CRITERIA: 2, _EXISTING_ARRAY_INDEX: 0 }, 0, 0 ]
-          _2: [ { id: 4, sku: 'v4', _MATCH_CRITERIA: 'v4', _EXISTING_ARRAY_INDEX: 2 }, 0, 0 ]
-          _3: [ { id: 5, _MATCH_CRITERIA: 5, _EXISTING_ARRAY_INDEX: 3 }, 0, 0 ]
-          _4: [ { id: 6, sku: 'v6', _MATCH_CRITERIA: 'v6', _EXISTING_ARRAY_INDEX: 4 }, 0, 0 ]
-          _5: [ { id: 7, sku: 'v7', attributes: [ { name: 'foo', value: 'bar' } ], _MATCH_CRITERIA: 'v7', _EXISTING_ARRAY_INDEX: 5 }, 0, 0 ]
+          _0: [ { id: 2, _MATCH_CRITERIA: '2', _EXISTING_ARRAY_INDEX: '0' }, 0, 0 ]
+          _2: [ { id: 4, sku: 'v4', _MATCH_CRITERIA: 'v4', _EXISTING_ARRAY_INDEX: '2' }, 0, 0 ]
+          _3: [ { id: 5, _MATCH_CRITERIA: '5', _EXISTING_ARRAY_INDEX: '3' }, 0, 0 ]
+          _4: [ { id: 6, sku: 'v6', _MATCH_CRITERIA: 'v6', _EXISTING_ARRAY_INDEX: '4' }, 0, 0 ]
+          _5: [ { id: 7, sku: 'v7', attributes: [ { name: 'foo', value: 'bar' } ], _MATCH_CRITERIA: 'v7', _EXISTING_ARRAY_INDEX: '5' }, 0, 0 ]
       expect(delta).toEqual expected_delta
 
       update = @utils.actionsMapVariants delta, OLD_VARIANT, NEW_VARIANT
@@ -777,24 +795,24 @@ describe 'ProductUtils', ->
               1: { value: [160, 333] }
               2: { value: [85, 33] }
               _t: 'a'
-            _NEW_ARRAY_INDEX: [0]
-            _EXISTING_ARRAY_INDEX: [0, 0, 0]
+            _NEW_ARRAY_INDEX: ['0']
+            _EXISTING_ARRAY_INDEX: ['0', 0, 0]
           1:
             attributes:
               0: [ { name: 'uid', value: '00001' } ]
               1: [ { name: 'length', value: 500 } ]
               2: [ { name: 'bulkygoods', value: 'SI'} ]
               _t: 'a'
-            _NEW_ARRAY_INDEX: [1]
-            _EXISTING_ARRAY_INDEX: [1, 0, 0]
+            _NEW_ARRAY_INDEX: ['1']
+            _EXISTING_ARRAY_INDEX: ['1', 0, 0]
           2:
             attributes:
               _t: 'a'
               _0: [ { name: 'uid', value: '1234567' }, 0, 0 ]
               _1: [ { name: 'length', value: 123 }, 0, 0 ]
               _2: [ { name: 'bulkygoods', value: 'SI' }, 0, 0 ]
-            _NEW_ARRAY_INDEX: [2]
-            _EXISTING_ARRAY_INDEX: [2, 0, 0]
+            _NEW_ARRAY_INDEX: ['2']
+            _EXISTING_ARRAY_INDEX: ['2', 0, 0]
           _t: 'a'
       expect(delta).toEqual expected_delta
 

@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "debug": "2.0.0",
-    "jsondiffpatch": "0.0.11",
+    "jsondiffpatch": "0.1.8",
     "q": "1.0.1",
     "request": "2.40.0",
     "underscore": "1.7.0",
