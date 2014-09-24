@@ -164,27 +164,30 @@ class ProductUtils extends BaseUtils
 
   actionsMapPrices: (diff, old_obj, new_obj) ->
     actions = []
+
+    _mapVariantPrices = (price, key, old_variant, new_variant) =>
+      if REGEX_NUMBER.test key
+        # key is index of new price
+        index = key
+      else if REGEX_UNDERSCORE_NUMBER.test key
+        # key is index of old price
+        index = key.substring(1)
+      if index
+        delete price.discounted # we don't need this for mapping the action
+        if _.size(price) is 1 and _.size(price.value) is 1 and _.has(price.value, 'centAmount')
+          changeAction = @_buildChangePriceAction(price.value.centAmount, old_variant, index)
+          actions.push changeAction if changeAction
+        else
+          removeAction = @_buildRemovePriceAction(old_variant, index)
+          actions.push removeAction if removeAction
+          addAction = @_buildAddPriceAction(new_variant, index)
+          actions.push addAction if addAction
+
     if diff.masterVariant
       prices = diff.masterVariant.prices
       if prices
-        _.each prices, (value, key) =>
-          if REGEX_NUMBER.test key
-            # key is index of new price
-            index = key
-          else if REGEX_UNDERSCORE_NUMBER.test key
-            # key is index of old price
-            index = key.substring(1)
-
-          if index
-            delete value.discounted # we don't need this for mapping the action
-            if _.size(value) is 1 and _.size(value.value) is 1 and _.has(value.value, 'centAmount')
-              changeAction = @_buildChangePriceAction(value.value.centAmount, old_obj.masterVariant, index)
-              actions.push changeAction if changeAction
-            else
-              removeAction = @_buildRemovePriceAction(old_obj.masterVariant, index)
-              actions.push removeAction if removeAction
-              addAction = @_buildAddPriceAction(new_obj.masterVariant, index)
-              actions.push addAction if addAction
+        _.each prices, (value, key) ->
+          _mapVariantPrices(value, key, old_obj.masterVariant, new_obj.masterVariant)
 
     if diff.variants
       _.each diff.variants, (variant, key) =>
@@ -195,24 +198,10 @@ class ProductUtils extends BaseUtils
             if not _.isArray variant
               prices = variant.prices
               if prices
-                _.each prices, (value, key) =>
-                  if REGEX_NUMBER.test key
-                    # key is index of new price
-                    index = key
-                  else if REGEX_UNDERSCORE_NUMBER.test key
-                    # key is index of old price
-                    index = key.substring(1)
-
-                  if index
-                    delete value.discounted # we don't need this for mapping the action
-                    if _.size(value) is 1 and _.size(value.value) is 1 and _.has(value.value, 'centAmount')
-                      changeAction = @_buildChangePriceAction(value.value.centAmount, old_obj.variants[index_old], index)
-                      actions.push changeAction if changeAction
-                    else
-                      removeAction = @_buildRemovePriceAction(old_obj.variants[index_old], index)
-                      actions.push removeAction if removeAction
-                      addAction = @_buildAddPriceAction(new_obj.variants[index_new], index)
-                      actions.push addAction if addAction
+                _.each prices, (value, key) ->
+                  oldVariant = old_obj.variants[index_old]
+                  newVariant = new_obj.variants[index_new]
+                  _mapVariantPrices(value, key, oldVariant, newVariant)
 
     # this will sort the actions ranked in asc order (first 'remove' then 'add')
     _.sortBy actions, (a) -> a.action is 'addPrice'
