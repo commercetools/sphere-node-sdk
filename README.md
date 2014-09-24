@@ -19,6 +19,7 @@ The module exposes some libraries which can be either used alone or together
 
 * [CLIENT](docs/CLIENT.md)
 * [CONNECT](docs/CONNECT.md)
+* [SYNC](docs/SYNC.md)
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).

@@ -1,4 +1,4 @@
-SPHERE CLIENT
+SPHERE CONNECT
 ---
 
 ```coffeescript
