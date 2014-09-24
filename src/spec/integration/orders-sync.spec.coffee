@@ -4,9 +4,8 @@ Q = require 'q'
 _.mixin require 'underscore-mixins'
 {SphereClient, OrderSync} = require '../../lib/main'
 Config = require('../../config').config
-orderJson = require '../../models/order.json'
 
-describe "Integration Orders Sync", ->
+describe 'Integration Orders Sync', ->
 
   beforeEach (done) ->
     @client = new SphereClient config: Config
