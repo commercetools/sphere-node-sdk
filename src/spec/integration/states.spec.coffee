@@ -1,9 +1,9 @@
-debug = require('debug')('spec-sphere-client:states')
+debug = require('debug')('spec-integration:states')
 _ = require 'underscore'
 Q = require 'q'
 _.mixin require('underscore-mixins')
-SphereClient = require '../../../lib/client'
-Config = require('../../../config').config
+SphereClient = require '../../lib/client'
+Config = require('../../config').config
 
 uniqueId = (prefix) ->
   _.uniqueId "#{prefix}#{new Date().getTime()}_"

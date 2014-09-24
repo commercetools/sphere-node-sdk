@@ -1,3 +1,4 @@
+debug = require('debug')('sphere-sync:product')
 _ = require 'underscore'
 _.mixin require 'underscore-mixins'
 BaseUtils = require './base'
@@ -27,6 +28,7 @@ class ProductUtils extends BaseUtils
         variant._MATCH_CRITERIA = "#{variant.id}"
       if variant.sku?
         variant._MATCH_CRITERIA = variant.sku
+      debug 'patched id (with criteria %s) for variant: %j', variant._MATCH_CRITERIA, variant
       if not variant._MATCH_CRITERIA?
         throw new Error 'A variant must either have an ID or an SKU.'
 
@@ -57,6 +59,7 @@ class ProductUtils extends BaseUtils
           image._MATCH_CRITERIA = "#{index}"
 
     patch = (obj, arrayIndexFieldName) ->
+      debug 'patching product: %j', obj
       _.each allVariants(obj), (variant, index) ->
         patchPrices variant
         patchEnums variant
@@ -111,7 +114,10 @@ class ProductUtils extends BaseUtils
           action =
             action: 'addVariant'
           action.sku = newVariant.sku if newVariant.sku
-          action.prices = newVariant.prices if newVariant.prices
+          action.prices = _.map(newVariant.prices, (price) ->
+            delete price._MATCH_CRITERIA
+            price
+          ) if newVariant.prices
           action.attributes = newVariant.attributes if newVariant.attributes
           actions.push action
         else if REGEX_UNDERSCORE_NUMBER.test(key) and _.isArray(variant)
@@ -170,6 +176,7 @@ class ProductUtils extends BaseUtils
             index = key.substring(1)
 
           if index
+            delete value.discounted # we don't need this for mapping the action
             if _.size(value) is 1 and _.size(value.value) is 1 and _.has(value.value, 'centAmount')
               changeAction = @_buildChangePriceAction(value.value.centAmount, old_obj.masterVariant, index)
               actions.push changeAction if changeAction
@@ -197,6 +204,7 @@ class ProductUtils extends BaseUtils
                     index = key.substring(1)
 
                   if index
+                    delete value.discounted # we don't need this for mapping the action
                     if _.size(value) is 1 and _.size(value.value) is 1 and _.has(value.value, 'centAmount')
                       changeAction = @_buildChangePriceAction(value.value.centAmount, old_obj.variants[index_old], index)
                       actions.push changeAction if changeAction
@@ -310,6 +318,7 @@ class ProductUtils extends BaseUtils
     action
 
   _buildAddPriceAction: (variant, index) ->
+    # TODO: throw if variantId is missing
     price = variant.prices[index]
     if price
       delete price._MATCH_CRITERIA
@@ -402,7 +411,7 @@ class ProductUtils extends BaseUtils
     action
 
   _buildNewSetAttributeAction: (id, el, sameForAllAttributeNames) ->
-    attributeName = el.name
+    attributeName = el?.name
     return unless attributeName
     action =
       action: "setAttribute"
@@ -420,31 +429,33 @@ class ProductUtils extends BaseUtils
       _.each attributes, (value, key) =>
         if REGEX_NUMBER.test key
           if _.isArray value
-            v = @getDeltaValue(value)
+            deltaValue = @getDeltaValue(value)
             id = old_variant.id
-            setAction = @_buildNewSetAttributeAction(id, v, sameForAllAttributeNames)
+            setAction = @_buildNewSetAttributeAction(id, deltaValue, sameForAllAttributeNames)
             actions.push setAction if setAction
           else
             # key is index of attribute
             index = key
-            setAction = @_buildSetAttributeAction(value.value, old_variant, new_variant.attributes[index], sameForAllAttributeNames)
-            actions.push setAction if setAction
+            if new_variant.attributes?
+              setAction = @_buildSetAttributeAction(value.value, old_variant, new_variant.attributes[index], sameForAllAttributeNames)
+              actions.push setAction if setAction
         else if REGEX_UNDERSCORE_NUMBER.test key
           if _.isArray value
             # ignore pure array moves! TODO: remove when moving to new version of jsondiffpath (issue #9)
             if _.size(value) is 3 and value[2] is 3
               return
-            v = @getDeltaValue(value)
-            unless v
-              v = value[0]
-              delete v.value
+            deltaValue = @getDeltaValue(value)
+            unless deltaValue
+              deltaValue = value[0]
+              delete deltaValue.value
             id = old_variant.id
-            setAction = @_buildNewSetAttributeAction(id, v, sameForAllAttributeNames)
+            setAction = @_buildNewSetAttributeAction(id, deltaValue, sameForAllAttributeNames)
             actions.push setAction if setAction
           else
             index = key.substring(1)
-            setAction = @_buildSetAttributeAction(value.value, old_variant, new_variant.attributes[index], sameForAllAttributeNames)
-            actions.push setAction if setAction
+            if new_variant.attributes?
+              setAction = @_buildSetAttributeAction(value.value, old_variant, new_variant.attributes[index], sameForAllAttributeNames)
+              actions.push setAction if setAction
     actions
 
   _buildSkuActions: (variantDiff, old_variant) ->

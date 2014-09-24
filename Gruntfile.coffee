@@ -80,6 +80,8 @@ module.exports = (grunt) ->
         command: 'jasmine-node --captureExceptions test/connect'
       'jasmine-sync':
         command: 'jasmine-node --captureExceptions test/sync'
+      'jasmine-integration':
+        command: 'jasmine-node --captureExceptions test/integration'
       publish:
         command: 'npm publish'
 
