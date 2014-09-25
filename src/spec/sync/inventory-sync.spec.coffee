@@ -1,4 +1,4 @@
-InventorySync = require '../../lib/sync/inventory-sync'
+{InventorySync} = require '../../lib/main'
 
 describe 'InventorySync', ->
 

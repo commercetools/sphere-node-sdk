@@ -1,7 +1,7 @@
 debug = require('debug')('spec-integration:channels')
 _ = require 'underscore'
-_.mixin require('underscore-mixins')
-SphereClient = require '../../lib/client'
+_.mixin require 'underscore-mixins'
+{SphereClient} = require '../../lib/main'
 Config = require('../../config').config
 
 CHANNEL_KEY = 'OrderXmlFileExport'

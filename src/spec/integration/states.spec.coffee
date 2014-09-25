@@ -1,8 +1,8 @@
 debug = require('debug')('spec-integration:states')
 _ = require 'underscore'
 Q = require 'q'
-_.mixin require('underscore-mixins')
-SphereClient = require '../../lib/client'
+_.mixin require 'underscore-mixins'
+{SphereClient} = require '../../lib/main'
 Config = require('../../config').config
 
 uniqueId = (prefix) ->

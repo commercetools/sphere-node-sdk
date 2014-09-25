@@ -1,4 +1,4 @@
-OrderSync = require '../../lib/sync/order-sync'
+{OrderSync} = require '../../lib/main'
 
 OLD_ORDER =
   id: '123'

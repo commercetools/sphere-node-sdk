@@ -1,7 +1,6 @@
 Q = require 'q'
 _ = require 'underscore'
-SphereClient = require '../../lib/client'
-Rest = require '../../lib/connect/rest'
+{SphereClient, Rest} = require '../../lib/main'
 TaskQueue = require '../../lib/task-queue'
 Config = require('../../config').config
 

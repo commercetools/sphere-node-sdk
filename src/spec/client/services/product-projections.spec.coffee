@@ -1,6 +1,6 @@
 Q = require 'q'
 _ = require 'underscore'
-_.mixin require('underscore-mixins')
+_.mixin require 'underscore-mixins'
 TaskQueue = require '../../../lib/task-queue'
 ProductProjectionService = require '../../../lib/services/product-projections'
 

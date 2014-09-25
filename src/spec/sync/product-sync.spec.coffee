@@ -1,5 +1,5 @@
 _ = require 'underscore'
-ProductSync = require '../../lib/sync/product-sync'
+{ProductSync} = require '../../lib/main'
 
 OLD_PRODUCT =
   id: '123'

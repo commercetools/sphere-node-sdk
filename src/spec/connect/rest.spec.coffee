@@ -1,5 +1,5 @@
 _ = require 'underscore'
-Rest = require '../../lib/connect/rest'
+{Rest} = require '../../lib/main'
 Config = require('../../config').config
 
 describe 'Rest', ->

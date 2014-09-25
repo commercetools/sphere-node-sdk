@@ -1,5 +1,5 @@
 _ = require 'underscore'
-OAuth2 = require '../../lib/connect/oauth2'
+{OAuth2} = require '../../lib/main'
 Config = require('../../config').config
 
 describe 'OAuth2', ->

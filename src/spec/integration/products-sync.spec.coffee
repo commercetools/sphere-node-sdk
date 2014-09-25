@@ -1,7 +1,7 @@
 debug = require('debug')('spec-integration:products')
 _ = require 'underscore'
 Q = require 'q'
-_.mixin require('underscore-mixins')
+_.mixin require 'underscore-mixins'
 {SphereClient, ProductSync} = require '../../lib/main'
 Config = require('../../config').config
 
