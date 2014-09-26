@@ -1,6 +1,6 @@
 debug = require('debug')('sphere-client')
 _ = require 'underscore'
-Q = require 'q'
+Promise = require 'bluebird'
 Utils = require '../utils'
 
 ###*
@@ -225,50 +225,48 @@ class BaseService
   process: (fn, options = {}) ->
     throw new Error 'Please provide a function to process the elements' unless _.isFunction fn
 
-    options = _.defaults options,
-      accumulate: true # whether the results should be accumulated or not
+    new Promise (resolve, reject) =>
 
-    deferred = Q.defer()
-    endpoint = @constructor.baseResourceEndpoint
-    originalQuery = @_params.query
+      options = _.defaults options,
+        accumulate: true # whether the results should be accumulated or not
 
-    _processPage = (page, perPage, total, acc = []) =>
-      debug 'processing next page with params: %j',
-        page: page
-        perPage: perPage,
-        offset: (page - 1) * perPage
-        total: total
-      if total? and (page - 1) * perPage >= total
-        deferred.resolve acc
-      else
-        @_params.query = _.extend {}, originalQuery,
+      endpoint = @constructor.baseResourceEndpoint
+      originalQuery = @_params.query
+
+      _processPage = (page, perPage, total, acc = []) =>
+        debug 'processing next page with params: %j',
           page: page
-          perPage: perPage
-        @sort 'id' if _.isEmpty @_params.query.sort
-        queryString = @_queryString()
+          perPage: perPage,
+          offset: (page - 1) * perPage
+          total: total
+        if total? and (page - 1) * perPage >= total
+          resolve acc
+        else
+          @_params.query = _.extend {}, originalQuery,
+            page: page
+            perPage: perPage
+          @sort 'id' if _.isEmpty @_params.query.sort
+          queryString = @_queryString()
 
-        @_get("#{endpoint}?#{queryString}")
-        .then (payload) ->
-          fn(payload)
-          .then (result) ->
-            newTotal = payload.body.total
-            if not total or total is newTotal
-              nextPage = page + 1
-            else if total < newTotal
-              nextPage = page
-              debug 'Total is bigger then before, assuming something has been newly created. Processing the same page (%s).', nextPage
-            else
-              nextPage = page - 1
-              nextPage = 1 if nextPage < 1
-              debug 'Total is lesser then before, assuming something has been deleted. Reducing page to %s (min 1).', nextPage
-            accumulated = acc.concat(result) if options.accumulate
-            _processPage nextPage, perPage, newTotal, accumulated
-        .fail (error) ->
-          deferred.reject error
-        .done()
-
-    _processPage(@_params.query.page or 1, @_params.query.perPage or 20)
-    deferred.promise
+          @_get("#{endpoint}?#{queryString}")
+          .then (payload) ->
+            fn(payload)
+            .then (result) ->
+              newTotal = payload.body.total
+              if not total or total is newTotal
+                nextPage = page + 1
+              else if total < newTotal
+                nextPage = page
+                debug 'Total is bigger then before, assuming something has been newly created. Processing the same page (%s).', nextPage
+              else
+                nextPage = page - 1
+                nextPage = 1 if nextPage < 1
+                debug 'Total is lesser then before, assuming something has been deleted. Reducing page to %s (min 1).', nextPage
+              accumulated = acc.concat(result) if options.accumulate
+              _processPage nextPage, perPage, newTotal, accumulated
+          .catch (error) -> reject error
+          .done()
+      _processPage(@_params.query.page or 1, @_params.query.perPage or 20)
 
   ###*
    * Save a new resource by sending a payload to the _currentEndpoint, describing
@@ -331,10 +329,9 @@ class BaseService
     @_task.addTask =>
       originalRequest =
         endpoint: endpoint
-      deferred = Q.defer()
-      @_rest.GET endpoint, =>
-        @_wrapResponse.apply(@, [deferred, originalRequest].concat(_.toArray(arguments)))
-      deferred.promise
+      new Promise (resolve, reject) =>
+        @_rest.GET endpoint, =>
+          @_wrapResponse.apply(@, [resolve, reject, originalRequest].concat(_.toArray(arguments)))
 
   ###*
    * Return a {Promise} for a PAGED call. It can be overridden for custom logic.
@@ -346,12 +343,10 @@ class BaseService
     @_task.addTask =>
       originalRequest =
         endpoint: endpoint
-      deferred = Q.defer()
-      # fetch all results in chunks
-      @_rest.PAGED endpoint, =>
-        @_wrapResponse.apply(@, [deferred, originalRequest].concat(_.toArray(arguments)))
-      , (progress) -> deferred.notify progress
-      deferred.promise
+      new Promise (resolve, reject) =>
+        # fetch all results in chunks
+        @_rest.PAGED endpoint, =>
+          @_wrapResponse.apply(@, [resolve, reject, originalRequest].concat(_.toArray(arguments)))
 
   ###*
    * Return a {Promise} for a POST call. It can be overridden for custom logic.
@@ -365,10 +360,9 @@ class BaseService
       originalRequest =
         endpoint: endpoint
         payload: payload
-      deferred = Q.defer()
-      @_rest.POST endpoint, payload, =>
-        @_wrapResponse.apply(@, [deferred, originalRequest].concat(_.toArray(arguments)))
-      deferred.promise
+      new Promise (resolve, reject) =>
+        @_rest.POST endpoint, payload, =>
+          @_wrapResponse.apply(@, [resolve, reject, originalRequest].concat(_.toArray(arguments)))
 
   ###*
    * Return a {Promise} for a DELETE call. It can be overridden for custom logic.
@@ -380,20 +374,20 @@ class BaseService
     @_task.addTask =>
       originalRequest =
         endpoint: endpoint
-      deferred = Q.defer()
-      @_rest.DELETE endpoint, =>
-        @_wrapResponse.apply(@, [deferred, originalRequest].concat(_.toArray(arguments)))
-      deferred.promise
+      new Promise (resolve, reject) =>
+        @_rest.DELETE endpoint, =>
+          @_wrapResponse.apply(@, [resolve, reject, originalRequest].concat(_.toArray(arguments)))
 
   ###*
    * @private
    * Wrap responses and decide whether to reject or resolve the promise
-   * @param {Promise} deferred The deferred promise
+   * @param {Function} resolve The function called to resolve the promise
+   * @param {Function} reject The function called to reject the promise
    * @param {Object} error An error object when applicable (usually from `http.ClientRequest` object) otherwise `null`
    * @param {Object} response An `http.IncomingMessage` object containing all kind of information about the request / response
    * @param {Object} body A JSON object containing the HTTP API resource or error messages
   ###
-  _wrapResponse: (deferred, originalRequest, error, response, body) ->
+  _wrapResponse: (resolve, reject, originalRequest, error, response, body) ->
     responseJson =
       if @_stats.includeHeaders
         http:
@@ -413,24 +407,24 @@ class BaseService
         message: error
         originalRequest: originalRequest
       errorResp.body = body if body
-      deferred.reject _.extend(responseJson, errorResp)
+      reject _.extend(responseJson, errorResp)
     else
       # TODO: check other possible acceptable codes (304, ...)
       if 200 <= response.statusCode < 300
-        deferred.resolve _.extend responseJson,
+        resolve _.extend responseJson,
           statusCode: response.statusCode
           body: body
       else if response.statusCode is 404
         endpoint = response.request.uri.path
         # since the API doesn't return an error message for a resource not found
         # we return a custom JSON error message
-        deferred.reject _.extend responseJson,
+        reject _.extend responseJson,
           statusCode: 404
           message: "Endpoint '#{endpoint}' not found."
           originalRequest: originalRequest
       else
         # a ShereError response e.g.: {statusCode: 400, message: 'Oops, something went wrong'}
-        deferred.reject _.extend responseJson, body, {originalRequest: originalRequest}
+        reject _.extend responseJson, body, {originalRequest: originalRequest}
 
 
 ###*

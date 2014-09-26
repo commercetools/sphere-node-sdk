@@ -1,5 +1,5 @@
 _ = require 'underscore'
-Q = require 'q'
+Promise = require 'bluebird'
 
 ###*
  * Creates a new TaskQueue instance
@@ -33,10 +33,12 @@ class TaskQueue
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with an error
   ###
   addTask: (taskFn) ->
-    d = Q.defer()
-    @_queue.push {fn: taskFn, defer: d}
-    @_maybeExecute()
-    d.promise
+    new Promise (resolve, reject)
+      @_queue.push
+        fn: taskFn
+        resolve: resolve
+        reject: reject
+      @_maybeExecute()
 
   ###*
    * @private
@@ -48,9 +50,9 @@ class TaskQueue
 
     task.fn()
     .then (res) ->
-      task.defer.resolve res
-    .fail (error) ->
-      task.defer.reject error
+      task.resolve res
+    .catch (error) ->
+      task.reject error
     .finally =>
       @_activeCount -= 1
       @_maybeExecute()

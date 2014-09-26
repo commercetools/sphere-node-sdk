@@ -29,6 +29,7 @@
     "test": "grunt coverage"
   },
   "dependencies": {
+    "bluebird": "2.3.x",
     "debug": "2.0.0",
     "jsondiffpatch": "0.1.8",
     "q": "1.0.1",
