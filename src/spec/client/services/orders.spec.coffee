@@ -1,4 +1,4 @@
-TaskQueue = require '../../../lib/task-queue'
+{TaskQueue} = require '../../../lib/main'
 OrderService = require '../../../lib/services/orders'
 
 ###*

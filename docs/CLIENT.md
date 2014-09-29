@@ -30,7 +30,7 @@ SPHERE CLIENT
 ## Documentation
 To start using the client you need to create an instance of the `SphereClient` by passing the credentials (and other optional parameters) in order to connect with the HTTP APIs. Project credentials can be found in the SPHERE.IO [Merchant Center](https://admin.sphere.io/) under `Developers > API clients` section.
 
-> For a list of options to pass to the client, see [`sphere-node-connect`](docs/CONNECT.md).
+> For a list of options to pass to the client, see [SPHERE CONNECT](docs/CONNECT.md).
 
 ```coffeescript
 client = new SphereClient
@@ -38,9 +38,8 @@ client = new SphereClient
     client_id: "CLIENT_ID_HERE"
     client_secret: "CLIENT_SECRET_HERE"
     project_key: "PROJECT_KEY_HERE"
-  logger: {} # optional object for logs mapping
   task: {} # optional TaskQueue instance
-  rest: {} # optional Rest instance
+  rest: {} # optional Rest instance (see SPHERE CONNECT)
 ```
 
 ### Services
@@ -70,7 +69,7 @@ The `SphereClient` provides a set of Services to connect with the related API en
 > Note that not all services support the common (CRUD) verbs, it depends on the resource endpoint itself. Please refer to the [HTTP API Documentation](http://dev.sphere.io/).
 
 ### Types of requests
-Requests to the HTTP API are obviously asynchronous and they all return a [`Q` promise](https://github.com/kriskowal/q).
+Requests to the HTTP API are obviously asynchronous and they all return a [`Bluebird` promise](https://github.com/petkaantonov/bluebird).
 
 ```coffeescript
 client = new SphereClient {...}
@@ -78,7 +77,7 @@ client = new SphereClient {...}
 client.products.fetch()
 .then (result) ->
   # a JSON object containing a statusCode and a body of either a result or a SPHERE.IO HTTP error
-.fail (error) ->
+.catch (error) ->
   # either the request failed or was rejected (the response returned an error)
 ```
 
@@ -92,24 +91,24 @@ Current methods using promises are:
 - `process` HTTP `GET` request (in batches)
 
 #### Task Queue
-To optimize processing lots of requests all together, e.g.: avoiding connection timeouts, we introduced [TaskQueue](https://github.com/sphereio/sphere-node-utils#taskqueue).
+To optimize processing lots of requests all together, e.g.: avoiding connection timeouts, we introduced [TaskQueue](TASK-QUEUE.md).
 
 Every request is internally pushed in a queue which automatically starts resolving promises (requests) and will process concurrently some of them based on the `maxParallel` parameter. You can set this parameter by calling the following method
-- `setMaxParallel(n)` defines the number of max parallel requests to be processed by the [TaskQueue](https://github.com/sphereio/sphere-node-utils#taskqueue) (default is `20`). **If < 1 it throws an error**
+- `setMaxParallel(n)` defines the number of max parallel requests to be processed by the [TaskQueue](TASK-QUEUE.md) (default is `20`). **If < 1 it throws an error**
 
 ```coffeescript
 client = new SphereClient {...} # a TaskQueue is internally initialized at this point with maxParallel of 20
 client.setMaxParallel 5
 
-# let's trigger 100 parallel requests with `Q.all`, but process them max 5 at a time
-Q.all _.map [1..100], -> client.products.byId('123-abc').fetch()
+# let's trigger 100 parallel requests with `Promise.all`, but process them max 5 at a time
+Promise.all _.map [1..100], -> client.products.byId('123-abc').fetch()
 .then (results) ->
 ```
 
 > You can pass an existing `TaskQueue` object when initializing the `SphereClient`
 
 ```coffeescript
-{TaskQueue} = require 'sphere-node-utils'
+{SphereClient, TaskQueue} = require 'sphere-node-client'
 taskQueue = new TaskQueue maxParallel: 10
 client = new SphereClient
   task: taskQueue
@@ -135,7 +134,7 @@ The `SphereClient` helps you build those requests with following methods:
 - `last(period)` defines a [time period](#query-for-modifications) for a query on the `lastModifiedAt` attribute of all resources
 - `sort(path, ascending)` defines how the query result should be sorted - true (default) defines ascending where as false indicates descascending
 - `page(n)` defines the page number to be requested from the complete query result (default is `1`). **If < 1 it throws an error**
-- `perPage(n)` defines the number of results to return from a query (default is `100`). If set to `0` all results are returned (_more [info](https://github.com/sphereio/sphere-node-connect#paged-requests)_). **If < 0 it throws an error**
+- `perPage(n)` defines the number of results to return from a query (default is `100`). If set to `0` all results are returned (_more [info](CONNECT#paged-requests)_). **If < 0 it throws an error**
 - `all()` alias for `perPage(0)`
 - `expand(expansionPath)` defines a URI encoded expansion path from the given string (can be set multiple times) used for expanding references of a resource
 
@@ -168,7 +167,7 @@ In that case the results are recursively requested in chunks and returned all to
 client = new SphereClient {...}
 client.perPage(0).fetch()
 .then (result) -> # `results` is still a `PagedQueryResponse` containing all results of the query
-.fail (error) ->
+.catch (error) ->
 ```
 
 Since the request is executed recursively until all results are returned, you can **subscribe to the progress notification** in order to follow the progress
@@ -182,10 +181,10 @@ client.perPage(0).fetch()
   # and the value of the current results (array)
   # e.g. {percentage: 20, value: [r1, r2, r3, ...]}
   console.log "#{progress.percentage}% completed..."
-.fail (error) ->
+.catch (error) ->
 ```
 
-More info [here](https://github.com/sphereio/sphere-node-connect#paged-requests).
+More info [here](CONNECT#paged-requests).
 
 ##### Query for modifications
 If you want to retrieve only those resources that changed over a given time, you can chain the `last` functions,
@@ -217,19 +216,18 @@ The `process` function takes a function `fn` (which returns a _Promise_) and wil
 ```coffeescript
 # Define your custom function, which returns a promise
 fn = (payload) ->
-  deferred = Q.defer()
-  # do something with the payload
-  if # something unexpected happens
-    deferred.reject 'BAD'
-  else # good case
-    deferred.resolve 'OK'
-  deferred.promise
+  new Promise (resolve, reject) ->
+    # do something with the payload
+    if # something unexpected happens
+      reject 'BAD'
+    else # good case
+      resolve 'OK'
 
 client.products.perPage(20).process(fn)
 .then (result) ->
   # here we get the total result, which is just an array of all pages accumulated
   # eg: ['OK', 'OK', 'OK'] if you have 41 to 60 products - the function fn is called three times
-.fail (error) ->
+.catch (error) ->
   # eg: 'BAD'
 ```
 
@@ -277,7 +275,7 @@ The `SphereClient` helps you build those requests with following methods:
 - `facet(facet)` defines a URI encoded string for the `facet` parameter (can be set multiple times)
 - `sort(path, ascending)` defines how the query result should be sorted - true (default) defines ascending where as false indicates descascending
 - `page(n)` defines the page number to be requested from the complete query result (default is `1`). **If < 1 it throws an error**
-- `perPage(n)` defines the number of results to return from a query (default is `100`). If set to `0` all results are returned (_more [info](https://github.com/sphereio/sphere-node-connect#paged-requests)_). **If < 0 it throws an error**
+- `perPage(n)` defines the number of results to return from a query (default is `100`). If set to `0` all results are returned (_more [info](CONNECT#paged-requests)_). **If < 0 it throws an error**
 - `staged(staged)` defines whether to search for staged or current projection (see [Staged products](#staged-products))
 
 > All these methods are chainable
@@ -313,7 +311,7 @@ product =
 client.products.save(product)
 .then (result) ->
   # a JSON object containing either a result or a SPHERE.IO HTTP error
-.fail (error) ->
+.catch (error) ->
   # either the request failed or was rejected (the response returned an error)
 ```
 
@@ -336,7 +334,7 @@ client.channels.ensure('OrderFileExport', 'OrderExport')
 .then (result) ->
   # pretty print channel instance
   console.log _u.prettify(result.body)
-.fail (error) ->
+.catch (error) ->
   # either the request failed or was rejected (the response returned an error)
 ```
 
@@ -368,7 +366,7 @@ update =
 client.products.byId('123-abc').update(product)
 .then (result) ->
   # a JSON object containing either a result or a SPHERE.IO HTTP error
-.fail (error) ->
+.catch (error) ->
   # either the request failed or was rejected (the response returned an error)
 ```
 
@@ -382,12 +380,12 @@ client.products.byId('123-abc').fetch()
   client.products.byId('123-abc').delete(product.version)
 .then (result) ->
   # a JSON object containing either a result or a SPHERE.IO HTTP error
-.fail (error) ->
+.catch (error) ->
   # either the request failed or was rejected (the response returned an error)
 ```
 
 #### Types of responses
-When a [`Q` promise](https://github.com/kriskowal/q) is resolved or rejected a JSON object is always returned and it contains a `statusCode` plus the response body or error messages
+When a [`Bluebird` promise](https://github.com/petkaantonov/bluebird) is resolved or rejected a JSON object is always returned and it contains a `statusCode` plus the response body or error messages
 
 ```coffeescript
 # promise resolved
@@ -407,7 +405,7 @@ When a [`Q` promise](https://github.com/kriskowal/q) is resolved or rejected a J
 > When a promise is rejected, the response object contains a field `originalRequest`, providing some information about the related request (`endpoint`, `payload`). This is useful to better understand the error in relation with the failed request.
 
 ### Error handling
-As the HTTP API [handles errors](https://github.com/sphereio/sphere-node-connect#error-handling) _gracefully_ by providing a JSON body with error codes and messages, the `SphereClient` handles that by providing an intuitive way of dealing with responses.
+As the HTTP API _gracefully_ [handles errors](CONNECT#error-handling) by providing a JSON body with error codes and messages, the `SphereClient` handles that by providing an intuitive way of dealing with responses.
 
 Since a Promise can be either resolved or rejected, the result is determined by valuating the `statusCode` of the response:
 - `resolved` everything with a successful HTTP status code
@@ -430,7 +428,7 @@ The client application can then easily decide what to do
 client.products.save({})
 .then (result) ->
   # we know the request was successful (e.g.: 2xx) and `result` is a JSON of a resource representation
-.fail (error) ->
+.catch (error) ->
   # something went wrong, either an unexpected error or a HTTP API error response
   # here we can check the `statusCode` to differentiate the error
   switch error.statusCode

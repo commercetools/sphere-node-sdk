@@ -1,8 +1,7 @@
 _ = require 'underscore'
 _.mixin require 'underscore-mixins'
 Promise = require 'bluebird'
-{SphereClient, Rest} = require '../../lib/main'
-TaskQueue = require '../../lib/task-queue'
+{SphereClient, Rest, TaskQueue} = require '../../lib/main'
 Config = require('../../config').config
 
 describe 'SphereClient', ->

@@ -13,17 +13,17 @@ SPHERE SYNC
     * [config](#config)
     * [buildActions](#buildactions)
     * [filterActions](#filteractions)
-    * [get](#get)
-    * [update](#update)
-  * [Updates](#updates)
+    * [shouldUpdate](#shouldUpdate)
+    * [getUpdateId](#getUpdateId)
+    * [getUpdateActions](#getUpdateActions)
+    * [getUpdatePayload](#getUpdatePayload)
 * [Update actions groups](#update-actions-groups)
   * [ProductSync](#productsync)
   * [OrderSync](#ordersync)
   * [InventorySync](#inventorysync)
-* [Updater components](#updater-components)
 
 ## Documentation
-The module exposes many collection `Sync` objects, _resource-specific_, and it's used to build update actions for that resource. Available resources are:
+The module exposes many _resource-specific_ `Sync` objects and it provides an API to compare 2 resources and build update actions out of it. Available resources are:
 
 - *products* - `ProductSync`
 - *orders* - `OrderSync`
@@ -67,11 +67,12 @@ You can pass a custom function to filter built actions and internally update the
 > This function should be called after the actions are built
 
 ```coffeescript
-sync = new ProductSync {...}
+# example
+sync = new Sync {...}
 sync.buildActions(new_obj, old_obj).filterActions (a) -> a.action is 'changeName'
 # => actions payload will now contain only 'changeName' action
 ```
-The method returns a reference to the current object `Sync`, so that you can chain it with optional methods `get` and `update`.
+The method returns a reference to the current object `Sync`, so that you can chain it with other methods.
 
 ### `shouldUpdate`
 Returns `true` or `false` whether there is something to update or not.
@@ -87,7 +88,9 @@ Returns the generated JSON payload for the update.
 
 ```coffeescript
 # example
+{SphereClient, Sync} = require 'sphere-node-client'
 client = new SphereClient {...}
+sync = new Sync
 syncedActions = sync.buildActions(new_obj, old_obj)
 if syncedActions.shouldUpdate()
   client.products.byId(syncedActions.getUpdatedId()).update(syncedActions.getUpdatePayload())

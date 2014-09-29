@@ -1,7 +1,7 @@
 _ = require 'underscore'
 _.mixin require 'underscore-mixins'
 Promise = require 'bluebird'
-TaskQueue = require '../../../lib/task-queue'
+{TaskQueue} = require '../../../lib/main'
 ProductProjectionService = require '../../../lib/services/product-projections'
 
 ###*

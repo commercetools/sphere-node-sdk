@@ -1,5 +1,5 @@
 Promise = require 'bluebird'
-TaskQueue = require '../lib/task-queue'
+{TaskQueue} = require '../lib/main'
 
 describe 'TaskQueue', ->
 
