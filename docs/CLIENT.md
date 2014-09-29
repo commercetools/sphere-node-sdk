@@ -28,7 +28,7 @@ SPHERE CLIENT
 
 
 ## Documentation
-To start using the Sphere client you need to create an instance of the `SphereClient` by passing the credentials (and other options) in order to connect with the HTTP APIs. Project credentials can be found in the SPHERE.IO [Merchant Center](https://admin.sphere.io/) under `Developers > API clients` section.
+To start using the client you need to create an instance of the `SphereClient` by passing the credentials (and other optional parameters) in order to connect with the HTTP APIs. Project credentials can be found in the SPHERE.IO [Merchant Center](https://admin.sphere.io/) under `Developers > API clients` section.
 
 > For a list of options to pass to the client, see [`sphere-node-connect`](docs/CONNECT.md).
 

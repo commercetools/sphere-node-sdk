@@ -21,9 +21,9 @@ Install the module with `npm install sphere-node-client`
 
 The module exposes some libraries which can be either used alone or together
 
-* [CLIENT](docs/CLIENT.md)
-* [CONNECT](docs/CONNECT.md)
-* [SYNC](docs/SYNC.md)
+* [CLIENT](docs/CLIENT.md) - a high-level (promise-based) client to connect to the SPHERE.IO HTTP APIs
+* [CONNECT](docs/CONNECT.md) - a low-level (callback-based) client to connect to the SPHERE.IO HTTP APIs
+* [SYNC](docs/SYNC.md) - a collection of utils to build update actions
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
