@@ -15,6 +15,10 @@ This module is a standalone Node.js client for accessing the Sphere HTTP APIs.
 Install the module with `npm install sphere-node-client`
 
 ## Documentation
+> This documentation is for node-sdk 1.x and not valid for previous version - [0.8.x docs here](blob/v0.8.1/README.md#table-of-contents).
+
+> For migrating, check the [migration guide](docs/MIGRATION-1.0.md) to 1.x
+
 The module exposes some libraries which can be either used alone or together
 
 * [CLIENT](docs/CLIENT.md)
