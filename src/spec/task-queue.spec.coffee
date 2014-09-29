@@ -1,4 +1,4 @@
-Q = require 'q'
+Promise = require 'bluebird'
 TaskQueue = require '../lib/task-queue'
 
 describe 'TaskQueue', ->
@@ -27,20 +27,19 @@ describe 'TaskQueue', ->
 
   it 'should add a task to the queue and return a promise', ->
     spyOn(@task, '_maybeExecute')
-    promise = @task.addTask Q()
-    expect(Q.isPromise(promise)).toBe true
+    promise = @task.addTask Promise.resolve()
+    expect(promise.isPending()).toBe true
     expect(@task._queue.length).toBe 1
     expect(@task._maybeExecute).toHaveBeenCalled()
 
   it 'should start and resolve a task', (done) ->
     callMe = ->
-      d = Q.defer()
-      setTimeout ->
-        d.resolve true
-      , 500
-      d.promise
+      new Promise (resolve, reject) ->
+        setTimeout ->
+          resolve true
+        , 500
     @task.addTask callMe
     .then (result) ->
       expect(result).toBe true
       done()
-    .fail (error) -> done(error)
+    .catch (error) -> done(error)

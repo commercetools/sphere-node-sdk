@@ -1,6 +1,6 @@
-Q = require 'q'
 _ = require 'underscore'
 _.mixin require 'underscore-mixins'
+Promise = require 'bluebird'
 TaskQueue = require '../../../lib/task-queue'
 ProductProjectionService = require '../../../lib/services/product-projections'
 
@@ -53,7 +53,7 @@ describe 'ProductProjectionService', ->
       expect(clazz).toEqual @service
 
       promise = @service[f[0]](f[1]).search()
-      expect(Q.isPromise(promise)).toBe true
+      expect(promise.isPending()).toBe true
 
   it 'should query for staged', ->
     expect(@service.staged()._queryString()).toBe 'staged=true'
@@ -151,32 +151,32 @@ describe 'ProductProjectionService', ->
       spyOn(@restMock, 'PAGED').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: 1, results: []})
       @service.where('foo=bar').staged(true).all().fetch()
       .then (result) =>
-        expect(@restMock.PAGED).toHaveBeenCalledWith "/product-projections?where=foo%3Dbar&limit=0&sort=id%20asc&staged=true", jasmine.any(Function), jasmine.any(Function)
+        expect(@restMock.PAGED).toHaveBeenCalledWith "/product-projections?where=foo%3Dbar&limit=0&sort=id%20asc&staged=true", jasmine.any(Function)
         done()
-      .fail (err) -> done(_.prettify error)
+      .catch (err) -> done(_.prettify error)
 
   describe ':: process', ->
 
     it 'should call each page with the same query (default sorting)', (done) ->
       spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: 21, endpoint: endpoint})
       fn = (payload) ->
-        Q payload.body.endpoint
+        Promise.resolve payload.body.endpoint
       @service.where('foo=bar').whereOperator('or').staged(true).process(fn)
       .then (result) ->
         expect(_.size result).toBe 2
         expect(result[0]).toMatch /\?where=foo%3Dbar&limit=20&sort=id%20asc&staged=true$/
         expect(result[1]).toMatch /\?where=foo%3Dbar&limit=20&offset=20&sort=id%20asc&staged=true$/
         done()
-      .fail (err) -> done(_.prettify error)
+      .catch (err) -> done(_.prettify error)
 
     it 'should call each page with the same query (given sorting)', (done) ->
       spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: 21, endpoint: endpoint})
       fn = (payload) ->
-        Q payload.body.endpoint
+        Promise.resolve payload.body.endpoint
       @service.where('foo=bar').whereOperator('or').staged(true).sort('name', false).process(fn)
       .then (result) ->
         expect(_.size result).toBe 2
         expect(result[0]).toMatch /\?where=foo%3Dbar&limit=20&sort=name%20desc&staged=true$/
         expect(result[1]).toMatch /\?where=foo%3Dbar&limit=20&offset=20&sort=name%20desc&staged=true$/
         done()
-      .fail (err) -> done(_.prettify error)
+      .catch (err) -> done(_.prettify error)

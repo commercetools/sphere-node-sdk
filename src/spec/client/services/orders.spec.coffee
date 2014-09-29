@@ -1,4 +1,3 @@
-Q = require 'q'
 TaskQueue = require '../../../lib/task-queue'
 OrderService = require '../../../lib/services/orders'
 

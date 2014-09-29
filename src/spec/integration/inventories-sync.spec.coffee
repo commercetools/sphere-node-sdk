@@ -1,7 +1,7 @@
 debug = require('debug')('spec-integration:inventories')
 _ = require 'underscore'
-Q = require 'q'
 _.mixin require 'underscore-mixins'
+Promise = require 'bluebird'
 {SphereClient, InventorySync} = require '../../lib/main'
 Config = require('../../config').config
 
@@ -15,9 +15,9 @@ describe 'Integration Inventories Sync', ->
     .then (result) =>
       stocks = result.body.results
       debug 'Cleaning up all inventory entries'
-      Q.all _.map stocks, (s) => @client.inventoryEntries.byId(s.id).delete(s.version)
+      Promise.all _.map stocks, (s) => @client.inventoryEntries.byId(s.id).delete(s.version)
     .then -> done()
-    .fail (error) -> done(_.prettify(error))
+    .catch (error) -> done(_.prettify(error))
 
   it 'should update inventory entry', (done) ->
     ie =
@@ -36,7 +36,7 @@ describe 'Integration Inventories Sync', ->
       expect(result.statusCode).toBe 200
       expect(result.body.quantityOnStock).toBe 7
       done()
-    .fail (error) -> done(_.prettify(error))
+    .catch (error) -> done(_.prettify(error))
 
   it 'should add expectedDelivery date', (done) ->
     ie =
@@ -57,7 +57,7 @@ describe 'Integration Inventories Sync', ->
       expect(result.body.quantityOnStock).toBe 7
       expect(result.body.expectedDelivery).toBe '2000-01-01T01:01:01.000Z'
       done()
-    .fail (error) -> done(_.prettify(error))
+    .catch (error) -> done(_.prettify(error))
 
   it 'should update expectedDelivery date', (done) ->
     ie =
@@ -79,7 +79,7 @@ describe 'Integration Inventories Sync', ->
       expect(result.body.quantityOnStock).toBe 3
       expect(result.body.expectedDelivery).toBe '2000-01-01T01:01:01.000Z'
       done()
-    .fail (error) -> done(_.prettify(error))
+    .catch (error) -> done(_.prettify(error))
 
   it 'should remove expectedDelivery date', (done) ->
     ie =
@@ -100,4 +100,4 @@ describe 'Integration Inventories Sync', ->
       expect(result.body.quantityOnStock).toBe 3
       expect(result.body.expectedDelivery).not.toBeDefined()
       done()
-    .fail (error) -> done(_.prettify(error))
+    .catch (error) -> done(_.prettify(error))

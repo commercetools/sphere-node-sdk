@@ -1,7 +1,7 @@
 debug = require('debug')('spec-integration:products')
 _ = require 'underscore'
-Q = require 'q'
 _.mixin require 'underscore-mixins'
+Promise = require 'bluebird'
 {SphereClient, ProductSync} = require '../../lib/main'
 Config = require('../../config').config
 
@@ -39,12 +39,12 @@ describe 'Integration Products Sync', ->
       expect(result.statusCode).toBe 201
       @productType = result.body
       done()
-    .fail (error) -> done(_.prettify(error))
+    .catch (error) -> done(_.prettify(error))
 
   afterEach (done) ->
     debug 'Unpublishing all products'
     @client.products.sort('id').where('masterData(published = "true")').process (payload) =>
-      Q.all _.map payload.body.results, (product) =>
+      Promise.all _.map payload.body.results, (product) =>
         @client.products.byId(product.id).update(updateUnpublish(product.version))
     .then (results) =>
       debug "Unpublished #{results.length} products"
@@ -52,7 +52,7 @@ describe 'Integration Products Sync', ->
       @client.products.perPage(0).fetch()
     .then (payload) =>
       debug "Deleting #{payload.body.total} products"
-      Q.all _.map payload.body.results, (product) =>
+      Promise.all _.map payload.body.results, (product) =>
         @client.products.byId(product.id).delete(product.version)
     .then (results) =>
       debug "Deleted #{results.length} products"
@@ -60,12 +60,12 @@ describe 'Integration Products Sync', ->
       @client.productTypes.perPage(0).fetch()
     .then (payload) =>
       debug "Deleting #{payload.body.total} product types"
-      Q.all _.map payload.body.results, (productType) =>
+      Promise.all _.map payload.body.results, (productType) =>
         @client.productTypes.byId(productType.id).delete(productType.version)
     .then (results) ->
       debug "Deleted #{results.length} product types"
       done()
-    .fail (error) -> done(_.prettify(error))
+    .catch (error) -> done(_.prettify(error))
   , 60000 # 1min
 
   it 'should create and sync product', (done) ->
@@ -154,5 +154,5 @@ describe 'Integration Products Sync', ->
       expect(updated.variants[1].prices[0].value.centAmount).toBe 3000
       expect(updated.variants[1].prices[0].country).toBe 'FR'
       done()
-    .fail (error) -> done(_.prettify(error))
+    .catch (error) -> done(_.prettify(error))
   , 10000 # 10sec

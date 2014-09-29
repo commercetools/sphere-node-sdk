@@ -1,7 +1,7 @@
 debug = require('debug')('spec-integration:categories')
 _ = require 'underscore'
-Q = require 'q'
 _.mixin require 'underscore-mixins'
+Promise = require 'bluebird'
 {SphereClient} = require '../../lib/main'
 Config = require('../../config').config
 
@@ -26,25 +26,25 @@ describe 'Integration Categories', ->
     @client = new SphereClient config: Config
 
     debug 'Creating 50 categories'
-    Q.all _.map [1..50], => @client.categories.save(newCategory())
+    Promise.all _.map [1..50], => @client.categories.save(newCategory())
     .then (results) ->
       debug "Created #{results.length} categories"
       done()
-    .fail (error) -> done(_.prettify(error))
+    .catch (error) -> done(_.prettify(error))
   , 30000 # 30sec
 
   afterEach (done) ->
     debug 'About to delete all categories'
-    @client.categories.perPage(0).fetch()
+    @client.categories.all().fetch()
     .then (payload) =>
       debug "Deleting #{payload.body.total} categories (maxParallel: 1)"
       @client.setMaxParallel(1)
-      Q.all _.map payload.body.results, (category) =>
+      Promise.all _.map payload.body.results, (category) =>
         @client.categories.byId(category.id).delete(category.version)
     .then (results) ->
       debug "Deleted #{results.length} categories"
       done()
-    .fail (error) -> done(_.prettify(error))
+    .catch (error) -> done(_.prettify(error))
   , 60000 # 1min
 
   it 'should update descriptions with process', (done) ->
@@ -58,9 +58,9 @@ describe 'Integration Categories', ->
           ]
       else
         debug 'No category found, skipping...'
-        Q()
+        Promise.resolve()
     .then (results) ->
       expect(results.length).toBe 50
       done()
-    .fail (error) -> done(_.prettify(error))
+    .catch (error) -> done(_.prettify(error))
   , 120000 # 2min

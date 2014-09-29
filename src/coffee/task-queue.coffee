@@ -33,7 +33,7 @@ class TaskQueue
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with an error
   ###
   addTask: (taskFn) ->
-    new Promise (resolve, reject)
+    new Promise (resolve, reject) =>
       @_queue.push
         fn: taskFn
         resolve: resolve

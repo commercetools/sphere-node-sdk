@@ -1,7 +1,7 @@
 debug = require('debug')('spec-integration:products')
 _ = require 'underscore'
-Q = require 'q'
 _.mixin require 'underscore-mixins'
+Promise = require 'bluebird'
 {SphereClient} = require '../../lib/main'
 Config = require('../../config').config
 
@@ -75,17 +75,17 @@ describe 'Integration Products', ->
       expect(result.statusCode).toBe 201
       @productType = result.body
       debug 'Creating 50 products'
-      Q.all _.map [1..50], => @client.products.save(newProduct(@productType))
+      Promise.all _.map [1..50], => @client.products.save(newProduct(@productType))
     .then (results) ->
       debug "Created #{results.length} products"
       done()
-    .fail (error) -> done(_.prettify(error))
+    .catch (error) -> done(_.prettify(error))
   , 20000 # 20sec
 
   afterEach (done) ->
     debug 'Unpublishing all products'
     @client.products.sort('id').where('masterData(published = "true")').process (payload) =>
-      Q.all _.map payload.body.results, (product) =>
+      Promise.all _.map payload.body.results, (product) =>
         @client.products.byId(product.id).update(updateUnpublish(product.version))
     .then (results) =>
       debug "Unpublished #{results.length} products"
@@ -93,7 +93,7 @@ describe 'Integration Products', ->
       @client.products.perPage(0).fetch()
     .then (payload) =>
       debug "Deleting #{payload.body.total} products"
-      Q.all _.map payload.body.results, (product) =>
+      Promise.all _.map payload.body.results, (product) =>
         @client.products.byId(product.id).delete(product.version)
     .then (results) =>
       debug "Deleted #{results.length} products"
@@ -101,21 +101,21 @@ describe 'Integration Products', ->
       @client.productTypes.perPage(0).fetch()
     .then (payload) =>
       debug "Deleting #{payload.body.total} product types"
-      Q.all _.map payload.body.results, (productType) =>
+      Promise.all _.map payload.body.results, (productType) =>
         @client.productTypes.byId(productType.id).delete(productType.version)
     .then (results) ->
       debug "Deleted #{results.length} product types"
       done()
-    .fail (error) -> done(_.prettify(error))
+    .catch (error) -> done(_.prettify(error))
   , 60000 # 1min
 
   it 'should publish all products', (done) ->
     debug 'About to publish all products'
     @client.products.sort('id').where('masterData(published = "false")').process (payload) =>
-      Q.all _.map payload.body.results, (product) =>
+      Promise.all _.map payload.body.results, (product) =>
         @client.products.byId(product.id).update(updatePublish(product.version))
     .then (results) -> done()
-    .fail (error) -> done(_.prettify(error))
+    .catch (error) -> done(_.prettify(error))
   , 60000 # 1min
 
   it 'should add attribute to product type', (done) ->
@@ -124,5 +124,5 @@ describe 'Integration Products', ->
     .then (result) ->
       expect(result.statusCode).toBe 200
       done()
-    .fail (error) -> done(_.prettify(error))
+    .catch (error) -> done(_.prettify(error))
   , 30000 # 30sec

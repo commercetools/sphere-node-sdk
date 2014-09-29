@@ -1,5 +1,6 @@
 _ = require 'underscore'
-Q = require 'q'
+_.mixin require 'underscore-mixins'
+Promise = require 'bluebird'
 TaskQueue = require '../../../lib/task-queue'
 BaseService              = require '../../../lib/services/base'
 CartService              = require '../../../lib/services/carts'
@@ -111,7 +112,7 @@ describe 'Service', ->
           expect(clazz).toEqual @service
 
           promise = @service[f[0]](f[1]).fetch()
-          expect(Q.isPromise(promise)).toBe true
+          expect(promise.isPending()).toBe true
 
       it 'should add where predicates to query', ->
         @service.where('name(en="Foo")')
@@ -208,7 +209,7 @@ describe 'Service', ->
           callback null, {statusCode: 400}, {statusCode: 400, message: 'Oops, something went wrong'}
         @service.save({foo: 'bar'})
         .then -> done('Should not happen')
-        .fail (error) ->
+        .catch (error) ->
           expect(error).toEqual
             statusCode: 400
             message: 'Oops, something went wrong'
@@ -249,29 +250,27 @@ describe 'Service', ->
             body:
               foo: 'bar'
           done()
-        .fail (error) -> done(error)
+        .catch (error) -> done(_.prettify(error))
         .done()
 
       describe ':: process', ->
         it 'should return promise', ->
           promise = @service.process( -> )
-          expect(Q.isPromise(promise)).toBe true
+          expect(promise.isPending()).toBe true
 
         it 'should call process function for one page', (done) ->
           spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: 1, results: []})
-          fn = (payload) ->
-            Q 'done'
+          fn = (payload) -> Promise.resolve 'done'
           @service.process(fn)
           .then (result) ->
             expect(result).toEqual ['done']
             done()
-          .fail (err) ->
-            done err
+          .catch (error) -> done(_.prettify(error))
 
         it 'should call process function for several pages (default sorting)', (done) ->
           spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: 90, endpoint: endpoint})
           fn = (payload) ->
-            Q payload.body.endpoint
+            Promise.resolve payload.body.endpoint
           @service.page(3).perPage(20).process(fn)
           .then (result) ->
             expect(_.size result).toBe 3
@@ -279,13 +278,12 @@ describe 'Service', ->
             expect(result[1]).toMatch /\?limit=20&offset=60&sort=id%20asc$/
             expect(result[2]).toMatch /\?limit=20&offset=80&sort=id%20asc$/
             done()
-          .fail (err) ->
-            done err
+          .catch (error) -> done(_.prettify(error))
 
         it 'should call process function for several pages (given sorting)', (done) ->
           spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: 90, endpoint: endpoint})
           fn = (payload) ->
-            Q payload.body.endpoint
+            Promise.resolve payload.body.endpoint
           @service.page(3).perPage(20).sort('foo').process(fn)
           .then (result) ->
             expect(_.size result).toBe 3
@@ -293,31 +291,29 @@ describe 'Service', ->
             expect(result[1]).toMatch /\?limit=20&offset=60&sort=foo%20asc$/
             expect(result[2]).toMatch /\?limit=20&offset=80&sort=foo%20asc$/
             done()
-          .fail (err) ->
-            done err
+          .catch (error) -> done(_.prettify(error))
 
         it 'should fail if the process functions rejects', (done) ->
           spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: 100})
           fn = (payload) ->
-            Q.reject 'shit happens'
+            Promise.reject 'bad luck'
           @service.process(fn)
-          .then (result) ->
-            done 'not expected!'
-          .fail (err) ->
+          .then (result) -> done 'not expected!'
+          .catch (error) ->
+            expect(error).toBe 'bad luck'
             done()
 
         it 'should call each page with the same query', (done) ->
           spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: 21, endpoint: endpoint})
           fn = (payload) ->
-            Q payload.body.endpoint
+            Promise.resolve payload.body.endpoint
           @service.where('foo=bar').whereOperator('or').sort('name', false).process(fn)
           .then (result) ->
             expect(_.size result).toBe 2
             expect(result[0]).toMatch /\?where=foo%3Dbar&limit=20&sort=name%20desc$/
             expect(result[1]).toMatch /\?where=foo%3Dbar&limit=20&offset=20&sort=name%20desc$/
             done()
-          .fail (err) ->
-            done err
+          .catch (error) -> done(_.prettify(error))
 
         it 'should throw error if function is missing', ->
           spyOn(@restMock, 'GET')
@@ -327,29 +323,27 @@ describe 'Service', ->
         it 'should handle pagination for changes in total', (done) ->
           total = 5
           spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: total--, results: []})
-          fn = (payload) -> Q 'done'
+          fn = (payload) -> Promise.resolve 'done'
           @service.perPage(1).process(fn)
           .then (result) ->
             expect(result).toEqual _.map [0..5], -> 'done'
             done()
-          .fail (err) ->
-            done err
+          .catch (error) -> done(_.prettify(error))
 
         it 'should not accumulate results if explicitly set', (done) ->
           spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: 10, results: [1..10]})
-          fn = (payload) -> Q 'done'
+          fn = (payload) -> Promise.resolve 'done'
           @service.perPage(1).process(fn, accumulate: false)
           .then (result) ->
             expect(result).toEqual []
             done()
-          .fail (err) ->
-            done err
+          .catch (error) -> done(_.prettify(error))
 
       describe ':: fetch', ->
 
         it 'should return promise on fetch', ->
           promise = @service.fetch()
-          expect(Q.isPromise(promise)).toBe true
+          expect(promise.isPending()).toBe true
 
         it 'should resolve the promise on fetch', (done) ->
           spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {foo: 'bar'})
@@ -357,12 +351,13 @@ describe 'Service', ->
             expect(result.statusCode).toBe 200
             expect(result.body).toEqual foo: 'bar'
             done()
+          .catch (error) -> done(_.prettify(error))
 
         it 'should reject the promise on fetch (404)', (done) ->
           spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 404, request: {uri: {path: '/foo'}}}, null)
           @service.fetch()
           .then (result) -> done('Should not happen')
-          .fail (error) ->
+          .catch (error) ->
             expect(error).toEqual
               statusCode: 404
               message: "Endpoint '/foo' not found."
@@ -378,7 +373,7 @@ describe 'Service', ->
           .perPage()
           .fetch()
           .then (result) -> done('Should not happen')
-          .fail (error) ->
+          .catch (error) ->
             expect(error).toEqual
               statusCode: 404
               # message: "Endpoint '#{@service._currentEndpoint}?limit=100' not found."
@@ -391,7 +386,7 @@ describe 'Service', ->
           spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback('foo', null, null)
           @service.fetch()
           .then (result) -> done('Should not happen')
-          .fail (error) ->
+          .catch (error) ->
             expect(error).toEqual
               statusCode: 500
               message: 'foo'
@@ -415,13 +410,13 @@ describe 'Service', ->
               expect(result.body.results.length).toBe 1
               expect(result.body.results[0]).toEqual foo: 'bar'
               done()
-            .fail (error) -> done(error)
+            .catch (error) -> done(_.prettify(error))
 
           it 'should reject the promise on (paged) fetch (404)', (done) ->
             spyOn(@restMock, 'PAGED').andCallFake (endpoint, callback) -> callback(null, {statusCode: 404, request: {uri: {path: '/foo'}}}, null)
             @service.perPage(0).fetch()
             .then (result) -> done('Should not happen')
-            .fail (error) ->
+            .catch (error) ->
               expect(error).toEqual
                 statusCode: 404
                 message: "Endpoint '/foo' not found."
@@ -433,7 +428,7 @@ describe 'Service', ->
             spyOn(@restMock, 'PAGED').andCallFake (endpoint, callback) -> callback('foo', null, null)
             @service.perPage(0).fetch()
             .then (result) -> done('Should not happen')
-            .fail (error) ->
+            .catch (error) ->
               expect(error).toEqual
                 statusCode: 500
                 message: 'foo'
@@ -455,7 +450,7 @@ describe 'Service', ->
 
         it 'should return promise on save', ->
           promise = @service.save {foo: 'bar'}
-          expect(Q.isPromise(promise)).toBe true
+          expect(promise.isPending()).toBe true
 
         it 'should resolve the promise on save', (done) ->
           spyOn(@restMock, 'POST').andCallFake (endpoint, payload, callback) -> callback(null, {statusCode: 200}, {foo: 'bar'})
@@ -463,12 +458,13 @@ describe 'Service', ->
             expect(result.statusCode).toBe 200
             expect(result.body).toEqual foo: 'bar'
             done()
+          .catch (error) -> done(_.prettify(error))
 
         it 'should reject the promise on save (404)', (done) ->
           spyOn(@restMock, 'POST').andCallFake (endpoint, payload, callback) -> callback(null, {statusCode: 404, request: {uri: {path: '/foo'}}}, null)
           @service.save({foo: 'bar'})
           .then (result) -> done('Should not happen')
-          .fail (error) ->
+          .catch (error) ->
             expect(error).toEqual
               statusCode: 404
               message: "Endpoint '/foo' not found."
@@ -487,7 +483,7 @@ describe 'Service', ->
           spyOn(@restMock, 'POST').andCallFake (endpoint, payload, callback) -> callback('foo', null, null)
           @service.save({foo: 'bar'})
           .then (result) -> done('Should not happen')
-          .fail (error) ->
+          .catch (error) ->
             expect(error).toEqual
               statusCode: 500
               message: 'foo'
@@ -551,7 +547,7 @@ describe 'Service', ->
 
         it 'should return promise on delete', ->
           promise = @service.byId('123-abc').delete(1)
-          expect(Q.isPromise(promise)).toBe true
+          expect(promise.isPending()).toBe true
 
         it 'should resolve the promise on delete', (done) ->
           spyOn(@restMock, 'DELETE').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {foo: 'bar'})
@@ -559,12 +555,13 @@ describe 'Service', ->
             expect(result.statusCode).toBe 200
             expect(result.body).toEqual foo: 'bar'
             done()
+          .catch (error) -> done(_.prettify(error))
 
         it 'should reject the promise on delete (404)', (done) ->
           spyOn(@restMock, 'DELETE').andCallFake (endpoint, callback) -> callback(null, {statusCode: 404, request: {uri: {path: '/foo'}}}, null)
           @service.byId('123-abc').delete(1)
           .then (result) -> done('Should not happen')
-          .fail (error) ->
+          .catch (error) ->
             expect(error).toEqual
               statusCode: 404
               message: "Endpoint '/foo' not found."
@@ -576,7 +573,7 @@ describe 'Service', ->
           spyOn(@restMock, 'DELETE').andCallFake (endpoint, callback) -> callback('foo', null, null)
           @service.byId('123-abc').delete(1)
           .then (result) -> done('Should not happen')
-          .fail (error) ->
+          .catch (error) ->
             expect(error).toEqual
               statusCode: 500
               message: 'foo'

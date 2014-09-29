@@ -1,7 +1,7 @@
 debug = require('debug')('spec-integration:states')
 _ = require 'underscore'
-Q = require 'q'
 _.mixin require 'underscore-mixins'
+Promise = require 'bluebird'
 {SphereClient} = require '../../lib/main'
 Config = require('../../config').config
 
@@ -31,7 +31,7 @@ describe 'Integration Channels', ->
       @state = result.body
       debug 'New state created: %j', @state
       done()
-    .fail (error) -> done _.prettify(error)
+    .catch (error) -> done _.prettify(error)
 
   afterEach (done) ->
     @client.states.byId(@state.id).delete(@state.version)
@@ -39,7 +39,7 @@ describe 'Integration Channels', ->
       debug "State deleted: #{@state.id}"
       expect(result.statusCode).toBe 200
       done()
-    .fail (error) -> done _.prettify(error)
+    .catch (error) -> done _.prettify(error)
 
   it 'should update a state', (done) ->
     @client.states.byId(@state.id).update(updateState(@state.version))
@@ -49,10 +49,10 @@ describe 'Integration Channels', ->
       expect(@state.name).toEqual {en: 'A State'}
       expect(@state.description).toEqual {en: 'This is a State'}
       done()
-    .fail (error) -> done _.prettify(error)
+    .catch (error) -> done _.prettify(error)
 
   it 'should create some states and use them as transitions references', (done) ->
-    Q.all _.map [1..51], => @client.states.save(newState())
+    Promise.all _.map [1..51], => @client.states.save(newState())
     .then (results) =>
       mainState = _.head(results).body
       otherStates = _.tail results
@@ -72,8 +72,8 @@ describe 'Integration Channels', ->
         # delete states
         @client.states.byId(mainState.id).delete(mainState.version)
       .then (result) =>
-        Q.all _.map otherStates, (r) => @client.states.byId(r.body.id).delete(r.body.version)
+        Promise.all _.map otherStates, (r) => @client.states.byId(r.body.id).delete(r.body.version)
       .then (results) ->
         done()
-    .fail (error) -> done _.prettify(error)
+    .catch (error) -> done _.prettify(error)
   , 20000 # 20sec

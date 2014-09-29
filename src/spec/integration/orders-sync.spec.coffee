@@ -1,6 +1,5 @@
 debug = require('debug')('spec-integration:orders')
 _ = require 'underscore'
-Q = require 'q'
 _.mixin require 'underscore-mixins'
 {SphereClient, OrderSync} = require '../../lib/main'
 Config = require('../../config').config
@@ -31,7 +30,7 @@ describe 'Integration Orders Sync', ->
     .then (result) =>
       @order = result.body
       done()
-    .fail (error) -> done(_.prettify(error))
+    .catch (error) -> done(_.prettify(error))
 
   afterEach (done) ->
     # TODO: delete order (not supported by API yet)
@@ -39,8 +38,8 @@ describe 'Integration Orders Sync', ->
     .then (result) =>
       @client.productTypes.byId(@productType.id).delete(@productType.version)
     .then (result) -> done()
-    .fail (error) -> done(_.prettify(error))
-    .fin =>
+    .catch (error) -> done(_.prettify(error))
+    .finally =>
       @product = null
       @productType = null
       @order = null
@@ -63,7 +62,7 @@ describe 'Integration Orders Sync', ->
       expect(orderUpdated.paymentState).toBe orderNew.paymentState
       expect(orderUpdated.shipmentState).toBe orderNew.shipmentState
       done()
-    .fail (error) -> done(_.prettify(error))
+    .catch (error) -> done(_.prettify(error))
 
   it 'should sync returnInfo', (done) ->
     orderNew = _.deepClone @order
@@ -87,7 +86,7 @@ describe 'Integration Orders Sync', ->
       expect(orderUpdated).toBeDefined()
       expect(orderUpdated.returnInfo[0].id).toBe orderNew.returnInfo[0].id
       done()
-    .fail (error) -> done(_.prettify(error))
+    .catch (error) -> done(_.prettify(error))
 
   it 'should sync returnInfo (status)', (done) ->
     orderNew = _.deepClone @order
@@ -125,7 +124,7 @@ describe 'Integration Orders Sync', ->
       expect(orderUpdated2.returnInfo[0].items[0].shipmentState).toEqual @orderNew2.returnInfo[0].items[0].shipmentState
       expect(orderUpdated2.returnInfo[0].items[0].paymentState).toEqual @orderNew2.returnInfo[0].items[0].paymentState
       done()
-    .fail (error) -> done(_.prettify(error))
+    .catch (error) -> done(_.prettify(error))
 
   it 'should sync delivery items', (done) ->
 
@@ -148,7 +147,7 @@ describe 'Integration Orders Sync', ->
       expect(orderUpdated).toBeDefined()
       expect(orderUpdated.shippingInfo.deliveries.length).toBe 1
       done()
-    .fail (error) -> done(_.prettify(error))
+    .catch (error) -> done(_.prettify(error))
 
   it 'should sync parcel items of a delivery', (done) ->
     orderNew = _.deepClone @order
@@ -211,7 +210,7 @@ describe 'Integration Orders Sync', ->
       parcels = _.first(orderUpdated3.shippingInfo.deliveries).parcels
       expect(parcels.length).toBe 2
       done()
-    .fail (error) -> done(_.prettify(error))
+    .catch (error) -> done(_.prettify(error))
 
 ###
 helper methods
