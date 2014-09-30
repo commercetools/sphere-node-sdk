@@ -25,8 +25,8 @@ describe 'Integration Categories', ->
   beforeEach (done) ->
     @client = new SphereClient config: Config
 
-    debug 'Creating 50 categories'
-    Promise.all _.map [1..50], => @client.categories.save(newCategory())
+    debug 'Creating 10 categories'
+    Promise.all _.map [1..10], => @client.categories.save(newCategory())
     .then (results) ->
       debug "Created #{results.length} categories"
       done()
@@ -60,7 +60,7 @@ describe 'Integration Categories', ->
         debug 'No category found, skipping...'
         Promise.resolve()
     .then (results) ->
-      expect(results.length).toBe 50
+      expect(results.length).toBe 10
       done()
     .catch (error) -> done(_.prettify(error))
   , 120000 # 2min
