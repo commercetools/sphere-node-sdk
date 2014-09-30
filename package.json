@@ -22,18 +22,19 @@
   ],
   "main": "./lib/client",
   "engines": {
-    "node": ">= 0.8.0"
+    "node": ">= 0.10.0"
   },
   "scripts": {
     "build": "grunt build",
-    "postpublish": "rm -rf lib",
     "test": "grunt coverage"
   },
   "dependencies": {
-    "q": "1.0.1",
-    "sphere-node-connect": "0.5.7",
-    "sphere-node-utils": "0.4.13",
-    "underscore": "1.6.0"
+    "bluebird": "2.3.x",
+    "debug": "2.0.0",
+    "jsondiffpatch": "0.1.8",
+    "request": "2.40.0",
+    "underscore": "1.7.0",
+    "underscore-mixins": "0.1.0"
   },
   "devDependencies": {
     "coveralls": "2.10.0",
@@ -55,6 +56,8 @@
     "rest",
     "api",
     "sdk",
+    "sync",
+    "promise",
     "ecommerce"
   ]
 }

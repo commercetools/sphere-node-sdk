@@ -74,6 +74,14 @@ module.exports = (grunt) ->
         command: 'istanbul cover jasmine-node --captureExceptions test && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage'
       jasmine:
         command: 'jasmine-node --captureExceptions test'
+      'jasmine-client':
+        command: 'jasmine-node --captureExceptions test/client'
+      'jasmine-connect':
+        command: 'jasmine-node --captureExceptions test/connect'
+      'jasmine-sync':
+        command: 'jasmine-node --captureExceptions test/sync'
+      'jasmine-integration':
+        command: 'jasmine-node --captureExceptions test/integration'
       publish:
         command: 'npm publish'
 
@@ -103,7 +111,9 @@ module.exports = (grunt) ->
   # register tasks
   grunt.registerTask 'default', ['build']
   grunt.registerTask 'build', ['clean', 'coffeelint', 'coffee', 'concat']
-  grunt.registerTask 'test', ['build', 'shell:jasmine']
+  grunt.registerTask 'test', 'Run test with optional target', (target) ->
+    suffix = if target then "-#{target}" else ''
+    grunt.task.run 'build', "shell:jasmine#{suffix}"
   grunt.registerTask 'coverage', ['build', 'shell:coverage']
   grunt.registerTask 'release', 'Release a new version, push it and publish it', (target) ->
     target = 'patch' unless target

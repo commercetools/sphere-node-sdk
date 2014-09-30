@@ -1,14 +1,8 @@
-Q = require 'q'
 _ = require 'underscore'
-{Rest} = require 'sphere-node-connect'
-{TaskQueue} = require 'sphere-node-utils'
-SphereClient = require '../lib/client'
-Logger = require '../lib/logger'
-Config = require('../config').config
-
-class MyLogger extends Logger
-  @appName: 'foo'
-  @path: './foo-test.log'
+_.mixin require 'underscore-mixins'
+Promise = require 'bluebird'
+{SphereClient, Rest, TaskQueue} = require '../../lib/main'
+Config = require('../../config').config
 
 describe 'SphereClient', ->
 
@@ -26,7 +20,6 @@ describe 'SphereClient', ->
   it 'should initialize with credentials', ->
     expect(@client).toBeDefined()
     expect(@client._rest).toBeDefined()
-    expect(@client._logger).toBeDefined()
     expect(@client._task).toBeDefined()
     expect(@client.carts).toBeDefined()
     expect(@client.categories).toBeDefined()
@@ -58,24 +51,6 @@ describe 'SphereClient', ->
       delete opt[key]
       client = -> new SphereClient config: opt
       expect(client).toThrow new Error("Missing '#{key}'")
-
-  it 'should initialize and extend Logger', ->
-    expect(@client._rest.logger).toBeDefined()
-    expect(@client._rest.logger.fields.name).toBe 'sphere-node-client'
-    expect(@client._rest.logger.streams[1].path).toBe './sphere-node-client-debug.log'
-    expect(@client._rest.logger.fields.widget_type).toBe 'sphere-node-connect'
-
-  it 'should initialize with given Logger', ->
-    existingLogger = new MyLogger()
-    client = new SphereClient
-      config: Config
-      logConfig:
-        logger: existingLogger
-
-    expect(client._logger.fields.name).toBe 'foo'
-    expect(client._logger.streams[1].path).toBe './foo-test.log'
-    expect(client._logger.fields.widget_type).toBe 'sphere-node-client'
-    expect(client._rest.logger.fields.widget_type).toBe 'sphere-node-connect'
 
   it 'should initialize with given Rest', ->
     existingRest = new Rest config: Config
@@ -144,6 +119,7 @@ describe 'SphereClient', ->
           expect(result.statusCode).toBe 200
           expect(result.body).toEqual foo: 'bar'
           done()
+        .catch (e) -> done(_.prettify(error))
 
       it 'should get resource by id', (done) ->
         spyOn(@client._rest, "GET").andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {foo: 'bar'})
@@ -152,6 +128,7 @@ describe 'SphereClient', ->
           expect(result.statusCode).toBe 200
           expect(result.body).toEqual foo: 'bar'
           done()
+        .catch (e) -> done(_.prettify(error))
 
       it 'should save new resource', (done) ->
         spyOn(@client._rest, "POST").andCallFake (endpoint, payload, callback) -> callback(null, {statusCode: 200}, {foo: 'bar'})
@@ -160,6 +137,7 @@ describe 'SphereClient', ->
           expect(result.statusCode).toBe 200
           expect(result.body).toEqual foo: 'bar'
           done()
+        .catch (e) -> done(_.prettify(error))
 
       it 'should delete resource', (done) ->
         spyOn(@client._rest, "DELETE").andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {foo: 'bar'})
@@ -169,3 +147,4 @@ describe 'SphereClient', ->
           expect(result.body).toEqual foo: 'bar'
           expect(@client._rest.DELETE).toHaveBeenCalledWith "#{service._currentEndpoint}/123-abc?version=4", jasmine.any(Function)
           done()
+        .catch (e) -> done(_.prettify(error))

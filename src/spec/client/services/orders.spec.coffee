@@ -1,6 +1,5 @@
-Q = require 'q'
-{TaskQueue} = require 'sphere-node-utils'
-OrderService = require '../../lib/services/orders'
+{TaskQueue} = require '../../../lib/main'
+OrderService = require '../../../lib/services/orders'
 
 ###*
  * Describe service specific implementations
@@ -17,18 +16,10 @@ describe 'OrderService', ->
       PAGED: -> (endpoint, callback, notify) ->
       _preRequest: ->
       _doRequest: ->
-    @loggerMock =
-      trace: ->
-      debug: ->
-      info: ->
-      warn: ->
-      error: ->
-      fatal: ->
     @task = new TaskQueue
     @service = new OrderService
       _rest: @restMock
       _task: @task
-      _logger: @loggerMock
       _stats:
         includeHeaders: false
 

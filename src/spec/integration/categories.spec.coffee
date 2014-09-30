@@ -1,7 +1,8 @@
+debug = require('debug')('spec-integration:categories')
 _ = require 'underscore'
-Q = require 'q'
-_.mixin require('sphere-node-utils')._u
-SphereClient = require '../../lib/client'
+_.mixin require 'underscore-mixins'
+Promise = require 'bluebird'
+{SphereClient} = require '../../lib/main'
 Config = require('../../config').config
 
 uniqueId = (prefix) ->
@@ -19,41 +20,31 @@ updateCategory = (version, parentId) ->
     {action: 'changeParent', parent: {typeId: 'category', id: parentId}}
   ]
 
-
 describe 'Integration Categories', ->
 
   beforeEach (done) ->
-    @client = new SphereClient
-      config: Config
-      logConfig:
-        levelStream: 'info'
-        levelFile: 'error'
-    @logger = @client._logger
+    @client = new SphereClient config: Config
 
-    @logger.info 'Creating 10 categories'
-    Q.all _.map [1..10], => @client.categories.save(newCategory())
-    .then (results) =>
-      @logger.info "Created #{results.length} categories"
+    debug 'Creating 10 categories'
+    Promise.all _.map [1..10], => @client.categories.save(newCategory())
+    .then (results) ->
+      debug "Created #{results.length} categories"
       done()
-    .fail (error) =>
-      @logger.error error
-      done(_.prettify(error))
+    .catch (error) -> done(_.prettify(error))
   , 30000 # 30sec
 
   afterEach (done) ->
-    @logger.info 'About to delete all categories'
-    @client.categories.perPage(0).fetch()
+    debug 'About to delete all categories'
+    @client.categories.all().fetch()
     .then (payload) =>
-      @logger.info "Deleting #{payload.body.total} categories (maxParallel: 1)"
+      debug "Deleting #{payload.body.total} categories (maxParallel: 1)"
       @client.setMaxParallel(1)
-      Q.all _.map payload.body.results, (category) =>
+      Promise.all _.map payload.body.results, (category) =>
         @client.categories.byId(category.id).delete(category.version)
-    .then (results) =>
-      @logger.info "Deleted #{results.length} categories"
+    .then (results) ->
+      debug "Deleted #{results.length} categories"
       done()
-    .fail (error) =>
-      @logger.error error
-      done(_.prettify(error))
+    .catch (error) -> done(_.prettify(error))
   , 60000 # 1min
 
   it 'should update descriptions with process', (done) ->
@@ -66,12 +57,10 @@ describe 'Integration Categories', ->
             {action: 'setDescription', description: {en: 'A new description'}}
           ]
       else
-        @logger.warn 'No category found, skipping...'
-        Q()
+        debug 'No category found, skipping...'
+        Promise.resolve()
     .then (results) ->
       expect(results.length).toBe 10
       done()
-    .fail (error) =>
-      @logger.error error
-      done(_.prettify(error))
+    .catch (error) -> done(_.prettify(error))
   , 120000 # 2min

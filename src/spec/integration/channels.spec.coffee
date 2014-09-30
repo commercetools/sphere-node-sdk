@@ -1,6 +1,7 @@
+debug = require('debug')('spec-integration:channels')
 _ = require 'underscore'
-_.mixin require('sphere-node-utils')._u
-SphereClient = require '../../lib/client'
+_.mixin require 'underscore-mixins'
+{SphereClient} = require '../../lib/main'
 Config = require('../../config').config
 
 CHANNEL_KEY = 'OrderXmlFileExport'
@@ -28,30 +29,25 @@ describe 'Integration Channels', ->
   channels = []
 
   beforeEach (done) ->
-    @client = new SphereClient
-      config: Config
-      logConfig:
-        levelStream: 'info'
-        levelFile: 'error'
-    @logger = @client._logger
+    @client = new SphereClient config: Config
 
     @client.channels.save(newChannel())
     .then (result) =>
       expect(result.statusCode).toBe 201
       @channelId = result.body.id
-      @logger.info @channel, "New channel created: #{@channelId}"
+      debug 'New channel created: %j', result.body
       done()
-    .fail (error) -> done _.prettify(error)
+    .catch (error) -> done _.prettify(error)
 
   afterEach (done) ->
     @client.channels.byId(@channelId).fetch()
     .then (result) =>
       @client.channels.byId(@channelId).delete(result.body.version)
     .then (result) =>
-      @logger.info "Channel deleted: #{@channelId}"
+      debug "Channel deleted: #{@channelId}"
       expect(result.statusCode).toBe 200
       done()
-    .fail (error) -> done _.prettify(error)
+    .catch (error) -> done _.prettify(error)
 
   it 'should update a channel', (done) ->
     @client.channels.byId(@channelId).fetch()
@@ -63,7 +59,7 @@ describe 'Integration Channels', ->
       expect(result.body.description).toEqual {en: 'This is a Channel'}
       expect(result.body.roles).toEqual [ROLE_INVENTORY_SUPPLY, ROLE_ORDER_EXPORT]
       done()
-    .fail (error) -> done _.prettify(error)
+    .catch (error) -> done _.prettify(error)
 
   it 'should create a new channel with given role and return it', (done) ->
     key = uniqueId "channel"
@@ -73,7 +69,7 @@ describe 'Integration Channels', ->
       expect(result.body.key).toEqual key
       expect(result.body.roles).toEqual [ROLE_ORDER_EXPORT]
       done()
-    .fail (error) -> done _.prettify(error)
+    .catch (error) -> done _.prettify(error)
 
   it 'should fetch an existing channel, add given role and return it', (done) ->
     @client.channels.byId(@channelId).fetch()
@@ -84,7 +80,7 @@ describe 'Integration Channels', ->
     .then (result) ->
       expect(result.body.roles).toEqual [ROLE_INVENTORY_SUPPLY, ROLE_ORDER_EXPORT, ROLE_PRIMARY]
       done()
-    .fail (error) -> done _.prettify(error)
+    .catch (error) -> done _.prettify(error)
   , 10000 # 10sec
 
   it 'should fail if role value is not supported', (done) ->
@@ -93,6 +89,6 @@ describe 'Integration Channels', ->
       @client.channels.ensure(result.body.key, 'undefined-role')
     .then (result) ->
       done 'Role value not supported.'
-    .fail (error) ->
+    .catch (error) ->
       expect(error).toBeDefined
       done()

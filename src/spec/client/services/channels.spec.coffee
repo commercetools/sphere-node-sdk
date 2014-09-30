@@ -1,7 +1,7 @@
-Q = require 'q'
 _ = require 'underscore'
-_.mixin require('sphere-node-utils')._u
-ChannelService = require '../../lib/services/channels'
+_.mixin require 'underscore-mixins'
+Promise = require 'bluebird'
+ChannelService = require '../../../lib/services/channels'
 
 ###*
  * Describe service specific implementations
@@ -9,17 +9,9 @@ ChannelService = require '../../lib/services/channels'
 describe 'ChannelService', ->
 
   beforeEach ->
-    @loggerMock =
-      trace: ->
-      debug: ->
-      info: ->
-      warn: ->
-      error: ->
-      fatal: ->
     @channels = new ChannelService
       _rest: null
       _task: null
-      _logger: @loggerMock
       _stats:
         includeHeaders: false
 
@@ -33,7 +25,7 @@ describe 'ChannelService', ->
 
   it 'should just return the channel if roles haven\'t changed', (done) ->
     spyOn(@channels, '_save')
-    spyOn(@channels, '_get').andReturn Q
+    spyOn(@channels, '_get').andReturn Promise.resolve
       statusCode: 200
       body:
         total: 1
@@ -46,11 +38,11 @@ describe 'ChannelService', ->
     .then (result) =>
       expect(@channels._save).not.toHaveBeenCalled()
       done()
-    .fail (error) -> done(_.prettify error)
+    .catch (error) -> done(_.prettify error)
 
   it 'should flatten the roles when creating the payload', (done) ->
     spyOn(@channels, 'update')
-    spyOn(@channels, '_get').andReturn Q
+    spyOn(@channels, '_get').andReturn Promise.resolve
       statusCode: 200
       body:
         total: 1
@@ -69,4 +61,4 @@ describe 'ChannelService', ->
         ]
       expect(@channels.update).toHaveBeenCalledWith expected_update
       done()
-    .fail (error) -> done(_.prettify error)
+    .catch (error) -> done(_.prettify error)
