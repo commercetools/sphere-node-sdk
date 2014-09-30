@@ -1,6 +1,6 @@
 ![SPHERE.IO icon](https://admin.sphere.io/assets/images/sphere_logo_rgb_long.png)
 
-# Node.js Client
+# Node.js SDK
 
 [![NPM](https://nodei.co/npm/sphere-node-sdk.png?downloads=true)](https://www.npmjs.org/package/sphere-node-sdk)
 
@@ -8,14 +8,14 @@
 
 [SPHERE.IO](http://sphere.io/) is the first **Platform-as-a-Service** solution for eCommerce.
 
-This module is a standalone Node.js client for accessing the Sphere HTTP APIs.
+Officially supported Node.js SDK library for working with the SPHERE.IO HTTP API, with OAuth2 support.
 
 
 ## Getting Started
 Install the module with `npm install sphere-node-sdk`
 
 ## Documentation
-> This documentation is for node-sdk 1.x and not valid for previous version - [0.8.x docs here](blob/v0.8.1/README.md#table-of-contents).
+> This documentation is for node-sdk 1.x and not valid for previous version - [0.8.x docs here](https://github.com/sphereio/sphere-node-sdk/blob/v0.8.1/README.md#table-of-contents).
 
 > For migrating, check the [migration guide](docs/MIGRATION-1.0.md) to 1.x
 
