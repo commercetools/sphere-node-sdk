@@ -2,18 +2,17 @@ language: node_js
 node_js:
   - '0.10'
 before_script:
-  - npm config set ca ""
   - npm install -g grunt-cli
   - ./create_config.sh
 env:
   global:
-    - secure: AVtOD0w+6AXJDsiuftHS/TFCZFAoQQE48tg9h/kJ5F9VgCmz90uazwFAkAhm6GAQMQzkxpzM/Y/mrhgXHZ5YdBUf72+RLXRJ3qM2nlWckjfcBEQCPTT9XTy8fp5IQyW/DOnbriHM50mpMmEycpa8qzhckmEhITXDeeOGJ0WHPuE=
-    - secure: b3NzjPjZ9YBb7voLMKatSmdWAo6btCYNV9qSVG0BCJaMNB5XVpjm33ZCil02jlGcpJdZnhaGO3nr6EQadkjOYcNHTvmmPjE7yor++zFWRO+eb8NrBzqerp2ZshA27IqSYsOBLyNechLlKzF+2Rhgtq+crTeJhubExdLlT3tqSys=
-    - secure: S1/lQ8UVRopad7vISpHLRL+8Xu3rVA0mVimXGNWbmWi5x8LtI8objgkhage4vamIN2ZJ0skctCJFuXwy1j3eFoFFyO7mhBeEME/ezgqIlAr+kevrZI+Jvjdp/V7Pbq9Zdxa2l4oW3KXzyN2jduRvvxJmm5TnUZTqh1brBS11A08=
+    - secure: d4woA9SqqJhEbjsSVZXPovrIhEsVkbrncyxyTfgeBSTMqgGSNyKuaHN2kNVy+3e7z9PDNBDIkq91emsPW+ShlmYxvv6pqEKRVPVauIuy6amTH3bMpPHIjlniTB1GfgiWNWNZiD+DOEIjLiMyt5e/QAQjoJMUFhIF5O9ke+qjC8M=
+    - secure: XrhwC5gdhj+4Ir8lobL2lQRobWeuFC3uKMdG5KPUbnyCDJz7laLsxMbLwsLp1H2w+YUBUkkb3W2xMa++SZaTQGiclOa9XqkhHaALDntSe1d6Qh3uMxX7IrbhQdmNhG45+MLbud8d3rTIunpU8Fy1qe4HiesBBxU43d0aCfneghM=
+    - secure: Zc9qVmVjdjYrVCpGbIQ75rAHfzKI0naL/ym2BzJ+u4UrlN6PJ91y69Q2dEO2yCkns4TpG0nog6RHpF89S5mdtV141d7Kb4yC5DCgwSJloYsIm6LEX+g117dc8s+ZcZ2uspdCFo2XKaQ2Gij/2vxuelDg32acxlTP5BFJX2WcQ2U=
 notifications:
   hipchat:
     rooms:
-      - secure: fa9oSErVMnr149qIdrC7fLY6vDDfmEGei+ubLTNc+/BRLYd0xXq1MycjVc3X3mRoXllAq51c4ZxvwTRsxsLtVdTqT229mN0CIS8KU3SGMEgfvlA+CW5wKi+NC6HE8O7mTbG9BbiLkU1cUd5dIu8sbsVn5Psnbafc+puelwS6wHY=
+      - secure: g/T/lE7I5UznbVLLQhpOVoziU9qpx3WfDjg1BXZbAZyZfbujRcQhlo6ZIJjLUDnQEUJx6ZEaZETnDqnTKaOou/fzSHvUBqgdpb8z/DKwhmIx/htYEE36NTZSdd6Y0B5A4rVOQJ970blJsanioIxhDCt765TUCmy99ynH3FSFY7s=
     template:
       - '%{repository}#%{build_number} (%{author}): %{message} (<a href="%{build_url}">Details</a> <a href="%{compare_url}">Compare</a>)'
     format: html
