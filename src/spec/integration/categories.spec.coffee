@@ -30,8 +30,8 @@ describe 'Integration Categories', ->
         levelFile: 'error'
     @logger = @client._logger
 
-    @logger.info 'Creating 50 categories'
-    Q.all _.map [1..50], => @client.categories.save(newCategory())
+    @logger.info 'Creating 10 categories'
+    Q.all _.map [1..10], => @client.categories.save(newCategory())
     .then (results) =>
       @logger.info "Created #{results.length} categories"
       done()
