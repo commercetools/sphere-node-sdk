@@ -2,8 +2,8 @@ SPHERE CONNECT
 ---
 
 ```coffeescript
-{Rest} = require 'sphere-node-client' # handles requests to HTTP APIs
-{OAuth2} = require 'sphere-node-client' # handles OAuth2 request to retrieve an access_token
+{Rest} = require 'sphere-node-sdk' # handles requests to HTTP APIs
+{OAuth2} = require 'sphere-node-sdk' # handles OAuth2 request to retrieve an access_token
 ```
 
 ## Table of Contents

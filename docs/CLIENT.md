@@ -2,7 +2,7 @@ SPHERE CLIENT
 ---
 
 ```coffeescript
-{SphereClient} = require 'sphere-node-client'
+{SphereClient} = require 'sphere-node-sdk'
 ```
 
 ## Table of Contents
@@ -108,7 +108,7 @@ Promise.all _.map [1..100], -> client.products.byId('123-abc').fetch()
 > You can pass an existing `TaskQueue` object when initializing the `SphereClient`
 
 ```coffeescript
-{SphereClient, TaskQueue} = require 'sphere-node-client'
+{SphereClient, TaskQueue} = require 'sphere-node-sdk'
 taskQueue = new TaskQueue maxParallel: 10
 client = new SphereClient
   task: taskQueue
@@ -472,9 +472,9 @@ client = new SphereClient
         "path": "/foo/bar",
         "href": "https://api.sphere.io/foo/bar",
       },
-      "header": "GET /foo/bar HTTP/1.1\r\nUser-Agent: sphere-node-client\r\nAuthorization: Bearer XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\r\nhost: api.sphere.io\r\naccept: application/json\r\nConnection: keep-alive\r\n\r\n",
+      "header": "GET /foo/bar HTTP/1.1\r\nUser-Agent: sphere-node-sdk\r\nAuthorization: Bearer XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\r\nhost: api.sphere.io\r\naccept: application/json\r\nConnection: keep-alive\r\n\r\n",
       "headers": {
-        "User-Agent": "sphere-node-client",
+        "User-Agent": "sphere-node-sdk",
         "Authorization": "Bearer XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
         "accept": "application/json"
       }

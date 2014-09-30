@@ -5,7 +5,7 @@ A `TaskQueue` allows you to queue `Bluebird` promises (or function that return p
 
 ```coffeescript
 Promise = require 'bluebird'
-{TaskQueue} = require 'sphere-node-client'
+{TaskQueue} = require 'sphere-node-sdk'
 
 callMe = ->
   new Promise (resolve, reject) ->

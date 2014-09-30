@@ -1,26 +1,26 @@
 {
-  "name": "sphere-node-client",
-  "description": "Officially supported Node.js client library for accessing SPHERE.IO HTTP API, with OAuth2 support.",
+  "name": "sphere-node-sdk",
+  "description": "Officially supported Node.js SDK library for working with the SPHERE.IO HTTP API, with OAuth2 support.",
   "version": "0.8.2",
-  "homepage": "https://github.com/sphereio/sphere-node-client",
+  "homepage": "https://github.com/sphereio/sphere-node-sdk",
   "author": {
     "name": "Nicola Molinari",
     "email": "nicola.molinari@commercetools.de"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/sphereio/sphere-node-client.git"
+    "url": "git://github.com/sphereio/sphere-node-sdk.git"
   },
   "bugs": {
-    "url": "https://github.com/sphereio/sphere-node-client/issues"
+    "url": "https://github.com/sphereio/sphere-node-sdk/issues"
   },
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/sphereio/sphere-node-client/blob/master/LICENSE-MIT"
+      "url": "https://github.com/sphereio/sphere-node-sdk/blob/master/LICENSE-MIT"
     }
   ],
-  "main": "./lib/client",
+  "main": "./lib/main",
   "engines": {
     "node": ">= 0.10.0"
   },

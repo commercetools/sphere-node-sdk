@@ -2,9 +2,9 @@ SPHERE SYNC
 ---
 
 ```coffeescript
-{ProductSync} = require 'sphere-node-client' # utilities for Products Sync actions
-{OrderSync} = require 'sphere-node-client' # utilities for Orders Sync actions
-{InventorySync} = require 'sphere-node-client' # utilities for Inventories Sync actions
+{ProductSync} = require 'sphere-node-sdk' # utilities for Products Sync actions
+{OrderSync} = require 'sphere-node-sdk' # utilities for Orders Sync actions
+{InventorySync} = require 'sphere-node-sdk' # utilities for Inventories Sync actions
 ```
 
 ## Table of Contents
@@ -88,7 +88,7 @@ Returns the generated JSON payload for the update.
 
 ```coffeescript
 # example
-{SphereClient, Sync} = require 'sphere-node-client'
+{SphereClient, Sync} = require 'sphere-node-sdk'
 client = new SphereClient {...}
 sync = new Sync
 syncedActions = sync.buildActions(new_obj, old_obj)

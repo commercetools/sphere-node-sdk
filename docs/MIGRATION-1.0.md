@@ -1,11 +1,11 @@
 MIGRATION from 0.8 to 1.0
 ---
 
-> The repo has been renamed from `sphere-node-client` to `sphere-node-sdk` since it has become more of a toolkit
+> The repo has been renamed from `sphere-node-sdk` to `sphere-node-sdk` since it has become more of a toolkit
 
 ## Summary of breaking changes
 - renaming to `sphere-node-sdk`
-- aggregation of `sphere-node-client`, `sphere-node-connect`, `sphere-node-sync`
+- aggregation of `sphere-node-sdk`, `sphere-node-connect`, `sphere-node-sync`
 - no more `bunyan` logger dependent, the application is free to choose
 - use of `DEBUG` ENV variable for easier debugging
 - switch from `Q` to `Bluebird` promises
@@ -15,7 +15,7 @@ MIGRATION from 0.8 to 1.0
 Here a short migration guide regarding backwards incompatible changes
 
 ### Available modules
-Some applications have been using `sphere-node-client` in combination with `sphere-node-sync`, having some inconsistencies regarding dependency version of the former one.
+Some applications have been using `sphere-node-sdk` in combination with `sphere-node-sync`, having some inconsistencies regarding dependency version of the former one.
 To make it simpler now the two modules are independent from each other and the recommended usage for both is:
 - `sync` should be used just to build update actions given two objects
 - `client` should be used to talk to the API, using i.e. the actions generated from the `sync` to update a resource
