@@ -69,7 +69,7 @@ describe 'Integration Categories', ->
         @logger.warn 'No category found, skipping...'
         Q()
     .then (results) ->
-      expect(results.length).toBe 50
+      expect(results.length).toBe 10
       done()
     .fail (error) =>
       @logger.error error
