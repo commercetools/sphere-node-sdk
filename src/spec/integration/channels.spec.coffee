@@ -90,5 +90,5 @@ describe 'Integration Channels', ->
     .then (result) ->
       done 'Role value not supported.'
     .catch (error) ->
-      expect(error).toBeDefined
+      expect(error).toBeDefined()
       done()

@@ -11,12 +11,21 @@ ERRORS = [
 
 describe 'Errors', ->
 
-  it 'should create general error', ->
+  it 'should create general HttpError', ->
+    e = new Errors.HttpError 'My bad', {statusCode: 500}
+
+    expect(e.message).toBe 'My bad'
+    expect(e.code).toBe 500
+    expect(e.body).toEqual statusCode: 500
+    expect(e instanceof Error).toBe true
+    expect(e instanceof Errors.HttpError).toBe true
+
+  it 'should create general SphereError', ->
     e = new Errors.SphereError 'My bad'
 
     expect(e.message).toBe 'My bad'
     expect(e.code).not.toBeDefined()
-    expect(e.body).not.toBeDefined()
+    expect(e.body).toEqual {}
     expect(e instanceof Error).toBe true
     expect(e instanceof Errors.SphereError).toBe true
 

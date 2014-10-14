@@ -1,14 +1,26 @@
 createCustomError = require 'custom-error-generator'
 
 ###*
+ * A general {Error} type, specific for HTTP errors
+ * @param  {String} message The error message
+ * @param  {Object} [body] A JSON object with optional information to pass to the error
+ *                         like the error response body.
+###
+HttpError = createCustomError 'HttpError', null, (message, body = {}) ->
+  @message = message
+  @body = body
+  @code = body.statusCode if body.statusCode
+
+###*
  * A general {Error} type, specific for Sphere
  * @param  {String} message The error message
  * @param  {Object} [body] A JSON object with optional information to pass to the error
  *                         like the error response body.
 ###
-SphereError = createCustomError 'SphereError', null, (message, body) ->
+SphereError = createCustomError 'SphereError', null, (message, body = {}) ->
   @message = message
   @body = body
+  @code = body.statusCode if body.statusCode
 
 ###*
  * A specific {SphereError} type for BadRequest errors
@@ -50,11 +62,17 @@ ServiceUnavailable = createCustomError 'ServiceUnavailable',
   code: 503
 , SphereError
 
+###*
+ * A specific {SphereError} type for UnknownStatusCode errors
+ * HTTP ???
+###
+UnknownStatusCode = createCustomError 'UnknownStatusCode', null, SphereError
 
 ###*
  * Expose custom Error types specific for Sphere error responses
 ###
 module.exports =
+  HttpError: HttpError
   SphereError: SphereError
   SphereHttpError:
     BadRequest: BadRequest
@@ -62,3 +80,4 @@ module.exports =
     ConcurrentModification: ConcurrentModification
     InternalServerError: InternalServerError
     ServiceUnavailable: ServiceUnavailable
+    UnknownStatusCode: UnknownStatusCode

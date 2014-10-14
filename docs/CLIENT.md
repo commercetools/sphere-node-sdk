@@ -433,6 +433,17 @@ client.products.byId(productId).update(payload)
     throw e
 ```
 
+Following error types are exposed:
+* `HttpError`
+* `SphereError`
+* `SphereHttpError`
+  * `BadRequest`
+  * `NotFound`
+  * `ConcurrentModification`
+  * `InternalServerError`
+  * `ServiceUnavailable`
+  * `UnknownStatusCode`
+
 ### Statistics
 You can retrieve some statistics (more to come) by passing some options when creating a new `SphereClient` instance.
 

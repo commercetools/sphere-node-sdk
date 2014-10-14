@@ -2,6 +2,7 @@ debug = require('debug')('sphere-client')
 _ = require 'underscore'
 Promise = require 'bluebird'
 Utils = require '../utils'
+{HttpError, SphereHttpError} = require '../errors'
 
 ###*
  * @const
@@ -402,12 +403,17 @@ class BaseService
       else {}
 
     if error
+      if error instanceof Error
+        errorMessage = error.message
+      else
+        errorMessage = error
       errorResp =
-        statusCode: 500
-        message: error
+        statusCode: response?.statusCode or 500
+        message: errorMessage
         originalRequest: originalRequest
       errorResp.body = body if body
-      reject _.extend(responseJson, errorResp)
+      errorBody = _.extend(responseJson, errorResp)
+      reject new HttpError errorMessage, errorBody
     else
       # TODO: check other possible acceptable codes (304, ...)
       if 200 <= response.statusCode < 300
@@ -418,14 +424,24 @@ class BaseService
         endpoint = response.request.uri.path
         # since the API doesn't return an error message for a resource not found
         # we return a custom JSON error message
-        reject _.extend responseJson,
-          statusCode: 404
-          message: "Endpoint '#{endpoint}' not found."
-          originalRequest: originalRequest
+        reject new SphereHttpError.NotFound "Endpoint '#{endpoint}' not found.",
+          _.extend responseJson,
+            statusCode: 404
+            message: "Endpoint '#{endpoint}' not found."
+            originalRequest: originalRequest
       else
         # a ShereError response e.g.: {statusCode: 400, message: 'Oops, something went wrong'}
-        reject _.extend responseJson, body, {originalRequest: originalRequest}
-
+        errorMessage = body.message or 'Undefined SPHERE.IO error message'
+        errorBody = _.extend responseJson, body,
+          statusCode: body.statusCode or response.statusCode
+          originalRequest: originalRequest
+        # TODO: automatically retry code 503
+        reject switch body.statusCode
+          when 400 then new SphereHttpError.BadRequest errorMessage, errorBody
+          when 409 then new SphereHttpError.ConcurrentModification errorMessage, errorBody
+          when 500 then new SphereHttpError.InternalServerError errorMessage, errorBody
+          when 503 then new SphereHttpError.ServiceUnavailable errorMessage, errorBody
+          else new SphereHttpError.UnknownStatusCode errorMessage, errorBody
 
 ###*
  * The {@link BaseService} service.

@@ -210,7 +210,8 @@ describe 'Service', ->
         @service.save({foo: 'bar'})
         .then -> done('Should not happen')
         .catch (error) ->
-          expect(error).toEqual
+          expect(error.name).toBe 'BadRequest'
+          expect(error.body).toEqual
             statusCode: 400
             message: 'Oops, something went wrong'
             originalRequest:
@@ -358,7 +359,8 @@ describe 'Service', ->
           @service.fetch()
           .then (result) -> done('Should not happen')
           .catch (error) ->
-            expect(error).toEqual
+            expect(error.name).toBe 'NotFound'
+            expect(error.body).toEqual
               statusCode: 404
               message: "Endpoint '/foo' not found."
               originalRequest:
@@ -374,9 +376,9 @@ describe 'Service', ->
           .fetch()
           .then (result) -> done('Should not happen')
           .catch (error) ->
-            expect(error).toEqual
+            expect(error.name).toBe 'NotFound'
+            expect(error.body).toEqual
               statusCode: 404
-              # message: "Endpoint '#{@service._currentEndpoint}?limit=100' not found."
               message: "Endpoint '/foo' not found."
               originalRequest:
                 endpoint: o.path
@@ -387,7 +389,8 @@ describe 'Service', ->
           @service.fetch()
           .then (result) -> done('Should not happen')
           .catch (error) ->
-            expect(error).toEqual
+            expect(error.name).toBe 'HttpError'
+            expect(error.body).toEqual
               statusCode: 500
               message: 'foo'
               originalRequest:
@@ -417,7 +420,8 @@ describe 'Service', ->
             @service.perPage(0).fetch()
             .then (result) -> done('Should not happen')
             .catch (error) ->
-              expect(error).toEqual
+              expect(error.name).toBe 'NotFound'
+              expect(error.body).toEqual
                 statusCode: 404
                 message: "Endpoint '/foo' not found."
                 originalRequest:
@@ -429,7 +433,8 @@ describe 'Service', ->
             @service.perPage(0).fetch()
             .then (result) -> done('Should not happen')
             .catch (error) ->
-              expect(error).toEqual
+              expect(error.name).toBe 'HttpError'
+              expect(error.body).toEqual
                 statusCode: 500
                 message: 'foo'
                 originalRequest:
@@ -465,7 +470,8 @@ describe 'Service', ->
           @service.save({foo: 'bar'})
           .then (result) -> done('Should not happen')
           .catch (error) ->
-            expect(error).toEqual
+            expect(error.name).toBe 'NotFound'
+            expect(error.body).toEqual
               statusCode: 404
               message: "Endpoint '/foo' not found."
               originalRequest:
@@ -484,7 +490,8 @@ describe 'Service', ->
           @service.save({foo: 'bar'})
           .then (result) -> done('Should not happen')
           .catch (error) ->
-            expect(error).toEqual
+            expect(error.name).toBe 'HttpError'
+            expect(error.body).toEqual
               statusCode: 500
               message: 'foo'
               originalRequest:
@@ -562,7 +569,8 @@ describe 'Service', ->
           @service.byId('123-abc').delete(1)
           .then (result) -> done('Should not happen')
           .catch (error) ->
-            expect(error).toEqual
+            expect(error.name).toBe 'NotFound'
+            expect(error.body).toEqual
               statusCode: 404
               message: "Endpoint '/foo' not found."
               originalRequest:
@@ -574,7 +582,8 @@ describe 'Service', ->
           @service.byId('123-abc').delete(1)
           .then (result) -> done('Should not happen')
           .catch (error) ->
-            expect(error).toEqual
+            expect(error.name).toBe 'HttpError'
+            expect(error.body).toEqual
               statusCode: 500
               message: 'foo'
               originalRequest:

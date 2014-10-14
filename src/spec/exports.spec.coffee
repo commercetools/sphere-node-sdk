@@ -18,6 +18,7 @@ describe 'exports', ->
 
   it 'Errors', ->
     expect(Errors).toBeDefined()
+    expect(Errors.HttpError).toBeDefined()
     expect(Errors.SphereError).toBeDefined()
     expect(Errors.SphereHttpError.BadRequest).toBeDefined()
     expect(Errors.SphereHttpError.NotFound).toBeDefined()
