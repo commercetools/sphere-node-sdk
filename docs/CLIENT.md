@@ -23,6 +23,7 @@ SPHERE CLIENT
     * [Delete resource](#delete-resource)
   * [Types of responses](#types-of-responses)
   * [Error handling](#error-handling)
+    * [Error types](#error-types)
   * [Statistics](#statistics)
 * [Logging & debugging](DEBUGGING.md)
 
@@ -411,31 +412,25 @@ Since a Promise can be either resolved or rejected, the result is determined by 
 - `resolved` everything with a successful HTTP status code
 - `rejected` everything else
 
-**A rejected promise always contains a JSON object as following**
-
-```javascript
-// example
-{
-  "statusCode": 400,
-  "message": "An error message",
-  ... // other fields according to the SPHERE.IO API errors
-}
-```
-
-The client application can then easily decide what to do
+#### Error types
+All Sphere response _errors_ are then wrapped in a custom `Error` type and returned as a rejected Promise value.
+That means you can do type check as well as getting the JSON response body
 
 ```coffeescript
-client.products.save({})
+{ConcurrentModification} = Errors.SphereHttpError
+client.products.byId(productId).update(payload)
 .then (result) ->
   # we know the request was successful (e.g.: 2xx) and `result` is a JSON of a resource representation
-.catch (error) ->
+.catch (e) ->
   # something went wrong, either an unexpected error or a HTTP API error response
-  # here we can check the `statusCode` to differentiate the error
-  switch error.statusCode
-    when 400 then # do something
-    when 500 then # do something
-    ...
-    else # do something else
+  # here we can check the error type to differentiate the error
+  if e instanceof ConcurrentModification
+    # e.code => 409
+    # e.message => 'Different version then expected'
+    # e.body => {statusCode: 409, message: ...}
+    # e instanceof SphereError => true
+  else
+    throw e
 ```
 
 ### Statistics

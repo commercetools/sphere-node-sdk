@@ -6,3 +6,4 @@ module.exports =
   OrderSync: require './sync/order-sync'
   InventorySync: require './sync/inventory-sync'
   TaskQueue: require './task-queue'
+  Errors: require './errors'
