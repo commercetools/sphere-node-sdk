@@ -1,4 +1,5 @@
 _ = require 'underscore'
+Promise = require 'bluebird'
 {Errors} = require '../lib/main'
 
 ERRORS = [
@@ -56,3 +57,17 @@ describe 'Errors', ->
       expect(ce instanceof Error).toBe true
       expect(ce instanceof Errors.SphereError).toBe true
       expect(ce instanceof Errors.SphereHttpError[error.name]).toBe true
+
+    it "should use #{error.name} constructor for pattern matching", (done) ->
+      ce = new Errors.SphereHttpError[error.name] 'Ooops'
+      r = ->
+        new Promise (resolve, reject) ->
+          setTimeout ->
+            reject ce
+          , 100
+      r().then -> done 'It should have been rejected'
+      .catch Errors.SphereHttpError[error.name], (e) ->
+        expect(e.message).toBe 'Ooops'
+        done()
+      .catch (e) -> done 'It should have caught the exception before'
+      .done()
