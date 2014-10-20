@@ -526,7 +526,7 @@ describe 'Service', ->
 
         it 'should throw error if payload is missing', ->
           spyOn(@restMock, 'POST')
-          expect(=> @service.byId(ID).update()).toThrow new Error "Body payload is required for creating a resource (endpoint: #{@service._currentEndpoint}/#{ID})"
+          expect(=> @service.byId(ID).update()).toThrow new Error "Body payload is required for updating a resource (endpoint: #{@service._currentEndpoint}/#{ID})"
           expect(@restMock.POST).not.toHaveBeenCalled()
 
         it 'should use correct endpoints when calling update and create', ->
