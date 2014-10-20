@@ -299,7 +299,7 @@ class BaseService
   update: (body) ->
     throw new Error "Missing resource id. You can set it by chaining '.byId(ID)'" unless @_params.id
     unless body
-      throw new Error "Body payload is required for creating a resource (endpoint: #{@_currentEndpoint})"
+      throw new Error "Body payload is required for updating a resource (endpoint: #{@_currentEndpoint})"
 
     endpoint = @_currentEndpoint
     @_save(endpoint, body)
