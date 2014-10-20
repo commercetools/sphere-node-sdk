@@ -7,9 +7,12 @@ createCustomError = require 'custom-error-generator'
  *                         like the error response body.
 ###
 HttpError = createCustomError 'HttpError', null, (message, body = {}) ->
+  # TODO: message gets overridden
+  # https://github.com/jproulx/node-custom-error/issues/1
   @message = message
   @body = body
   @code = body.statusCode if body.statusCode
+
 
 ###*
  * A general {Error} type, specific for Sphere
@@ -63,12 +66,6 @@ ServiceUnavailable = createCustomError 'ServiceUnavailable',
 , SphereError
 
 ###*
- * A specific {SphereError} type for UnknownStatusCode errors
- * HTTP ???
-###
-UnknownStatusCode = createCustomError 'UnknownStatusCode', null, SphereError
-
-###*
  * Expose custom Error types specific for Sphere error responses
 ###
 module.exports =
@@ -80,4 +77,3 @@ module.exports =
     ConcurrentModification: ConcurrentModification
     InternalServerError: InternalServerError
     ServiceUnavailable: ServiceUnavailable
-    UnknownStatusCode: UnknownStatusCode

@@ -435,13 +435,15 @@ class BaseService
         errorBody = _.extend responseJson, body,
           statusCode: body.statusCode or response.statusCode
           originalRequest: originalRequest
-        # TODO: automatically retry code 503
+        # TODO: automatically retry code 503, 504
         reject switch body.statusCode
           when 400 then new SphereHttpError.BadRequest errorMessage, errorBody
           when 409 then new SphereHttpError.ConcurrentModification errorMessage, errorBody
           when 500 then new SphereHttpError.InternalServerError errorMessage, errorBody
           when 503 then new SphereHttpError.ServiceUnavailable errorMessage, errorBody
-          else new SphereHttpError.UnknownStatusCode errorMessage, errorBody
+          else new HttpError require('http').STATUS_CODES[response.statusCode], _.extend responseJson,
+            statusCode: response.statusCode
+            originalRequest: originalRequest
 
 ###*
  * The {@link BaseService} service.
