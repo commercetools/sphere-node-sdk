@@ -953,7 +953,7 @@ describe 'ProductUtils', ->
               { de: 'Farbe: braun ', en: 'Color: brown', it: 'Colore: marrone' }
             ]
           },
-          { action: 'setAttribute', variantId: 2, name: 'details', value : undefined }
+          { action: 'setAttribute', variantId: 2, name: 'details', value: undefined }
         ]
       expect(update).toEqual expected_update
 
