@@ -54,6 +54,13 @@ class ProductUtils extends BaseUtils
                 else # if we can't find key and label it isn't an (l)enum set and we can stop immediately
                   return
 
+    patchSetLText = (variant) ->
+      if variant.attributes
+        _.each variant.attributes, (attribute) ->
+          if attribute.value and _.isArray attribute.value
+            _.each attribute.value, (v, index) ->
+              v._MATCH_CRITERIA = "#{index}" unless _.isString(v)
+
     patchImages = (variant) ->
       if variant.images
         _.each variant.images, (image, index) ->
@@ -64,6 +71,7 @@ class ProductUtils extends BaseUtils
       _.each allVariants(obj), (variant, index) ->
         patchPrices variant
         patchEnums variant
+        patchSetLText variant
         patchImages variant
         patchVariantId variant, index
         if index > 0
@@ -364,6 +372,7 @@ class ProductUtils extends BaseUtils
       if _.contains(sameForAllAttributeNames, attribute.name)
         action.action = 'setAttributeInAllVariants'
         delete action.variantId
+
       if _.isArray(diffed_value)
         action.value = @getDeltaValue(diffed_value)
       else
@@ -389,6 +398,8 @@ class ProductUtils extends BaseUtils
         else if _.isObject(diffed_value)
           if _.has(diffed_value, '_t') and diffed_value['_t'] is 'a'
             # set-typed attribute
+            _.each attribute.value, (v) ->
+              delete v._MATCH_CRITERIA unless _.isString(v)
             action.value = attribute.value
           else
             # LText

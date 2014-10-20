@@ -1,3 +1,5 @@
+_ = require 'underscore'
+_.mixin require 'underscore-mixins'
 ProductUtils = require '../../../lib/sync/utils/product'
 
 ###
@@ -870,7 +872,7 @@ describe 'ProductUtils', ->
         ]
       expect(update).toEqual expected_update
 
-    it 'should build setVariants actions for set attributes', ->
+    it 'should build actions for set attributes', ->
       delta = @utils.diff OLD_SET_ATTRIBUTES, NEW_SET_ATTRIBUTES
       update = @utils.actionsMapAttributes delta, OLD_SET_ATTRIBUTES, NEW_SET_ATTRIBUTES
       expected_update =
@@ -878,6 +880,80 @@ describe 'ProductUtils', ->
           { action: 'setAttribute', variantId: 1, name: 'colors', value: [ 'pink', 'orange' ] }
           { action: 'setAttribute', variantId: 3, name: 'colors' }
           { action: 'setAttribute', variantId: 4, name: 'colors', value: [ 'gray' ] }
+        ]
+      expect(update).toEqual expected_update
+
+    it 'should build action for set attributes (ltext)', ->
+      oldAttr =
+        id: '123'
+        masterVariant:
+          id: 1
+          attributes: [
+            {
+              name: 'details'
+              value: [
+                { de: 'Maße: 40 x 32 x 14 cm', en: 'Size: 40 x 32 x 14 cm', it: 'Taglia: 40 x 32 x 14 cm' },
+                { de: ' Material: Leder ', en: ' Material: leather', it: ' Materiale: pelle' }
+              ]
+            }
+          ]
+        variants: [
+          {
+            id: 2
+            attributes: [
+              {
+                name: 'details'
+                value: [
+                  { de: 'Maße: 40 x 32 x 14 cm', en: 'Size: 40 x 32 x 14 cm', it: 'Taglia: 40 x 32 x 14 cm' },
+                  { de: ' Material: Leder ', en: ' Material: leather', it: ' Materiale: pelle' }
+                ]
+              }
+            ]
+          }
+        ]
+
+      newAttr =
+        id: '123'
+        masterVariant:
+          id: 1
+          attributes: [
+            {
+              name: 'details'
+              value: [
+                { de: 'Maße: 40 x 32 x 14 cm', en: 'Size: 40 x 32 x 14 cm', it: 'Taglia: 40 x 32 x 14 cm' },
+                { de: 'Material: Leder', en: 'Material: leather', it: 'Materiale: pelle' }
+                { de: 'Farbe: braun ', en: 'Color: brown', it: 'Colore: marrone' }
+              ]
+            }
+          ]
+        variants: [
+          {
+            id: 2
+            attributes: []
+          }
+        ]
+
+      # nothing to do
+      delta1 = @utils.diff oldAttr, _.deepClone(oldAttr)
+      noUpdate = @utils.actionsMapAttributes delta1, oldAttr, _.deepClone(oldAttr)
+      expect(noUpdate).toEqual []
+
+      # build actions
+      delta2 = @utils.diff oldAttr, newAttr
+      update = @utils.actionsMapAttributes delta2, oldAttr, newAttr
+      expected_update =
+        [
+          {
+            action: 'setAttribute'
+            variantId: 1
+            name: 'details'
+            value: [
+              { de: 'Maße: 40 x 32 x 14 cm', en: 'Size: 40 x 32 x 14 cm', it: 'Taglia: 40 x 32 x 14 cm' }
+              { de: 'Material: Leder', en: 'Material: leather', it: 'Materiale: pelle' }
+              { de: 'Farbe: braun ', en: 'Color: brown', it: 'Colore: marrone' }
+            ]
+          },
+          { action: 'setAttribute', variantId: 2, name: 'details', value : undefined }
         ]
       expect(update).toEqual expected_update
 
