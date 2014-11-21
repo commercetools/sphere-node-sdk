@@ -38,6 +38,7 @@ describe 'ProductProjectionService', ->
         filterByQuery: []
         filterByFacets: []
         facet: []
+        searchKeywords: []
 
   _.each [
     ['staged', false]
@@ -105,10 +106,14 @@ describe 'ProductProjectionService', ->
       .staged()
       .lang('de')
       .text('foo')
-      .filter('foo:bar')
-      .filterByQuery('foo:bar')
-      .filterByFacets('foo:bar')
-      .facet('foo:bar')
+      .filter('filter1:bar1')
+      .filter('filter2:bar2')
+      .filterByQuery('filterQuery1:bar1')
+      .filterByQuery('filterQuery2:bar2')
+      .filterByFacets('filterFacets1:bar1')
+      .filterByFacets('filterFacets2:bar2')
+      .facet('facet1:bar1')
+      .facet('facet2:bar2')
     expect(@service._params).toEqual
       query:
         where: []
@@ -120,10 +125,11 @@ describe 'ProductProjectionService', ->
         staged: true
         lang: 'de'
         text: 'foo'
-        filter: [encodeURIComponent('foo:bar')]
-        filterByQuery: [encodeURIComponent('foo:bar')]
-        filterByFacets: [encodeURIComponent('foo:bar')]
-        facet: [encodeURIComponent('foo:bar')]
+        filter: [encodeURIComponent('filter1:bar1'), encodeURIComponent('filter2:bar2')]
+        filterByQuery: [encodeURIComponent('filterQuery1:bar1'), encodeURIComponent('filterQuery2:bar2')]
+        filterByFacets: [encodeURIComponent('filterFacets1:bar1'), encodeURIComponent('filterFacets2:bar2')]
+        facet: [encodeURIComponent('facet1:bar1'), encodeURIComponent('facet2:bar2')]
+        searchKeywords: []
     _service.search()
     expect(@service._params).toEqual
       query:
@@ -136,6 +142,7 @@ describe 'ProductProjectionService', ->
         filterByQuery: []
         filterByFacets: []
         facet: []
+        searchKeywords: []
 
   describe ':: search', ->
 
@@ -144,6 +151,27 @@ describe 'ProductProjectionService', ->
       @service.lang('de').filter('foo:bar').search()
       expect(@service.fetch).toHaveBeenCalled()
       expect(@service._currentEndpoint).toBe '/product-projections/search'
+
+  describe ':: suggest', ->
+
+    it 'should call \'fetch\' after setting suggest endpoint', ->
+      spyOn(@service, 'fetch')
+      @service.searchKeywords('foo', 'de').suggest()
+      expect(@service.fetch).toHaveBeenCalled()
+      expect(@service._currentEndpoint).toBe '/product-projections/suggest'
+
+    it 'should build query for multiple search keywords', ->
+      spyOn(@service, 'fetch')
+      @service
+      .searchKeywords('foo1', 'de')
+      .searchKeywords('foo2', 'en')
+      .searchKeywords('foo3', 'it')
+      .suggest()
+      expect(@service._queryString()).toBe 'searchKeywords.de=foo1&searchKeywords.en=foo2&searchKeywords.it=foo3'
+
+    it 'should throw if text or lang are not defined', ->
+      expect(=> @service.searchKeywords()).toThrow new Error 'Suggestion text parameter is required for searching for a suggestion'
+      expect(=> @service.searchKeywords('foo')).toThrow new Error 'Language parameter is required for searching for a suggestion'
 
   describe ':: fetch', ->
 

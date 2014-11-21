@@ -52,6 +52,17 @@ newProduct = (pType) ->
     id: pType.id
     typeId: 'product-type'
 
+newProductWithSearchKeywords = (pType) ->
+  _.extend newProduct(pType),
+    searchKeywords:
+      en: [
+        {text: 'Multi tool'}
+        {text: 'Swiss Army Knife', suggestTokenizer: {type: 'whitespace'}}
+      ]
+      de: [
+        {text: 'Schweizer Messer', suggestTokenizer: {type: 'custom', inputs: ['schweizer messer', 'offiziersmesser', 'sackmesser']}}
+      ]
+
 updateUnpublish = (version) ->
   version: version
   actions: [
@@ -126,3 +137,34 @@ describe 'Integration Products', ->
       done()
     .catch (error) -> done(_.prettify(error))
   , 30000 # 30sec
+
+  it 'should search for suggestions', (done) ->
+    debug 'Creating products with search keywords'
+    Promise.all _.map [1..5], => @client.products.save(newProductWithSearchKeywords(@productType))
+
+    _suggest = (text, lang, expectedResult) =>
+      new Promise (resolve, reject) =>
+        debug 'searching for %s', text
+        @client.productProjections
+        .staged(true)
+        .searchKeywords(text, lang)
+        .suggest()
+        .then (result) ->
+          expect(result.statusCode).toBe 200
+          expect(result.body["searchKeywords.#{lang}"]).toEqual expectedResult
+          resolve()
+        .catch (e) -> reject e
+
+    # let's wait a bit to give ES time to create the index
+    setTimeout ->
+      Promise.all [
+        _suggest('multi', 'en', [text: 'Multi tool'])
+        _suggest('tool', 'en', [])
+        _suggest('kni', 'en', [text: 'Swiss Army Knife'])
+        _suggest('offiz', 'de', [text: 'Schweizer Messer'])
+      ]
+      .then -> done()
+      .catch (error) -> done(_.prettify(error))
+    , 5000 # 5sec
+  , 30000 # 30sec
+

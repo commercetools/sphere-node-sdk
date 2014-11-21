@@ -28,6 +28,7 @@ class ProductProjectionService extends BaseService
       filterByQuery: []
       filterByFacets: []
       facet: []
+      searchKeywords: []
 
   ###*
    * Define whether to query for staged or current product projection.
@@ -63,7 +64,7 @@ class ProductProjectionService extends BaseService
 
   ###*
    * Define a {Filter} used for filtering searched product projections.
-   * @link http://commercetools.de/dev/http-api-projects-products.html#search-filters
+   * @link http://dev.sphere.io/http-api-projects-products-search.html#search-filters
    * @param {String} [filter] A {Filter} string for the `filter` search parameter.
    * @return {ProductProjectionService} Chained instance of this class
   ###
@@ -76,7 +77,7 @@ class ProductProjectionService extends BaseService
 
   ###*
    * Define a {Filter} (applied to query result) used for filtering searched product projections.
-   * @link http://commercetools.de/dev/http-api-projects-products.html#search-filters
+   * @link http://dev.sphere.io/http-api-projects-products-search.html#search-filters
    * @param {String} [filter] A {Filter} string for the `filter.query` search parameter.
    * @return {ProductProjectionService} Chained instance of this class
   ###
@@ -89,7 +90,7 @@ class ProductProjectionService extends BaseService
 
   ###*
    * Define a {Filter} (applied to facet calculation) used for filtering searched product projections.
-   * @link http://commercetools.de/dev/http-api-projects-products.html#search-filters
+   * @link http://dev.sphere.io/http-api-projects-products-search.html#search-filters
    * @param {String} [filter] A {Filter} string for the `filter.facets` search parameter.
    * @return {ProductProjectionService} Chained instance of this class
   ###
@@ -102,7 +103,7 @@ class ProductProjectionService extends BaseService
 
   ###*
    * Define a {Facet} used for calculating statistical counts for searched product projections.
-   * @link http://commercetools.de/dev/http-api-projects-products.html#search-facets
+   * @link http://dev.sphere.io/http-api-projects-products-search.html#search-facets
    * @param {String} [facet] A {Facet} string for the `facet` search parameter.
    * @return {ProductProjectionService} Chained instance of this class
   ###
@@ -114,38 +115,54 @@ class ProductProjectionService extends BaseService
     this
 
   ###*
+   * Define a {Suggestion} used for matching tokens for product projections, via a suggest tokenizer.
+   * @link http://dev.sphere.io/http-api-projects-products-search.html#suggest
+   * @param {String} [facet] A {Facet} string for the `facet` search parameter.
+   * @throws {Error} If text or lang is not defined
+   * @return {ProductProjectionService} Chained instance of this class
+  ###
+  searchKeywords: (text, lang) ->
+    throw new Error 'Suggestion text parameter is required for searching for a suggestion' unless text
+    throw new Error 'Language parameter is required for searching for a suggestion' unless lang
+
+    @_params.query.searchKeywords.push {text: text, lang: lang}
+    debug 'setting searchKeywords: %s, %s', text, lang
+    this
+
+  ###*
    * @private
    * Build a query string from (pre)defined params and custom search params.
    * @return {String} the query string
   ###
   _queryString: ->
-    {staged, lang, text, filter, filterByQuery, filterByFacets, facet} = _.defaults @_params.query,
+    {staged, lang, text, filter, filterByQuery, filterByFacets, facet, searchKeywords} = _.defaults @_params.query,
       staged: false
       filter: []
-      filterByQuery: 'and'
+      filterByQuery: []
       filterByFacets: []
       facet: []
-
-    # filter param
-    filterParam = filter.join '&'
-
-    # filterByQuery param
-    filterByQueryParam = filterByQuery.join '&'
-
-    # filterByFacets param
-    filterByFacetsParam = filterByFacets.join '&'
-
-    # facet param
-    facetParam = facet.join '&'
+      searchKeywords: []
 
     customQueryString = []
     customQueryString.push "staged=#{staged}" if staged
     customQueryString.push "lang=#{lang}" if lang
     customQueryString.push "text=#{text}" if text
-    customQueryString.push "filter=#{filterParam}" if filterParam
-    customQueryString.push "filter.query=#{filterByQueryParam}" if filterByQueryParam
-    customQueryString.push "filter.facets=#{filterByFacetsParam}" if filterByFacetsParam
-    customQueryString.push "facet=#{facetParam}" if facetParam
+
+    # filter param
+    _.each filter, (f) -> customQueryString.push "filter=#{f}"
+
+    # filterByQuery param
+    _.each filterByQuery, (f) -> customQueryString.push "filter.query=#{f}"
+
+    # filterByFacets param
+    _.each filterByFacets, (f) -> customQueryString.push "filter.facets=#{f}"
+
+    # facet param
+    _.each facet, (f) -> customQueryString.push "facet=#{f}"
+
+    # searchKeywords param
+    _.each searchKeywords, (keys) ->
+      customQueryString.push "searchKeywords.#{keys.lang}=#{keys.text}"
 
     _.compact([super()].concat(customQueryString)).join '&'
 
@@ -155,6 +172,16 @@ class ProductProjectionService extends BaseService
   ###
   search: ->
     @_currentEndpoint = '/product-projections/search'
+    @fetch()
+
+  ###*
+   * Query suggestions based on search keywords (used e.g. for auto-complete functionality)
+   * @param  {String} suggestion A suggestion text to search for
+   * @param  {String} language An ISO language tag, used for suggestion search for the 'searchKeywords' param
+   * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
+  ###
+  suggest: ->
+    @_currentEndpoint = '/product-projections/suggest'
     @fetch()
 
 
