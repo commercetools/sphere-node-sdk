@@ -28,6 +28,7 @@ describe 'ProductProjectionService', ->
 
   it 'should reset default params', ->
     expect(@service._params).toEqual
+      encoded: ['where', 'expand', 'sort', 'filter', 'filter.query', 'filter.facets', 'facets']
       query:
         where: []
         operator: 'and'
@@ -115,6 +116,7 @@ describe 'ProductProjectionService', ->
       .facet('facet1:bar1')
       .facet('facet2:bar2')
     expect(@service._params).toEqual
+      encoded: ['where', 'expand', 'sort', 'filter', 'filter.query', 'filter.facets', 'facets']
       query:
         where: []
         operator: 'and'
@@ -132,6 +134,7 @@ describe 'ProductProjectionService', ->
         searchKeywords: []
     _service.search()
     expect(@service._params).toEqual
+      encoded: ['where', 'expand', 'sort', 'filter', 'filter.query', 'filter.facets', 'facets']
       query:
         where: []
         operator: 'and'
@@ -143,6 +146,20 @@ describe 'ProductProjectionService', ->
         filterByFacets: []
         facet: []
         searchKeywords: []
+
+  it 'should set queryString, if given', ->
+    @service.byQueryString('where=name(en = "Foo")&limit=10&staged=true&sort=name asc&expand=foo.bar1&expand=foo.bar2')
+    expect(@service._params.queryString).toEqual 'where=name(en%20%3D%20%22Foo%22)&limit=10&staged=true&sort=name%20asc&expand=foo.bar1&expand=foo.bar2'
+
+    @service.byQueryString('filter=variants.price.centAmount:100&filter=variants.attributes.foo:bar&staged=true&limit=100&offset=2')
+    expect(@service._params.queryString).toEqual 'filter=variants.price.centAmount%3A100&filter=variants.attributes.foo%3Abar&staged=true&limit=100&offset=2'
+
+  it 'should set queryString, if given (already encoding)', ->
+    @service.byQueryString('where=name(en%20%3D%20%22Foo%22)&limit=10&staged=true&sort=name%20asc&expand=foo.bar1&expand=foo.bar2', true)
+    expect(@service._params.queryString).toEqual 'where=name(en%20%3D%20%22Foo%22)&limit=10&staged=true&sort=name%20asc&expand=foo.bar1&expand=foo.bar2'
+
+    @service.byQueryString('filter=variants.price.centAmount%3A100&filter=variants.attributes.foo%3Abar&staged=true&limit=100&offset=2', true)
+    expect(@service._params.queryString).toEqual 'filter=variants.price.centAmount%3A100&filter=variants.attributes.foo%3Abar&staged=true&limit=100&offset=2'
 
   describe ':: search', ->
 

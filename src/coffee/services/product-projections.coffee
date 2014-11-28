@@ -29,6 +29,8 @@ class ProductProjectionService extends BaseService
       filterByFacets: []
       facet: []
       searchKeywords: []
+    _.extend @_params,
+      encoded: ['where', 'expand', 'sort', 'filter', 'filter.query', 'filter.facets', 'facets']
 
   ###*
    * Define whether to query for staged or current product projection.

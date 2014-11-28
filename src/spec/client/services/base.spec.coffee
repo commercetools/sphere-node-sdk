@@ -169,8 +169,8 @@ describe 'Service', ->
 
       it 'should build query string', ->
         queryString = @service
-          .where 'name(en="Foo")'
-          .where 'id="1234567890"'
+          .where 'name(en = "Foo")'
+          .where 'id = "1234567890"'
           .whereOperator 'or'
           .page 3
           .perPage 25
@@ -179,7 +179,23 @@ describe 'Service', ->
           .expand 'lineItems[*].state[*].state'
           ._queryString()
 
-        expect(queryString).toBe 'where=name(en%3D%22Foo%22)%20or%20id%3D%221234567890%22&limit=25&offset=50&sort=attrib%20desc&sort=createdAt%20asc&expand=lineItems%5B*%5D.state%5B*%5D.state'
+        expect(queryString).toBe 'where=name(en%20%3D%20%22Foo%22)%20or%20id%20%3D%20%221234567890%22&limit=25&offset=50&sort=attrib%20desc&sort=createdAt%20asc&expand=lineItems%5B*%5D.state%5B*%5D.state'
+
+      it 'should use given queryString, when building it', ->
+        queryString = @service
+        .where 'name(en = "Foo")'
+        .perPage 25
+        .expand 'lineItems[*].state[*].state'
+        .byQueryString('foo=bar')._queryString()
+        expect(queryString).toBe 'foo=bar'
+
+      it 'should set queryString, if given', ->
+        @service.byQueryString('where=name(en = "Foo")&limit=10&staged=true&sort=name asc&expand=foo.bar1&expand=foo.bar2')
+        expect(@service._params.queryString).toEqual 'where=name(en%20%3D%20%22Foo%22)&limit=10&staged=true&sort=name%20asc&expand=foo.bar1&expand=foo.bar2'
+
+      it 'should set queryString, if given (already encoding)', ->
+        @service.byQueryString('where=name(en%20%3D%20%22Foo%22)&limit=10&staged=true&sort=name%20asc&expand=foo.bar1&expand=foo.bar2', true)
+        expect(@service._params.queryString).toEqual 'where=name(en%20%3D%20%22Foo%22)&limit=10&staged=true&sort=name%20asc&expand=foo.bar1&expand=foo.bar2'
 
       _.each [
         ['fetch']

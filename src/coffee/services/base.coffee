@@ -1,5 +1,6 @@
 debug = require('debug')('sphere-client')
 _ = require 'underscore'
+_.mixin require('underscore-mixins')
 Promise = require 'bluebird'
 Utils = require '../utils'
 {HttpError, SphereHttpError} = require '../errors'
@@ -50,6 +51,7 @@ class BaseService
      * @type {Object}
     ###
     @_params =
+      encoded: ['where', 'expand', 'sort']
       query:
         where: []
         operator: 'and'
@@ -178,6 +180,17 @@ class BaseService
     debug 'setting expand: %s', expansionPath
     this
 
+  byQueryString: (query, withEncodedParams = false) ->
+    parsed = _.parseQuery(query, false)
+    unless withEncodedParams
+      # when we rebuild the query string, we need to encode following parameters
+      _.each @_params.encoded, (param) ->
+        if parsed[param]
+          parsed[param] = _.map _.flatten([parsed[param]]), (p) -> encodeURIComponent(p)
+    @_params.queryString = _.stringifyQuery(parsed)
+    debug 'setting queryString: %s', query
+    this
+
   ###*
    * @private
    * Build a query string from (pre)defined params
@@ -185,14 +198,17 @@ class BaseService
    * @return {String} the query string
   ###
   _queryString: ->
-    qs = Utils.buildQueryString
-      where: @_params.query.where
-      whereOperator: @_params.query.operator
-      page: @_params.query.page
-      perPage: @_params.query.perPage
-      sort: @_params.query.sort
-      expand: @_params.query.expand
-    debug 'query string: %s', qs
+    qs = if @_params.queryString
+      @_params.queryString
+    else
+      Utils.buildQueryString
+        where: @_params.query.where
+        whereOperator: @_params.query.operator
+        page: @_params.query.page
+        perPage: @_params.query.perPage
+        sort: @_params.query.sort
+        expand: @_params.query.expand
+    debug 'built query string: %s', qs
     qs
 
   ###*

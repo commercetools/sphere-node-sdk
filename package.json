@@ -35,7 +35,7 @@
     "jsondiffpatch": "0.1.8",
     "request": "2.40.0",
     "underscore": "1.7.0",
-    "underscore-mixins": "0.1.0"
+    "underscore-mixins": "0.1.x"
   },
   "devDependencies": {
     "coveralls": "2.10.0",
