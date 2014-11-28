@@ -16,6 +16,7 @@ SPHERE CLIENT
       * [Query and process in batches](#query-and-process-in-batches)
       * [Staged products](#staged-products)
     * [Search request](#search-request)
+    * [Suggest request](#suggest-request)
     * [Create resource](#create-resource)
       * [Import orders](#import-orders)
       * [Ensure channels](#ensure-channels)
@@ -297,6 +298,10 @@ client.productProjections
 .facet('variants.attributes.color:red')
 .search()
 ```
+
+#### Suggest request
+The `ProductProjectionService` supports also a **suggest** endpoint, used for implementing an auto-completion functionality, returning a list of results of type [SuggestionResult](http://dev.sphere.io/http-api-projects-products-search.html#suggest-representations-result).
+
 
 #### Create resource
 All endpoints allow a resource to be created by posting a JSON `Representation` of the selected resource as a body payload.
