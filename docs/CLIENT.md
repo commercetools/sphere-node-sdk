@@ -117,17 +117,17 @@ client = new SphereClient
 ```
 
 #### Query request
-All resource endpoints support queries, returning a list of results of type [PagedQueryResponse](http://commercetools.de/dev/http-api.html#paged-query-response).
+All resource endpoints support queries, returning a list of results of type [PagedQueryResponse](http://dev.sphere.io/http-api.html#paged-query-response).
 
 > Fetching and endpoint without specifying and `ID` returns a `PagedQueryResponse`
 
 A query request can be configured with following query parameters:
 
-- `where` ([Predicate](http://commercetools.de/dev/http-api.html#predicates))
-- `sort` ([Sort](http://commercetools.de/dev/http-api.html#sorting))
+- `where` ([Predicate](http://dev.sphere.io/http-api.html#predicates))
+- `sort` ([Sort](http://dev.sphere.io/http-api.html#sorting))
 - `limit` (Number)
 - `offset` (Number)
-- `expand` ([Expansion Path](http://commercetools.de/dev/http-api.html#reference-expansion))
+- `expand` ([Expansion Path](http://dev.sphere.io/http-api.html#reference-expansion))
 
 The `SphereClient` helps you build those requests with following methods:
 
@@ -213,7 +213,7 @@ That means that you would need to fetch lots of data (see [query with limit 0](#
 To help you with that, we provide you a `process` function to work with batches.
 > Batch processing allows to process a lot of resources in chunks. Using this approach you can balance between memory usage and parallelism.
 
-The `process` function takes a function `fn` (which returns a _Promise_) and will start **fetching** resources in [pages](http://commercetools.de/dev/http-api.html#paged-query-response). On each page, the `fn` function will be executed and once it gets resolved, the next page will be fetched and so on.
+The `process` function takes a function `fn` (which returns a _Promise_) and will start **fetching** resources in [pages](http://dev.sphere.io/http-api.html#paged-query-response). On each page, the `fn` function will be executed and once it gets resolved, the next page will be fetched and so on.
 
 ```coffeescript
 # Define your custom function, which returns a promise
@@ -237,7 +237,7 @@ You can pass some options as second argument:
 - `accumulate` whether the results should be accumulated or not (default `true`). If not, an empty array will be returned from the resolved promise.
 
 ##### Staged products
-The `ProductProjectionService` returns a representation of the products called [ProductProjection](http://commercetools.de/dev/http-api-projects-products.html#product-projection) which corresponds basically to a **catalog** or **staged** representation of a product. When using this service you can specify which projection of the product you would like to have by defining a `staged` parameter (default is `true`).
+The `ProductProjectionService` returns a representation of the products called [ProductProjection](http://dev.sphere.io/http-api-projects-products.html#product-projection) which corresponds basically to a **catalog** or **staged** representation of a product. When using this service you can specify which projection of the product you would like to have by defining a `staged` parameter (default is `true`).
 
 ```coffeescript
 # example
@@ -252,17 +252,17 @@ client.productProjections
 ```
 
 #### Search request
-The `ProductProjectionService` supports **searching**, returning a list of results of type [PagedQueryResponse](http://commercetools.de/dev/http-api.html#paged-query-response).
+The `ProductProjectionService` supports **searching**, returning a list of results of type [PagedQueryResponse](http://dev.sphere.io/http-api.html#paged-query-response).
 
 A search request can be configured with following query parameters:
 
 - `lang` (ISO language tag)
 - `text` (String)
-- `filter` ([Filter](http://commercetools.de/dev/http-api-projects-products.html#search-filters))
-- `filter.query` ([Filter](http://commercetools.de/dev/http-api-projects-products.html#search-filters))
-- `filter.facets` ([Filter](http://commercetools.de/dev/http-api-projects-products.html#search-filters))
-- `facet` ([Facet](http://commercetools.de/dev/http-api-projects-products.html#search-facets))
-- `sort` ([Sort](http://commercetools.de/dev/http-api.html#sorting))
+- `filter` ([Filter](http://dev.sphere.io/http-api-projects-products-search.html#search-filters))
+- `filter.query` ([Filter](http://dev.sphere.io/http-api-projects-products-search.html#search-filters))
+- `filter.facets` ([Filter](http://dev.sphere.io/http-api-projects-products-search.html#search-filters))
+- `facet` ([Facet](http://dev.sphere.io/http-api-projects-products-search.html#search-facets))
+- `sort` ([Sort](http://dev.sphere.io/http-api.html#sorting))
 - `limit` (Number)
 - `offset` (Number)
 - `staged` (Boolean)
@@ -324,7 +324,7 @@ client.products.save(product)
 > You can use also `create` instead of `save` (it's an alias)
 
 ##### Import orders
-The `OrderService` exposes a specific function to [import orders](http://commercetools.de/dev/http-api-projects-orders-import.html).
+The `OrderService` exposes a specific function to [import orders](http://dev.sphere.io/http-api-projects-orders-import.html).
 Use it as you would use the `save` function, just internally the correct API endpoint is set.
 
 ```coffeescript
@@ -345,7 +345,7 @@ client.channels.ensure('OrderFileExport', 'OrderExport')
 ```
 
 #### Update resource
-Updates are just a POST request to the endpoint specified by an `ID`, provided with a body payload of [Update Actions](http://commercetools.de/dev/http-api.html#partial-updates).
+Updates are just a POST request to the endpoint specified by an `ID`, provided with a body payload of [Update Actions](http://dev.sphere.io/http-api.html#partial-updates).
 
 > The `update` method requires that the given resource `ID` is set. If no `ID` is provided it will throw an Error.
 
@@ -403,7 +403,7 @@ When a [`Bluebird` promise](https://github.com/petkaantonov/bluebird) is resolve
 # promise rejected
 {
   statusCode: 400 # or other error codes
-  message: 'Oops, something went wrong' # see http://commercetools.de/dev/http-api-errors.html
+  message: 'Oops, something went wrong' # see http://dev.sphere.io/http-api-errors.html
   ...
 }
 ```

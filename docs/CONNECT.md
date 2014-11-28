@@ -108,7 +108,7 @@ Since the connector is basically a wrapper of the [`request`](https://github.com
 - `response`: an [`http.IncomingMessage`](http://nodejs.org/api/http.html#http_http_incomingmessage) object containing all kind of information about the request / response
 - `body`: a JSON object (automatically parsed)
 
-As the SPHERE.IO [HTTP API](http://commercetools.de/dev/http-api.html) returns JSON responses either with resources or [error messages](http://commercetools.de/dev/http-api-projects-errors.html), the application should check the response `statusCode` and decide what to do.
+As the SPHERE.IO [HTTP API](http://dev.sphere.io/http-api.html) returns JSON responses either with resources or [error messages](http://dev.sphere.io/http-api-projects-errors.html), the application should check the response `statusCode` and decide what to do.
 It's always a good practice to check first for the existence of an `error` object in case there was a problem with the http client request.
 
 ```coffeescript
