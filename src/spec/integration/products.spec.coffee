@@ -51,6 +51,8 @@ newProduct = (pType) ->
   productType:
     id: pType.id
     typeId: 'product-type'
+  masterVariant:
+    sku: uniqueId 'sku-'
 
 newProductWithSearchKeywords = (pType) ->
   _.extend newProduct(pType),
@@ -191,3 +193,24 @@ describe 'Integration Products', ->
       expect(result.body.results[0].slug.en).toBe slugToLookFor
       done()
     .catch (error) -> done(_.prettify(error))
+
+  it 'should uses search endpoint', (done) ->
+    slugToLookFor = 'this-is-what-we-are-looking-for'
+    # let's create a special product that we can securely search for
+    @client.products.save(_.extend newProduct(@productType), {slug: {en: slugToLookFor}})
+
+    # let's wait a bit to give ES time to create the index
+    setTimeout =>
+      @client.productProjections.text('sku', 'en').staged(true).perPage(80).search()
+      .then (result) =>
+        expect(result.body.count).toBe 51
+        expect(result.body.total).toBe 51
+
+        @client.productProjections.text(slugToLookFor, 'en').staged(true).search()
+      .then (result) ->
+        expect(result.body.count).toBe 1
+        expect(result.body.results[0].slug.en).toBe slugToLookFor
+        done()
+      .catch (error) -> done(_.prettify(error))
+    , 5000 # 5sec
+  , 20000 # 20sec

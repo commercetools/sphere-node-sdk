@@ -43,18 +43,17 @@ describe 'ProductProjectionService', ->
 
   _.each [
     ['staged', false]
-    ['lang', 'de']
-    ['text', 'foo']
+    ['text', ['foo', 'de']]
     ['filter', 'foo:bar']
     ['filterByQuery', 'foo:bar']
     ['filterByFacets', 'foo:bar']
     ['facet', 'foo:bar']
   ], (f) ->
     it "should chain search function '#{f[0]}'", ->
-      clazz = @service[f[0]](f[1])
+      clazz = @service[f[0]].apply(null, _.flatten[f[1]])
       expect(clazz).toEqual @service
 
-      promise = @service[f[0]](f[1]).search()
+      promise = @service[f[0]].apply(null, _.flatten[f[1]]).search()
       expect(promise.isPending()).toBe true
 
   it 'should query for staged', ->
@@ -63,14 +62,11 @@ describe 'ProductProjectionService', ->
   it 'should query for published', ->
     expect(@service.staged(false)._queryString()).toBe ''
 
-  it 'should query for lang', ->
-    expect(@service.lang('de')._queryString()).toBe 'lang=de'
+  it 'should query for text', ->
+    expect(@service.text('foo', 'de')._queryString()).toBe 'text.de=foo'
 
   it 'should throw if lang is not defined', ->
-    expect(=> @service.lang()).toThrow new Error 'Language parameter is required for searching'
-
-  it 'should query for text', ->
-    expect(@service.text('foo')._queryString()).toBe 'text=foo'
+    expect(=> @service.text('foo')).toThrow new Error 'Language parameter is required for searching'
 
   it 'should query for filter', ->
     expect(@service.filter('foo:bar')._queryString()).toBe 'filter=foo%3Abar'
@@ -89,15 +85,14 @@ describe 'ProductProjectionService', ->
       .page 3
       .perPage 25
       .sort('createdAt')
-      .lang('de')
-      .text('foo')
+      .text('foo', 'de')
       .filter('foo:bar')
       .filterByQuery('foo:bar')
       .filterByFacets('foo:bar')
       .facet('foo:bar')
       ._queryString()
 
-    expect(queryString).toBe 'limit=25&offset=50&sort=createdAt%20asc&lang=de&text=foo&filter=foo%3Abar&filter.query=foo%3Abar&filter.facets=foo%3Abar&facet=foo%3Abar'
+    expect(queryString).toBe 'limit=25&offset=50&sort=createdAt%20asc&text.de=foo&filter=foo%3Abar&filter.query=foo%3Abar&filter.facets=foo%3Abar&facet=foo%3Abar'
 
   it "should reset search custom params after creating a promise", ->
     _service = @service
@@ -105,8 +100,7 @@ describe 'ProductProjectionService', ->
       .perPage 25
       .sort('createdAt')
       .staged()
-      .lang('de')
-      .text('foo')
+      .text('foo', 'de')
       .filter('filter1:bar1')
       .filter('filter2:bar2')
       .filterByQuery('filterQuery1:bar1')
@@ -125,8 +119,9 @@ describe 'ProductProjectionService', ->
         page: 3
         perPage: 25
         staged: true
-        lang: 'de'
-        text: 'foo'
+        text:
+          lang: 'de'
+          value: 'foo'
         filter: [encodeURIComponent('filter1:bar1'), encodeURIComponent('filter2:bar2')]
         filterByQuery: [encodeURIComponent('filterQuery1:bar1'), encodeURIComponent('filterQuery2:bar2')]
         filterByFacets: [encodeURIComponent('filterFacets1:bar1'), encodeURIComponent('filterFacets2:bar2')]
@@ -165,7 +160,7 @@ describe 'ProductProjectionService', ->
 
     it 'should call \'fetch\' after setting search endpoint', ->
       spyOn(@service, 'fetch')
-      @service.lang('de').filter('foo:bar').search()
+      @service.text('foo', 'de').filter('foo:bar').search()
       expect(@service.fetch).toHaveBeenCalled()
       expect(@service._currentEndpoint).toBe '/product-projections/search'
 

@@ -43,25 +43,17 @@ class ProductProjectionService extends BaseService
     this
 
   ###*
-   * Define the language tag used for searching product projection.
-   * @param {String} language An ISO language tag, used for search, for the 'lang' search parameter.
-   * @return {ProductProjectionService} Chained instance of this class
-  ###
-  lang: (language) ->
-    throw new Error 'Language parameter is required for searching' unless language
-    @_params.query.lang = language
-    debug 'setting lang: %s', language
-    this
-
-  ###*
    * Define the text to analyze and search.
    * @param {String} [text] A string for the `text` search parameter.
+   * @param {String} language An ISO language tag, used for search the given text.
    * @return {ProductProjectionService} Chained instance of this class
   ###
-  text: (text) ->
-    return this unless text
-    @_params.query.text = text
-    debug 'setting text: %s', text
+  text: (text, language) ->
+    throw new Error 'Language parameter is required for searching' unless language
+    @_params.query.text =
+      lang: language
+      value: text
+    debug 'setting text.%s: %s', language, text
     this
 
   ###*
@@ -137,7 +129,7 @@ class ProductProjectionService extends BaseService
    * @return {String} the query string
   ###
   _queryString: ->
-    {staged, lang, text, filter, filterByQuery, filterByFacets, facet, searchKeywords} = _.defaults @_params.query,
+    {staged, text, filter, filterByQuery, filterByFacets, facet, searchKeywords} = _.defaults @_params.query,
       staged: false
       filter: []
       filterByQuery: []
@@ -147,8 +139,7 @@ class ProductProjectionService extends BaseService
 
     customQueryString = []
     customQueryString.push "staged=#{staged}" if staged
-    customQueryString.push "lang=#{lang}" if lang
-    customQueryString.push "text=#{text}" if text
+    customQueryString.push "text.#{text.lang}=#{text.value}" if text
 
     # filter param
     _.each filter, (f) -> customQueryString.push "filter=#{f}"
