@@ -42,18 +42,18 @@ describe 'ProductProjectionService', ->
         searchKeywords: []
 
   _.each [
-    ['staged', false]
+    ['staged', [false]]
     ['text', ['foo', 'de']]
-    ['filter', 'foo:bar']
-    ['filterByQuery', 'foo:bar']
-    ['filterByFacets', 'foo:bar']
-    ['facet', 'foo:bar']
+    ['filter', ['foo:bar']]
+    ['filterByQuery', ['foo:bar']]
+    ['filterByFacets', ['foo:bar']]
+    ['facet', ['foo:bar']]
   ], (f) ->
     it "should chain search function '#{f[0]}'", ->
-      clazz = @service[f[0]].apply(null, _.flatten[f[1]])
+      clazz = @service[f[0]].apply(@service, _.toArray(f[1]))
       expect(clazz).toEqual @service
 
-      promise = @service[f[0]].apply(null, _.flatten[f[1]]).search()
+      promise = @service[f[0]].apply(@service, _.toArray(f[1])).search()
       expect(promise.isPending()).toBe true
 
   it 'should query for staged', ->

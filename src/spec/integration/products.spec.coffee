@@ -175,24 +175,28 @@ describe 'Integration Products', ->
     # let's create a special product that we can securely query for
     @client.products.save(_.extend newProduct(@productType), {slug: {en: slugToLookFor}, masterVariant: {sku: '01234'}})
 
-    # query for limit
-    @client.productProjections.byQueryString('limit=3&staged=true', true).fetch()
-    .then (result) =>
-      expect(result.body.count).toBe 3
+    # let's wait a bit to give ES time to create the index
+    setTimeout =>
+      # query for limit
+      @client.productProjections.byQueryString('limit=3&staged=true', true).fetch()
+      .then (result) =>
+        expect(result.body.count).toBe 3
 
-      # query for slug
-      @client.productProjections.byQueryString("where=slug(en = \"#{slugToLookFor}\")&staged=true", false).fetch()
-    .then (result) =>
-      expect(result.body.count).toBe 1
-      expect(result.body.results[0].slug.en).toBe slugToLookFor
+        # query for slug
+        @client.productProjections.byQueryString("where=slug(en = \"#{slugToLookFor}\")&staged=true", false).fetch()
+      .then (result) =>
+        expect(result.body.count).toBe 1
+        expect(result.body.results[0].slug.en).toBe slugToLookFor
 
-      # search for sku
-      @client.productProjections.byQueryString("text.en=01234&staged=true", false).search()
-    .then (result) ->
-      expect(result.body.count).toBe 1
-      expect(result.body.results[0].slug.en).toBe slugToLookFor
-      done()
-    .catch (error) -> done(_.prettify(error))
+        # search for sku
+        @client.productProjections.byQueryString("text.en=01234&staged=true", false).search()
+      .then (result) ->
+        expect(result.body.count).toBe 1
+        expect(result.body.results[0].slug.en).toBe slugToLookFor
+        done()
+      .catch (error) -> done(_.prettify(error))
+    , 5000 # 5sec
+  , 20000 # 20sec
 
   it 'should uses search endpoint', (done) ->
     slugToLookFor = 'this-is-what-we-are-looking-for'
