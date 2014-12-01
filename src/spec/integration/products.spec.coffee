@@ -168,3 +168,20 @@ describe 'Integration Products', ->
     , 5000 # 5sec
   , 30000 # 30sec
 
+  it "should query using 'byQueryString'", (done) ->
+    slugToLookFor = 'this-is-what-we-are-looking-for'
+    # let's create a special product that we can securely query for
+    @client.products.save(_.extend newProduct(@productType), {slug: {en: slugToLookFor}})
+
+    # query for limit
+    @client.productProjections.byQueryString('limit=3&staged=true', true).fetch()
+    .then (result) =>
+      expect(result.body.count).toBe 3
+
+      # query for slug
+      @client.productProjections.byQueryString("where=slug(en = \"#{slugToLookFor}\")&staged=true", false).fetch()
+    .then (result) ->
+      expect(result.body.count).toBe 1
+      expect(result.body.results[0].slug.en).toBe slugToLookFor
+      done()
+    .catch (error) -> done(_.prettify(error))
