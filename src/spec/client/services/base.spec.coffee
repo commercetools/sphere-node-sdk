@@ -197,6 +197,13 @@ describe 'Service', ->
         @service.byQueryString('where=name(en%20%3D%20%22Foo%22)&limit=10&staged=true&sort=name%20asc&expand=foo.bar1&expand=foo.bar2', true)
         expect(@service._params.queryString).toEqual 'where=name(en%20%3D%20%22Foo%22)&limit=10&staged=true&sort=name%20asc&expand=foo.bar1&expand=foo.bar2'
 
+      it 'should not use PAGED request when queryString is set', ->
+        spyOn(@restMock, 'PAGED')
+        spyOn(@restMock, 'GET')
+        @service.byQueryString('limit=10').all().fetch()
+        expect(@restMock.PAGED).not.toHaveBeenCalled()
+        expect(@restMock.GET).toHaveBeenCalledWith "#{o.path}?limit=10", jasmine.any(Function)
+
       _.each [
         ['fetch']
         ['save', {foo: 'bar'}]

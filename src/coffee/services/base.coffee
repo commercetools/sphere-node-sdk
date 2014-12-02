@@ -222,7 +222,7 @@ class BaseService
       endpoint += "?#{queryString}" if queryString
       endpoint
 
-    if @_params.query.perPage is 0
+    if not @_params.queryString and @_params.query.perPage is 0
       # we should provide a default sorting when fetching all results
       @sort 'id' if _.isEmpty @_params.query.sort
       @_paged(_getEndpoint())
