@@ -665,6 +665,37 @@ describe 'ProductUtils', ->
       ]
       expect(update).toEqual expected_update
 
+    it 'should diff long text', ->
+      OLD =
+        id: '123'
+        name:
+          en: '`Churchill` talked about climbing a wall which is leaning toward you and kissing a woman who is leaning away from you.'
+        slug:
+          en: 'churchill-talked-about-climbing-a-wall-which-is-leaning-toward-you-and-kissing-a-woman-who-is-leaning-away-from-you'
+        description:
+          en: 'There are two things that are more difficult than making an after-dinner speech: climbing a wall which is leaning toward you and kissing a girl who is leaning away from you.'
+        masterVariant:
+          id: 1
+      NEW =
+        id: '123'
+        name:
+          en: '`Churchill` talked about climbing a BIG wall which WAS leaning toward you and kissing a woman who WAS leaning away from you.'
+        slug:
+          en: 'churchill-talked-about-climbing-a-big-wall-which-was-leaning-toward-you-and-kissing-a-woman-who-was-leaning-away-from-you'
+        description:
+          en: 'There are three things that are more difficult than making an after-dinner speech: climbing a mountain which is leaning toward you and slapping a girl who is leaning away from you.'
+        masterVariant:
+          id: 1
+
+      delta = @utils.diff OLD, NEW
+      update = @utils.actionsMapBase(delta, OLD)
+      expected_update = [
+        { action: 'changeName', name: {en: NEW.name.en} }
+        { action: 'changeSlug', slug: {en: NEW.slug.en} }
+        { action: 'setDescription', description: {en: NEW.description.en} }
+      ]
+      expect(update).toEqual expected_update
+
   describe ':: actionsMapMetaAttributes', ->
 
     it 'should diff meta attributes', ->

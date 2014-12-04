@@ -273,7 +273,9 @@ class ProductUtils extends BaseUtils
       else
         keys = _.keys obj
         _.each keys, (k) =>
-          value = @getDeltaValue(obj[k])
+          # we pass also the value of the correspondent key of the original object
+          # in case we need to patch for long text diffs
+          value = @getDeltaValue(obj[k], old_obj[key][k])
           updated[k] = value
 
       if old_obj[key]
