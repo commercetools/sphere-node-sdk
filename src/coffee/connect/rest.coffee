@@ -114,7 +114,7 @@ class Rest
             if retry is 10
               throw new Error 'Could not retrieve access_token after 10 attempts.\n' +
                 "Status code: #{response.statusCode}\n" +
-                "Body: #{body}\n"
+                "Body: #{JSON.stringify(body)}\n"
             else
               debug "Failed to retrieve access_token (statusCode: #{response.statusCode}), retrying...#{retry + 1}"
               _req(retry + 1)
