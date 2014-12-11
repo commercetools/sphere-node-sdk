@@ -11,6 +11,7 @@ CommentService           = require '../../../lib/services/comments'
 CustomObjectService      = require '../../../lib/services/custom-objects'
 CustomerService          = require '../../../lib/services/customers'
 CustomerGroupService     = require '../../../lib/services/customer-groups'
+DiscountCodeService      = require '../../../lib/services/discount-codes'
 InventoryEntryService    = require '../../../lib/services/inventory-entries'
 MessageService           = require '../../../lib/services/messages'
 OrderService             = require '../../../lib/services/orders'
@@ -39,6 +40,7 @@ describe 'Service', ->
     {name: 'CustomObjectService', service: CustomObjectService, path: '/custom-objects'}
     {name: 'CustomerService', service: CustomerService, path: '/customers'}
     {name: 'CustomerGroupService', service: CustomerGroupService, path: '/customer-groups'}
+    {name: 'DiscountCodeService', service: DiscountCodeService, path: '/discount-codes'}
     {name: 'InventoryEntryService', service: InventoryEntryService, path: '/inventory'}
     {name: 'MessageService', service: MessageService, path: '/messages'}
     {name: 'OrderService', service: OrderService, path: '/orders'}
