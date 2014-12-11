@@ -21,6 +21,7 @@ describe 'SphereClient', ->
     expect(@client).toBeDefined()
     expect(@client._rest).toBeDefined()
     expect(@client._task).toBeDefined()
+    expect(@client.cartDiscounts).toBeDefined()
     expect(@client.carts).toBeDefined()
     expect(@client.categories).toBeDefined()
     expect(@client.channels).toBeDefined()
@@ -74,6 +75,7 @@ describe 'SphereClient', ->
 
 
   _.each [
+    'cartDiscounts'
     'carts'
     'categories'
     'channels'

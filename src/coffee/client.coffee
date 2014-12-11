@@ -1,6 +1,7 @@
 _ = require 'underscore'
 Rest = require './connect/rest'
 TaskQueue = require './task-queue'
+CartDiscountService      = require './services/cart-discounts'
 CartService              = require './services/carts'
 CategoryService          = require './services/categories'
 ChannelService           = require './services/channels'
@@ -63,6 +64,7 @@ class SphereClient
 
     # services
     # TODO: use functions to return new service instances?
+    @cartDiscounts      = new CartDiscountService _serviceOptions
     @carts              = new CartService _serviceOptions
     @categories         = new CategoryService _serviceOptions
     @channels           = new ChannelService _serviceOptions

@@ -3,6 +3,7 @@ _.mixin require 'underscore-mixins'
 Promise = require 'bluebird'
 {TaskQueue} = require '../../../lib/main'
 BaseService              = require '../../../lib/services/base'
+CartDiscountService      = require '../../../lib/services/cart-discounts'
 CartService              = require '../../../lib/services/carts'
 CategoryService          = require '../../../lib/services/categories'
 ChannelService           = require '../../../lib/services/channels'
@@ -30,6 +31,7 @@ describe 'Service', ->
 
   _.each [
     {name: 'BaseService', service: BaseService, path: ''}
+    {name: 'CartDiscountService', service: CartDiscountService, path: '/cart-discounts'}
     {name: 'CartService', service: CartService, path: '/carts'}
     {name: 'CategoryService', service: CategoryService, path: '/categories'}
     {name: 'ChannelService', service: ChannelService, path: '/channels'}

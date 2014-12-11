@@ -6,7 +6,7 @@ Base Utils class
 ###
 class BaseUtils
 
-  constructor: () ->
+  constructor: ->
     @diffpatcher = jsondiffpatch.create
       # provide a hash function to work with objects in arrays
       objectHash: (obj) ->

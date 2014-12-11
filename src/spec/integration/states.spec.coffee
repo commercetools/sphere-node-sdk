@@ -20,7 +20,7 @@ updateState = (version) ->
   ]
 
 
-describe 'Integration Channels', ->
+describe 'Integration States', ->
 
   beforeEach (done) ->
     @client = new SphereClient config: Config
