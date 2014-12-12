@@ -1,7 +1,7 @@
 MIGRATION from 0.8 to 1.0
 ---
 
-> The repo has been renamed from `sphere-node-sdk` to `sphere-node-sdk` since it has become more of a toolkit
+> The repo has been renamed from `sphere-node-client` to `sphere-node-sdk` since it has become more of a toolkit
 
 ## Summary of breaking changes
 - renaming to `sphere-node-sdk`
