@@ -25,14 +25,14 @@ The `OAuth2` is used to retrieve an `access_token`
 ```coffeescript
 oa = new OAuth2
   config:
-    client_id: ''
-    client_secret: ''
-    project_key: ''
+    client_id: "CLIENT_ID_HERE"
+    client_secret: "CLIENT_SECRET_HERE"
+    project_key: "PROJECT_KEY_HERE"
   host: 'auth.sphere.io' # optional
   accessTokenUrl: '/oauth/token' # optional
   timeout: 20000 # optional
   rejectUnauthorized: true # optional
-  logConfig: {} # optional (see `Logging` section)
+  user_agent: 'sphere-node-connect' # optional
 
 oa.getAccessToken (error, response, body) -> # do something
 ```
@@ -44,21 +44,20 @@ The `Rest` is used to comunicate with the HTTP API.
 ```coffeescript
 rest = new Rest
   config:
-    client_id: ''
-    client_secret: ''
-    project_key: ''
+    client_id: "CLIENT_ID_HERE"
+    client_secret: "CLIENT_SECRET_HERE"
+    project_key: "PROJECT_KEY_HERE"
   host: 'api.sphere.io' # optional
   access_token: '' # optional (if not provided it will automatically retrieve an `access_token`)
   timeout: 20000 # optional
   rejectUnauthorized: true # optional
   oauth_host: 'auth.sphere.io' # optional (used when retrieving the `access_token` internally)
-  user_agent: 'my client v0.1' # optional
-  logConfig: {} # optional (see `Logging` section)
+  user_agent: 'sphere-node-connect' # optional
 
 rest.GET resource, (error, response, body) -> # do something
 rest.POST resource, payload, (error, response, body) -> # do something
 rest.DELETE resource, (error, response, body) -> # do something
-rest.PAGEd resource, (error, response, body) -> # (see `Paged requests` section)
+rest.PAGED resource, (error, response, body) -> # (see `Paged requests` section)
 ```
 
 > The `Rest` object, when instantiated, has an internal instance of the `OAuth` module accessible with `rest._oauth`. This is mainly used internally to automatically retrieve an `access_token`.

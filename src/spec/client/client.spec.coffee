@@ -17,9 +17,10 @@ describe 'SphereClient', ->
     expect(Config.client_secret).toBeDefined()
     expect(Config.project_key).toBeDefined()
 
-  it 'should initialize with credentials', ->
+  it 'should initialize services', ->
     expect(@client).toBeDefined()
     expect(@client._rest).toBeDefined()
+    expect(@client._rest._options.headers['User-Agent']).toBe 'sphere-node-sdk'
     expect(@client._task).toBeDefined()
     expect(@client.cartDiscounts).toBeDefined()
     expect(@client.carts).toBeDefined()

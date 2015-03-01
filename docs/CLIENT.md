@@ -32,7 +32,7 @@ SPHERE CLIENT
 ## Documentation
 To start using the client you need to create an instance of the `SphereClient` by passing the credentials (and other optional parameters) in order to connect with the HTTP APIs. Project credentials can be found in the SPHERE.IO [Merchant Center](https://admin.sphere.io/) under `Developers > API clients` section.
 
-> For a list of options to pass to the client, see [SPHERE CONNECT](docs/CONNECT.md).
+> For a list of options to pass to the client, see [SPHERE CONNECT - Rest](CONNECT.md#rest).
 
 ```coffeescript
 client = new SphereClient
@@ -40,6 +40,7 @@ client = new SphereClient
     client_id: "CLIENT_ID_HERE"
     client_secret: "CLIENT_SECRET_HERE"
     project_key: "PROJECT_KEY_HERE"
+  user_agent: 'sphere-node-sdk' # optional
   task: {} # optional TaskQueue instance
   rest: {} # optional Rest instance (see SPHERE CONNECT)
 ```

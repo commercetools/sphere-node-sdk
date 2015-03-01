@@ -130,6 +130,7 @@ class Rest
           uri: "#{@_options.uri}#{params.resource}"
           json: true
           method: params.method
+          host: @_options.host
           headers: @_options.headers
           timeout: @_options.timeout
           rejectUnauthorized: @_options.rejectUnauthorized

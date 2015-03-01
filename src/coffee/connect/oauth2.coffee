@@ -23,12 +23,14 @@ class OAuth2
     throw new Error('Missing \'project_key\'') unless config.project_key
 
     rejectUnauthorized = if _.isUndefined(opts.rejectUnauthorized) then true else opts.rejectUnauthorized
+    userAgent = if _.isUndefined(opts.user_agent) then 'sphere-node-connect' else opts.user_agent
     @_options =
       config: config
       host: opts.host or 'auth.sphere.io'
       accessTokenUrl: opts.accessTokenUrl or '/oauth/token'
       timeout: opts.timeout or 20000
       rejectUnauthorized: rejectUnauthorized
+      userAgent: userAgent
 
     debug 'oauth2 options: %j', @_options
     return
@@ -51,6 +53,7 @@ class OAuth2
       headers:
         'Content-Type': 'application/x-www-form-urlencoded'
         'Content-Length': payload.length
+        'User-Agent': @_options.userAgent
       timeout: @_options.timeout
       rejectUnauthorized: @_options.rejectUnauthorized
 

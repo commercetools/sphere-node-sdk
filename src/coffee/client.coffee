@@ -50,7 +50,7 @@ class SphereClient
      * Instance of the Rest client
      * @type {Rest}
     ###
-    @_rest = options.rest or new Rest options
+    @_rest = options.rest or new Rest _.defaults options, {user_agent: 'sphere-node-sdk'}
 
     ###*
      * @private
