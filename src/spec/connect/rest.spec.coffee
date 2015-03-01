@@ -84,6 +84,7 @@ describe 'Rest', ->
         uri: "https://api.sphere.io/#{Config.project_key}#{endpoint}"
         json: true
         method: method
+        host: 'api.sphere.io'
         headers:
           'User-Agent': 'sphere-node-connect'
           'Authorization': 'Bearer foo'
