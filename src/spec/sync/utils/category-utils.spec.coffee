@@ -105,3 +105,57 @@ describe 'CategoryUtils', ->
       expect(update).toEqual [
         { action: 'changeParent', parent: { typeId: 'category', id: 'p2' } }
       ]
+
+    it 'should create action to change order hint', ->
+      category =
+        id: '123'
+        orderHint: '0.9'
+
+      otherCategory = _.deepClone category
+      otherCategory.orderHint = '0.1'
+
+      delta = @utils.diff category, otherCategory
+      update = @utils.actionsMap delta, otherCategory
+      expect(update).toEqual [
+        { action: 'changeOrderHint', orderHint: '0.1' }
+      ]
+
+    it 'should create action to set external id', ->
+      category =
+        id: '123'
+
+      otherCategory = _.deepClone category
+      otherCategory.externalId = 'ext-123'
+
+      delta = @utils.diff category, otherCategory
+      update = @utils.actionsMap delta, otherCategory
+      expect(update).toEqual [
+        { action: 'setExternalId', externalId: 'ext-123' }
+      ]
+
+    it 'should create action to set external id', ->
+      category =
+        id: '123'
+
+      otherCategory = _.deepClone category
+      otherCategory.externalId = 'ext-123'
+
+      delta = @utils.diff category, otherCategory
+      update = @utils.actionsMap delta, otherCategory
+      expect(update).toEqual [
+        { action: 'setExternalId', externalId: 'ext-123' }
+      ]
+
+    it 'should create action to delete external id', ->
+      category =
+        id: '123'
+        externalId: 'external-123'
+
+      otherCategory = _.deepClone category
+      delete otherCategory.externalId
+
+      delta = @utils.diff category, otherCategory
+      update = @utils.actionsMap delta, otherCategory
+      expect(update).toEqual [
+        { action: 'setExternalId' }
+      ]

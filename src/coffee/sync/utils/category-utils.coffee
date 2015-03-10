@@ -55,6 +55,11 @@ actionsList = ->
     {
       action: 'changeOrderHint'
       key: 'orderHint'
+    },
+    {
+      action: 'setExternalId'
+      key: 'externalId'
     }
+
   ]
 
