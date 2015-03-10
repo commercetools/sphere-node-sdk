@@ -1,5 +1,5 @@
 _ = require 'underscore'
-_.mixin deepClone: (obj) -> JSON.parse(JSON.stringify(obj))
+_.mixin require 'underscore-mixins'
 CategoryUtils = require '../../../lib/sync/utils/category-utils'
 
 describe 'CategoryUtils', ->
