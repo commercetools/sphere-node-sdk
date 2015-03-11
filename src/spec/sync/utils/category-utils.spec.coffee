@@ -133,9 +133,10 @@ describe 'CategoryUtils', ->
         { action: 'setExternalId', externalId: 'ext-123' }
       ]
 
-    it 'should create action to set external id', ->
+    it 'should create action to change external id', ->
       category =
         id: '123'
+        external: 'something'
 
       otherCategory = _.deepClone category
       otherCategory.externalId = 'ext-123'

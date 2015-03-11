@@ -11,7 +11,7 @@ describe 'CategorySync', ->
 
   describe ':: buildActions', ->
 
-    it 'no differences', ->
+    it 'should create no update actions', ->
       category =
         id: 'c123'
 
@@ -20,7 +20,7 @@ describe 'CategorySync', ->
       updateId = @sync.buildActions(category, category).getUpdateId()
       expect(updateId).toBe 'c123'
 
-    it 'various differences', ->
+    it 'should create different kind of update actions', ->
       category =
         id: 'c123'
         externalId: 'ext123'
