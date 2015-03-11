@@ -13,11 +13,11 @@ class CategoryUtils extends BaseUtils
   ###
   actionsMap: (diff, new_obj) ->
     actions = []
-    if diff?
+    if diff
       _.each actionsList(), (item) =>
         key = item.key
         obj = diff[key]
-        if obj?
+        if obj
           data =
             action: item.action
           if _.isArray obj
