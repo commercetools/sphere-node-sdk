@@ -1,6 +1,6 @@
 _ = require 'underscore'
 BaseSync = require './base-sync'
-CategoryUtil = require './utils/category-utils'
+CategoryUtil = require './utils/category'
 
 ###*
  * CategorySync Sync class

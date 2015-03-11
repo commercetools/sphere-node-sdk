@@ -1,6 +1,6 @@
 _ = require 'underscore'
 _.mixin require 'underscore-mixins'
-CategoryUtils = require '../../../lib/sync/utils/category-utils'
+CategoryUtils = require '../../../lib/sync/utils/category'
 
 describe 'CategoryUtils', ->
   beforeEach ->
