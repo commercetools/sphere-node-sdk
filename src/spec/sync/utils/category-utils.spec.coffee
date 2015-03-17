@@ -136,7 +136,7 @@ describe 'CategoryUtils', ->
     it 'should create action to change external id', ->
       category =
         id: '123'
-        external: 'something'
+        externalId: 'something'
 
       otherCategory = _.deepClone category
       otherCategory.externalId = 'ext-123'
