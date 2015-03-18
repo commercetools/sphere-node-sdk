@@ -193,7 +193,7 @@ describe 'ProductProjectionService', ->
       .then (result) =>
         expect(@restMock.PAGED).toHaveBeenCalledWith "/product-projections?where=foo%3Dbar&limit=0&sort=id%20asc&staged=true", jasmine.any(Function)
         done()
-      .catch (err) -> done(_.prettify error)
+      .catch (err) -> done(_.prettify err)
 
   describe ':: process', ->
 
@@ -207,7 +207,7 @@ describe 'ProductProjectionService', ->
         expect(result[0]).toMatch /\?where=foo%3Dbar&limit=20&sort=id%20asc&staged=true$/
         expect(result[1]).toMatch /\?where=foo%3Dbar&limit=20&offset=20&sort=id%20asc&staged=true$/
         done()
-      .catch (err) -> done(_.prettify error)
+      .catch (err) -> done(_.prettify err)
 
     it 'should call each page with the same query (given sorting)', (done) ->
       spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: 21, endpoint: endpoint})
@@ -219,4 +219,4 @@ describe 'ProductProjectionService', ->
         expect(result[0]).toMatch /\?where=foo%3Dbar&limit=20&sort=name%20desc&staged=true$/
         expect(result[1]).toMatch /\?where=foo%3Dbar&limit=20&offset=20&sort=name%20desc&staged=true$/
         done()
-      .catch (err) -> done(_.prettify error)
+      .catch (err) -> done(_.prettify err)
