@@ -25,6 +25,7 @@ SPHERE CLIENT
   * [Types of responses](#types-of-responses)
   * [Error handling](#error-handling)
     * [Error types](#error-types)
+    * [Correlation Header ID](#correlation-header-id)
   * [Statistics](#statistics)
 * [Logging & debugging](DEBUGGING.md)
 
@@ -409,7 +410,7 @@ When a [`Bluebird` promise](https://github.com/petkaantonov/bluebird) is resolve
 }
 ```
 
-> When a promise is rejected, the response object contains a field `originalRequest`, providing some information about the related request (`endpoint`, `payload`). This is useful to better understand the error in relation with the failed request.
+> When a promise is rejected, the response object contains a field `originalRequest`, providing some information about the related request (`endpoint`, `payload`). This is useful to better understand the error in relation with the failed request. Additionally the response `headers` are also passed along.
 
 ### Error handling
 As the HTTP API _gracefully_ [handles errors](CONNECT#error-handling) by providing a JSON body with error codes and messages, the `SphereClient` handles that by providing an intuitive way of dealing with responses.
@@ -421,6 +422,11 @@ Since a Promise can be either resolved or rejected, the result is determined by 
 #### Error types
 All Sphere response _errors_ are then wrapped in a custom `Error` type and returned as a rejected Promise value.
 That means you can do type check as well as getting the JSON response body
+
+An `Error` instance contains a `body`, which is a JSON object contaning following response information:
+- `statusCode`
+- `originalRequest` - useful information from the failed request
+- `headers` - response headers
 
 ```coffeescript
 {ConcurrentModification} = Errors.SphereHttpError
@@ -448,6 +454,11 @@ Following error types are exposed:
   * `ConcurrentModification`
   * `InternalServerError`
   * `ServiceUnavailable`
+
+#### Correlation Header ID
+When a request fails with `statusCode >= 400` the reponse contains a special header `x-correlation-id`. This is specially useful for the SPHERE.IO team in order to better correlate failure requests with other possible causes.
+
+> Note: the SDK doesn't log anything, thus it's recommended that applications should handle this.
 
 ### Statistics
 You can retrieve some statistics (more to come) by passing some options when creating a new `SphereClient` instance.
