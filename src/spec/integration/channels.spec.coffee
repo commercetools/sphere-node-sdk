@@ -92,3 +92,11 @@ describe 'Integration Channels', ->
     .catch (error) ->
       expect(error).toBeDefined()
       done()
+
+  it 'should have \'x-correlation-id\' header when request fails', (done) ->
+    @client.channels.save({})
+    .then (result) ->
+      done('Should have failed')
+    .catch (error) ->
+      expect(error.body.headers['x-correlation-id']).toBeDefined()
+      done()
