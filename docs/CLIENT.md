@@ -423,7 +423,7 @@ Since a Promise can be either resolved or rejected, the result is determined by 
 All Sphere response _errors_ are then wrapped in a custom `Error` type and returned as a rejected Promise value.
 That means you can do type check as well as getting the JSON response body
 
-An `Error` instance contains a `body`, which is a JSON object contaning following response information:
+An `Error` instance contains a `body`, which is a JSON object containing following response information:
 - `statusCode`
 - `originalRequest` - useful information from the failed request
 - `http` - optional object containing headers information (see [statistics](#statistics))
