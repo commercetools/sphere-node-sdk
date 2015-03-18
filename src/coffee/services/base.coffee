@@ -432,7 +432,7 @@ class BaseService
       reject new HttpError errorMessage, errorBody
     else
       # check for API deprecation headers
-      if response.headers['X-DEPRECATION-NOTICE']
+      if response.headers?['X-DEPRECATION-NOTICE']
         console.warn("Deprecation notice: #{response.headers['X-DEPRECATION-NOTICE']}")
 
       # TODO: check other possible acceptable codes (304, ...)
