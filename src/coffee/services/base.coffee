@@ -455,7 +455,6 @@ class BaseService
         errorBody = _.extend responseJson, body,
           statusCode: body.statusCode or response.statusCode
           originalRequest: originalRequest
-          headers: response.headers
         # TODO: automatically retry code 503, 504
         reject switch body.statusCode
           when 400 then new SphereHttpError.BadRequest errorMessage, errorBody
@@ -465,7 +464,6 @@ class BaseService
           else new HttpError require('http').STATUS_CODES[response.statusCode], _.extend responseJson,
             statusCode: response.statusCode
             originalRequest: originalRequest
-            headers: response.headers
 
 ###*
  * The {@link BaseService} service.

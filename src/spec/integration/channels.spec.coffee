@@ -29,11 +29,15 @@ describe 'Integration Channels', ->
   channels = []
 
   beforeEach (done) ->
-    @client = new SphereClient config: Config
+    @client = new SphereClient
+      config: Config
+      stats:
+        includeHeaders: true
 
     @client.channels.save(newChannel())
     .then (result) =>
       expect(result.statusCode).toBe 201
+      expect(result.http.response.headers['x-correlation-id']).toBeDefined()
       @channelId = result.body.id
       debug 'New channel created: %j', result.body
       done()
@@ -98,5 +102,5 @@ describe 'Integration Channels', ->
     .then (result) ->
       done('Should have failed')
     .catch (error) ->
-      expect(error.body.headers['x-correlation-id']).toBeDefined()
+      expect(error.body.http.response.headers['x-correlation-id']).toBeDefined()
       done()
