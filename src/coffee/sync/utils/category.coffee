@@ -9,7 +9,7 @@ class CategoryUtils extends BaseUtils
   ###
   Create list of actions for syncing categories.
   @param {object} diff result of jsondiffpatch tool.
-  @return list with actions
+  @return {Array} The list of actions, or empty if there are none
   ###
   actionsMap: (diff, new_obj) ->
     actions = []

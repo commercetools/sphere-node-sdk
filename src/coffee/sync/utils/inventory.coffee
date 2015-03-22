@@ -10,7 +10,7 @@ class InventoryUtils extends BaseUtils
   Create list of actions for syncing inventory quantities.
   @param {Object} diff Result of jsondiffpatch tool.
   @param {Object} old_obj Inventory to be updated.
-  @return list with actions
+  @return {Array} The list of actions, or empty if there are none
   ###
   actionsMapQuantity: (diff, old_obj) ->
     actions = []
@@ -33,7 +33,7 @@ class InventoryUtils extends BaseUtils
   Create list of actions for syncing inventory expected deliveries.
   @param {Object} diff Result of jsondiffpatch tool.
   @param {Object} old_obj Inventory to be updated.
-  @return list with actions
+  @return {Array} The list of actions, or empty if there are none
   ###
   actionsMapExpectedDelivery: (diff, old_obj) ->
     actions = []

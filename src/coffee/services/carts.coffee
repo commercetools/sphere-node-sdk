@@ -1,20 +1,9 @@
 BaseService = require './base'
 
-###*
- * Creates a new CartService.
- * @class CartService
-###
+# Public: CartService
 class CartService extends BaseService
 
-  ###*
-   * @const
-   * @private
-   * Base path for a Carts API resource endpoint
-   * @type {String}
-  ###
+  # Internal: Base path for a Carts API resource endpoint ({String})
   @baseResourceEndpoint: '/carts'
 
-###*
- * The {@link CartService} service.
-###
 module.exports = CartService

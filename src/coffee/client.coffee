@@ -24,39 +24,21 @@ StateService             = require './services/states'
 TaxCategoryService       = require './services/tax-categories'
 ZoneService              = require './services/zones'
 
-###*
- * Defines a SphereClient.
- * @class SphereClient
-###
+# Public: SphereClient - the official SDK
 class SphereClient
 
-  ###*
-   * Constructs a new client with given API credentials
-   * @constructor
-   *
-   * @param {Object} [options] An object containing the credentials for the `sphere-node-connect`
-   * {@link https://github.com/sphereio/sphere-node-connect#documentation}
-  ###
+  # Public: Construct a `SphereClient` object.
+  #
+  # options - An {Object} to configure the client
   constructor: (options = {}) ->
-    ###*
-     * @private
-     * Instance of a TaskQueue
-     * @type {TaskQueue}
-    ###
+
+    # Private: instance of a {TaskQueue}
     @_task = options.task or new TaskQueue
 
-    ###*
-     * @private
-     * Instance of the Rest client
-     * @type {Rest}
-    ###
+    # Private: instance of a {Rest}
     @_rest = options.rest or new Rest _.defaults options, {user_agent: 'sphere-node-sdk'}
 
-    ###*
-     * @private
-     * Wrapper to pass different options to new service instances
-     * @type {Object}
-    ###
+    # Private: wrapper to pass different options to new service instances
     _serviceOptions =
       _rest: @_rest
       _task: @_task
@@ -88,13 +70,9 @@ class SphereClient
     @taxCategories      = new TaxCategoryService _serviceOptions
     @zones              = new ZoneService _serviceOptions
 
-  ###*
-   * Define max parallel request to be sent on each request from the {TaskQueue}
-   * @param {Number} maxParallel A number between 1 and 100 (default is 20)
-  ###
+  # Public: Define max parallel request to be sent on each request from the {TaskQueue}
+  #
+  # maxParallel - A {Number} between 1 and 100 (default is 20)
   setMaxParallel: (maxParallel) -> @_task.setMaxParallel maxParallel
 
-###*
- * The {@link SphereClient} client.
-###
 module.exports = SphereClient

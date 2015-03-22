@@ -5,51 +5,33 @@ Promise = require 'bluebird'
 Utils = require '../utils'
 {HttpError, SphereHttpError} = require '../errors'
 
-###*
- * @const
- * RegExp to parse time period for last function.
-###
+# Internal: RegExp to parse time period for last function.
 REGEX_LAST = /^(\d+)([s|m|h|d|w])$/
 
-###*
- * Creates a new BaseService, containing base functionalities. It should be extended when defining a Service.
- * @class BaseService
-###
+# Internal: Creates a new {BaseService}, containing base functionalities.
+# It should be extended when defining a Service.
 class BaseService
 
-  ###*
-   * @const
-   * @private
-   * Base path for a API resource endpoint (to be overriden by specific service)
-   * @type {String}
-  ###
+  # Internal: Base path for a API resource endpoint (to be overriden by specific service) ({String})
+  # constant
   @baseResourceEndpoint: ''
 
-  ###*
-   * Initialize the class.
-   * @constructor
-   * @param {Object} opts An object containing configuration option and/or instances of {Rest}, {TaskQueue}
-  ###
-  constructor: (opts = {}) ->
-    {@_rest, @_task, @_stats} = opts
+  # Public: Construct a `Service` object.
+  #
+  # options - An {Object} to configure the service
+  #           :_rest - a {Rest} instance
+  #           :_task - a {TaskQueue} instance
+  #           :_stats - an {Object} to configure statistics
+  constructor: (options = {}) ->
+    {@_rest, @_task, @_stats} = options
     @_setDefaults()
 
-  ###*
-   * @private
-   * Reset default _currentEndpoint and _params used to build request endpoints
-  ###
+  # Private: Reset default _currentEndpoint and _params used to build request endpoints
   _setDefaults: ->
-    ###*
-     * @private
-     * Current path for a API resource endpoint which can be modified by appending ids, queries, etc
-     * @type {String}
-    ###
+    # Private: Current path for a API resource endpoint which can be modified by appending ids, queries, etc
     @_currentEndpoint = @constructor.baseResourceEndpoint
-    ###*
-     * @private
-     * Container that holds request parameters such `id`, `query`, etc
-     * @type {Object}
-    ###
+
+    # Private: Container that holds request parameters such `id`, `query`, etc
     @_params =
       encoded: ['where', 'expand', 'sort']
       query:
@@ -58,23 +40,32 @@ class BaseService
         sort: []
         expand: []
 
-  ###*
-   * Build the endpoint path by appending the given id
-   * @param {String} id The resource specific id
-   * @return {BaseService} Chained instance of this class
-  ###
+  # Public: Build the endpoint path by appending the given id
+  #
+  # id - {String} The resource specific id
+  #
+  # Examples
+  #
+  #   service = client.products()
+  #   service.byId('123').fetch()
+  #
+  # Returns a chained instance of a `this` class
   byId: (id) ->
     @_currentEndpoint = "#{@constructor.baseResourceEndpoint}/#{id}"
     @_params.id = id
     debug 'setting endpoint id: %j', @_currentEndpoint
     this
 
-  ###*
-   * Define a {Predicate} used for quering and filtering a resource.
-   * @link http://commercetools.de/dev/http-api.html#predicates
-   * @param {String} [predicate] A {Predicate} string for the `where` query parameter.
-   * @return {BaseService} Chained instance of this class
-  ###
+  # Public: Define a [Predicate](http://dev.sphere.io/http-api.html#predicates) used for quering and filtering a resource.
+  #
+  # predicate - {String} A [Predicate](http://dev.sphere.io/http-api.html#predicates) string for the `where` query parameter.
+  #
+  # Examples
+  #
+  #   service = client.products()
+  #   service.where('name(en = "Foo")').fetch()
+  #
+  # Returns a chained instance of a `this` class
   where: (predicate) ->
     # TODO: use query builder (for specific service) to faciliate build queries
     # e.g.: `QueryBuilder.product.name('Foo', 'en')`
@@ -465,7 +456,4 @@ class BaseService
             statusCode: response.statusCode
             originalRequest: originalRequest
 
-###*
- * The {@link BaseService} service.
-###
 module.exports = BaseService

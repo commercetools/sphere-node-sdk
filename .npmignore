@@ -1,5 +1,6 @@
 node_modules
 *.log
+doc
 src
 test
 config.js

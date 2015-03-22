@@ -29,6 +29,7 @@
     "test": "grunt coverage"
   },
   "dependencies": {
+    "biscotto": "emmenko/biscotto",
     "bluebird": "2.3.x",
     "custom-error-generator": "7.0.0",
     "debug": "2.1.x",

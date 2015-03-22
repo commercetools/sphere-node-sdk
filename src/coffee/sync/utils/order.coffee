@@ -20,7 +20,7 @@ class OrderUtils extends BaseUtils
   Create list of actions for syncing order status values.
   @param {object} diff Result of jsondiffpatch tool.
   @param {object} old_obj Order to be updated.
-  @return list with actions
+  @return {Array} The list of actions, or empty if there are none
   ###
   actionsMapStatusValues: (diff, old_obj) ->
     actions = []
@@ -40,7 +40,7 @@ class OrderUtils extends BaseUtils
   Create list of actions for syncing delivery items.
   @param {object} diff Result of jsondiffpatch tool.
   @param {object} old_obj Order to be updated.
-  @return list with actions
+  @return {Array} The list of actions, or empty if there are none
   ###
   actionsMapDeliveries: (diff, old_obj) ->
 
@@ -80,7 +80,7 @@ class OrderUtils extends BaseUtils
   Create list of actions for syncing returnInfo items and returnInfo status values.
   @param {object} diff Result of jsondiffpatch tool.
   @param {object} old_obj Order to be updated.
-  @return list with actions
+  @return {Array} The list of actions, or empty if there are none
   ###
   actionsMapReturnInfo: (diff, old_obj) ->
 
