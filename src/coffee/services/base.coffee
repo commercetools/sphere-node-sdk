@@ -349,15 +349,25 @@ class BaseService
           .done()
       _processPage(@_params.query.page or 1, @_params.query.perPage or 20)
 
-  ###*
-   * Save a new resource by sending a payload to the _currentEndpoint, describing
-   * the new resource model.
-   * If the `id` was provided, the API expects the request to be an update by
-   * by providing a payload of {UpdateAction}.
-   * @param {Object} body The payload as JSON object
-   * @throws {Error} If body is not given
-   * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
-  ###
+  # Public: Save a new resource defined by the `Service` by passing the payload {Object}.
+  #
+  # body - {Object} The payload described by the related API resource as JSON
+  #
+  # Throws an {Error} if `body` is missing
+  #
+  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {Error}
+  #
+  # Examples
+  #
+  #   service = client.products()
+  #   service.save
+  #     name:
+  #       en: 'Foo'
+  #     slug:
+  #       en: 'foo'
+  #     productType:
+  #       id: '123'
+  #       typeId: 'product-type'
   save: (body) ->
     unless body
       throw new Error "Body payload is required for creating a resource (endpoint: #{@constructor.baseResourceEndpoint})"
@@ -365,17 +375,32 @@ class BaseService
     endpoint = @constructor.baseResourceEndpoint
     @_save(endpoint, body)
 
-  ###*
-   * Alias for {@link save}.
-  ###
+  # Public: Alias of {::save}
   create: -> @save.apply(@, arguments)
 
-  ###*
-   * Alias for {@link save}, as it's the same type of HTTP request.
-   * Updating a resource is done by sending a list of {UpdateAction}.
-   * (more intuitive way of describing an update, given that an [id] is provided)
-   * @example `{service}.byId({id}).update({actions})`
-  ###
+  # Public: Update a resource defined by the `Service` by passing the payload {Object}
+  # with [UpdateAction](http://dev.sphere.io/http-api.html#partial-updates).
+  # The `id` of the resource must be provided with {::byId}.
+  #
+  # body - {Object} The payload described by the related API resource as JSON
+  #
+  # Throws an {Error} if resource `id` is missing
+  # Throws an {Error} if `body` is missing
+  #
+  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {Error}
+  #
+  # Examples
+  #
+  #   service = client.products()
+  #   service.byId('123').update
+  #     version: 2
+  #     actions: [
+  #       {
+  #         action: 'changeName'
+  #         name:
+  #           en: Bar
+  #       }
+  #     ]
   update: (body) ->
     throw new Error "Missing resource id. You can set it by chaining '.byId(ID)'" unless @_params.id
     unless body
@@ -384,13 +409,18 @@ class BaseService
     endpoint = @_currentEndpoint
     @_save(endpoint, body)
 
-  ###*
-   * Delete an existing resource of the _currentEndpoint
-   * If the `id` was provided, the API expects this to be a resource update with given {UpdateAction}
-   * @param {Number} version The current version of the resource
-   * @throws {Error} If version is not given
-   * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
-  ###
+  # Public: Delete an existing resource defined by the `Service`
+  #
+  # version - {Number} The current version of the resource to delete
+  #
+  # Throws an {Error} if `version` is missing
+  #
+  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {Error}
+  #
+  # Examples
+  #
+  #   service = client.products()
+  #   service.byId('123').delete(2)
   delete: (version) ->
     # TODO: automatically fetch the resource if no version is given?
     # TODO: describe which endpoints support this?
@@ -400,11 +430,11 @@ class BaseService
     endpoint = "#{@_currentEndpoint}?version=#{version}"
     @_delete(endpoint)
 
-  ###*
-   * Return a {Promise} for a GET call. It can be overridden for custom logic.
-   * @param {String} endpoint The resource endpoint
-   * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
-  ###
+  # Private: Return a {Promise} for a GET call. It can be overridden for custom logic.
+  #
+  # endpoint - {String} The resource endpoint
+  #
+  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {Error}
   _get: (endpoint) ->
     @_setDefaults()
     @_task.addTask =>
@@ -414,11 +444,11 @@ class BaseService
         @_rest.GET endpoint, =>
           @_wrapResponse.apply(@, [resolve, reject, originalRequest].concat(_.toArray(arguments)))
 
-  ###*
-   * Return a {Promise} for a PAGED call. It can be overridden for custom logic.
-   * @param {String} endpoint The resource endpoint
-   * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
-  ###
+  # Private: Return a {Promise} for a PAGED call. It can be overridden for custom logic.
+  #
+  # endpoint - {String} The resource endpoint
+  #
+  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {Error}
   _paged: (endpoint) ->
     @_setDefaults()
     @_task.addTask =>
@@ -429,12 +459,12 @@ class BaseService
         @_rest.PAGED endpoint, =>
           @_wrapResponse.apply(@, [resolve, reject, originalRequest].concat(_.toArray(arguments)))
 
-  ###*
-   * Return a {Promise} for a POST call. It can be overridden for custom logic.
-   * @param {String} endpoint The resource endpoint
-   * @param {String} payload The body payload as a String
-   * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
-  ###
+  # Private: Return a {Promise} for a POST call. It can be overridden for custom logic.
+  #
+  # endpoint - {String} The resource endpoint
+  # payload - {Object} The body payload as JSON
+  #
+  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {Error}
   _save: (endpoint, payload) ->
     @_setDefaults()
     @_task.addTask =>
@@ -445,11 +475,11 @@ class BaseService
         @_rest.POST endpoint, payload, =>
           @_wrapResponse.apply(@, [resolve, reject, originalRequest].concat(_.toArray(arguments)))
 
-  ###*
-   * Return a {Promise} for a DELETE call. It can be overridden for custom logic.
-   * @param {String} endpoint The resource endpoint
-   * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
-  ###
+  # Private: Return a {Promise} for a DELETE call. It can be overridden for custom logic.
+  #
+  # endpoint - {String} The resource endpoint
+  #
+  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {Error}
   _delete: (endpoint) ->
     @_setDefaults()
     @_task.addTask =>
@@ -459,15 +489,14 @@ class BaseService
         @_rest.DELETE endpoint, =>
           @_wrapResponse.apply(@, [resolve, reject, originalRequest].concat(_.toArray(arguments)))
 
-  ###*
-   * @private
-   * Wrap responses and decide whether to reject or resolve the promise
-   * @param {Function} resolve The function called to resolve the promise
-   * @param {Function} reject The function called to reject the promise
-   * @param {Object} error An error object when applicable (usually from `http.ClientRequest` object) otherwise `null`
-   * @param {Object} response An `http.IncomingMessage` object containing all kind of information about the request / response
-   * @param {Object} body A JSON object containing the HTTP API resource or error messages
-  ###
+  # Private: Wrap the HTTP response and decide whether to reject or resolve the promise
+  #
+  # resolve - {Function} The function called to `resolve` the {Promise}
+  # reject - {Function} The function called to `reject` the {Promise}
+  # originalRequest - {Object} The object containing information about the request, used when the request fails
+  # error - {Object} An error object when applicable (usually from `http.ClientRequest` object) otherwise `null`
+  # response - {Object} An `http.IncomingMessage` object containing all kind of information about the request / response
+  # body - {Object} A JSON object containing the HTTP API resource or error messages
   _wrapResponse: (resolve, reject, originalRequest, error, response, body) ->
     responseJson =
       if @_stats.includeHeaders
