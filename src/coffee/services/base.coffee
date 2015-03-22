@@ -9,7 +9,7 @@ Utils = require '../utils'
 REGEX_LAST = /^(\d+)([s|m|h|d|w])$/
 
 # Internal: Creates a new {BaseService}, containing base functionalities.
-# It should be extended when defining a Service.
+# **It must be extended** when defining a `*Service` and **should not be exposed**.
 class BaseService
 
   # Internal: Base path for a API resource endpoint (to be overriden by specific service) ({String})
@@ -44,12 +44,12 @@ class BaseService
   #
   # id - {String} The resource specific id
   #
+  # Returns a chained instance of `this` class
+  #
   # Examples
   #
   #   service = client.products()
   #   service.byId('123').fetch()
-  #
-  # Returns a chained instance of a `this` class
   byId: (id) ->
     @_currentEndpoint = "#{@constructor.baseResourceEndpoint}/#{id}"
     @_params.id = id
@@ -60,12 +60,12 @@ class BaseService
   #
   # predicate - {String} A [Predicate](http://dev.sphere.io/http-api.html#predicates) string for the `where` query parameter.
   #
+  # Returns a chained instance of `this` class
+  #
   # Examples
   #
   #   service = client.products()
   #   service.where('name(en = "Foo")').fetch()
-  #
-  # Returns a chained instance of a `this` class
   where: (predicate) ->
     # TODO: use query builder (for specific service) to faciliate build queries
     # e.g.: `QueryBuilder.product.name('Foo', 'en')`
@@ -75,11 +75,19 @@ class BaseService
     debug 'setting predicate: %s', predicate
     this
 
-  ###*
-   * Define the logical operator to combine multiple `where` query parameters.
-   * @param {String} [operator] A logical operator (default `and`)
-   * @return {BaseService} Chained instance of this class
-  ###
+  # Public: Define the logical operator to combine multiple {::where} query parameters.
+  #
+  # operator - {String} A logical operator (default `and`)
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.products()
+  #   service.whereOperator('or')
+  #   .where('name(en = "Red")')
+  #   .where('name(de = "Rot")')
+  #   .fetch()
   whereOperator: (operator = 'and') ->
     @_params.query.operator = switch operator
       when 'and', 'or' then operator
@@ -87,17 +95,23 @@ class BaseService
     debug 'setting where operator: %s', operator
     this
 
-  ###*
-   * This is a convenient method to query for the latest changes.
-   * @param {String} period time period of format "numberX" where "X" is one of the follwing units:
-   * s -> seconds
-   * m -> minutes
-   * h -> hours
-   * d -> days
-   * w -> weeks
-   * @throws {Error} If period cannot be parsed
-   * @return {BaseService} Chained instance of this class
-  ###
+  # Public: This is a convenient method to query for the latest changes.
+  #
+  # predicate - {String} Time period of format `numberX` where `X` is one of the follwing units:
+  #           :s - seconds
+  #           :m - minutes
+  #           :h - hours
+  #           :d - days
+  #           :w - weeks
+  #
+  # Throws an {Error} if `period` cannot be parsed
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.products()
+  #   service.last('10d').fetch()
   last: (period) ->
     throw new Error "Cannot parse period '#{period}'" unless REGEX_LAST.test(period)
 
@@ -112,58 +126,83 @@ class BaseService
     dateTime = new Date(now - before).toISOString()
     @where("lastModifiedAt > \"#{dateTime}\"")
 
-  ###*
-   * Define how the query should be sorted.
-   * It is possible to add several sort criteria, thereby the order is relevant.
-   * @param {String} path Sort path to search for
-   * @param {Boolean} [ascending] Whether the direction should be ascending or not, (default `asc`)
-   *                              `true` = asc, `false` = desc
-   * @return {BaseService} Chained instance of this class
-  ###
+  # Public: Define how the query should be sorted.
+  # It is possible to add several sort criteria, thereby the order is relevant.
+  #
+  # path - {String} Sort path to search for
+  # ascending - {Boolean} Whether the direction should be ascending or not, (default `asc`)
+  #   :true - `asc`
+  #   :false - `desc`
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.products()
+  #   service.sort('name.en', true).fetch()
   sort: (path, ascending = true) ->
     direction = if ascending then 'asc' else 'desc'
     @_params.query.sort.push encodeURIComponent("#{path} #{direction}")
     debug 'setting sort: %s %s', path, direction
     this
 
-  ###*
-   * Define the page number to be requested from the complete query result
-   * (used for pagination as `offset`)
-   * @param {Number} page A number >= 1 (default is 1)
-   * @throws {Error} If argument is not a number >= 1
-   * @return {BaseService} Chained instance of this class
-  ###
+  # Public: Define the page number to be requested from the complete query result (used for pagination as `offset`)
+  #
+  # page - {Number} The page number `>= 1` (default is 1)
+  #
+  # Throws an {Error} if `page` is not a positive number
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.products()
+  #   service.page(4).fetch()
   page: (page) ->
     throw new Error 'Page must be a number >= 1' if _.isNumber(page) and page < 1
     @_params.query.page = page
     debug 'setting page: %s', page
     this
 
-  ###*
-   * Define the number of results to return from a query
-   * (used for pagination as `limit`)
-   * @see _pagedFetch if limit is `0` (all results)
-   * @param {Number} perPage A number >= 0 (default is 100)
-   * @throws {Error} If argument is not a number >= 0
-   * @return {BaseService} Chained instance of this class
-  ###
+  # Public: Define the number of results to return from a query (used for pagination as `limit`)
+  #
+  # perPage - {Number} How many results in a page, it must be `>= 0` (default is 100)
+  #
+  # Throws an {Error} if `perPage` is not a positive number
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.products()
+  #   service.perPage(50).fetch()
   perPage: (perPage) ->
     throw new Error 'PerPage (limit) must be a number >= 0' if _.isNumber(perPage) and perPage < 0
     @_params.query.perPage = perPage
     debug 'setting perPage: %s', perPage
     this
 
-  ###*
-   * Alias for {@link perPage(0)}.
-  ###
+  # Public: A convenient method to set {::perPage} to `0`, which will fetch all pages
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.products()
+  #   service.all().fetch()
   all: -> @perPage(0)
 
-  ###*
-   * Define an {ExpansionPath} used for expanding {Reference}s of a resource.
-   * @link http://commercetools.de/dev/http-api.html#reference-expansion
-   * @param {String} [expansionPath] An {ExpansionPath} string for the `expand` query parameter.
-   * @return {BaseService} Chained instance of this class
-  ###
+  # Public: Define an [ExpansionPath](http://dev.sphere.io/http-api.html#reference-expansion)
+  # used for expanding [Reference](http://dev.sphere.io/http-api-types.html#reference)s of a resource.
+  #
+  # expansionPath - {String} An [ExpansionPath](http://dev.sphere.io/http-api.html#reference-expansion) for the `expand` query parameter
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.products()
+  #   service.expand('productType').fetch()
   expand: (expansionPath) ->
     return this unless expansionPath
     encodedExpansionPath = encodeURIComponent(expansionPath)
@@ -171,6 +210,18 @@ class BaseService
     debug 'setting expand: %s', expansionPath
     this
 
+  # Public: Allow to pass a literal query string
+  #
+  # query - {String} The literal query string
+  # withEncodedParams - {Boolean} Whether the given query string has encoded params or not (default false)
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.products()
+  #   service.byQueryString('where=slug(en = "my-slug")&limit=5&staged=true', false)
+  #   .fetch()
   byQueryString: (query, withEncodedParams = false) ->
     parsed = _.parseQuery(query, false)
     unless withEncodedParams
@@ -182,12 +233,9 @@ class BaseService
     debug 'setting queryString: %s', query
     this
 
-  ###*
-   * @private
-   * Build a query string from (pre)defined params
-   * (to be overriden for custom params)
-   * @return {String} the query string
-  ###
+  # Private: Build a query string from (pre)defined params (can be overriden for custom params)
+  #
+  # Returns the built query string
   _queryString: ->
     qs = if @_params.queryString
       @_params.queryString
@@ -202,10 +250,16 @@ class BaseService
     debug 'built query string: %s', qs
     qs
 
-  ###*
-   * Fetch resource defined by _currentEndpoint with query parameters
-   * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
-  ###
+  # Public: Fetch resource defined by the `Service` with all chained query parameters.
+  #
+  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {Error}
+  #
+  # Examples
+  #
+  #   service = client.products()
+  #   service.where('name(en = "Foo")').sort('createdAt desc').fetch()
+  #
+  #   client.products().fetch()
   fetch: ->
     _getEndpoint = =>
       queryString = @_queryString()
@@ -220,16 +274,35 @@ class BaseService
     else
       @_get(_getEndpoint())
 
-  ###*
-   * Process the resources for each page separatly using the function fn.
-   * The function fn will then be called once for per page.
-   * The function fn has to return a promise that should be resolved when all elements of the page are processed.
-   * @param {Function} fn The function to process a page that returns a promise
-   * @throws {Error} If argument is not a function
-   * @return {Promise} A promise, fulfilled with an array of the resolved results of function fn or the rejected result of fn
-   * @example
-   *   page(3).perPage(5) will start processing at element 10, gives you a payload of 5 elements per call of fn again and again until all elements are processed.
-  ###
+  # Public: Process the resources for each `page` separately using the function `fn`.
+  # The function `fn` will then be called once per page and has to return a {Promise}
+  # that should be resolved when all elements of the page are processed.
+  #
+  # fn - {Function} The function called for each processing page (it must return a {Promise})
+  # options - {Object} To configure the processing
+  #         :accumulate - {Boolean} Whether the results should be accumulated or not (default true)
+  #
+  # Throws an {Error} if `fn` is not a {Function}
+  #
+  # Returns a {Promise}, fulfilled with an {Array} of the results of each resolved page from the `fn`, or rejected with an instance of an {Error}
+  #
+  # Examples
+  #
+  #   # Define your custom function, which returns a promise
+  #   fn = (payload) ->
+  #     new Promise (resolve, reject) ->
+  #       # do something with the payload
+  #       if # something unexpected happens
+  #         reject 'BAD'
+  #       else # good case
+  #         resolve 'OK'
+  #   service = client.products()
+  #   service.perPage(20).process(fn)
+  #   .then (result) ->
+  #     # here we get the total result, which is just an array of all pages accumulated
+  #     # eg: ['OK', 'OK', 'OK'] if you have 41 to 60 products - the function fn is called three times
+  #   .catch (error) ->
+  #     # eg: 'BAD'
   process: (fn, options = {}) ->
     throw new Error 'Please provide a function to process the elements' unless _.isFunction fn
 
