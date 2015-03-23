@@ -3,18 +3,34 @@ _ = require 'underscore'
 _.mixin require('underscore-mixins')
 request = require 'request'
 
-###*
- * Creates a new OAuth2 instance, used to connect to https://auth.sphere.io
- * @class OAuth2
-###
+# Public: Define an HTTP client to connect to the SPHERE.IO OAuth webservice.
+#
+# Examples
+#
+#   oa = new OAuth2
+#     config:
+#       client_id: "CLIENT_ID_HERE"
+#       client_secret: "CLIENT_SECRET_HERE"
+#       project_key: "PROJECT_KEY_HERE"
+#     host: 'auth.sphere.io' # optional
+#     accessTokenUrl: '/oauth/token' # optional
+#     timeout: 20000 # optional
+#     rejectUnauthorized: true # optional
+#     user_agent: 'sphere-node-connect' # optional
+#   oa.getAccessToken (error, response, body) -> # do something
 class OAuth2
 
-  ###*
-   * Initialize the class
-   * @constructor
-   * @param {Object} [opts] A JSON object containg configuration options
-   * @throws {Error} if credentials are missing
-  ###
+  # Public: Initialize the HTTP client
+  #
+  # options - An {Object} to configure the service
+  #   :config - {Object} It contains the credentials `project_key`, `client_id`, `client_secret`
+  #   :host - {String} The host (default `auth.sphere.io`)
+  #   :accessTokenUrl - {String} The url path to the token endpoint (default `/oauth/token`)
+  #   :user_agent - {String} The request `User-Agent` (default `sphere-node-connect`)
+  #   :timeout - {Number} The request timeout (default `20000`)
+  #   :rejectUnauthorized - {Boolean} Whether to reject clients with invalid certificates or not (default `true`)
+  #
+  # Throws an {Error} if credentials are missing
   constructor: (opts = {}) ->
     config = opts.config
     throw new Error('Missing credentials') unless config
@@ -35,10 +51,9 @@ class OAuth2
     debug 'oauth2 options: %j', @_options
     return
 
-  ###*
-   * Retrieve an `access_token` to be able to access the HTTP API
-   * @param {Function} callback A function fulfilled with `error, response, body` arguments.
-  ###
+  # Public: Retrieve an `access_token`
+  #
+  # callback - {Function} A function fulfilled with `error, response, body` arguments.
   getAccessToken: (callback) ->
     params =
       grant_type: 'client_credentials'
@@ -60,18 +75,12 @@ class OAuth2
     debug 'access_token request options: %j', request_options
     @_doRequest(request_options, callback)
 
-  ###*
-   * Execute the request using the underling `request` module
-   * @link https://github.com/mikeal/request
-   * @param {Object} options A JSON object containing all required options for the request
-   * @param {Function} callback A function fulfilled with `error, response, body` arguments.
-  ###
+  # Private: Execute the request using the underling `request` module
+  #
+  # See {https://github.com/mikeal/request}
   _doRequest: (options, callback) ->
     request options, (e, r, b) ->
       debug('error on request: %j', e) if e
       callback(e, r, b)
 
-###
-Exports object
-###
 module.exports = OAuth2

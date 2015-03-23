@@ -4,18 +4,34 @@ _.mixin require('underscore-mixins')
 request = require 'request'
 OAuth2 = require './oauth2'
 
-###*
- * Creates a new Rest instance, used to connect to https://api.sphere.io
- * @class Rest
-###
+# Public: Define an HTTP client to connect to the SPHERE.IO API.
+#
+# Examples
+#
+#   rest = new Rest
+#     config:
+#       client_id: "CLIENT_ID_HERE"
+#       client_secret: "CLIENT_SECRET_HERE"
+#       project_key: "PROJECT_KEY_HERE"
+#     host: 'api.sphere.io' # optional
+#     access_token: '' # optional (if not provided it will automatically retrieve an `access_token`)
+#     timeout: 20000 # optional
+#     rejectUnauthorized: true # optional
+#     oauth_host: 'auth.sphere.io' # optional (used when retrieving the `access_token` internally)
+#     user_agent: 'sphere-node-connect' # optional
 class Rest
 
-  ###*
-   * Initialize the class
-   * @constructor
-   * @param {Object} [opts] A JSON object containg configuration options
-   * @throws {Error} if credentials are missing
-  ###
+  # Public: Initialize the HTTP client
+  #
+  # options - An {Object} to configure the service
+  #   :config - {Object} It contains the credentials `project_key`, `client_id`, `client_secret`
+  #   :host - {String} The host (default `api.sphere.io`)
+  #   :user_agent - {String} The request `User-Agent` (default `sphere-node-connect`)
+  #   :timeout - {Number} The request timeout (default `20000`)
+  #   :rejectUnauthorized - {Boolean} Whether to reject clients with invalid certificates or not (default `true`)
+  #   :access_token - {String} A valid `access_token` (if not present it will be retrieved)
+  #
+  # Throws an {Error} if credentials are missing
   constructor: (opts = {}) ->
     config = opts.config
     throw new Error('Missing credentials') unless config
@@ -46,11 +62,10 @@ class Rest
     debug 'rest options: %j', @_options
     return
 
-  ###*
-   * Send a HTTP GET request to an API endpoint
-   * @param {String} resource The API resource endpoint, with query string parameters.
-   * @param {Function} callback A function fulfilled with `error, response, body` arguments.
-  ###
+  # Public: Send a `HTTP GET` request to an API endpoint
+  #
+  # resource - {String} The API resource endpoint, with query string parameters.
+  # callback - {Function} A function fulfilled with `error, response, body` arguments.
   GET: (resource, callback) ->
     params =
       method: 'GET'
@@ -59,12 +74,11 @@ class Rest
       project: @_options.config.project_key
     @_preRequest(params, callback)
 
-  ###*
-   * Send a HTTP POST request to an API endpoint
-   * @param {String} resource The API resource endpoint, with query string parameters.
-   * @param {Object} payload A JSON object used as `body` payload
-   * @param {Function} callback A function fulfilled with `error, response, body` arguments.
-  ###
+  # Public: Send a `HTTP POST` request to an API endpoint
+  #
+  # resource - {String} The API resource endpoint, with query string parameters.
+  # payload - {Object} A JSON object used as `body` payload
+  # callback - {Function} A function fulfilled with `error, response, body` arguments.
   POST: (resource, payload, callback) ->
     params =
       method: 'POST'
@@ -74,11 +88,10 @@ class Rest
       project: @_options.config.project_key
     @_preRequest(params, callback)
 
-  ###*
-   * Send a HTTP DELETE request to an API endpoint
-   * @param {String} resource The API resource endpoint, with query string parameters.
-   * @param {Function} callback A function fulfilled with `error, response, body` arguments.
-  ###
+  # Public: Send a `HTTP DELETE` request to an API endpoint
+  #
+  # resource - {String} The API resource endpoint, with query string parameters.
+  # callback - {Function} A function fulfilled with `error, response, body` arguments.
   DELETE: (resource, callback) ->
     params =
       method: 'DELETE'
@@ -87,17 +100,15 @@ class Rest
       project: @_options.config.project_key
     @_preRequest(params, callback)
 
-  ###*
-   * @throws {Error} as there is currently no implementation
-  ###
+  # Private: Not implemented
   PUT: -> throw new Error 'Not implemented yet'
 
-  ###*
-   * Prepare the request to be sent by automatically retrieving an `access_token`
-   * @param {Object} params A JSON object containing all required parameters for the request
-   * @param {Function} callback A function fulfilled with `error, response, body` arguments.
-   * @throws {Error} if `access_token` could not be retrieved
-  ###
+  # Private: Prepare the request to be sent by automatically retrieving an `access_token`
+  #
+  # params - {Object} A JSON object containing all required parameters for the request
+  # callback - {Function} A function fulfilled with `error, response, body` arguments.
+  #
+  # Throws an {Error} if `access_token` could not be retrieved
   _preRequest: (params, callback) ->
     _req = (retry) =>
       unless @_options.access_token
@@ -143,26 +154,23 @@ class Rest
 
     _req(0)
 
-  ###*
-   * Execute the request using the underling `request` module
-   * @link https://github.com/mikeal/request
-   * @param {Object} options A JSON object containing all required options for the request
-   * @param {Function} callback A function fulfilled with `error, response, body` arguments.
-  ###
+  # Private: Execute the request using the underling `request` module
+  #
+  # See {https://github.com/mikeal/request}
   _doRequest: (options, callback) ->
     request options, (e, r, b) ->
       debug('error on request: %j', e) if e
       callback(e, r, b)
 
-  ###*
-   * Fetch all results of a Sphere resource query endpoint in batches of pages using a recursive function.
-   * Supports subscription of progress notifications.
-   * @param {String} resource The resource endpoint to be queried, with query string parameters.
-   * @param {Function} resolve A function fulfilled with `error, response, body` arguments. Body is an {Object} of {PagedQueryResponse}
-   * @param {Function} [notify] A function fulfilled with `percentage, value` arguments. Value is an {Object} of the current body results.
-   *                            This function is called for each batch iteration, allowing you to track the progress.
-   * @throws {Error} if `limit` param is not 0
-  ###
+  # Public: Fetch all results of a Sphere resource query endpoint in batches of pages using a recursive function.
+  # Supports subscription of progress notifications.
+  #
+  # resource - {String} The API resource endpoint, with query string parameters.
+  # resolve - {Function} A function fulfilled with `error, response, body` arguments. Body is an {Object} of `PagedQueryResponse`.
+  # notify - {Function} A function fulfilled with `percentage, value` arguments. Value is an {Object} of the current body results.
+  #                     This function is called for each batch iteration, allowing you to track the progress.
+  #
+  # Throws an {Error} if `limit` param is not `0`
   PAGED: (resource, resolve, notify) ->
     splitted = resource.split('?')
     endpoint = splitted[0]
@@ -210,8 +218,4 @@ class Rest
     _page(params.offset)
     return
 
-
-###
-Exports object
-###
 module.exports = Rest
