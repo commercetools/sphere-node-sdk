@@ -30,7 +30,6 @@
   },
   "dependencies": {
     "bluebird": "2.3.x",
-    "custom-error-generator": "7.0.0",
     "debug": "2.1.x",
     "jsondiffpatch": "0.1.20",
     "request": "2.49.x",

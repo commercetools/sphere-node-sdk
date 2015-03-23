@@ -258,7 +258,7 @@ class BaseService
 
   # Public: Fetch resource defined by the `Service` with all chained query parameters.
   #
-  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {Error}
+  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of {HttpError} or {SphereError}
   #
   # Examples
   #
@@ -291,7 +291,7 @@ class BaseService
   # Throws an {Error} if `fn` is not a {Function}
   #
   # Returns a {Promise}, fulfilled with an {Array} of the results of each resolved
-  # page from the `fn`, or rejected with an instance of an {Error}
+  # page from the `fn`, or rejected with an instance of an {HttpError} or {SphereError}
   #
   # Examples
   #
@@ -362,7 +362,7 @@ class BaseService
   #
   # Throws an {Error} if `body` is missing
   #
-  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {Error}
+  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {HttpError} or {SphereError}
   #
   # Examples
   #
@@ -394,7 +394,7 @@ class BaseService
   # Throws an {Error} if resource `id` is missing
   # Throws an {Error} if `body` is missing
   #
-  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {Error}
+  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {HttpError} or {SphereError}
   #
   # Examples
   #
@@ -422,7 +422,7 @@ class BaseService
   #
   # Throws an {Error} if `version` is missing
   #
-  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {Error}
+  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {HttpError} or {SphereError}
   #
   # Examples
   #
@@ -441,7 +441,7 @@ class BaseService
   #
   # endpoint - {String} The resource endpoint
   #
-  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {Error}
+  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {HttpError} or {SphereError}
   _get: (endpoint) ->
     @_setDefaults()
     @_task.addTask =>
@@ -455,7 +455,7 @@ class BaseService
   #
   # endpoint - {String} The resource endpoint
   #
-  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {Error}
+  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {HttpError} or {SphereError}
   _paged: (endpoint) ->
     @_setDefaults()
     @_task.addTask =>
@@ -471,7 +471,7 @@ class BaseService
   # endpoint - {String} The resource endpoint
   # payload - {Object} The body payload as JSON
   #
-  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {Error}
+  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {HttpError} or {SphereError}
   _save: (endpoint, payload) ->
     @_setDefaults()
     @_task.addTask =>
@@ -486,7 +486,7 @@ class BaseService
   #
   # endpoint - {String} The resource endpoint
   #
-  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {Error}
+  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {HttpError} or {SphereError}
   _delete: (endpoint) ->
     @_setDefaults()
     @_task.addTask =>
