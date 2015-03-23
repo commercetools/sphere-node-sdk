@@ -58,12 +58,23 @@ module.exports = (grunt) ->
 
     # watching for changes
     watch:
+      options:
+        spawn: false
       default:
         files: ['src/coffee/*.coffee']
         tasks: ['build']
       test:
         files: ['src/**/*.coffee']
         tasks: ['test']
+      doc:
+        files: ['src/**/*.coffee']
+        tasks: ['shell:doc', 'express:doc']
+
+    express:
+      doc:
+        options:
+          node_env: 'development'
+          script: './server-doc.js'
 
     shell:
       options:
@@ -84,6 +95,8 @@ module.exports = (grunt) ->
         command: 'jasmine-node --captureExceptions test/integration'
       publish:
         command: 'npm publish'
+      doc:
+        command: './node_modules/.bin/biscotto'
 
     bump:
       options:
@@ -106,10 +119,12 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-contrib-concat'
   grunt.loadNpmTasks 'grunt-contrib-watch'
+  grunt.loadNpmTasks 'grunt-express-server'
   grunt.loadNpmTasks 'grunt-shell'
 
   # register tasks
   grunt.registerTask 'default', ['build']
+  grunt.registerTask 'doc', ['shell:doc']
   grunt.registerTask 'build', ['clean', 'coffeelint', 'coffee', 'concat']
   grunt.registerTask 'test', 'Run test with optional target', (target) ->
     suffix = if target then "-#{target}" else ''
