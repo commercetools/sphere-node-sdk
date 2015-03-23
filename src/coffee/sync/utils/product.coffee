@@ -6,11 +6,10 @@ BaseUtils = require './base'
 REGEX_NUMBER = new RegExp /^\d+$/
 REGEX_UNDERSCORE_NUMBER = new RegExp /^\_\d+$/
 
-###
-Product Utils class
-###
+# Private: utilities for product sync
 class ProductUtils extends BaseUtils
 
+  # Private: configure the diff function
   diff: (old_obj, new_obj) ->
     # patch 'prices' to have an identifier in order for the diff
     # to be able to match nested objects in arrays
@@ -82,10 +81,12 @@ class ProductUtils extends BaseUtils
 
     super old_obj, new_obj
 
-
-  ###
-  # Actions mapping
-  ###
+  # Private: map base product actions
+  #
+  # diff - {Object} The result of diff from `jsondiffpatch`
+  # old_obj - {Object} The existing product
+  #
+  # Returns {Array} The list of actions, or empty if there are none
   actionsMapBase: (diff, old_obj) ->
     list = _.filter actionsBaseList(), (a) ->
       switch a.key
@@ -97,6 +98,12 @@ class ProductUtils extends BaseUtils
       actions.push action if action
     actions
 
+  # Private: map product meta attributes
+  #
+  # diff - {Object} The result of diff from `jsondiffpatch`
+  # old_obj - {Object} The existing product
+  #
+  # Returns {Array} The list of actions, or empty if there are none
   actionsMapMetaAttributes: (diff, old_obj) ->
     list = _.filter actionsBaseList(), (a) ->
       switch a.key
@@ -114,6 +121,13 @@ class ProductUtils extends BaseUtils
     defaults = _.pick old_obj, 'metaTitle', 'metaDescription', 'metaKeywords'
     [_.defaults(reduced, defaults)]
 
+  # Private: map product variants
+  #
+  # diff - {Object} The result of diff from `jsondiffpatch`
+  # old_obj - {Object} The existing product
+  # new_obj - {Object} The product to be updated
+  #
+  # Returns {Array} The list of actions, or empty if there are none
   actionsMapVariants: (diff, old_obj, new_obj) ->
     actions = []
     if diff.variants
@@ -140,6 +154,13 @@ class ProductUtils extends BaseUtils
 
     _.sortBy actions, (a) -> a.action is 'addVariant'
 
+  # Private: map product references
+  #
+  # diff - {Object} The result of diff from `jsondiffpatch`
+  # old_obj - {Object} The existing product
+  # new_obj - {Object} The product to be updated
+  #
+  # Returns {Array} The list of actions, or empty if there are none
   actionsMapReferences: (diff, old_obj, new_obj) ->
     actions = []
     if diff.taxCategory
@@ -171,6 +192,13 @@ class ProductUtils extends BaseUtils
 
     _.sortBy actions, (a) -> a.action is 'addToCategory'
 
+  # Private: map product prices
+  #
+  # diff - {Object} The result of diff from `jsondiffpatch`
+  # old_obj - {Object} The existing product
+  # new_obj - {Object} The product to be updated
+  #
+  # Returns {Array} The list of actions, or empty if there are none
   actionsMapPrices: (diff, old_obj, new_obj) ->
     actions = []
 
@@ -215,9 +243,16 @@ class ProductUtils extends BaseUtils
     # this will sort the actions ranked in asc order (first 'remove' then 'add')
     _.sortBy actions, (a) -> a.action is 'addPrice'
 
-  # we assume that the products have the same ProductType
-  # TODO: validate ProductType between products
+  # Private: map product attributes
+  #
+  # diff - {Object} The result of diff from `jsondiffpatch`
+  # old_obj - {Object} The existing product
+  # new_obj - {Object} The product to be updated
+  # sameForAllAttributeNames - {Array} A list of names of `SameForAll` attributes
+  #
+  # Returns {Array} The list of actions, or empty if there are none
   actionsMapAttributes: (diff, old_obj, new_obj, sameForAllAttributeNames = []) ->
+    # TODO: validate ProductType between products
     actions = []
     masterVariant = diff.masterVariant
     if masterVariant
@@ -242,6 +277,13 @@ class ProductUtils extends BaseUtils
     # Ensure we have each action only once per product. Use string representation of object to allow `===` on array objects
     _.unique actions, (action) -> JSON.stringify action
 
+  # Private: map product images
+  #
+  # diff - {Object} The result of diff from `jsondiffpatch`
+  # old_obj - {Object} The existing product
+  # new_obj - {Object} The product to be updated
+  #
+  # Returns {Array} The list of actions, or empty if there are none
   actionsMapImages: (diff, old_obj, new_obj) ->
     actions = []
     masterVariant = diff.masterVariant
@@ -468,10 +510,6 @@ class ProductUtils extends BaseUtils
         variantId: old_variant.id
         sku: @getDeltaValue(variantDiff.sku)
 
-
-###
-Exports object
-###
 module.exports = ProductUtils
 
 #################

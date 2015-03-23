@@ -1,16 +1,15 @@
 _ = require 'underscore'
 BaseUtils = require './base'
 
-###*
- * Category Utils class
-###
+# Private: utilities for category sync
 class CategoryUtils extends BaseUtils
 
-  ###
-  Create list of actions for syncing categories.
-  @param {object} diff result of jsondiffpatch tool.
-  @return {Array} The list of actions, or empty if there are none
-  ###
+  # Private: map base category actions
+  #
+  # diff - {Object} The result of diff from `jsondiffpatch`
+  # new_obj - {Object} The category to be updated
+  #
+  # Returns {Array} The list of actions, or empty if there are none
   actionsMap: (diff, new_obj) ->
     actions = []
     if diff
