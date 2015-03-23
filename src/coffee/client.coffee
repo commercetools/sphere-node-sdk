@@ -150,36 +150,145 @@ class SphereClient
     @_rest = options.rest or new Rest _.defaults options, {user_agent: 'sphere-node-sdk'}
 
     # Private: wrapper to pass different options to new service instances
-    _serviceOptions =
+    @_serviceOptions =
       _rest: @_rest
       _task: @_task
       _stats: _.defaults options.stats or {},
         includeHeaders: false
 
-    # services
-    # TODO: use functions to return new service instances?
-    @cartDiscounts      = new CartDiscountService _serviceOptions
-    @carts              = new CartService _serviceOptions
-    @categories         = new CategoryService _serviceOptions
-    @channels           = new ChannelService _serviceOptions
-    @comments           = new CommentService _serviceOptions
-    @customObjects      = new CustomObjectService _serviceOptions
-    @customers          = new CustomerService _serviceOptions
-    @customerGroups     = new CustomerGroupService _serviceOptions
-    @discountCodes      = new DiscountCodeService _serviceOptions
-    @inventoryEntries   = new InventoryEntryService _serviceOptions
-    @messages           = new MessageService _serviceOptions
-    @orders             = new OrderService _serviceOptions
-    @products           = new ProductService _serviceOptions
-    @productDiscounts   = new ProductDiscountService _serviceOptions
-    @productProjections = new ProductProjectionService _serviceOptions
-    @productTypes       = new ProductTypeService _serviceOptions
-    @project            = new ProjectService _serviceOptions
-    @reviews            = new ReviewService _serviceOptions
-    @shippingMethods    = new ShippingMethodService _serviceOptions
-    @states             = new StateService _serviceOptions
-    @taxCategories      = new TaxCategoryService _serviceOptions
-    @zones              = new ZoneService _serviceOptions
+    # DEPRECATED: use methods
+    @cartDiscounts      = new CartDiscountService @_serviceOptions
+    @carts              = new CartService @_serviceOptions
+    @categories         = new CategoryService @_serviceOptions
+    @channels           = new ChannelService @_serviceOptions
+    @comments           = new CommentService @_serviceOptions
+    @customObjects      = new CustomObjectService @_serviceOptions
+    @customers          = new CustomerService @_serviceOptions
+    @customerGroups     = new CustomerGroupService @_serviceOptions
+    @discountCodes      = new DiscountCodeService @_serviceOptions
+    @inventoryEntries   = new InventoryEntryService @_serviceOptions
+    @messages           = new MessageService @_serviceOptions
+    @orders             = new OrderService @_serviceOptions
+    @products           = new ProductService @_serviceOptions
+    @productDiscounts   = new ProductDiscountService @_serviceOptions
+    @productProjections = new ProductProjectionService @_serviceOptions
+    @productTypes       = new ProductTypeService @_serviceOptions
+    @project            = new ProjectService @_serviceOptions
+    @reviews            = new ReviewService @_serviceOptions
+    @shippingMethods    = new ShippingMethodService @_serviceOptions
+    @states             = new StateService @_serviceOptions
+    @taxCategories      = new TaxCategoryService @_serviceOptions
+    @zones              = new ZoneService @_serviceOptions
+
+  # Public: Get a new instance of a `CartDiscountService`
+  #
+  # Returns a new {CartDiscountService}
+  cartDiscounts: ->      new CartDiscountService @_serviceOptions
+
+  # Public: Get a new instance of a `CartService`
+  #
+  # Returns a new {CartService}
+  carts: ->              new CartService @_serviceOptions
+
+  # Public: Get a new instance of a `CategoryService`
+  #
+  # Returns a new {CategoryService}
+  categories: ->         new CategoryService @_serviceOptions
+
+  # Public: Get a new instance of a `ChannelService`
+  #
+  # Returns a new {ChannelService}
+  channels: ->           new ChannelService @_serviceOptions
+
+  # Public: Get a new instance of a `CommentService`
+  #
+  # Returns a new {CommentService}
+  comments: ->           new CommentService @_serviceOptions
+
+  # Public: Get a new instance of a `CustomObjectService`
+  #
+  # Returns a new {CustomObjectService}
+  customObjects: ->      new CustomObjectService @_serviceOptions
+
+  # Public: Get a new instance of a `CustomerService`
+  #
+  # Returns a new {CustomerService}
+  customers: ->          new CustomerService @_serviceOptions
+
+  # Public: Get a new instance of a `CustomerGroupService`
+  #
+  # Returns a new {CustomerGroupService}
+  customerGroups: ->     new CustomerGroupService @_serviceOptions
+
+  # Public: Get a new instance of a `DiscountCodeService`
+  #
+  # Returns a new {DiscountCodeService}
+  discountCodes: ->      new DiscountCodeService @_serviceOptions
+
+  # Public: Get a new instance of a `InventoryEntryService`
+  #
+  # Returns a new {InventoryEntryService}
+  inventoryEntries: ->   new InventoryEntryService @_serviceOptions
+
+  # Public: Get a new instance of a `MessageService`
+  #
+  # Returns a new {MessageService}
+  messages: ->           new MessageService @_serviceOptions
+
+  # Public: Get a new instance of a `OrderService`
+  #
+  # Returns a new {OrderService}
+  orders: ->             new OrderService @_serviceOptions
+
+  # Public: Get a new instance of a `ProductService`
+  #
+  # Returns a new {ProductService}
+  products: ->           new ProductService @_serviceOptions
+
+  # Public: Get a new instance of a `ProductDiscountService`
+  #
+  # Returns a new {ProductDiscountService}
+  productDiscounts: ->   new ProductDiscountService @_serviceOptions
+
+  # Public: Get a new instance of a `ProductProjectionService`
+  #
+  # Returns a new {ProductProjectionService}
+  productProjections: -> new ProductProjectionService @_serviceOptions
+
+  # Public: Get a new instance of a `ProductTypeService`
+  #
+  # Returns a new {ProductTypeService}
+  productTypes: ->       new ProductTypeService @_serviceOptions
+
+  # Public: Get a new instance of a `ProjectService`
+  #
+  # Returns a new {ProjectService}
+  project: ->            new ProjectService @_serviceOptions
+
+  # Public: Get a new instance of a `ReviewService`
+  #
+  # Returns a new {ReviewService}
+  reviews: ->            new ReviewService @_serviceOptions
+
+  # Public: Get a new instance of a `ShippingMethodService`
+  #
+  # Returns a new {ShippingMethodService}
+  shippingMethods: ->    new ShippingMethodService @_serviceOptions
+
+  # Public: Get a new instance of a `StateService`
+  #
+  # Returns a new {StateService}
+  states: ->             new StateService @_serviceOptions
+
+  # Public: Get a new instance of a `TaxCategoryService`
+  #
+  # Returns a new {TaxCategoryService}
+  taxCategories: ->      new TaxCategoryService @_serviceOptions
+
+  # Public: Get a new instance of a `ZoneService`
+  #
+  # Returns a new {ZoneService}
+  zones: ->              new ZoneService @_serviceOptions
 
   # Public: Define max parallel request to be sent on each request from the {TaskQueue}
   #
