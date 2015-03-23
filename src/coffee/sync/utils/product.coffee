@@ -376,14 +376,14 @@ class ProductUtils extends BaseUtils
         delete action.variantId
 
       if _.isArray(diffed_value)
-        action.value = @getDeltaValue(diffed_value)
+        action.value = @getDeltaValue(diffed_value, attribute.value)
       else
         # LText: value: {en: "", de: ""}
         # Money: value: {centAmount: 123, currencyCode: ""}
         # *: value: ""
         if _.isString(diffed_value)
           # normal
-          action.value = @getDeltaValue(diffed_value)
+          action.value = @getDeltaValue(diffed_value, attribute.value)
         else if diffed_value.centAmount
           # Money
           if diffed_value.centAmount

@@ -988,6 +988,42 @@ describe 'ProductUtils', ->
         ]
       expect(update).toEqual expected_update
 
+    it 'should build actions for attributes with long text as values', ->
+      newProduct =
+        masterVariant:
+          id: 1
+          sku: 'HARJPUL101601202'
+          attributes: [
+            {
+              name: 'images',
+              value: '//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-1.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-2.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-4.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-5.jpg'
+            }
+          ]
+          prices: []
+          images: []
+        variants: []
+      originalProduct =
+        masterVariant:
+          id: 1
+          sku: 'HARJPUL101601202'
+          attributes: [
+            {
+              name: 'images',
+              value: 'http://images.luxodo.com/html/zoom/luxodo/p-HARJPUL101601-1/2000/2000/p-HARJPUL101601-1.jpg;http://images.luxodo.com/html/zoom/luxodo/p-HARJPUL101601-2/2000/2000/p-HARJPUL101601-2.jpg;http://images.luxodo.com/html/zoom/luxodo/p-HARJPUL101601-4/2000/2000/p-HARJPUL101601-4.jpg;http://images.luxodo.com/html/zoom/luxodo/p-HARJPUL101601-5/2000/2000/p-HARJPUL101601-5.jpg'
+            }
+          ]
+          prices: []
+          images: []
+        variants: []
+
+      delta = @utils.diff originalProduct, newProduct
+      update = @utils.actionsMapAttributes delta, originalProduct, newProduct
+      expected_update =
+        [
+          { action: 'setAttribute', variantId: 1, name: 'images', value: '//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-1.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-2.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-4.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-5.jpg' }
+        ]
+      expect(update).toEqual expected_update
+
   describe ':: actionsMapImages', ->
 
     it 'should build actions for images', ->
