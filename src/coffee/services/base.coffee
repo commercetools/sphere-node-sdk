@@ -62,7 +62,8 @@ class BaseService
     debug 'setting endpoint id: %j', @_currentEndpoint
     this
 
-  # Public: Define a [Predicate](http://dev.sphere.io/http-api.html#predicates) used for quering and filtering a resource.
+  # Public: Define a URI encoded [Predicate](http://dev.sphere.io/http-api.html#predicates)
+  # from the given string, used for quering and filtering a resource. Can be set multiple times.
   #
   # predicate - {String} A [Predicate](http://dev.sphere.io/http-api.html#predicates) string for the `where` query parameter.
   #
@@ -102,6 +103,9 @@ class BaseService
     this
 
   # Public: This is a convenient method to query for the latest changes.
+  #
+  # Please be aware that `last` is just another `where` clause and thus
+  # depends on the `operator` you choose.
   #
   # predicate - {String} Time period of format `numberX` where `X` is one of the follwing units:
   #           :s - seconds
@@ -189,6 +193,7 @@ class BaseService
     this
 
   # Public: A convenient method to set {::perPage} to `0`, which will fetch all pages
+  # recursively in chunks and return them all together once completed.
   #
   # Returns a chained instance of `this` class
   #
@@ -283,6 +288,9 @@ class BaseService
   # Public: Process the resources for each `page` separately using the function `fn`.
   # The function `fn` will then be called once per page and has to return a
   # {Promise} that should be resolved when all elements of the page are processed.
+  #
+  # Batch processing allows to process a lot of resources in chunks.
+  # Using this approach you can balance between memory usage and parallelism.
   #
   # fn - {Function} The function called for each processing page (it must return a {Promise})
   # options - {Object} To configure the processing

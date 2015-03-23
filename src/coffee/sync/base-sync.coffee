@@ -21,7 +21,7 @@ class BaseSync
 
   # Public: Pass a list of `actions groups` in order to restrict the actions that will be built
   # Groups gives you the ability to configure the sync to include / exclude them when the actions
-  # are [built]{.buildActions}. This concept can be expressed in terms of _blacklisting_ and _whitelisting_.
+  # are [built]{::buildActions}. This concept can be expressed in terms of _blacklisting_ and _whitelisting_.
   #
   # See specific `*Sync` type for related list.
   #

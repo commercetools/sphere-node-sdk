@@ -24,7 +24,118 @@ StateService             = require './services/states'
 TaxCategoryService       = require './services/tax-categories'
 ZoneService              = require './services/zones'
 
-# Public: SphereClient - the official SDK
+# Public: The `SphereClient` provides a set of Services to connect with the related API endpoints.
+# To configure the underlying Http client see {Rest}
+#
+# ```coffeescript
+# SphereClient = require('sphere-node-sdk').SphereClient
+# ```
+#
+# Requests to the HTTP API are obviously asynchronous and they all return a {Promise}.
+# If the request is resolved, the `result` contains:
+# - `statusCode`
+# - `body`
+# If the request is rejected, the `error` is an instance of a {HttpError} or a {SphereError}.
+#
+# When a promise is rejected, the response object contains a field `originalRequest`,
+# providing some information about the related request (`endpoint`, `payload`).
+# This is useful to better understand the error in relation with the failed request.
+#
+# ### TaskQueue
+# To optimize processing lots of requests all together, e.g.: avoiding connection timeouts, we introduced {TaskQueue}.
+# Every request is internally pushed in a queue which automatically starts resolving promises (requests)
+# and will process concurrently some of them based on the `maxParallel` parameter. You can set this parameter by calling {::setMaxParallel}.
+#
+# ```coffeescript
+# client = new SphereClient # a TaskQueue is internally initialized at this point with maxParallel of 20
+# client.setMaxParallel 5
+#
+# # let's trigger 100 parallel requests with `Promise.all`, but process them max 5 at a time
+# Promise.all _.map [1..100], -> client.products.byId('123-abc').fetch()
+# .then (results) ->
+# ```
+#
+# ### Error handling
+# As the HTTP API _gracefully_ handles errors by providing a JSON body with error codes and messages,
+# the `SphereClient` handles that by providing an intuitive way of dealing with responses.
+#
+# Since a {Promise} can be either `resolved` or `rejected`, the result is determined by valuating the `statusCode` of the response:
+# - `resolved` everything with a successful HTTP status code
+# - `rejected` everything else
+#
+# ### Error types
+# All SPHERE.IO response _errors_ are then wrapped in a custom {Error} type (either a {HttpError} or {SphereError})
+# and returned as a rejected {Promise} value. That means you can do type check as well as getting the JSON response body.
+#
+# ```coffeescript
+# Errors = require('sphere-node-sdk').Errors
+# client.products().byId(productId).update(payload)
+# .then (result) ->
+#   # we know the request was successful (e.g.: 2xx) and `result` is a JSON of a resource representation
+# .catch (e) ->
+#   # something went wrong, either an unexpected error or a HTTP API error response
+#   # here we can check the error type to differentiate the error
+#   if e instanceof Errors.SphereHttpError.ConcurrentModification
+#     # e.code => 409
+#     # e.message => 'Different version then expected'
+#     # e.body => statusCode: 409, message: ...
+#     # e instanceof SphereError => true
+#   else
+#     throw e
+# ```
+#
+# Following error types are exposed:
+# - `{HttpError}`
+# - `{SphereError}`
+# - `SphereHttpError`
+#   - `{BadRequest}`
+#   - `{NotFound}`
+#   - `{ConcurrentModification}`
+#   - `{InternalServerError}`
+#   - `{ServiceUnavailable}`
+#
+# ### Statistics
+# Some statistics (more to come) are provided by passing some options when creating a new `SphereClient` instance.
+#
+# Current options are available:
+# - `includeHeaders` will include some HTTP header information in the response, wrapped in a JSON object called `http`
+#
+# ```coffeescript
+# client = new SphereClient
+#   config: # credentials
+#   stats:
+#     includeHeaders: true
+# client.products().fetch()
+# .then (result) ->
+#   # result.statusCode
+#   # result.body
+#   # result.http
+#   # result.http.request
+#   # result.http.response
+# ```
+#
+# Examples
+#
+#   {SphereClient} = require 'sphere-node-sdk'
+#   client = new SphereClient
+#     config:
+#       project_key: 'foo'
+#       client_id: '123'
+#       client_secret: 'secret'
+#     user_agent: 'sphere-node-sdk'
+#     task: {} # optional TaskQueue instance
+#     stats:
+#       includeHeaders: true
+#   client.products()
+#   .where('name(en="Foo")')
+#   .where('id="1234567890"')
+#   .whereOperator('or')
+#   .page(3)
+#   .perPage(25)
+#   .sort('name', false)
+#   .expand('masterData.staged.productType')
+#   .expand('masterData.staged.categories[*]')
+#   .fetch()
 class SphereClient
 
   # Public: Construct a `SphereClient` object.
