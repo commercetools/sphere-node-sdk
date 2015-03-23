@@ -2,25 +2,38 @@ _ = require 'underscore'
 BaseSync = require './base-sync'
 ProductUtils = require './utils/product'
 
-###*
- * Product Sync class
-###
+# Public: Define a `ProductSync` to provide basic methods to sync SPHERE.IO products.
+#
+# Action groups for products are:
+# - `base` (name, slug, description)
+# - `references` (taxCategory, categories)
+# - `prices`
+# - `attributes`
+# - `images`
+# - `variants`
+# - `metaAttributes`
+#
+# Examples
+#
+#   {ProductSync} = require 'sphere-node-sdk'
+#   sync = new ProductSync
+#   syncedActions = sync.buildActions(newCategory, existingCategory)
+#   if syncedActions.shouldUpdate()
+#     client.products().byId(syncedActions.getUpdatedId())
+#     .update(syncedActions.getUpdatePayload())
+#   else
+#     # do nothing
 class ProductSync extends BaseSync
 
+  # Public: Construct a `ProductSync` object.
   constructor: ->
     # Override base utils
     @_utils = new ProductUtils
 
-  ###*
-   * @override
-  ###
   buildActions: (new_obj, old_obj, sameForAllAttributeNames = []) ->
     @sameForAllAttributeNames = sameForAllAttributeNames
     super new_obj, old_obj
 
-  ###*
-   * @override
-  ###
   _doMapActions: (diff, new_obj, old_obj) ->
     allActions = []
     allActions.push @_mapActionOrNot 'base', => @_utils.actionsMapBase(diff, old_obj)

@@ -2,18 +2,29 @@ _ = require 'underscore'
 BaseSync = require './base-sync'
 InventoryUtils = require './utils/inventory'
 
-###*
- * Inventory Sync class
-###
+# Public: Define a `InventorySync` to provide basic methods to sync SPHERE.IO inventory entries.
+#
+# Action groups for products are:
+# - `quantity`
+# - `expectedDelivery`
+#
+# Examples
+#
+#   {InventorySync} = require 'sphere-node-sdk'
+#   sync = new InventorySync
+#   syncedActions = sync.buildActions(newInventory, existingInventory)
+#   if syncedActions.shouldUpdate()
+#     client.inventoryEntries().byId(syncedActions.getUpdatedId())
+#     .update(syncedActions.getUpdatePayload())
+#   else
+#     # do nothing
 class InventorySync extends BaseSync
 
+  # Public: Construct a `InventorySync` object.
   constructor: ->
     # Override base utils
     @_utils = new InventoryUtils
 
-  ###*
-   * @override
-  ###
   _doMapActions: (diff, new_obj, old_obj) ->
     allActions = []
     allActions.push @_mapActionOrNot 'quantity', => @_utils.actionsMapQuantity(diff, old_obj)
