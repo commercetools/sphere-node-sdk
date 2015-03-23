@@ -29,7 +29,6 @@
     "test": "grunt coverage"
   },
   "dependencies": {
-    "biscotto": "emmenko/biscotto",
     "bluebird": "2.3.x",
     "custom-error-generator": "7.0.0",
     "debug": "2.1.x",
@@ -39,6 +38,7 @@
     "underscore-mixins": "0.1.x"
   },
   "devDependencies": {
+    "biscotto": "emmenko/biscotto",
     "coveralls": "2.10.0",
     "grunt": "0.4.5",
     "grunt-bump": "0.0.13",

@@ -1,0 +1,8 @@
+--name       "Node.js SDK"
+--readme     README.md
+--title      "SPHERE.IO Node.js SDK"
+--internal
+--output-dir ./doc
+src/coffee
+-
+LICENSE-MIT
