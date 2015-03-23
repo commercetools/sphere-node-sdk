@@ -258,8 +258,7 @@ class BaseService
 
   # Public: Fetch resource defined by the `Service` with all chained query parameters.
   #
-  # Returns a {Promise}, fulfilled with
-  # an {Object} or rejected with an instance of an {Error}
+  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {Error}
   #
   # Examples
   #

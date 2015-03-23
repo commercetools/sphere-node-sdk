@@ -18,7 +18,7 @@ BaseService = require './base'
 #           productId: '111'
 #           variantId: 2
 #           quantity: 1
-#          }
+#         }
 #       ]
 class CartService extends BaseService
 

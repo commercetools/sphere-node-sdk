@@ -1,20 +1,20 @@
 BaseService = require './base'
 
-###*
- * Creates a new ReviewService.
- * @class ReviewService
-###
+# Public: Define a `ReviewService` to interact with the HTTP [`reviews`](http://dev.sphere.io/http-api-projects-reviews.html) endpoint.
+#
+# _Review of a product by a customer. A customer can create only one review per product._
+#
+# Examples
+#
+#   service = client.reviews()
+#   service.save
+#     productId: '111'
+#     customerId: '222'
+#     authorName: 'John Doe'
+#     title: 'My review'
 class ReviewService extends BaseService
 
-  ###*
-   * @const
-   * @private
-   * Base path for a Reviews API resource endpoint
-   * @type {String}
-  ###
+  # Internal: {String} The HTTP endpoint for `Reviews`
   @baseResourceEndpoint: '/reviews'
 
-###*
- * The {@link ReviewService} service.
-###
 module.exports = ReviewService

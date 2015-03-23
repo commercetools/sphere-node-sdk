@@ -4,31 +4,45 @@ _.mixin containsAll: (from, to) ->
 Promise = require 'bluebird'
 BaseService = require './base'
 
-###*
- * Creates a new ChannelService.
- * @class ChannelService
-###
+# Public: Define a `ChannelService` to interact with the HTTP [`channels`](http://dev.sphere.io/http-api-projects-channels.html) endpoint.
+#
+# _Channels represent a source or destination of different entities._
+#
+# Examples
+#
+#   service = client.channels()
+#   service.byId('123').fetch()
+#   .then (result) ->
+#     service.byId('123').update
+#       version: result.body.version
+#       actions: [
+#         {
+#           action: 'changeName'
+#           name:
+#             en: 'Foo'
+#         }
+#       ]
 class ChannelService extends BaseService
 
-  ###*
-   * @const
-   * @private
-   * Base path for a Channels API resource endpoint
-   * @type {String}
-  ###
+  # Internal: {String} The HTTP endpoint for `Channels`
   @baseResourceEndpoint: '/channels'
 
-
-  ###*
-   * Retrieves the first found channel result for a given key and roles.
-   * If not existing, the channel will be created or the channel roles will be
-   * added if absent.
-
-   * @param {String} key A unique identifier for channel within the project.
-   * @param {Array} roles A list of {ChannelRole} the channel must have.
-   * @throws {Error} If a required argument is missing
-   * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
-  ###
+  # Public: Ensure a `channel` exists. It tries fetching one with given `key`, if not found
+  # it will create one otherwise will update it. Given `roles` are also ensured to exist.
+  #
+  # key - {String} A unique identifier for `channel` within the project
+  # roles - {Array} A list of [ChannelRole](http://dev.sphere.io/http-api-projects-channels.html#channel-role-enum)
+  #         the `channel` must have
+  #
+  # Throws an {Error} if `key` and `roles` are missing
+  #
+  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {Error}
+  #
+  # Examples
+  #
+  #   service = client.channels()
+  #   roles = ['InventorySupply', 'OrderImport']
+  #   service.ensure('foo', roles)
   ensure: (key, roles) ->
     throw new Error 'Key is required.'unless key
     throw new Error 'Role is required.'unless roles
@@ -69,7 +83,4 @@ class ChannelService extends BaseService
 
       .catch (result) -> reject result
 
-###*
- * The {@link ChannelService} service.
-###
 module.exports = ChannelService

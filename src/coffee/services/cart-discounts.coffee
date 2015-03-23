@@ -16,7 +16,7 @@ BaseService = require './base'
 #           action: 'changeName'
 #           name:
 #             en: 'Foo'
-#          }
+#         }
 #       ]
 class CartDiscountService extends BaseService
 
