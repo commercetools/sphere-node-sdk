@@ -5,18 +5,24 @@ Promise = require 'bluebird'
 Utils = require '../utils'
 {HttpError, SphereHttpError} = require '../errors'
 
-# Internal: RegExp to parse time period for last function.
+# Private: RegExp to parse time period for last function.
 REGEX_LAST = /^(\d+)([s|m|h|d|w])$/
 
-# Internal: Creates a new {BaseService}, containing base functionalities.
-# **It must be extended** when defining a `*Service` and **should not be exposed**.
+# Internal: Define a `BaseService` to provide basic methods to interact with the HTTP API.
+#
+# This class should **not be exposed** and **must be extended** when defining a new `*Service`.
+#
+# Examples
+#
+#   class FooService extends BaseService
+#     @baseResourceEndpoint: '/foo'
 class BaseService
 
   # Internal: Base path for a API resource endpoint (to be overriden by specific service) ({String})
   # constant
   @baseResourceEndpoint: ''
 
-  # Public: Construct a `Service` object.
+  # Public: Construct a `*Service` object.
   #
   # options - An {Object} to configure the service
   #           :_rest - a {Rest} instance
@@ -252,7 +258,8 @@ class BaseService
 
   # Public: Fetch resource defined by the `Service` with all chained query parameters.
   #
-  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {Error}
+  # Returns a {Promise}, fulfilled with
+  # an {Object} or rejected with an instance of an {Error}
   #
   # Examples
   #
@@ -275,8 +282,8 @@ class BaseService
       @_get(_getEndpoint())
 
   # Public: Process the resources for each `page` separately using the function `fn`.
-  # The function `fn` will then be called once per page and has to return a {Promise}
-  # that should be resolved when all elements of the page are processed.
+  # The function `fn` will then be called once per page and has to return a
+  # {Promise} that should be resolved when all elements of the page are processed.
   #
   # fn - {Function} The function called for each processing page (it must return a {Promise})
   # options - {Object} To configure the processing
@@ -284,7 +291,8 @@ class BaseService
   #
   # Throws an {Error} if `fn` is not a {Function}
   #
-  # Returns a {Promise}, fulfilled with an {Array} of the results of each resolved page from the `fn`, or rejected with an instance of an {Error}
+  # Returns a {Promise}, fulfilled with an {Array} of the results of each resolved
+  # page from the `fn`, or rejected with an instance of an {Error}
   #
   # Examples
   #
