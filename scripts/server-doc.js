@@ -1,5 +1,5 @@
 var express = require('express'),
-  target = './doc'
+  target = './_docs'
   port = 3000,
   app = express()
 
