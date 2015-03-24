@@ -1,0 +1,11 @@
+#!/usr/bin/env node
+
+var ghpages = require('gh-pages');
+var path = require('path');
+
+ghpages.publish(path.join(__dirname, '../_docs'), {
+  message: 'Update documentation'
+}, function(err) {
+  if (err) console.error(err);
+  else console.log('Documentation pushed to gh-pages branch');
+});

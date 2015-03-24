@@ -2,24 +2,22 @@ debug = require('debug')('sphere-client')
 _ = require 'underscore'
 BaseService = require './base'
 
-###*
- * Creates a new ProductProjectionService.
- * @class ProductProjectionService
-###
+# Public: Define a `ProductProjectionService` to interact with the HTTP [`product-projections`](http://dev.sphere.io/http-api-projects-products.html) endpoint.
+# A [`ProductProjection`](http://dev.sphere.io/http-api-projects-products.html#product-projection) is a representation
+# of a the `current` or `staged` version of a product (**only GET requests**).
+#
+# _Products are the sellable goods in an e-commerce project on SPHERE.IO. This document explains some design concepts of products on SPHERE.IO and describes the available HTTP APIs for working with them._
+#
+# Examples
+#
+#   service = client.productProjections()
+#   service.where('name(en = "Foo")').staged(true).fetch()
 class ProductProjectionService extends BaseService
 
-  ###*
-   * @const
-   * @private
-   * Base path for a ProductProjections API resource endpoint
-   * @type {String}
-  ###
+  # Internal: {String} The HTTP endpoint for `ProductProjections`
   @baseResourceEndpoint: '/product-projections'
 
-  ###*
-   * @private
-   * Reset default query/search params
-  ###
+  # Private: Reset default query/search params used to build request endpoints
   _setDefaults: ->
     super()
     _.extend @_params.query,
@@ -32,22 +30,34 @@ class ProductProjectionService extends BaseService
     _.extend @_params,
       encoded: ['where', 'expand', 'sort', 'filter', 'filter.query', 'filter.facets', 'facets']
 
-  ###*
-   * Define whether to query for staged or current product projection.
-   * @param Boolean [staged] true to query staged products (default). False to query published products
-   * @return {ProductProjectionService} Chained instance of this class
-  ###
+  # Public: Define whether to query for staged or current product projection.
+  #
+  # staged - {Boolean} `true` to query `staged` products (default), `false` to query `current` (published) products
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.productProjections()
+  #   service.byId('123').staged(false).fetch()
   staged: (staged = true) ->
     @_params.query.staged = staged
     debug 'setting staged: %s', staged
     this
 
-  ###*
-   * Define the text to analyze and search.
-   * @param {String} [text] A string for the `text` search parameter.
-   * @param {String} language An ISO language tag, used for search the given text.
-   * @return {ProductProjectionService} Chained instance of this class
-  ###
+  # Public: Define the text to analyze and ([full-text](http://dev.sphere.io/http-api-projects-products-search.html#search-text)) search.
+  #
+  # text - {String} The string to search for
+  # language - {String} An ISO language tag, used for search the given text in localized product content
+  #
+  # Throws an {Error} if `language` is missing
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.productProjections()
+  #   service.text('Red Shirt', 'en').search()
   text: (text, language) ->
     throw new Error 'Language parameter is required for searching' unless language
     @_params.query.text =
@@ -56,12 +66,28 @@ class ProductProjectionService extends BaseService
     debug 'setting text.%s: %s', language, text
     this
 
-  ###*
-   * Define a {Filter} used for filtering searched product projections.
-   * @link http://dev.sphere.io/http-api-projects-products-search.html#search-filters
-   * @param {String} [filter] A {Filter} string for the `filter` search parameter.
-   * @return {ProductProjectionService} Chained instance of this class
-  ###
+  # Public: Define a [filter](http://dev.sphere.io/http-api-projects-products-search.html#search-filters)
+  # used for filtering searched product projections.
+  #
+  # The `filter` parameter applies a filter to the query results _after_ facets have been calculated.
+  # Filter in this scope doesn't influence facet counts.
+  #
+  # filter - {String} A filter expression
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.productProjections()
+  #   service.filter('variants.price.centAmount:1000').search()
+  #
+  #   # you can also chain multiple filter expressions
+  #   service = client.productProjections()
+  #   service
+  #   .filter('categories.id:"111"')
+  #   .filter('variants.price.centAmount:range (0 to 999), (2000 to 10000)')
+  #   .filter('variants.attributes.color.key:"red"')
+  #   .search()
   filter: (filter) ->
     return this unless filter
     encodedFilter = encodeURIComponent(filter)
@@ -69,12 +95,27 @@ class ProductProjectionService extends BaseService
     debug 'setting filter: %s', filter
     this
 
-  ###*
-   * Define a {Filter} (applied to query result) used for filtering searched product projections.
-   * @link http://dev.sphere.io/http-api-projects-products-search.html#search-filters
-   * @param {String} [filter] A {Filter} string for the `filter.query` search parameter.
-   * @return {ProductProjectionService} Chained instance of this class
-  ###
+  # Public: Define a [filter](http://dev.sphere.io/http-api-projects-products-search.html#search-filters)
+  # used for filtering searched product projections.
+  #
+  # The `filter.query` parameter applies a filter to the query results _before_ facets have been calculated.
+  # Filter in this scope does influence facet counts. If facets are not used, this scope should be preferred over `filter`.
+  #
+  # filter - {String} A filter expression
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.productProjections()
+  #   service.filterByQuery('categories.id:"123"').search()
+  #
+  #   # you can also chain multiple filter expressions
+  #   service = client.productProjections()
+  #   service
+  #   .filterByQuery('variants.price.centAmount:1500')
+  #   .filterByQuery('variants.attributes.color.key:"red"')
+  #   .search()
   filterByQuery: (filter) ->
     return this unless filter
     encodedFilter = encodeURIComponent(filter)
@@ -82,12 +123,28 @@ class ProductProjectionService extends BaseService
     debug 'setting filter.query: %s', filter
     this
 
-  ###*
-   * Define a {Filter} (applied to facet calculation) used for filtering searched product projections.
-   * @link http://dev.sphere.io/http-api-projects-products-search.html#search-filters
-   * @param {String} [filter] A {Filter} string for the `filter.facets` search parameter.
-   * @return {ProductProjectionService} Chained instance of this class
-  ###
+  # Public: Define a [filter](http://dev.sphere.io/http-api-projects-products-search.html#search-filters)
+  # used for filtering searched product projections.
+  #
+  # The `filter.facets` parameter applies a filter to all facet calculations (but not query results),
+  # except for those facets that operate on the exact same field as the filter.
+  # This behavior in combination with the `filter` scope enables multi-select faceting.
+  #
+  # filter - {String} A filter expression
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.productProjections()
+  #   service.filterByFacets('variants.attributes.foo:"bar"').search()
+  #
+  #   # you can also chain multiple filter expressions
+  #   service = client.productProjections()
+  #   service
+  #   .filterByFacets('variants.price.centAmount:1500')
+  #   .filterByFacets('variants.attributes.color.key:"red"')
+  #   .search()
   filterByFacets: (filter) ->
     return this unless filter
     encodedFilter = encodeURIComponent(filter)
@@ -95,12 +152,25 @@ class ProductProjectionService extends BaseService
     debug 'setting filter.facets: %s', filter
     this
 
-  ###*
-   * Define a {Facet} used for calculating statistical counts for searched product projections.
-   * @link http://dev.sphere.io/http-api-projects-products-search.html#search-facets
-   * @param {String} [facet] A {Facet} string for the `facet` search parameter.
-   * @return {ProductProjectionService} Chained instance of this class
-  ###
+  # Public: Define a [facet](http://dev.sphere.io/http-api-projects-products-search.html#search-facets)
+  # used for calculating statistical counts for searched product projections.
+  #
+  # facet - {String} A facet expression
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.productProjections()
+  #   service.facet('categories.id:"123"').search()
+  #
+  #   # you can also chain multiple facet expressions
+  #   service = client.productProjections()
+  #   service
+  #   .facet('categories.id:"123"')
+  #   .facet('variants.attributes.foo:"bar"')
+  #   .facet('variants.attributes.custom-price.currencyCode:1500')
+  #   .search()
   facet: (facet) ->
     return this unless facet
     encodedFacet = encodeURIComponent(facet)
@@ -108,13 +178,22 @@ class ProductProjectionService extends BaseService
     debug 'setting facet: %s', facet
     this
 
-  ###*
-   * Define a {Suggestion} used for matching tokens for product projections, via a suggest tokenizer.
-   * @link http://dev.sphere.io/http-api-projects-products-search.html#suggest
-   * @param {String} [facet] A {Facet} string for the `facet` search parameter.
-   * @throws {Error} If text or lang is not defined
-   * @return {ProductProjectionService} Chained instance of this class
-  ###
+  # Public: Define a [Suggestion](http://dev.sphere.io/http-api-projects-products-search.html#suggest)
+  # used for matching tokens for product projections, via a suggest tokenizer.
+  # The suggestions can be used to implement a basic auto-complete functionality.
+  # The source of data for suggestions is the searchKeyword field in a product.
+  #
+  # text - {String} The suggested text
+  # lang - {String} An ISO language tag, used for search the given text in localized product content
+  #
+  # Throws an {Error} if `text` or `lang` is missing
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.productProjections()
+  #   service.searchKeywords('Swiss Army Knife', 'en').suggest()
   searchKeywords: (text, lang) ->
     throw new Error 'Suggestion text parameter is required for searching for a suggestion' unless text
     throw new Error 'Language parameter is required for searching for a suggestion' unless lang
@@ -123,11 +202,9 @@ class ProductProjectionService extends BaseService
     debug 'setting searchKeywords: %s, %s', text, lang
     this
 
-  ###*
-   * @private
-   * Build a query string from (pre)defined params and custom search params.
-   * @return {String} the query string
-  ###
+  # Private: Build a query string from (pre)defined params and custom search params
+  #
+  # Returns the built query string
   _queryString: ->
     {staged, text, filter, filterByQuery, filterByFacets, facet, searchKeywords} = _.defaults @_params.query,
       staged: false
@@ -159,10 +236,18 @@ class ProductProjectionService extends BaseService
 
     _.compact([super()].concat(customQueryString)).join '&'
 
-  ###*
-   * Search product projections with search parameters
-   * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
-  ###
+  # Public: Search `ProductProjections` with all the search parameters
+  #
+  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {Error}
+  #
+  # Examples
+  #
+  #   service = client.products()
+  #   service
+  #   .text('Red Shirt')
+  #   .sort('createdAt desc')
+  #   .filter('variants.attributes.foo:"bar"')
+  #   .search()
   search: ->
     @_currentEndpoint = '/product-projections/search'
     @fetch()
@@ -173,12 +258,29 @@ class ProductProjectionService extends BaseService
    * @param  {String} language An ISO language tag, used for suggestion search for the 'searchKeywords' param
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
   ###
+
+  # Public: Query suggestions based on search keywords (used e.g. for auto-complete functionality)
+  #
+  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {Error}
+  #
+  # Examples
+  #
+  #   service = client.products()
+  #   service.searchKeywords('Swiss Army Knife', 'en').suggest()
   suggest: ->
     @_currentEndpoint = '/product-projections/suggest'
     @fetch()
 
+  # Public Unsupported: Not supported by the API
+  save: -> # noop
 
-###*
- * The {@link ProductProjectionService} service.
-###
+  # Public Unsupported: Not supported by the API
+  create: -> # noop
+
+  # Public Unsupported: Not supported by the API
+  update: ->
+
+  # Public Unsupported: Not supported by the API
+  delete: ->
+
 module.exports = ProductProjectionService

@@ -1,20 +1,26 @@
 BaseService = require './base'
 
-###*
- * Creates a new CustomerService.
- * @class CustomerService
-###
+# Public: Define a `CustomerService` to interact with the HTTP [`customers`](http://dev.sphere.io/http-api-projects-customers.html) endpoint.
+#
+# _A customer is a person purchasing products. Carts, Orders, Comments and Reviews can be associated to a customer._
+#
+# Examples
+#
+#   service = client.customers()
+#   service.byId('123').fetch()
+#   .then (result) ->
+#     service.byId('123').update
+#       version: result.body.version
+#       actions: [
+#         {
+#           action: 'changeName'
+#           name:
+#             en: 'Foo'
+#         }
+#       ]
 class CustomerService extends BaseService
 
-  ###*
-   * @const
-   * @private
-   * Base path for a Customers API resource endpoint
-   * @type {String}
-  ###
+  # Internal: {String} The HTTP endpoint for `Customers`
   @baseResourceEndpoint: '/customers'
 
-###*
- * The {@link CustomerService} service.
-###
 module.exports = CustomerService

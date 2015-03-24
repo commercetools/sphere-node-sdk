@@ -1,20 +1,26 @@
 BaseService = require './base'
 
-###*
- * Creates a new DiscountCodesService.
- * @class DiscountCodesService
-###
-class DiscountCodesService extends BaseService
+# Public: Define a `DiscountCodeService` to interact with the HTTP [`discount-codes`](http://dev.sphere.io/http-api-projects-discountCodes.html) endpoint.
+#
+# _Discount codes can be added to a cart to enable certain cart discounts._
+#
+# Examples
+#
+#   service = client.discountCodes()
+#   service.byId('123').fetch()
+#   .then (result) ->
+#     service.byId('123').update
+#       version: result.body.version
+#       actions: [
+#         {
+#           action: 'changeName'
+#           name:
+#             en: 'Foo'
+#         }
+#       ]
+class DiscountCodeService extends BaseService
 
-  ###*
-   * @const
-   * @private
-   * Base path for a DiscountCodess API resource endpoint
-   * @type {String}
-  ###
+  # Internal: {String} The HTTP endpoint for `DiscountCodes`
   @baseResourceEndpoint: '/discount-codes'
 
-###*
- * The {@link DiscountCodesService} service.
-###
-module.exports = DiscountCodesService
+module.exports = DiscountCodeService

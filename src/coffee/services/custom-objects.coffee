@@ -1,20 +1,23 @@
 BaseService = require './base'
 
-###*
- * Creates a new CustomObjectService.
- * @class CustomObjectService
-###
+# Public: Define a `CustomObjectService` to interact with the HTTP [`custom-objects`](http://dev.sphere.io/http-api-projects-custom-objects.html) endpoint.
+#
+# _Store custom JSON values._
+#
+# Examples
+#
+#   service = client.customObjects()
+#   service.save
+#     container: 'myNamespace'
+#     key: 'myKey'
+#     value:
+#       foo: 'bar'
+#       counts: [1, 2, 3, 4, 5]
+#
+#   service.fetch('myNamespace/myKey')
 class CustomObjectService extends BaseService
 
-  ###*
-   * @const
-   * @private
-   * Base path for a CustomObjects API resource endpoint
-   * @type {String}
-  ###
+  # Internal: {String} The HTTP endpoint for `CustomObjects`
   @baseResourceEndpoint: '/custom-objects'
 
-###*
- * The {@link CustomObjectService} service.
-###
 module.exports = CustomObjectService

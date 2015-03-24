@@ -34,7 +34,7 @@ describe 'Integration Products Sync', ->
     @sync = new ProductSync
 
     debug 'Creating a ProductType'
-    @client.productTypes.save(newProductType())
+    @client.productTypes().save(newProductType())
     .then (result) =>
       expect(result.statusCode).toBe 201
       @productType = result.body
@@ -43,25 +43,25 @@ describe 'Integration Products Sync', ->
 
   afterEach (done) ->
     debug 'Unpublishing all products'
-    @client.products.sort('id').where('masterData(published = "true")').process (payload) =>
+    @client.products().sort('id').where('masterData(published = "true")').process (payload) =>
       Promise.all _.map payload.body.results, (product) =>
-        @client.products.byId(product.id).update(updateUnpublish(product.version))
+        @client.products().byId(product.id).update(updateUnpublish(product.version))
     .then (results) =>
       debug "Unpublished #{results.length} products"
       debug 'About to delete all products'
-      @client.products.perPage(0).fetch()
+      @client.products().perPage(0).fetch()
     .then (payload) =>
       debug "Deleting #{payload.body.total} products"
       Promise.all _.map payload.body.results, (product) =>
-        @client.products.byId(product.id).delete(product.version)
+        @client.products().byId(product.id).delete(product.version)
     .then (results) =>
       debug "Deleted #{results.length} products"
       debug 'About to delete all product types'
-      @client.productTypes.perPage(0).fetch()
+      @client.productTypes().perPage(0).fetch()
     .then (payload) =>
       debug "Deleting #{payload.body.total} product types"
       Promise.all _.map payload.body.results, (productType) =>
-        @client.productTypes.byId(productType.id).delete(productType.version)
+        @client.productTypes().byId(productType.id).delete(productType.version)
     .then (results) ->
       debug "Deleted #{results.length} product types"
       done()
@@ -125,19 +125,19 @@ describe 'Integration Products Sync', ->
       ]
 
     debug 'Create initial product to be synced'
-    @client.products.create(OLD_PROD)
+    @client.products().create(OLD_PROD)
     .then (result) =>
       debug 'Fetch projection of created product'
-      @client.productProjections.byId(result.body.id).staged(true).fetch()
+      @client.productProjections().byId(result.body.id).staged(true).fetch()
     .then (result) =>
       syncedActions = @sync.buildActions(NEW_PROD, result.body)
       expect(syncedActions.shouldUpdate()).toBe true
       updatePayload = syncedActions.getUpdatePayload()
       debug 'About to update product with synced actions'
-      @client.products.byId(syncedActions.getUpdateId()).update(updatePayload)
+      @client.products().byId(syncedActions.getUpdateId()).update(updatePayload)
     .then (result) =>
       debug 'Fetch projection of updated product'
-      @client.productProjections.byId(result.body.id).staged(true).fetch()
+      @client.productProjections().byId(result.body.id).staged(true).fetch()
     .then (result) ->
       updated = result.body
       expect(updated.name).toEqual {de: 'Foo'}

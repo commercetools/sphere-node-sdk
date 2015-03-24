@@ -1,20 +1,26 @@
 BaseService = require './base'
 
-###*
- * Creates a new CartDiscountService.
- * @class CartDiscountService
-###
+# Public: Define a `CartDiscountService` to interact with the HTTP [`cart-discounts`](http://dev.sphere.io/http-api-projects-cartDiscounts.html) endpoint.
+#
+# _Cart discounts are used to change the prices of different elements within a cart like Line Items._
+#
+# Examples
+#
+#   service = client.cartDisounts()
+#   service.byId('123').fetch()
+#   .then (result) ->
+#     service.byId('123').update
+#       version: result.body.version
+#       actions: [
+#         {
+#           action: 'changeName'
+#           name:
+#             en: 'Foo'
+#         }
+#       ]
 class CartDiscountService extends BaseService
 
-  ###*
-   * @const
-   * @private
-   * Base path for a CartDiscounts API resource endpoint
-   * @type {String}
-  ###
+  # Internal: {String} The HTTP endpoint for `CartDiscounts`
   @baseResourceEndpoint: '/cart-discounts'
 
-###*
- * The {@link CartDiscountService} service.
-###
 module.exports = CartDiscountService

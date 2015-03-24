@@ -1,11 +1,10 @@
 _ = require 'underscore'
 BaseUtils = require './base'
 
-###
-Order Utils class
-###
+# Private: utilities for order sync
 class OrderUtils extends BaseUtils
 
+  # Private: configure the diff function
   diff: (old_obj, new_obj) ->
     patchReturnInfos = (order) ->
       _.each order.returnInfo, (info, index) ->
@@ -16,12 +15,12 @@ class OrderUtils extends BaseUtils
 
     super old_obj, new_obj
 
-  ###
-  Create list of actions for syncing order status values.
-  @param {object} diff Result of jsondiffpatch tool.
-  @param {object} old_obj Order to be updated.
-  @return list with actions
-  ###
+  # Private: map order statuses
+  #
+  # diff - {Object} The result of diff from `jsondiffpatch`
+  # old_obj - {Object} The existing order
+  #
+  # Returns {Array} The list of actions, or empty if there are none
   actionsMapStatusValues: (diff, old_obj) ->
     actions = []
     _.each actionsList(), (item) =>
@@ -36,12 +35,12 @@ class OrderUtils extends BaseUtils
       actions.push action if action
     actions
 
-  ###
-  Create list of actions for syncing delivery items.
-  @param {object} diff Result of jsondiffpatch tool.
-  @param {object} old_obj Order to be updated.
-  @return list with actions
-  ###
+  # Private: map order deliveries
+  #
+  # diff - {Object} The result of diff from `jsondiffpatch`
+  # old_obj - {Object} The existing order
+  #
+  # Returns {Array} The list of actions, or empty if there are none
   actionsMapDeliveries: (diff, old_obj) ->
 
     return [] unless _.has(diff, 'shippingInfo') and _.has(diff.shippingInfo, 'deliveries')
@@ -74,14 +73,12 @@ class OrderUtils extends BaseUtils
       .value()
     _.flatten actions
 
-
-
-  ###
-  Create list of actions for syncing returnInfo items and returnInfo status values.
-  @param {object} diff Result of jsondiffpatch tool.
-  @param {object} old_obj Order to be updated.
-  @return list with actions
-  ###
+  # Private: map order returns
+  #
+  # diff - {Object} The result of diff from `jsondiffpatch`
+  # old_obj - {Object} The existing order
+  #
+  # Returns {Array} The list of actions, or empty if there are none
   actionsMapReturnInfo: (diff, old_obj) ->
 
     return [] unless _.has(diff, 'returnInfo')
@@ -120,10 +117,6 @@ class OrderUtils extends BaseUtils
       .value()
     _.flatten actions
 
-
-###
-Exports object
-###
 module.exports = OrderUtils
 
 #################

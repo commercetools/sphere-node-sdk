@@ -11,22 +11,22 @@ describe 'Integration Orders Sync', ->
     @sync = new OrderSync
 
     # get a tax category required for setting up shippingInfo (simply returning first found)
-    @client.taxCategories.create(taxCategoryMock())
+    @client.taxCategories().create(taxCategoryMock())
     .then (result) =>
       @taxCategory = result.body
-      @client.zones.create(zoneMock())
+      @client.zones().create(zoneMock())
     .then (result) =>
       @zone = result.body
-      @client.shippingMethods.create(shippingMethodMock(@zone, @taxCategory))
+      @client.shippingMethods().create(shippingMethodMock(@zone, @taxCategory))
     .then (result) =>
       @shippingMethod = result.body
-      @client.productTypes.create(productTypeMock())
+      @client.productTypes().create(productTypeMock())
     .then (result) =>
       @productType = result.body
-      @client.products.create(productMock(@productType))
+      @client.products().create(productMock(@productType))
     .then (result) =>
       @product = result.body
-      @client.orders.import(orderMock(@shippingMethod, @product, @taxCategory))
+      @client.orders().import(orderMock(@shippingMethod, @product, @taxCategory))
     .then (result) =>
       @order = result.body
       done()
@@ -34,9 +34,9 @@ describe 'Integration Orders Sync', ->
 
   afterEach (done) ->
     # TODO: delete order (not supported by API yet)
-    @client.products.byId(@product.id).delete(@product.version)
+    @client.products().byId(@product.id).delete(@product.version)
     .then (result) =>
-      @client.productTypes.byId(@productType.id).delete(@productType.version)
+      @client.productTypes().byId(@productType.id).delete(@productType.version)
     .then (result) -> done()
     .catch (error) -> done(_.prettify(error))
     .finally =>
@@ -53,7 +53,7 @@ describe 'Integration Orders Sync', ->
 
     syncedActions = @sync.buildActions(orderNew, @order)
     debug 'About to update order with synced actions (statuses)'
-    @client.orders.byId(syncedActions.getUpdateId()).update(syncedActions.getUpdatePayload())
+    @client.orders().byId(syncedActions.getUpdateId()).update(syncedActions.getUpdatePayload())
     .then (result) ->
       expect(result.statusCode).toBe 200
       orderUpdated = result.body
@@ -79,7 +79,7 @@ describe 'Integration Orders Sync', ->
 
     syncedActions = @sync.buildActions(orderNew, @order)
     debug 'About to update order with synced actions (returnInfo)'
-    @client.orders.byId(syncedActions.getUpdateId()).update(syncedActions.getUpdatePayload())
+    @client.orders().byId(syncedActions.getUpdateId()).update(syncedActions.getUpdatePayload())
     .then (result) ->
       expect(result.statusCode).toBe 200
       orderUpdated = result.body
@@ -104,7 +104,7 @@ describe 'Integration Orders Sync', ->
     # prepare order: add returnInfo first
     syncedActions = @sync.buildActions(orderNew, @order)
     debug 'About to update order with synced actions (returnInfo added)'
-    @client.orders.byId(syncedActions.getUpdateId()).update(syncedActions.getUpdatePayload())
+    @client.orders().byId(syncedActions.getUpdateId()).update(syncedActions.getUpdatePayload())
     .then (result) =>
       orderUpdated = result.body
       @orderNew2 = _.deepClone orderUpdated
@@ -115,7 +115,7 @@ describe 'Integration Orders Sync', ->
       # update returnInfo status
       syncedActions = @sync.buildActions(@orderNew2, orderUpdated)
       debug 'About to update order with synced actions (returnInfo status)'
-      @client.orders.byId(syncedActions.getUpdateId()).update(syncedActions.getUpdatePayload())
+      @client.orders().byId(syncedActions.getUpdateId()).update(syncedActions.getUpdatePayload())
     .then (result) =>
       expect(result.statusCode).toBe 200
       orderUpdated2 = result.body
@@ -139,7 +139,7 @@ describe 'Integration Orders Sync', ->
 
     syncedActions = @sync.buildActions(orderNew, @order)
     debug 'About to update order with synced actions (deliveries)'
-    @client.orders.byId(syncedActions.getUpdateId()).update(syncedActions.getUpdatePayload())
+    @client.orders().byId(syncedActions.getUpdateId()).update(syncedActions.getUpdatePayload())
     .then (result) ->
       expect(result.statusCode).toBe 200
       orderUpdated = result.body
@@ -161,7 +161,7 @@ describe 'Integration Orders Sync', ->
 
     syncedActions = @sync.buildActions(orderNew, @order)
     debug 'About to update order with synced actions (delivery added)'
-    @client.orders.byId(syncedActions.getUpdateId()).update(syncedActions.getUpdatePayload())
+    @client.orders().byId(syncedActions.getUpdateId()).update(syncedActions.getUpdatePayload())
     .then (result) =>
       expect(result.statusCode).toBe 200
       orderUpdated = result.body
@@ -188,7 +188,7 @@ describe 'Integration Orders Sync', ->
       # sync first parcel
       syncedActions = @sync.buildActions(orderNew2, orderUpdated)
       debug 'About to update order with synced actions (1st parcel)'
-      @client.orders.byId(syncedActions.getUpdateId()).update(syncedActions.getUpdatePayload())
+      @client.orders().byId(syncedActions.getUpdateId()).update(syncedActions.getUpdatePayload())
     .then (result) =>
       expect(result.statusCode).toBe 200
       orderUpdated2 = result.body
@@ -201,7 +201,7 @@ describe 'Integration Orders Sync', ->
       # sync a second parcel
       syncedActions = @sync.buildActions(orderNew3, orderUpdated2)
       debug 'About to update order with synced actions (2nd parcel)'
-      @client.orders.byId(syncedActions.getUpdateId()).update(syncedActions.getUpdatePayload())
+      @client.orders().byId(syncedActions.getUpdateId()).update(syncedActions.getUpdatePayload())
     .then (result) ->
       expect(result.statusCode).toBe 200
       orderUpdated3 = result.body

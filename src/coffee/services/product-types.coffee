@@ -1,20 +1,26 @@
 BaseService = require './base'
 
-###*
- * Creates a new ProductTypeService.
- * @class ProductTypeService
-###
+# Public: Define a `ProductTypeService` to interact with the HTTP [`product-types`](http://dev.sphere.io/http-api-projects-productTypes.html) endpoint.
+#
+# _Product types are used to describe common characteristics, most importantly common custom attributes, of many concrete products._
+#
+# Examples
+#
+#   service = client.productTypes()
+#   service.byId('123').fetch()
+#   .then (result) ->
+#     service.byId('123').update
+#       version: result.body.version
+#       actions: [
+#         {
+#           action: 'changeName'
+#           name:
+#             en: 'Foo'
+#         }
+#       ]
 class ProductTypeService extends BaseService
 
-  ###*
-   * @const
-   * @private
-   * Base path for a ProductTypes API resource endpoint
-   * @type {String}
-  ###
+  # Internal: {String} The HTTP endpoint for `ProductTypes`
   @baseResourceEndpoint: '/product-types'
 
-###*
- * The {@link ProductTypeService} service.
-###
 module.exports = ProductTypeService

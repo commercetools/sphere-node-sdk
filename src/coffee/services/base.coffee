@@ -5,51 +5,39 @@ Promise = require 'bluebird'
 Utils = require '../utils'
 {HttpError, SphereHttpError} = require '../errors'
 
-###*
- * @const
- * RegExp to parse time period for last function.
-###
+# Private: RegExp to parse time period for last function.
 REGEX_LAST = /^(\d+)([s|m|h|d|w])$/
 
-###*
- * Creates a new BaseService, containing base functionalities. It should be extended when defining a Service.
- * @class BaseService
-###
+# Abstract: Define a `BaseService` to provide basic methods to interact with the HTTP API.
+#
+# This class should **not be exposed** and **must be extended** when defining a new `*Service`.
+#
+# Examples
+#
+#   class FooService extends BaseService
+#     @baseResourceEndpoint: '/foo'
 class BaseService
 
-  ###*
-   * @const
-   * @private
-   * Base path for a API resource endpoint (to be overriden by specific service)
-   * @type {String}
-  ###
+  # Internal: Base path for a API resource endpoint (to be overriden by specific service) ({String})
+  # constant
   @baseResourceEndpoint: ''
 
-  ###*
-   * Initialize the class.
-   * @constructor
-   * @param {Object} opts An object containing configuration option and/or instances of {Rest}, {TaskQueue}
-  ###
-  constructor: (opts = {}) ->
-    {@_rest, @_task, @_stats} = opts
+  # Public: Construct a `*Service` object.
+  #
+  # options - An {Object} to configure the service
+  #           :_rest - a {Rest} instance
+  #           :_task - a {TaskQueue} instance
+  #           :_stats - an {Object} to configure statistics
+  constructor: (options = {}) ->
+    {@_rest, @_task, @_stats} = options
     @_setDefaults()
 
-  ###*
-   * @private
-   * Reset default _currentEndpoint and _params used to build request endpoints
-  ###
+  # Private: Reset default _currentEndpoint and _params used to build request endpoints
   _setDefaults: ->
-    ###*
-     * @private
-     * Current path for a API resource endpoint which can be modified by appending ids, queries, etc
-     * @type {String}
-    ###
+    # Private: Current path for a API resource endpoint which can be modified by appending ids, queries, etc
     @_currentEndpoint = @constructor.baseResourceEndpoint
-    ###*
-     * @private
-     * Container that holds request parameters such `id`, `query`, etc
-     * @type {Object}
-    ###
+
+    # Private: Container that holds request parameters such `id`, `query`, etc
     @_params =
       encoded: ['where', 'expand', 'sort']
       query:
@@ -58,23 +46,33 @@ class BaseService
         sort: []
         expand: []
 
-  ###*
-   * Build the endpoint path by appending the given id
-   * @param {String} id The resource specific id
-   * @return {BaseService} Chained instance of this class
-  ###
+  # Public: Build the endpoint path by appending the given id
+  #
+  # id - {String} The resource specific id
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.products()
+  #   service.byId('123').fetch()
   byId: (id) ->
     @_currentEndpoint = "#{@constructor.baseResourceEndpoint}/#{id}"
     @_params.id = id
     debug 'setting endpoint id: %j', @_currentEndpoint
     this
 
-  ###*
-   * Define a {Predicate} used for quering and filtering a resource.
-   * @link http://commercetools.de/dev/http-api.html#predicates
-   * @param {String} [predicate] A {Predicate} string for the `where` query parameter.
-   * @return {BaseService} Chained instance of this class
-  ###
+  # Public: Define a URI encoded [Predicate](http://dev.sphere.io/http-api.html#predicates)
+  # from the given string, used for quering and filtering a resource. Can be set multiple times.
+  #
+  # predicate - {String} A [Predicate](http://dev.sphere.io/http-api.html#predicates) string for the `where` query parameter.
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.products()
+  #   service.where('name(en = "Foo")').fetch()
   where: (predicate) ->
     # TODO: use query builder (for specific service) to faciliate build queries
     # e.g.: `QueryBuilder.product.name('Foo', 'en')`
@@ -84,11 +82,19 @@ class BaseService
     debug 'setting predicate: %s', predicate
     this
 
-  ###*
-   * Define the logical operator to combine multiple `where` query parameters.
-   * @param {String} [operator] A logical operator (default `and`)
-   * @return {BaseService} Chained instance of this class
-  ###
+  # Public: Define the logical operator to combine multiple {::where} query parameters.
+  #
+  # operator - {String} A logical operator (default `and`)
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.products()
+  #   service.whereOperator('or')
+  #   .where('name(en = "Red")')
+  #   .where('name(de = "Rot")')
+  #   .fetch()
   whereOperator: (operator = 'and') ->
     @_params.query.operator = switch operator
       when 'and', 'or' then operator
@@ -96,17 +102,26 @@ class BaseService
     debug 'setting where operator: %s', operator
     this
 
-  ###*
-   * This is a convenient method to query for the latest changes.
-   * @param {String} period time period of format "numberX" where "X" is one of the follwing units:
-   * s -> seconds
-   * m -> minutes
-   * h -> hours
-   * d -> days
-   * w -> weeks
-   * @throws {Error} If period cannot be parsed
-   * @return {BaseService} Chained instance of this class
-  ###
+  # Public: This is a convenient method to query for the latest changes.
+  #
+  # Please be aware that `last` is just another `where` clause and thus
+  # depends on the `operator` you choose.
+  #
+  # predicate - {String} Time period of format `numberX` where `X` is one of the follwing units:
+  #           :s - seconds
+  #           :m - minutes
+  #           :h - hours
+  #           :d - days
+  #           :w - weeks
+  #
+  # Throws an {Error} if `period` cannot be parsed
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.products()
+  #   service.last('10d').fetch()
   last: (period) ->
     throw new Error "Cannot parse period '#{period}'" unless REGEX_LAST.test(period)
 
@@ -121,58 +136,84 @@ class BaseService
     dateTime = new Date(now - before).toISOString()
     @where("lastModifiedAt > \"#{dateTime}\"")
 
-  ###*
-   * Define how the query should be sorted.
-   * It is possible to add several sort criteria, thereby the order is relevant.
-   * @param {String} path Sort path to search for
-   * @param {Boolean} [ascending] Whether the direction should be ascending or not, (default `asc`)
-   *                              `true` = asc, `false` = desc
-   * @return {BaseService} Chained instance of this class
-  ###
+  # Public: Define how the query should be sorted.
+  # It is possible to add several sort criteria, thereby the order is relevant.
+  #
+  # path - {String} Sort path to search for
+  # ascending - {Boolean} Whether the direction should be ascending or not, (default `asc`)
+  #   :true - `asc`
+  #   :false - `desc`
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.products()
+  #   service.sort('name.en', true).fetch()
   sort: (path, ascending = true) ->
     direction = if ascending then 'asc' else 'desc'
     @_params.query.sort.push encodeURIComponent("#{path} #{direction}")
     debug 'setting sort: %s %s', path, direction
     this
 
-  ###*
-   * Define the page number to be requested from the complete query result
-   * (used for pagination as `offset`)
-   * @param {Number} page A number >= 1 (default is 1)
-   * @throws {Error} If argument is not a number >= 1
-   * @return {BaseService} Chained instance of this class
-  ###
+  # Public: Define the page number to be requested from the complete query result (used for pagination as `offset`)
+  #
+  # page - {Number} The page number `>= 1` (default is 1)
+  #
+  # Throws an {Error} if `page` is not a positive number
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.products()
+  #   service.page(4).fetch()
   page: (page) ->
     throw new Error 'Page must be a number >= 1' if _.isNumber(page) and page < 1
     @_params.query.page = page
     debug 'setting page: %s', page
     this
 
-  ###*
-   * Define the number of results to return from a query
-   * (used for pagination as `limit`)
-   * @see _pagedFetch if limit is `0` (all results)
-   * @param {Number} perPage A number >= 0 (default is 100)
-   * @throws {Error} If argument is not a number >= 0
-   * @return {BaseService} Chained instance of this class
-  ###
+  # Public: Define the number of results to return from a query (used for pagination as `limit`)
+  #
+  # perPage - {Number} How many results in a page, it must be `>= 0` (default is 100)
+  #
+  # Throws an {Error} if `perPage` is not a positive number
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.products()
+  #   service.perPage(50).fetch()
   perPage: (perPage) ->
     throw new Error 'PerPage (limit) must be a number >= 0' if _.isNumber(perPage) and perPage < 0
     @_params.query.perPage = perPage
     debug 'setting perPage: %s', perPage
     this
 
-  ###*
-   * Alias for {@link perPage(0)}.
-  ###
+  # Public: A convenient method to set {::perPage} to `0`, which will fetch all pages
+  # recursively in chunks and return them all together once completed.
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.products()
+  #   service.all().fetch()
   all: -> @perPage(0)
 
-  ###*
-   * Define an {ExpansionPath} used for expanding {Reference}s of a resource.
-   * @link http://commercetools.de/dev/http-api.html#reference-expansion
-   * @param {String} [expansionPath] An {ExpansionPath} string for the `expand` query parameter.
-   * @return {BaseService} Chained instance of this class
-  ###
+  # Public: Define an [ExpansionPath](http://dev.sphere.io/http-api.html#reference-expansion)
+  # used for expanding [Reference](http://dev.sphere.io/http-api-types.html#reference)s of a resource.
+  #
+  # expansionPath - {String} An [ExpansionPath](http://dev.sphere.io/http-api.html#reference-expansion) for the `expand` query parameter
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.products()
+  #   service.expand('productType').fetch()
   expand: (expansionPath) ->
     return this unless expansionPath
     encodedExpansionPath = encodeURIComponent(expansionPath)
@@ -180,6 +221,18 @@ class BaseService
     debug 'setting expand: %s', expansionPath
     this
 
+  # Public: Allow to pass a literal query string
+  #
+  # query - {String} The literal query string
+  # withEncodedParams - {Boolean} Whether the given query string has encoded params or not (default false)
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.products()
+  #   service.byQueryString('where=slug(en = "my-slug")&limit=5&staged=true', false)
+  #   .fetch()
   byQueryString: (query, withEncodedParams = false) ->
     parsed = _.parseQuery(query, false)
     unless withEncodedParams
@@ -191,12 +244,9 @@ class BaseService
     debug 'setting queryString: %s', query
     this
 
-  ###*
-   * @private
-   * Build a query string from (pre)defined params
-   * (to be overriden for custom params)
-   * @return {String} the query string
-  ###
+  # Private: Build a query string from (pre)defined params (can be overriden for custom params)
+  #
+  # Returns the built query string
   _queryString: ->
     qs = if @_params.queryString
       @_params.queryString
@@ -211,10 +261,16 @@ class BaseService
     debug 'built query string: %s', qs
     qs
 
-  ###*
-   * Fetch resource defined by _currentEndpoint with query parameters
-   * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
-  ###
+  # Public: Fetch resource defined by the `Service` with all chained query parameters.
+  #
+  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of {HttpError} or {SphereError}
+  #
+  # Examples
+  #
+  #   service = client.products()
+  #   service.where('name(en = "Foo")').sort('createdAt desc').fetch()
+  #
+  #   client.products().fetch()
   fetch: ->
     _getEndpoint = =>
       queryString = @_queryString()
@@ -229,16 +285,39 @@ class BaseService
     else
       @_get(_getEndpoint())
 
-  ###*
-   * Process the resources for each page separatly using the function fn.
-   * The function fn will then be called once for per page.
-   * The function fn has to return a promise that should be resolved when all elements of the page are processed.
-   * @param {Function} fn The function to process a page that returns a promise
-   * @throws {Error} If argument is not a function
-   * @return {Promise} A promise, fulfilled with an array of the resolved results of function fn or the rejected result of fn
-   * @example
-   *   page(3).perPage(5) will start processing at element 10, gives you a payload of 5 elements per call of fn again and again until all elements are processed.
-  ###
+  # Public: Process the resources for each `page` separately using the function `fn`.
+  # The function `fn` will then be called once per page and has to return a
+  # {Promise} that should be resolved when all elements of the page are processed.
+  #
+  # Batch processing allows to process a lot of resources in chunks.
+  # Using this approach you can balance between memory usage and parallelism.
+  #
+  # fn - {Function} The function called for each processing page (it must return a {Promise})
+  # options - {Object} To configure the processing
+  #         :accumulate - {Boolean} Whether the results should be accumulated or not (default true)
+  #
+  # Throws an {Error} if `fn` is not a {Function}
+  #
+  # Returns a {Promise}, fulfilled with an {Array} of the results of each resolved
+  # page from the `fn`, or rejected with an instance of an {HttpError} or {SphereError}
+  #
+  # Examples
+  #
+  #   # Define your custom function, which returns a promise
+  #   fn = (payload) ->
+  #     new Promise (resolve, reject) ->
+  #       # do something with the payload
+  #       if # something unexpected happens
+  #         reject 'BAD'
+  #       else # good case
+  #         resolve 'OK'
+  #   service = client.products()
+  #   service.perPage(20).process(fn)
+  #   .then (result) ->
+  #     # here we get the total result, which is just an array of all pages accumulated
+  #     # eg: ['OK', 'OK', 'OK'] if you have 41 to 60 products - the function fn is called three times
+  #   .catch (error) ->
+  #     # eg: 'BAD'
   process: (fn, options = {}) ->
     throw new Error 'Please provide a function to process the elements' unless _.isFunction fn
 
@@ -285,15 +364,25 @@ class BaseService
           .done()
       _processPage(@_params.query.page or 1, @_params.query.perPage or 20)
 
-  ###*
-   * Save a new resource by sending a payload to the _currentEndpoint, describing
-   * the new resource model.
-   * If the `id` was provided, the API expects the request to be an update by
-   * by providing a payload of {UpdateAction}.
-   * @param {Object} body The payload as JSON object
-   * @throws {Error} If body is not given
-   * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
-  ###
+  # Public: Save a new resource defined by the `Service` by passing the payload {Object}.
+  #
+  # body - {Object} The payload described by the related API resource as JSON
+  #
+  # Throws an {Error} if `body` is missing
+  #
+  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {HttpError} or {SphereError}
+  #
+  # Examples
+  #
+  #   service = client.products()
+  #   service.save
+  #     name:
+  #       en: 'Foo'
+  #     slug:
+  #       en: 'foo'
+  #     productType:
+  #       id: '123'
+  #       typeId: 'product-type'
   save: (body) ->
     unless body
       throw new Error "Body payload is required for creating a resource (endpoint: #{@constructor.baseResourceEndpoint})"
@@ -301,17 +390,32 @@ class BaseService
     endpoint = @constructor.baseResourceEndpoint
     @_save(endpoint, body)
 
-  ###*
-   * Alias for {@link save}.
-  ###
+  # Public: Alias of {::save}
   create: -> @save.apply(@, arguments)
 
-  ###*
-   * Alias for {@link save}, as it's the same type of HTTP request.
-   * Updating a resource is done by sending a list of {UpdateAction}.
-   * (more intuitive way of describing an update, given that an [id] is provided)
-   * @example `{service}.byId({id}).update({actions})`
-  ###
+  # Public: Update a resource defined by the `Service` by passing the payload {Object}
+  # with [UpdateAction](http://dev.sphere.io/http-api.html#partial-updates).
+  # The `id` of the resource must be provided with {::byId}.
+  #
+  # body - {Object} The payload described by the related API resource as JSON
+  #
+  # Throws an {Error} if resource `id` is missing
+  # Throws an {Error} if `body` is missing
+  #
+  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {HttpError} or {SphereError}
+  #
+  # Examples
+  #
+  #   service = client.products()
+  #   service.byId('123').update
+  #     version: 2
+  #     actions: [
+  #       {
+  #         action: 'changeName'
+  #         name:
+  #           en: Bar
+  #       }
+  #     ]
   update: (body) ->
     throw new Error "Missing resource id. You can set it by chaining '.byId(ID)'" unless @_params.id
     unless body
@@ -320,13 +424,18 @@ class BaseService
     endpoint = @_currentEndpoint
     @_save(endpoint, body)
 
-  ###*
-   * Delete an existing resource of the _currentEndpoint
-   * If the `id` was provided, the API expects this to be a resource update with given {UpdateAction}
-   * @param {Number} version The current version of the resource
-   * @throws {Error} If version is not given
-   * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
-  ###
+  # Public: Delete an existing resource defined by the `Service`
+  #
+  # version - {Number} The current version of the resource to delete
+  #
+  # Throws an {Error} if `version` is missing
+  #
+  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {HttpError} or {SphereError}
+  #
+  # Examples
+  #
+  #   service = client.products()
+  #   service.byId('123').delete(2)
   delete: (version) ->
     # TODO: automatically fetch the resource if no version is given?
     # TODO: describe which endpoints support this?
@@ -336,11 +445,11 @@ class BaseService
     endpoint = "#{@_currentEndpoint}?version=#{version}"
     @_delete(endpoint)
 
-  ###*
-   * Return a {Promise} for a GET call. It can be overridden for custom logic.
-   * @param {String} endpoint The resource endpoint
-   * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
-  ###
+  # Private: Return a {Promise} for a GET call. It can be overridden for custom logic.
+  #
+  # endpoint - {String} The resource endpoint
+  #
+  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {HttpError} or {SphereError}
   _get: (endpoint) ->
     @_setDefaults()
     @_task.addTask =>
@@ -350,11 +459,11 @@ class BaseService
         @_rest.GET endpoint, =>
           @_wrapResponse.apply(@, [resolve, reject, originalRequest].concat(_.toArray(arguments)))
 
-  ###*
-   * Return a {Promise} for a PAGED call. It can be overridden for custom logic.
-   * @param {String} endpoint The resource endpoint
-   * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
-  ###
+  # Private: Return a {Promise} for a PAGED call. It can be overridden for custom logic.
+  #
+  # endpoint - {String} The resource endpoint
+  #
+  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {HttpError} or {SphereError}
   _paged: (endpoint) ->
     @_setDefaults()
     @_task.addTask =>
@@ -365,12 +474,12 @@ class BaseService
         @_rest.PAGED endpoint, =>
           @_wrapResponse.apply(@, [resolve, reject, originalRequest].concat(_.toArray(arguments)))
 
-  ###*
-   * Return a {Promise} for a POST call. It can be overridden for custom logic.
-   * @param {String} endpoint The resource endpoint
-   * @param {String} payload The body payload as a String
-   * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
-  ###
+  # Private: Return a {Promise} for a POST call. It can be overridden for custom logic.
+  #
+  # endpoint - {String} The resource endpoint
+  # payload - {Object} The body payload as JSON
+  #
+  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {HttpError} or {SphereError}
   _save: (endpoint, payload) ->
     @_setDefaults()
     @_task.addTask =>
@@ -381,11 +490,11 @@ class BaseService
         @_rest.POST endpoint, payload, =>
           @_wrapResponse.apply(@, [resolve, reject, originalRequest].concat(_.toArray(arguments)))
 
-  ###*
-   * Return a {Promise} for a DELETE call. It can be overridden for custom logic.
-   * @param {String} endpoint The resource endpoint
-   * @return {Promise} A promise, fulfilled with an {Object} or rejected with a {SphereError}
-  ###
+  # Private: Return a {Promise} for a DELETE call. It can be overridden for custom logic.
+  #
+  # endpoint - {String} The resource endpoint
+  #
+  # Returns a {Promise}, fulfilled with an {Object} or rejected with an instance of an {HttpError} or {SphereError}
   _delete: (endpoint) ->
     @_setDefaults()
     @_task.addTask =>
@@ -395,15 +504,14 @@ class BaseService
         @_rest.DELETE endpoint, =>
           @_wrapResponse.apply(@, [resolve, reject, originalRequest].concat(_.toArray(arguments)))
 
-  ###*
-   * @private
-   * Wrap responses and decide whether to reject or resolve the promise
-   * @param {Function} resolve The function called to resolve the promise
-   * @param {Function} reject The function called to reject the promise
-   * @param {Object} error An error object when applicable (usually from `http.ClientRequest` object) otherwise `null`
-   * @param {Object} response An `http.IncomingMessage` object containing all kind of information about the request / response
-   * @param {Object} body A JSON object containing the HTTP API resource or error messages
-  ###
+  # Private: Wrap the HTTP response and decide whether to reject or resolve the promise
+  #
+  # resolve - {Function} The function called to `resolve` the {Promise}
+  # reject - {Function} The function called to `reject` the {Promise}
+  # originalRequest - {Object} The object containing information about the request, used when the request fails
+  # error - {Object} An error object when applicable (usually from `http.ClientRequest` object) otherwise `null`
+  # response - {Object} An `http.IncomingMessage` object containing all kind of information about the request / response
+  # body - {Object} A JSON object containing the HTTP API resource or error messages
   _wrapResponse: (resolve, reject, originalRequest, error, response, body) ->
     responseJson =
       if @_stats.includeHeaders
@@ -465,7 +573,4 @@ class BaseService
             statusCode: response.statusCode
             originalRequest: originalRequest
 
-###*
- * The {@link BaseService} service.
-###
 module.exports = BaseService

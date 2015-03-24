@@ -10,20 +10,14 @@
 
 Officially supported Node.js SDK library for working with the SPHERE.IO HTTP API, with OAuth2 support.
 
-
-## Getting Started
-Install the module with `npm install sphere-node-sdk`
-
-## Documentation
-Check out the [JSDoc](http://sphereio.github.io/sphere-node-sdk/).
-
-The module exposes some libraries which can be either used alone or together
+## Introduction
+The SDK exposes some libraries which can be either used alone or together:
 
 - `SphereClient` - a high-level (promise-based) client to connect to the SPHERE.IO HTTP APIs
 - `Rest` - a low-level (callback-based) client to connect to the SPHERE.IO HTTP APIs
 - `*Sync` - a collection of utils to build update actions
 
-> This documentation is for `v1.x` and not valid for previous version - [0.8.x docs here](https://github.com/sphereio/sphere-node-sdk/blob/v0.8.1/README.md#table-of-contents).
-
-## License
-Licensed under the [MIT license](LICENSE-MIT).
+## Content
+- [Getting Started](/docs/GETTING_STARTED.md.html)
+- [Release Notes](https://github.com/sphereio/sphere-node-sdk/releases)
+- [Issues](https://github.com/sphereio/sphere-node-sdk/issues)

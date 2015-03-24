@@ -1,17 +1,15 @@
 _ = require 'underscore'
 BaseUtils = require './base'
 
-###
-Inventory Utils class
-###
+# Private: utilities for inventory sync
 class InventoryUtils extends BaseUtils
 
-  ###
-  Create list of actions for syncing inventory quantities.
-  @param {Object} diff Result of jsondiffpatch tool.
-  @param {Object} old_obj Inventory to be updated.
-  @return list with actions
-  ###
+  # Private: map inventory quantities
+  #
+  # diff - {Object} The result of diff from `jsondiffpatch`
+  # old_obj - {Object} The existing inventory
+  #
+  # Returns {Array} The list of actions, or empty if there are none
   actionsMapQuantity: (diff, old_obj) ->
     actions = []
     if diff.quantityOnStock
@@ -29,12 +27,12 @@ class InventoryUtils extends BaseUtils
           actions.push a
     actions
 
-  ###
-  Create list of actions for syncing inventory expected deliveries.
-  @param {Object} diff Result of jsondiffpatch tool.
-  @param {Object} old_obj Inventory to be updated.
-  @return list with actions
-  ###
+  # Private: map inventory expected deliveries
+  #
+  # diff - {Object} The result of diff from `jsondiffpatch`
+  # old_obj - {Object} The existing inventory
+  #
+  # Returns {Array} The list of actions, or empty if there are none
   actionsMapExpectedDelivery: (diff, old_obj) ->
     actions = []
     if diff.expectedDelivery
@@ -50,8 +48,4 @@ class InventoryUtils extends BaseUtils
         actions.push a
     actions
 
-
-###
-Exports object
-###
 module.exports = InventoryUtils

@@ -29,20 +29,24 @@ describe 'Integration Channels', ->
   channels = []
 
   beforeEach (done) ->
-    @client = new SphereClient config: Config
+    @client = new SphereClient
+      config: Config
+      stats:
+        includeHeaders: true
 
-    @client.channels.save(newChannel())
+    @client.channels().save(newChannel())
     .then (result) =>
       expect(result.statusCode).toBe 201
+      expect(result.http.response.headers['x-correlation-id']).toBeDefined()
       @channelId = result.body.id
       debug 'New channel created: %j', result.body
       done()
     .catch (error) -> done _.prettify(error)
 
   afterEach (done) ->
-    @client.channels.byId(@channelId).fetch()
+    @client.channels().byId(@channelId).fetch()
     .then (result) =>
-      @client.channels.byId(@channelId).delete(result.body.version)
+      @client.channels().byId(@channelId).delete(result.body.version)
     .then (result) =>
       debug "Channel deleted: #{@channelId}"
       expect(result.statusCode).toBe 200
@@ -50,9 +54,9 @@ describe 'Integration Channels', ->
     .catch (error) -> done _.prettify(error)
 
   it 'should update a channel', (done) ->
-    @client.channels.byId(@channelId).fetch()
+    @client.channels().byId(@channelId).fetch()
     .then (result) =>
-      @client.channels.byId(@channelId).update(updateChannel(result.body.version))
+      @client.channels().byId(@channelId).update(updateChannel(result.body.version))
     .then (result) ->
       expect(result.statusCode).toBe 200
       expect(result.body.name).toEqual {en: 'A Channel'}
@@ -63,7 +67,7 @@ describe 'Integration Channels', ->
 
   it 'should create a new channel with given role and return it', (done) ->
     key = uniqueId "channel"
-    @client.channels.ensure(key, ROLE_ORDER_EXPORT)
+    @client.channels().ensure(key, ROLE_ORDER_EXPORT)
     .then (result) ->
       expect(result.body).toBeDefined()
       expect(result.body.key).toEqual key
@@ -72,11 +76,11 @@ describe 'Integration Channels', ->
     .catch (error) -> done _.prettify(error)
 
   it 'should fetch an existing channel, add given role and return it', (done) ->
-    @client.channels.byId(@channelId).fetch()
+    @client.channels().byId(@channelId).fetch()
     .then (result) =>
-      @client.channels.ensure(result.body.key, ROLE_ORDER_EXPORT)
+      @client.channels().ensure(result.body.key, ROLE_ORDER_EXPORT)
     .then (result) =>
-      @client.channels.ensure(result.body.key, ROLE_PRIMARY)
+      @client.channels().ensure(result.body.key, ROLE_PRIMARY)
     .then (result) ->
       expect(result.body.roles).toEqual [ROLE_INVENTORY_SUPPLY, ROLE_ORDER_EXPORT, ROLE_PRIMARY]
       done()
@@ -84,11 +88,19 @@ describe 'Integration Channels', ->
   , 10000 # 10sec
 
   it 'should fail if role value is not supported', (done) ->
-    @client.channels.byId(@channelId).fetch()
+    @client.channels().byId(@channelId).fetch()
     .then (result) =>
-      @client.channels.ensure(result.body.key, 'undefined-role')
+      @client.channels().ensure(result.body.key, 'undefined-role')
     .then (result) ->
       done 'Role value not supported.'
     .catch (error) ->
       expect(error).toBeDefined()
+      done()
+
+  it 'should have \'x-correlation-id\' header when request fails', (done) ->
+    @client.channels.save({})
+    .then (result) ->
+      done('Should have failed')
+    .catch (error) ->
+      expect(error.body.http.response.headers['x-correlation-id']).toBeDefined()
       done()

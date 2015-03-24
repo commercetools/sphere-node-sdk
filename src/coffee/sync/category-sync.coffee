@@ -2,11 +2,23 @@ _ = require 'underscore'
 BaseSync = require './base-sync'
 CategoryUtil = require './utils/category'
 
-###*
- * CategorySync Sync class
-###
+# Public: Define a `CategorySync` to provide basic methods to sync SPHERE.IO categories.
+#
+# Currently there are no action groups for categories.
+#
+# Examples
+#
+#   {CategorySync} = require 'sphere-node-sdk'
+#   sync = new CategorySync
+#   syncedActions = sync.buildActions(newCategory, existingCategory)
+#   if syncedActions.shouldUpdate()
+#     client.categories().byId(syncedActions.getUpdatedId())
+#     .update(syncedActions.getUpdatePayload())
+#   else
+#     # do nothing
 class CategorySync extends BaseSync
 
+  # Public: Construct a `CategorySync` object.
   constructor: ->
     # Override base utils
     @_utils = new CategoryUtil()
@@ -16,6 +28,5 @@ class CategorySync extends BaseSync
 
   _doUpdate: ->
     @_client.categories.byId(@_data.updateId).update(@_data.update)
-
 
 module.exports = CategorySync
