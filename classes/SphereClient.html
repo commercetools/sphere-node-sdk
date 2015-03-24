@@ -123,7 +123,8 @@ If the request is resolved, the <code>result</code> contains:</p><ul>
 If the request is rejected, the <code>error</code> is an instance of a <a href='../classes/HttpError.html'>HttpError</a> or a <a href='../classes/SphereError.html'>SphereError</a>.</li>
 </ul><p>When a promise is rejected, the response object contains a field <code>originalRequest</code>,
 providing some information about the related request (<code>endpoint</code>, <code>payload</code>).
-This is useful to better understand the error in relation with the failed request.</p><h3 id="taskqueue">TaskQueue</h3><p>To optimize processing lots of requests all together, e.g.: avoiding connection timeouts, we introduced <a href='../classes/TaskQueue.html'>TaskQueue</a>.
+This is useful to better understand the error in relation with the failed request.
+Optionally some <a href="#statistics">statistics</a> are also passed along.</p><h3 id="taskqueue">TaskQueue</h3><p>To optimize processing lots of requests all together, e.g.: avoiding connection timeouts, we introduced <a href='../classes/TaskQueue.html'>TaskQueue</a>.
 Every request is internally pushed in a queue which automatically starts resolving promises (requests)
 and will process concurrently some of them based on the <code>maxParallel</code> parameter. You can set this parameter by calling <a href='../classes/SphereClient.html#setMaxParallel-instance'>::setMaxParallel</a>.</p><pre><code class="lang-coffeescript">client = new SphereClient # a TaskQueue is internally initialized at this point with maxParallel of 20
 client.setMaxParallel 5
@@ -138,7 +139,12 @@ the <code>SphereClient</code> handles that by providing an intuitive way of deal
 <li><code>rejected</code> everything else</li>
 </ul>
 <h3 id="error-types">Error types</h3><p>All SPHERE.IO response <em>errors</em> are then wrapped in a custom <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Error'>Error</a> type (either a <a href='../classes/HttpError.html'>HttpError</a> or <a href='../classes/SphereError.html'>SphereError</a>)
-and returned as a rejected <a href='../classes/Promise.html'>Promise</a> value. That means you can do type check as well as getting the JSON response body.</p><pre><code class="lang-coffeescript">Errors = require(&#39;sphere-node-sdk&#39;).Errors
+and returned as a rejected <a href='../classes/Promise.html'>Promise</a> value. That means you can do type check as well as getting the JSON response body.</p><p>An <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Error'>Error</a> instance contains a <code>body</code>, which is a JSON object containing the following response information:</p><ul>
+<li><code>statusCode</code></li>
+<li><code>originalRequest</code> - useful information from the failed request</li>
+<li><code>http</code> - optional object containing header information (see <a href="#statistics">statistics</a>)</li>
+</ul>
+<pre><code class="lang-coffeescript">Errors = require(&#39;sphere-node-sdk&#39;).Errors
 client.products().byId(productId).update(payload)
 .then (result) -&gt;
   # we know the request was successful (e.g.: 2xx) and `result` is a JSON of a resource representation
@@ -166,8 +172,9 @@ client.products().byId(productId).update(payload)
 </ul>
 <h3 id="statistics">Statistics</h3><p>Some statistics (more to come) are provided by passing some options when creating a new <code>SphereClient</code> instance.</p><p>Current options are available:</p><ul>
 <li><code>includeHeaders</code> will include some HTTP header information in the response, wrapped in a JSON object called <code>http</code></li>
-</ul>
-<pre><code class="lang-coffeescript">client = new SphereClient
+</ul><p>Each response from the HTTP API contains a header <code>x-correlation-id</code>.
+This unique value can be used to correlate events across different layers and also might help in case of failures.
+Note: the SDK doesn&#39;t have any logic about that, thus it&#39;s up to applications to decide whether to log this header or not.</p><pre><code class="lang-coffeescript">client = new SphereClient
   config: # credentials
   stats:
     includeHeaders: true
@@ -456,7 +463,7 @@ client.products()
       ::<strong>constructor</strong>(options = {})
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.3.1
-/src&#47;coffee&#47;client.coffee#L143'>Source</a>
+/src&#47;coffee&#47;client.coffee#L153'>Source</a>
     </p>
     <div class='docstring'>
   <p>Construct a <code>SphereClient</code> object.</p>
@@ -481,7 +488,7 @@ client.products()
       CartDiscountService ::<strong>cartDiscounts</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.3.1
-/src&#47;coffee&#47;client.coffee#L161'>Source</a>
+/src&#47;coffee&#47;client.coffee#L195'>Source</a>
     </p>
     <div class='docstring'>
   <p>Get a new instance of a <code>CartDiscountService</code></p>
@@ -493,7 +500,7 @@ client.products()
       <span class='type'></span>
       (<tt><a href='../classes/CartDiscountService.html'>CartDiscountService</a></tt>)
       &mdash;
-      <span class='desc'> a new <a href='../classes/CartDiscountService.html'>CartDiscountService</a></span>
+      <span class='desc'> a <a href='../classes/CartDiscountService.html'>CartDiscountService</a></span>
     </li>
   </ul>
 </div>
@@ -503,7 +510,7 @@ client.products()
       CartService ::<strong>carts</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.3.1
-/src&#47;coffee&#47;client.coffee#L166'>Source</a>
+/src&#47;coffee&#47;client.coffee#L200'>Source</a>
     </p>
     <div class='docstring'>
   <p>Get a new instance of a <code>CartService</code></p>
@@ -515,7 +522,7 @@ client.products()
       <span class='type'></span>
       (<tt><a href='../classes/CartService.html'>CartService</a></tt>)
       &mdash;
-      <span class='desc'> a new <a href='../classes/CartService.html'>CartService</a></span>
+      <span class='desc'> a <a href='../classes/CartService.html'>CartService</a></span>
     </li>
   </ul>
 </div>
@@ -525,7 +532,7 @@ client.products()
       CategoryService ::<strong>categories</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.3.1
-/src&#47;coffee&#47;client.coffee#L171'>Source</a>
+/src&#47;coffee&#47;client.coffee#L205'>Source</a>
     </p>
     <div class='docstring'>
   <p>Get a new instance of a <code>CategoryService</code></p>
@@ -537,7 +544,7 @@ client.products()
       <span class='type'></span>
       (<tt><a href='../classes/CategoryService.html'>CategoryService</a></tt>)
       &mdash;
-      <span class='desc'> a new <a href='../classes/CategoryService.html'>CategoryService</a></span>
+      <span class='desc'> a <a href='../classes/CategoryService.html'>CategoryService</a></span>
     </li>
   </ul>
 </div>
@@ -547,7 +554,7 @@ client.products()
       ChannelService ::<strong>channels</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.3.1
-/src&#47;coffee&#47;client.coffee#L176'>Source</a>
+/src&#47;coffee&#47;client.coffee#L210'>Source</a>
     </p>
     <div class='docstring'>
   <p>Get a new instance of a <code>ChannelService</code></p>
@@ -559,7 +566,7 @@ client.products()
       <span class='type'></span>
       (<tt><a href='../classes/ChannelService.html'>ChannelService</a></tt>)
       &mdash;
-      <span class='desc'> a new <a href='../classes/ChannelService.html'>ChannelService</a></span>
+      <span class='desc'> a <a href='../classes/ChannelService.html'>ChannelService</a></span>
     </li>
   </ul>
 </div>
@@ -569,7 +576,7 @@ client.products()
       CommentService ::<strong>comments</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.3.1
-/src&#47;coffee&#47;client.coffee#L181'>Source</a>
+/src&#47;coffee&#47;client.coffee#L215'>Source</a>
     </p>
     <div class='docstring'>
   <p>Get a new instance of a <code>CommentService</code></p>
@@ -581,7 +588,7 @@ client.products()
       <span class='type'></span>
       (<tt><a href='../classes/CommentService.html'>CommentService</a></tt>)
       &mdash;
-      <span class='desc'> a new <a href='../classes/CommentService.html'>CommentService</a></span>
+      <span class='desc'> a <a href='../classes/CommentService.html'>CommentService</a></span>
     </li>
   </ul>
 </div>
@@ -591,7 +598,7 @@ client.products()
       CustomObjectService ::<strong>customObjects</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.3.1
-/src&#47;coffee&#47;client.coffee#L186'>Source</a>
+/src&#47;coffee&#47;client.coffee#L220'>Source</a>
     </p>
     <div class='docstring'>
   <p>Get a new instance of a <code>CustomObjectService</code></p>
@@ -603,7 +610,7 @@ client.products()
       <span class='type'></span>
       (<tt><a href='../classes/CustomObjectService.html'>CustomObjectService</a></tt>)
       &mdash;
-      <span class='desc'> a new <a href='../classes/CustomObjectService.html'>CustomObjectService</a></span>
+      <span class='desc'> a <a href='../classes/CustomObjectService.html'>CustomObjectService</a></span>
     </li>
   </ul>
 </div>
@@ -613,7 +620,7 @@ client.products()
       CustomerGroupService ::<strong>customerGroups</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.3.1
-/src&#47;coffee&#47;client.coffee#L196'>Source</a>
+/src&#47;coffee&#47;client.coffee#L230'>Source</a>
     </p>
     <div class='docstring'>
   <p>Get a new instance of a <code>CustomerGroupService</code></p>
@@ -625,7 +632,7 @@ client.products()
       <span class='type'></span>
       (<tt><a href='../classes/CustomerGroupService.html'>CustomerGroupService</a></tt>)
       &mdash;
-      <span class='desc'> a new <a href='../classes/CustomerGroupService.html'>CustomerGroupService</a></span>
+      <span class='desc'> a <a href='../classes/CustomerGroupService.html'>CustomerGroupService</a></span>
     </li>
   </ul>
 </div>
@@ -635,7 +642,7 @@ client.products()
       CustomerService ::<strong>customers</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.3.1
-/src&#47;coffee&#47;client.coffee#L191'>Source</a>
+/src&#47;coffee&#47;client.coffee#L225'>Source</a>
     </p>
     <div class='docstring'>
   <p>Get a new instance of a <code>CustomerService</code></p>
@@ -647,7 +654,7 @@ client.products()
       <span class='type'></span>
       (<tt><a href='../classes/CustomerService.html'>CustomerService</a></tt>)
       &mdash;
-      <span class='desc'> a new <a href='../classes/CustomerService.html'>CustomerService</a></span>
+      <span class='desc'> a <a href='../classes/CustomerService.html'>CustomerService</a></span>
     </li>
   </ul>
 </div>
@@ -657,7 +664,7 @@ client.products()
       DiscountCodeService ::<strong>discountCodes</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.3.1
-/src&#47;coffee&#47;client.coffee#L201'>Source</a>
+/src&#47;coffee&#47;client.coffee#L235'>Source</a>
     </p>
     <div class='docstring'>
   <p>Get a new instance of a <code>DiscountCodeService</code></p>
@@ -669,7 +676,7 @@ client.products()
       <span class='type'></span>
       (<tt><a href='../classes/DiscountCodeService.html'>DiscountCodeService</a></tt>)
       &mdash;
-      <span class='desc'> a new <a href='../classes/DiscountCodeService.html'>DiscountCodeService</a></span>
+      <span class='desc'> a <a href='../classes/DiscountCodeService.html'>DiscountCodeService</a></span>
     </li>
   </ul>
 </div>
@@ -679,7 +686,7 @@ client.products()
       InventoryEntryService ::<strong>inventoryEntries</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.3.1
-/src&#47;coffee&#47;client.coffee#L206'>Source</a>
+/src&#47;coffee&#47;client.coffee#L240'>Source</a>
     </p>
     <div class='docstring'>
   <p>Get a new instance of a <code>InventoryEntryService</code></p>
@@ -691,7 +698,7 @@ client.products()
       <span class='type'></span>
       (<tt><a href='../classes/InventoryEntryService.html'>InventoryEntryService</a></tt>)
       &mdash;
-      <span class='desc'> a new <a href='../classes/InventoryEntryService.html'>InventoryEntryService</a></span>
+      <span class='desc'> a <a href='../classes/InventoryEntryService.html'>InventoryEntryService</a></span>
     </li>
   </ul>
 </div>
@@ -701,7 +708,7 @@ client.products()
       MessageService ::<strong>messages</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.3.1
-/src&#47;coffee&#47;client.coffee#L211'>Source</a>
+/src&#47;coffee&#47;client.coffee#L245'>Source</a>
     </p>
     <div class='docstring'>
   <p>Get a new instance of a <code>MessageService</code></p>
@@ -713,7 +720,7 @@ client.products()
       <span class='type'></span>
       (<tt><a href='../classes/MessageService.html'>MessageService</a></tt>)
       &mdash;
-      <span class='desc'> a new <a href='../classes/MessageService.html'>MessageService</a></span>
+      <span class='desc'> a <a href='../classes/MessageService.html'>MessageService</a></span>
     </li>
   </ul>
 </div>
@@ -723,7 +730,7 @@ client.products()
       OrderService ::<strong>orders</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.3.1
-/src&#47;coffee&#47;client.coffee#L216'>Source</a>
+/src&#47;coffee&#47;client.coffee#L250'>Source</a>
     </p>
     <div class='docstring'>
   <p>Get a new instance of a <code>OrderService</code></p>
@@ -735,7 +742,7 @@ client.products()
       <span class='type'></span>
       (<tt><a href='../classes/OrderService.html'>OrderService</a></tt>)
       &mdash;
-      <span class='desc'> a new <a href='../classes/OrderService.html'>OrderService</a></span>
+      <span class='desc'> a <a href='../classes/OrderService.html'>OrderService</a></span>
     </li>
   </ul>
 </div>
@@ -745,7 +752,7 @@ client.products()
       ProductDiscountService ::<strong>productDiscounts</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.3.1
-/src&#47;coffee&#47;client.coffee#L226'>Source</a>
+/src&#47;coffee&#47;client.coffee#L260'>Source</a>
     </p>
     <div class='docstring'>
   <p>Get a new instance of a <code>ProductDiscountService</code></p>
@@ -757,7 +764,7 @@ client.products()
       <span class='type'></span>
       (<tt><a href='../classes/ProductDiscountService.html'>ProductDiscountService</a></tt>)
       &mdash;
-      <span class='desc'> a new <a href='../classes/ProductDiscountService.html'>ProductDiscountService</a></span>
+      <span class='desc'> a <a href='../classes/ProductDiscountService.html'>ProductDiscountService</a></span>
     </li>
   </ul>
 </div>
@@ -767,7 +774,7 @@ client.products()
       ProductProjectionService ::<strong>productProjections</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.3.1
-/src&#47;coffee&#47;client.coffee#L231'>Source</a>
+/src&#47;coffee&#47;client.coffee#L265'>Source</a>
     </p>
     <div class='docstring'>
   <p>Get a new instance of a <code>ProductProjectionService</code></p>
@@ -779,7 +786,7 @@ client.products()
       <span class='type'></span>
       (<tt><a href='../classes/ProductProjectionService.html'>ProductProjectionService</a></tt>)
       &mdash;
-      <span class='desc'> a new <a href='../classes/ProductProjectionService.html'>ProductProjectionService</a></span>
+      <span class='desc'> a <a href='../classes/ProductProjectionService.html'>ProductProjectionService</a></span>
     </li>
   </ul>
 </div>
@@ -789,7 +796,7 @@ client.products()
       ProductTypeService ::<strong>productTypes</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.3.1
-/src&#47;coffee&#47;client.coffee#L236'>Source</a>
+/src&#47;coffee&#47;client.coffee#L270'>Source</a>
     </p>
     <div class='docstring'>
   <p>Get a new instance of a <code>ProductTypeService</code></p>
@@ -801,7 +808,7 @@ client.products()
       <span class='type'></span>
       (<tt><a href='../classes/ProductTypeService.html'>ProductTypeService</a></tt>)
       &mdash;
-      <span class='desc'> a new <a href='../classes/ProductTypeService.html'>ProductTypeService</a></span>
+      <span class='desc'> a <a href='../classes/ProductTypeService.html'>ProductTypeService</a></span>
     </li>
   </ul>
 </div>
@@ -811,7 +818,7 @@ client.products()
       ProductService ::<strong>products</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.3.1
-/src&#47;coffee&#47;client.coffee#L221'>Source</a>
+/src&#47;coffee&#47;client.coffee#L255'>Source</a>
     </p>
     <div class='docstring'>
   <p>Get a new instance of a <code>ProductService</code></p>
@@ -823,7 +830,7 @@ client.products()
       <span class='type'></span>
       (<tt><a href='../classes/ProductService.html'>ProductService</a></tt>)
       &mdash;
-      <span class='desc'> a new <a href='../classes/ProductService.html'>ProductService</a></span>
+      <span class='desc'> a <a href='../classes/ProductService.html'>ProductService</a></span>
     </li>
   </ul>
 </div>
@@ -833,7 +840,7 @@ client.products()
       ProjectService ::<strong>project</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.3.1
-/src&#47;coffee&#47;client.coffee#L241'>Source</a>
+/src&#47;coffee&#47;client.coffee#L275'>Source</a>
     </p>
     <div class='docstring'>
   <p>Get a new instance of a <code>ProjectService</code></p>
@@ -845,7 +852,7 @@ client.products()
       <span class='type'></span>
       (<tt><a href='../classes/ProjectService.html'>ProjectService</a></tt>)
       &mdash;
-      <span class='desc'> a new <a href='../classes/ProjectService.html'>ProjectService</a></span>
+      <span class='desc'> a <a href='../classes/ProjectService.html'>ProjectService</a></span>
     </li>
   </ul>
 </div>
@@ -855,7 +862,7 @@ client.products()
       ReviewService ::<strong>reviews</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.3.1
-/src&#47;coffee&#47;client.coffee#L246'>Source</a>
+/src&#47;coffee&#47;client.coffee#L280'>Source</a>
     </p>
     <div class='docstring'>
   <p>Get a new instance of a <code>ReviewService</code></p>
@@ -867,7 +874,7 @@ client.products()
       <span class='type'></span>
       (<tt><a href='../classes/ReviewService.html'>ReviewService</a></tt>)
       &mdash;
-      <span class='desc'> a new <a href='../classes/ReviewService.html'>ReviewService</a></span>
+      <span class='desc'> a <a href='../classes/ReviewService.html'>ReviewService</a></span>
     </li>
   </ul>
 </div>
@@ -877,7 +884,7 @@ client.products()
       ::<strong>setMaxParallel</strong>(maxParallel)
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.3.1
-/src&#47;coffee&#47;client.coffee#L271'>Source</a>
+/src&#47;coffee&#47;client.coffee#L305'>Source</a>
     </p>
     <div class='docstring'>
   <p>Define max parallel request to be sent on each request from the <a href='../classes/TaskQueue.html'>TaskQueue</a></p>
@@ -899,7 +906,7 @@ client.products()
       ShippingMethodService ::<strong>shippingMethods</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.3.1
-/src&#47;coffee&#47;client.coffee#L251'>Source</a>
+/src&#47;coffee&#47;client.coffee#L285'>Source</a>
     </p>
     <div class='docstring'>
   <p>Get a new instance of a <code>ShippingMethodService</code></p>
@@ -911,7 +918,7 @@ client.products()
       <span class='type'></span>
       (<tt><a href='../classes/ShippingMethodService.html'>ShippingMethodService</a></tt>)
       &mdash;
-      <span class='desc'> a new <a href='../classes/ShippingMethodService.html'>ShippingMethodService</a></span>
+      <span class='desc'> a <a href='../classes/ShippingMethodService.html'>ShippingMethodService</a></span>
     </li>
   </ul>
 </div>
@@ -921,7 +928,7 @@ client.products()
       StateService ::<strong>states</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.3.1
-/src&#47;coffee&#47;client.coffee#L256'>Source</a>
+/src&#47;coffee&#47;client.coffee#L290'>Source</a>
     </p>
     <div class='docstring'>
   <p>Get a new instance of a <code>StateService</code></p>
@@ -933,7 +940,7 @@ client.products()
       <span class='type'></span>
       (<tt><a href='../classes/StateService.html'>StateService</a></tt>)
       &mdash;
-      <span class='desc'> a new <a href='../classes/StateService.html'>StateService</a></span>
+      <span class='desc'> a <a href='../classes/StateService.html'>StateService</a></span>
     </li>
   </ul>
 </div>
@@ -943,7 +950,7 @@ client.products()
       TaxCategoryService ::<strong>taxCategories</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.3.1
-/src&#47;coffee&#47;client.coffee#L261'>Source</a>
+/src&#47;coffee&#47;client.coffee#L295'>Source</a>
     </p>
     <div class='docstring'>
   <p>Get a new instance of a <code>TaxCategoryService</code></p>
@@ -955,7 +962,7 @@ client.products()
       <span class='type'></span>
       (<tt><a href='../classes/TaxCategoryService.html'>TaxCategoryService</a></tt>)
       &mdash;
-      <span class='desc'> a new <a href='../classes/TaxCategoryService.html'>TaxCategoryService</a></span>
+      <span class='desc'> a <a href='../classes/TaxCategoryService.html'>TaxCategoryService</a></span>
     </li>
   </ul>
 </div>
@@ -965,7 +972,7 @@ client.products()
       ZoneService ::<strong>zones</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.3.1
-/src&#47;coffee&#47;client.coffee#L266'>Source</a>
+/src&#47;coffee&#47;client.coffee#L300'>Source</a>
     </p>
     <div class='docstring'>
   <p>Get a new instance of a <code>ZoneService</code></p>
@@ -977,7 +984,7 @@ client.products()
       <span class='type'></span>
       (<tt><a href='../classes/ZoneService.html'>ZoneService</a></tt>)
       &mdash;
-      <span class='desc'> a new <a href='../classes/ZoneService.html'>ZoneService</a></span>
+      <span class='desc'> a <a href='../classes/ZoneService.html'>ZoneService</a></span>
     </li>
   </ul>
 </div>
