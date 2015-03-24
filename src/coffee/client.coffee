@@ -150,121 +150,145 @@ class SphereClient
     @_rest = options.rest or new Rest _.defaults options, {user_agent: 'sphere-node-sdk'}
 
     # Private: wrapper to pass different options to new service instances
-    @_serviceOptions =
+    _serviceOptions =
       _rest: @_rest
       _task: @_task
       _stats: _.defaults options.stats or {},
         includeHeaders: false
 
+    # DEPRECATED: recommended way is to use methods (see below)
+    @_cartDiscounts      = new CartDiscountService _serviceOptions
+    @_carts              = new CartService _serviceOptions
+    @_categories         = new CategoryService _serviceOptions
+    @_channels           = new ChannelService _serviceOptions
+    @_comments           = new CommentService _serviceOptions
+    @_customObjects      = new CustomObjectService _serviceOptions
+    @_customers          = new CustomerService _serviceOptions
+    @_customerGroups     = new CustomerGroupService _serviceOptions
+    @_discountCodes      = new DiscountCodeService _serviceOptions
+    @_inventoryEntries   = new InventoryEntryService _serviceOptions
+    @_messages           = new MessageService _serviceOptions
+    @_orders             = new OrderService _serviceOptions
+    @_products           = new ProductService _serviceOptions
+    @_productDiscounts   = new ProductDiscountService _serviceOptions
+    @_productProjections = new ProductProjectionService _serviceOptions
+    @_productTypes       = new ProductTypeService _serviceOptions
+    @_project            = new ProjectService _serviceOptions
+    @_reviews            = new ReviewService _serviceOptions
+    @_shippingMethods    = new ShippingMethodService _serviceOptions
+    @_states             = new StateService _serviceOptions
+    @_taxCategories      = new TaxCategoryService _serviceOptions
+    @_zones              = new ZoneService _serviceOptions
+
   # Public: Get a new instance of a `CartDiscountService`
   #
-  # Returns a new {CartDiscountService}
-  cartDiscounts: ->      new CartDiscountService @_serviceOptions
+  # Returns a {CartDiscountService}
+  cartDiscounts: -> @_cartDiscounts
 
   # Public: Get a new instance of a `CartService`
   #
-  # Returns a new {CartService}
-  carts: ->              new CartService @_serviceOptions
+  # Returns a {CartService}
+  carts: -> @_carts
 
   # Public: Get a new instance of a `CategoryService`
   #
-  # Returns a new {CategoryService}
-  categories: ->         new CategoryService @_serviceOptions
+  # Returns a {CategoryService}
+  categories: -> @_categories
 
   # Public: Get a new instance of a `ChannelService`
   #
-  # Returns a new {ChannelService}
-  channels: ->           new ChannelService @_serviceOptions
+  # Returns a {ChannelService}
+  channels: -> @_channels
 
   # Public: Get a new instance of a `CommentService`
   #
-  # Returns a new {CommentService}
-  comments: ->           new CommentService @_serviceOptions
+  # Returns a {CommentService}
+  comments: -> @_comments
 
   # Public: Get a new instance of a `CustomObjectService`
   #
-  # Returns a new {CustomObjectService}
-  customObjects: ->      new CustomObjectService @_serviceOptions
+  # Returns a {CustomObjectService}
+  customObjects: -> @_customObjects
 
   # Public: Get a new instance of a `CustomerService`
   #
-  # Returns a new {CustomerService}
-  customers: ->          new CustomerService @_serviceOptions
+  # Returns a {CustomerService}
+  customers: -> @_customers
 
   # Public: Get a new instance of a `CustomerGroupService`
   #
-  # Returns a new {CustomerGroupService}
-  customerGroups: ->     new CustomerGroupService @_serviceOptions
+  # Returns a {CustomerGroupService}
+  customerGroups: -> @_customerGroups
 
   # Public: Get a new instance of a `DiscountCodeService`
   #
-  # Returns a new {DiscountCodeService}
-  discountCodes: ->      new DiscountCodeService @_serviceOptions
+  # Returns a {DiscountCodeService}
+  discountCodes: -> @_discountCodes
 
   # Public: Get a new instance of a `InventoryEntryService`
   #
-  # Returns a new {InventoryEntryService}
-  inventoryEntries: ->   new InventoryEntryService @_serviceOptions
+  # Returns a {InventoryEntryService}
+  inventoryEntries: -> @_inventoryEntries
 
   # Public: Get a new instance of a `MessageService`
   #
-  # Returns a new {MessageService}
-  messages: ->           new MessageService @_serviceOptions
+  # Returns a {MessageService}
+  messages: -> @_messages
 
   # Public: Get a new instance of a `OrderService`
   #
-  # Returns a new {OrderService}
-  orders: ->             new OrderService @_serviceOptions
+  # Returns a {OrderService}
+  orders: -> @_orders
 
   # Public: Get a new instance of a `ProductService`
   #
-  # Returns a new {ProductService}
-  products: ->           new ProductService @_serviceOptions
+  # Returns a {ProductService}
+  products: -> @_products
 
   # Public: Get a new instance of a `ProductDiscountService`
   #
-  # Returns a new {ProductDiscountService}
-  productDiscounts: ->   new ProductDiscountService @_serviceOptions
+  # Returns a {ProductDiscountService}
+  productDiscounts: -> @_productDiscounts
 
   # Public: Get a new instance of a `ProductProjectionService`
   #
-  # Returns a new {ProductProjectionService}
-  productProjections: -> new ProductProjectionService @_serviceOptions
+  # Returns a {ProductProjectionService}
+  productProjections: -> @_productProjections
 
   # Public: Get a new instance of a `ProductTypeService`
   #
-  # Returns a new {ProductTypeService}
-  productTypes: ->       new ProductTypeService @_serviceOptions
+  # Returns a {ProductTypeService}
+  productTypes: -> @_productTypes
 
   # Public: Get a new instance of a `ProjectService`
   #
-  # Returns a new {ProjectService}
-  project: ->            new ProjectService @_serviceOptions
+  # Returns a {ProjectService}
+  project: -> @_project
 
   # Public: Get a new instance of a `ReviewService`
   #
-  # Returns a new {ReviewService}
-  reviews: ->            new ReviewService @_serviceOptions
+  # Returns a {ReviewService}
+  reviews: -> @_reviews
 
   # Public: Get a new instance of a `ShippingMethodService`
   #
-  # Returns a new {ShippingMethodService}
-  shippingMethods: ->    new ShippingMethodService @_serviceOptions
+  # Returns a {ShippingMethodService}
+  shippingMethods: -> @_shippingMethods
 
   # Public: Get a new instance of a `StateService`
   #
-  # Returns a new {StateService}
-  states: ->             new StateService @_serviceOptions
+  # Returns a {StateService}
+  states: -> @_states
 
   # Public: Get a new instance of a `TaxCategoryService`
   #
-  # Returns a new {TaxCategoryService}
-  taxCategories: ->      new TaxCategoryService @_serviceOptions
+  # Returns a {TaxCategoryService}
+  taxCategories: -> @_taxCategories
 
   # Public: Get a new instance of a `ZoneService`
   #
-  # Returns a new {ZoneService}
-  zones: ->              new ZoneService @_serviceOptions
+  # Returns a {ZoneService}
+  zones: -> @_zones
 
   # Public: Define max parallel request to be sent on each request from the {TaskQueue}
   #

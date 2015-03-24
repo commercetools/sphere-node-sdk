@@ -22,7 +22,6 @@ describe 'SphereClient', ->
     expect(@client._rest).toBeDefined()
     expect(@client._rest._options.headers['User-Agent']).toBe 'sphere-node-sdk'
     expect(@client._task).toBeDefined()
-    expect(@client._serviceOptions).toBeDefined()
 
   it 'should throw error if no credentials are given', ->
     client = -> new SphereClient foo: 'bar'
@@ -88,6 +87,9 @@ describe 'SphereClient', ->
         service = @client[serviceDef.name]()
         expect(service).toBeDefined()
         expect(service.constructor.name).toBe(serviceDef.className)
+
+      it 'should instantiate service only once', ->
+        expect(@client[serviceDef.name]() is @client[serviceDef.name]()).toBe true
 
       it 'should enable statistic (headers)', ->
         expect(@client[serviceDef.name]()._stats.includeHeaders).toBe false
