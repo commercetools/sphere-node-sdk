@@ -26,6 +26,7 @@ SPHERE CLIENT
   * [Error handling](#error-handling)
     * [Error types](#error-types)
   * [Statistics](#statistics)
+    * [Correlation Header ID](#correlation-header-id)
 * [Logging & debugging](DEBUGGING.md)
 
 
@@ -409,7 +410,7 @@ When a [`Bluebird` promise](https://github.com/petkaantonov/bluebird) is resolve
 }
 ```
 
-> When a promise is rejected, the response object contains a field `originalRequest`, providing some information about the related request (`endpoint`, `payload`). This is useful to better understand the error in relation with the failed request.
+> When a promise is rejected, the response object contains a field `originalRequest`, providing some information about the related request (`endpoint`, `payload`). This is useful to better understand the error in relation with the failed request. Optionally some [statistics](#statistics) are also passed along.
 
 ### Error handling
 As the HTTP API _gracefully_ [handles errors](CONNECT#error-handling) by providing a JSON body with error codes and messages, the `SphereClient` handles that by providing an intuitive way of dealing with responses.
@@ -421,6 +422,11 @@ Since a Promise can be either resolved or rejected, the result is determined by 
 #### Error types
 All Sphere response _errors_ are then wrapped in a custom `Error` type and returned as a rejected Promise value.
 That means you can do type check as well as getting the JSON response body
+
+An `Error` instance contains a `body`, which is a JSON object containing the following response information:
+- `statusCode`
+- `originalRequest` - useful information from the failed request
+- `http` - optional object containing header information (see [statistics](#statistics))
 
 ```coffeescript
 {ConcurrentModification} = Errors.SphereHttpError
@@ -497,6 +503,7 @@ client = new SphereClient
         "content-type": "application/json; charset=utf-8",
         "transfer-encoding": "chunked",
         "connection": "keep-alive",
+        'x-correlation-id': 'nginx-138ac1d5-15cb-4d5b-9a61-76a8f2d60598',
         "x-served-by": "app2.sphere.prod.commercetools.de",
         "x-served-config": "sphere-projects-ws-1.0",
         "access-control-allow-origin": "*",
@@ -510,3 +517,8 @@ client = new SphereClient
 }
 
 ```
+
+#### Correlation Header ID
+Each response from the HTTP API contains a special header `x-correlation-id`. This is specially useful for the SPHERE.IO team in order to better correlate failure requests with other possible causes.
+
+> Note: the SDK doesn't have any logic about that, thus it's up to applications to decide whether to log this header or not.

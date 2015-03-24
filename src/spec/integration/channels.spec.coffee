@@ -29,11 +29,15 @@ describe 'Integration Channels', ->
   channels = []
 
   beforeEach (done) ->
-    @client = new SphereClient config: Config
+    @client = new SphereClient
+      config: Config
+      stats:
+        includeHeaders: true
 
     @client.channels.save(newChannel())
     .then (result) =>
       expect(result.statusCode).toBe 201
+      expect(result.http.response.headers['x-correlation-id']).toBeDefined()
       @channelId = result.body.id
       debug 'New channel created: %j', result.body
       done()
@@ -91,4 +95,12 @@ describe 'Integration Channels', ->
       done 'Role value not supported.'
     .catch (error) ->
       expect(error).toBeDefined()
+      done()
+
+  it 'should have \'x-correlation-id\' header when request fails', (done) ->
+    @client.channels.save({})
+    .then (result) ->
+      done('Should have failed')
+    .catch (error) ->
+      expect(error.body.http.response.headers['x-correlation-id']).toBeDefined()
       done()
