@@ -31,12 +31,12 @@
   "dependencies": {
     "debug": "2.1.x",
     "jsondiffpatch": "0.1.31",
-    "request": "2.53.x",
-    "underscore": "1.7.x",
-    "underscore-mixins": "0.1.x"
+    "request": "2.53.x"
   },
   "peerDependencies": {
-    "bluebird": ">=2.9.0"
+    "bluebird": ">=2.9.0",
+    "underscore": ">=1.8.0",
+    "underscore-mixins": "^0.1.x"
   },
   "devDependencies": {
     "bluebird": "2.9.x",
@@ -54,7 +54,9 @@
     "grunt-shell": "1.1.x",
     "istanbul": "0.3.x",
     "jasmine-node": "1.13.1",
-    "sphere-coffeelint": "git://github.com/sphereio/sphere-coffeelint.git#master"
+    "sphere-coffeelint": "git://github.com/sphereio/sphere-coffeelint.git#master",
+    "underscore": "1.8.x",
+    "underscore-mixins": "0.1.x"
   },
   "keywords": [
     "sphere",
