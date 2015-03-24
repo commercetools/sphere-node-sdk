@@ -98,7 +98,7 @@ describe 'Integration Channels', ->
       done()
 
   it 'should have \'x-correlation-id\' header when request fails', (done) ->
-    @client.channels.save({})
+    @client.channels().save({})
     .then (result) ->
       done('Should have failed')
     .catch (error) ->
