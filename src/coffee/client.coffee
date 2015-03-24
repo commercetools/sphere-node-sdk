@@ -40,6 +40,7 @@ ZoneService              = require './services/zones'
 # When a promise is rejected, the response object contains a field `originalRequest`,
 # providing some information about the related request (`endpoint`, `payload`).
 # This is useful to better understand the error in relation with the failed request.
+# Optionally some [statistics](#statistics) are also passed along.
 #
 # ### TaskQueue
 # To optimize processing lots of requests all together, e.g.: avoiding connection timeouts, we introduced {TaskQueue}.
@@ -66,6 +67,11 @@ ZoneService              = require './services/zones'
 # ### Error types
 # All SPHERE.IO response _errors_ are then wrapped in a custom {Error} type (either a {HttpError} or {SphereError})
 # and returned as a rejected {Promise} value. That means you can do type check as well as getting the JSON response body.
+#
+# An {Error} instance contains a `body`, which is a JSON object containing the following response information:
+# - `statusCode`
+# - `originalRequest` - useful information from the failed request
+# - `http` - optional object containing header information (see [statistics](#statistics))
 #
 # ```coffeescript
 # Errors = require('sphere-node-sdk').Errors
@@ -99,6 +105,10 @@ ZoneService              = require './services/zones'
 #
 # Current options are available:
 # - `includeHeaders` will include some HTTP header information in the response, wrapped in a JSON object called `http`
+#
+# Each response from the HTTP API contains a header `x-correlation-id`.
+# This unique value can be used to correlate events across different layers and also might help in case of failures.
+# Note: the SDK doesn't have any logic about that, thus it's up to applications to decide whether to log this header or not.
 #
 # ```coffeescript
 # client = new SphereClient
