@@ -15,15 +15,18 @@ Officially supported Node.js SDK library for working with the SPHERE.IO HTTP API
 Install the module with `npm install sphere-node-sdk`
 
 ## Documentation
-> This documentation is for node-sdk 1.x and not valid for previous version - [0.8.x docs here](https://github.com/sphereio/sphere-node-sdk/blob/v0.8.1/README.md#table-of-contents).
+> This documentation is for `v1.x` and not valid for previous version - [0.8.x docs here](https://github.com/sphereio/sphere-node-sdk/blob/v0.8.1/README.md#table-of-contents).
 
 > For migrating, check the [migration guide](docs/MIGRATION-1.0.md) to 1.x
 
 The module exposes some libraries which can be either used alone or together
 
-* [CLIENT](docs/CLIENT.md) - a high-level (promise-based) client to connect to the SPHERE.IO HTTP APIs
-* [CONNECT](docs/CONNECT.md) - a low-level (callback-based) client to connect to the SPHERE.IO HTTP APIs
-* [SYNC](docs/SYNC.md) - a collection of utils to build update actions
+- `SphereClient` - a high-level (promise-based) client to connect to the SPHERE.IO HTTP APIs
+- `Rest` - a low-level (callback-based) client to connect to the SPHERE.IO HTTP APIs
+- `*Sync` - a collection of utils to build update actions
+
+Check out the [JSDoc](#).
+
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
