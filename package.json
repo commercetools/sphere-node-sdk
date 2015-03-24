@@ -31,7 +31,7 @@
   "dependencies": {
     "debug": "2.1.x",
     "jsondiffpatch": "0.1.31",
-    "request": "2.49.x",
+    "request": "2.53.x",
     "underscore": "1.7.x",
     "underscore-mixins": "0.1.x"
   },
