@@ -32,28 +32,28 @@ describe 'Service', ->
 
   _.each [
     {name: 'BaseService', service: BaseService, path: ''}
-    {name: 'CartDiscountService', service: CartDiscountService, path: '/cart-discounts'}
-    {name: 'CartService', service: CartService, path: '/carts'}
-    {name: 'CategoryService', service: CategoryService, path: '/categories'}
-    {name: 'ChannelService', service: ChannelService, path: '/channels'}
-    {name: 'CommentService', service: CommentService, path: '/comments'}
-    {name: 'CustomObjectService', service: CustomObjectService, path: '/custom-objects'}
-    {name: 'CustomerService', service: CustomerService, path: '/customers'}
-    {name: 'CustomerGroupService', service: CustomerGroupService, path: '/customer-groups'}
-    {name: 'DiscountCodeService', service: DiscountCodeService, path: '/discount-codes'}
-    {name: 'InventoryEntryService', service: InventoryEntryService, path: '/inventory'}
-    {name: 'MessageService', service: MessageService, path: '/messages'}
-    {name: 'OrderService', service: OrderService, path: '/orders'}
-    {name: 'ProductService', service: ProductService, path: '/products'}
-    {name: 'ProductDiscountService', service: ProductDiscountService, path: '/product-discounts'}
-    {name: 'ProductProjectionService', service: ProductProjectionService, path: '/product-projections'}
-    {name: 'ProductTypeService', service: ProductTypeService, path: '/product-types'}
-    {name: 'ProjectService', service: ProjectService, path: ''}
-    {name: 'ReviewService', service: ReviewService, path: '/reviews'}
-    {name: 'ShippingMethodService', service: ShippingMethodService, path: '/shipping-methods'}
-    {name: 'StateService', service: StateService, path: '/states'}
-    {name: 'TaxCategoryService', service: TaxCategoryService, path: '/tax-categories'}
-    {name: 'ZoneService', service: ZoneService, path: '/zones'}
+    {name: 'CartDiscountService', service: CartDiscountService, path: '/cart-discounts', blacklist: []}
+    {name: 'CartService', service: CartService, path: '/carts', blacklist: []}
+    {name: 'CategoryService', service: CategoryService, path: '/categories', blacklist: []}
+    {name: 'ChannelService', service: ChannelService, path: '/channels', blacklist: []}
+    {name: 'CommentService', service: CommentService, path: '/comments', blacklist: ['delete']}
+    {name: 'CustomObjectService', service: CustomObjectService, path: '/custom-objects', blacklist: []}
+    {name: 'CustomerService', service: CustomerService, path: '/customers', blacklist: []}
+    {name: 'CustomerGroupService', service: CustomerGroupService, path: '/customer-groups', blacklist: []}
+    {name: 'DiscountCodeService', service: DiscountCodeService, path: '/discount-codes', blacklist: []}
+    {name: 'InventoryEntryService', service: InventoryEntryService, path: '/inventory', blacklist: []}
+    {name: 'MessageService', service: MessageService, path: '/messages', blacklist: ['save', 'create', 'update', 'delete']}
+    {name: 'OrderService', service: OrderService, path: '/orders', blacklist: ['delete']}
+    {name: 'ProductService', service: ProductService, path: '/products', blacklist: []}
+    {name: 'ProductDiscountService', service: ProductDiscountService, path: '/product-discounts', blacklist: []}
+    {name: 'ProductProjectionService', service: ProductProjectionService, path: '/product-projections', blacklist: ['save', 'create', 'update', 'delete']}
+    {name: 'ProductTypeService', service: ProductTypeService, path: '/product-types', blacklist: []}
+    {name: 'ProjectService', service: ProjectService, path: '', blacklist: ['save', 'create', 'update', 'delete']}
+    {name: 'ReviewService', service: ReviewService, path: '/reviews', blacklist: ['delete']}
+    {name: 'ShippingMethodService', service: ShippingMethodService, path: '/shipping-methods', blacklist: ['delete']}
+    {name: 'StateService', service: StateService, path: '/states', blacklist: []}
+    {name: 'TaxCategoryService', service: TaxCategoryService, path: '/tax-categories', blacklist: []}
+    {name: 'ZoneService', service: ZoneService, path: '/zones', blacklist: []}
   ], (o) ->
 
     describe ":: #{o.name}", ->
@@ -213,73 +213,75 @@ describe 'Service', ->
         ['save', {foo: 'bar'}]
         ['delete', 2]
       ], (f) ->
-        it "should reset params after creating a promise for #{f[0]}", ->
-          _service = @service.byId('123-abc').where('name = "foo"').page(2).perPage(10).sort('id').expand('foo.bar')
-          expect(@service._params.id).toBe '123-abc'
-          expect(@service._params.query.where).toEqual [encodeURIComponent('name = "foo"')]
-          expect(@service._params.query.operator).toBe 'and'
-          expect(@service._params.query.sort).toEqual [encodeURIComponent('id asc')]
-          expect(@service._params.query.page).toBe 2
-          expect(@service._params.query.perPage).toBe 10
-          expect(@service._params.query.expand).toEqual [encodeURIComponent('foo.bar')]
-          if f[1]
-            _service[f[0]](f[1])
-          else
-            _service[f[0]]()
-          expect(@service._params.query.where).toEqual []
-          expect(@service._params.query.operator).toBe 'and'
-          expect(@service._params.query.sort).toEqual []
-          expect(@service._params.query.expand).toEqual []
+        if not _.contains(o.blacklist, f[0])
+          it "should reset params after creating a promise for #{f[0]}", ->
+            _service = @service.byId('123-abc').where('name = "foo"').page(2).perPage(10).sort('id').expand('foo.bar')
+            expect(@service._params.id).toBe '123-abc'
+            expect(@service._params.query.where).toEqual [encodeURIComponent('name = "foo"')]
+            expect(@service._params.query.operator).toBe 'and'
+            expect(@service._params.query.sort).toEqual [encodeURIComponent('id asc')]
+            expect(@service._params.query.page).toBe 2
+            expect(@service._params.query.perPage).toBe 10
+            expect(@service._params.query.expand).toEqual [encodeURIComponent('foo.bar')]
+            if f[1]
+              _service[f[0]](f[1])
+            else
+              _service[f[0]]()
+            expect(@service._params.query.where).toEqual []
+            expect(@service._params.query.operator).toBe 'and'
+            expect(@service._params.query.sort).toEqual []
+            expect(@service._params.query.expand).toEqual []
 
-      it 'should pass original request to failed response', (done) ->
-        spyOn(@service._rest, 'POST').andCallFake (endpoint, payload, callback) ->
-          callback null, {statusCode: 400}, {statusCode: 400, message: 'Oops, something went wrong'}
-        @service.save({foo: 'bar'})
-        .then -> done('Should not happen')
-        .catch (error) ->
-          expect(error.name).toBe 'BadRequest'
-          expect(error.body).toEqual
-            statusCode: 400
-            message: 'Oops, something went wrong'
-            originalRequest:
-              endpoint: o.path
-              payload:
-                foo: 'bar'
-          done()
-        .done()
+      if not _.contains(o.blacklist, 'save')
+        it 'should pass original request to failed response', (done) ->
+          spyOn(@service._rest, 'POST').andCallFake (endpoint, payload, callback) ->
+            callback null, {statusCode: 400}, {statusCode: 400, message: 'Oops, something went wrong'}
+          @service.save({foo: 'bar'})
+          .then -> done('Should not happen')
+          .catch (error) ->
+            expect(error.name).toBe 'BadRequest'
+            expect(error.body).toEqual
+              statusCode: 400
+              message: 'Oops, something went wrong'
+              originalRequest:
+                endpoint: o.path
+                payload:
+                  foo: 'bar'
+            done()
+          .done()
 
-      it 'should pass headers info', (done) ->
-        @service._stats.includeHeaders = true
-        spyOn(@service._rest, 'POST').andCallFake (endpoint, payload, callback) ->
-          callback null,
-            statusCode: 200
-            httpVersion: '1.1'
-            request:
-              method: 'POST'
-              uri: {}
-              headers: {}
-            req:
-              _header: 'POST /foo HTTP/1.1'
-            headers: {}
-          , {foo: 'bar'}
-        @service.save({foo: 'bar'})
-        .then (result) ->
-          expect(result).toEqual
-            http:
+        it 'should pass headers info', (done) ->
+          @service._stats.includeHeaders = true
+          spyOn(@service._rest, 'POST').andCallFake (endpoint, payload, callback) ->
+            callback null,
+              statusCode: 200
+              httpVersion: '1.1'
               request:
                 method: 'POST'
-                httpVersion: '1.1'
                 uri: {}
-                header: 'POST /foo HTTP/1.1'
                 headers: {}
-              response:
-                headers: {}
-            statusCode: 200
-            body:
-              foo: 'bar'
-          done()
-        .catch (error) -> done(_.prettify(error))
-        .done()
+              req:
+                _header: 'POST /foo HTTP/1.1'
+              headers: {}
+            , {foo: 'bar'}
+          @service.save({foo: 'bar'})
+          .then (result) ->
+            expect(result).toEqual
+              http:
+                request:
+                  method: 'POST'
+                  httpVersion: '1.1'
+                  uri: {}
+                  header: 'POST /foo HTTP/1.1'
+                  headers: {}
+                response:
+                  headers: {}
+              statusCode: 200
+              body:
+                foo: 'bar'
+            done()
+          .catch (error) -> done(_.prettify(error))
+          .done()
 
       describe ':: process', ->
         it 'should return promise', ->
@@ -478,141 +480,145 @@ describe 'Service', ->
             @service.all().sort('foo').fetch()
             expect(@service._paged).toHaveBeenCalledWith "#{o.path}?limit=0&sort=foo%20asc"
 
-      describe ':: save', ->
+      if not _.contains(o.blacklist, 'save')
+        describe ':: save', ->
 
-        it 'should return promise on save', ->
-          promise = @service.save {foo: 'bar'}
-          expect(promise.isPending()).toBe true
+          it 'should return promise on save', ->
+            promise = @service.save {foo: 'bar'}
+            expect(promise.isPending()).toBe true
 
-        it 'should resolve the promise on save', (done) ->
-          spyOn(@restMock, 'POST').andCallFake (endpoint, payload, callback) -> callback(null, {statusCode: 200}, {foo: 'bar'})
-          @service.save({foo: 'bar'}).then (result) ->
-            expect(result.statusCode).toBe 200
-            expect(result.body).toEqual foo: 'bar'
-            done()
-          .catch (error) -> done(_.prettify(error))
+          it 'should resolve the promise on save', (done) ->
+            spyOn(@restMock, 'POST').andCallFake (endpoint, payload, callback) -> callback(null, {statusCode: 200}, {foo: 'bar'})
+            @service.save({foo: 'bar'}).then (result) ->
+              expect(result.statusCode).toBe 200
+              expect(result.body).toEqual foo: 'bar'
+              done()
+            .catch (error) -> done(_.prettify(error))
 
-        it 'should reject the promise on save (404)', (done) ->
-          spyOn(@restMock, 'POST').andCallFake (endpoint, payload, callback) -> callback(null, {statusCode: 404, request: {uri: {path: '/foo'}}}, null)
-          @service.save({foo: 'bar'})
-          .then (result) -> done('Should not happen')
-          .catch (error) ->
-            expect(error.name).toBe 'NotFound'
-            expect(error.body).toEqual
-              statusCode: 404
-              message: "Endpoint '/foo' not found."
-              originalRequest:
-                endpoint: o.path
-                payload:
-                  foo: 'bar'
-            done()
+          it 'should reject the promise on save (404)', (done) ->
+            spyOn(@restMock, 'POST').andCallFake (endpoint, payload, callback) -> callback(null, {statusCode: 404, request: {uri: {path: '/foo'}}}, null)
+            @service.save({foo: 'bar'})
+            .then (result) -> done('Should not happen')
+            .catch (error) ->
+              expect(error.name).toBe 'NotFound'
+              expect(error.body).toEqual
+                statusCode: 404
+                message: "Endpoint '/foo' not found."
+                originalRequest:
+                  endpoint: o.path
+                  payload:
+                    foo: 'bar'
+              done()
 
-        it 'should throw error if payload is missing', ->
-          spyOn(@restMock, 'POST')
-          expect(=> @service.save()).toThrow new Error "Body payload is required for creating a resource (endpoint: #{@service.constructor.baseResourceEndpoint})"
-          expect(@restMock.POST).not.toHaveBeenCalled()
+          it 'should throw error if payload is missing', ->
+            spyOn(@restMock, 'POST')
+            expect(=> @service.save()).toThrow new Error "Body payload is required for creating a resource (endpoint: #{@service.constructor.baseResourceEndpoint})"
+            expect(@restMock.POST).not.toHaveBeenCalled()
 
-        it 'should reject the promise on save', (done) ->
-          spyOn(@restMock, 'POST').andCallFake (endpoint, payload, callback) -> callback('foo', null, null)
-          @service.save({foo: 'bar'})
-          .then (result) -> done('Should not happen')
-          .catch (error) ->
-            expect(error.name).toBe 'HttpError'
-            expect(error.body).toEqual
-              statusCode: 500
-              message: 'foo'
-              originalRequest:
-                endpoint: o.path
-                payload:
-                  foo: 'bar'
-            done()
+          it 'should reject the promise on save', (done) ->
+            spyOn(@restMock, 'POST').andCallFake (endpoint, payload, callback) -> callback('foo', null, null)
+            @service.save({foo: 'bar'})
+            .then (result) -> done('Should not happen')
+            .catch (error) ->
+              expect(error.name).toBe 'HttpError'
+              expect(error.body).toEqual
+                statusCode: 500
+                message: 'foo'
+                originalRequest:
+                  endpoint: o.path
+                  payload:
+                    foo: 'bar'
+              done()
 
-        it 'should send request for base endpoint', ->
-          spyOn(@restMock, 'POST')
-          @service.save({foo: 'bar'})
-          expect(@restMock.POST).toHaveBeenCalledWith o.path, {foo: 'bar'}, jasmine.any(Function)
+          it 'should send request for base endpoint', ->
+            spyOn(@restMock, 'POST')
+            @service.save({foo: 'bar'})
+            expect(@restMock.POST).toHaveBeenCalledWith o.path, {foo: 'bar'}, jasmine.any(Function)
 
-      describe ':: create', ->
+      if not _.contains(o.blacklist, 'create')
+        describe ':: create', ->
 
-        it 'should be an alias for \'save\'', ->
-          spyOn(@service, 'save')
-          @service.create foo: 'bar'
-          expect(@service.save).toHaveBeenCalledWith foo: 'bar'
+          it 'should be an alias for \'save\'', ->
+            spyOn(@service, 'save')
+            @service.create foo: 'bar'
+            expect(@service.save).toHaveBeenCalledWith foo: 'bar'
 
-      describe ':: update', ->
+      if not _.contains(o.blacklist, 'update')
+        describe ':: update', ->
 
-        it 'should send request for current endpoint', ->
-          spyOn(@restMock, 'POST')
-          @service.byId(ID).update({foo: 'bar'})
-          expect(@restMock.POST).toHaveBeenCalledWith "#{o.path}/#{ID}", {foo: 'bar'}, jasmine.any(Function)
+          it 'should send request for current endpoint', ->
+            spyOn(@restMock, 'POST')
+            @service.byId(ID).update({foo: 'bar'})
+            expect(@restMock.POST).toHaveBeenCalledWith "#{o.path}/#{ID}", {foo: 'bar'}, jasmine.any(Function)
 
-        it 'should throw error if id is missing', ->
-          spyOn(@restMock, 'POST')
-          expect(=> @service.update()).toThrow new Error "Missing resource id. You can set it by chaining '.byId(ID)'"
-          expect(@restMock.POST).not.toHaveBeenCalled()
+          it 'should throw error if id is missing', ->
+            spyOn(@restMock, 'POST')
+            expect(=> @service.update()).toThrow new Error "Missing resource id. You can set it by chaining '.byId(ID)'"
+            expect(@restMock.POST).not.toHaveBeenCalled()
 
-        it 'should throw error if payload is missing', ->
-          spyOn(@restMock, 'POST')
-          expect(=> @service.byId(ID).update()).toThrow new Error "Body payload is required for updating a resource (endpoint: #{@service._currentEndpoint}/#{ID})"
-          expect(@restMock.POST).not.toHaveBeenCalled()
+          it 'should throw error if payload is missing', ->
+            spyOn(@restMock, 'POST')
+            expect(=> @service.byId(ID).update()).toThrow new Error "Body payload is required for updating a resource (endpoint: #{@service._currentEndpoint}/#{ID})"
+            expect(@restMock.POST).not.toHaveBeenCalled()
 
-        it 'should use correct endpoints when calling update and create', ->
-          spyOn(@restMock, 'POST')
-          @service.byId(ID).update({foo: 'bar1'})
-          @service.create({foo: 'bar2'})
-          @service.byId(ID).update({foo: 'bar3'})
-          @service.create({foo: 'bar4'})
-          expect(@restMock.POST.calls.length).toBe 4
-          expect(@restMock.POST.calls[0].args[0]).toEqual "#{o.path}/#{ID}"
-          expect(@restMock.POST.calls[0].args[1]).toEqual {foo: 'bar1'}
-          expect(@restMock.POST.calls[1].args[0]).toEqual o.path
-          expect(@restMock.POST.calls[1].args[1]).toEqual {foo: 'bar2'}
-          expect(@restMock.POST.calls[2].args[0]).toEqual "#{o.path}/#{ID}"
-          expect(@restMock.POST.calls[2].args[1]).toEqual {foo: 'bar3'}
-          expect(@restMock.POST.calls[3].args[0]).toEqual o.path
-          expect(@restMock.POST.calls[3].args[1]).toEqual {foo: 'bar4'}
+          it 'should use correct endpoints when calling update and create', ->
+            spyOn(@restMock, 'POST')
+            @service.byId(ID).update({foo: 'bar1'})
+            @service.create({foo: 'bar2'})
+            @service.byId(ID).update({foo: 'bar3'})
+            @service.create({foo: 'bar4'})
+            expect(@restMock.POST.calls.length).toBe 4
+            expect(@restMock.POST.calls[0].args[0]).toEqual "#{o.path}/#{ID}"
+            expect(@restMock.POST.calls[0].args[1]).toEqual {foo: 'bar1'}
+            expect(@restMock.POST.calls[1].args[0]).toEqual o.path
+            expect(@restMock.POST.calls[1].args[1]).toEqual {foo: 'bar2'}
+            expect(@restMock.POST.calls[2].args[0]).toEqual "#{o.path}/#{ID}"
+            expect(@restMock.POST.calls[2].args[1]).toEqual {foo: 'bar3'}
+            expect(@restMock.POST.calls[3].args[0]).toEqual o.path
+            expect(@restMock.POST.calls[3].args[1]).toEqual {foo: 'bar4'}
 
-      describe ':: delete', ->
+      if not _.contains(o.blacklist, 'delete')
+        describe ':: delete', ->
 
-        it 'should throw error if version is missing', ->
-          spyOn(@restMock, 'DELETE')
-          expect(=> @service.delete()).toThrow new Error "Version is required for deleting a resource (endpoint: #{@service._currentEndpoint})"
-          expect(@restMock.DELETE).not.toHaveBeenCalled()
+          it 'should throw error if version is missing', ->
+            spyOn(@restMock, 'DELETE')
+            expect(=> @service.delete()).toThrow new Error "Version is required for deleting a resource (endpoint: #{@service._currentEndpoint})"
+            expect(@restMock.DELETE).not.toHaveBeenCalled()
 
-        it 'should return promise on delete', ->
-          promise = @service.byId('123-abc').delete(1)
-          expect(promise.isPending()).toBe true
+          it 'should return promise on delete', ->
+            promise = @service.byId('123-abc').delete(1)
+            expect(promise.isPending()).toBe true
 
-        it 'should resolve the promise on delete', (done) ->
-          spyOn(@restMock, 'DELETE').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {foo: 'bar'})
-          @service.byId('123-abc').delete(1).then (result) ->
-            expect(result.statusCode).toBe 200
-            expect(result.body).toEqual foo: 'bar'
-            done()
-          .catch (error) -> done(_.prettify(error))
+          it 'should resolve the promise on delete', (done) ->
+            spyOn(@restMock, 'DELETE').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {foo: 'bar'})
+            @service.byId('123-abc').delete(1).then (result) ->
+              expect(result.statusCode).toBe 200
+              expect(result.body).toEqual foo: 'bar'
+              done()
+            .catch (error) -> done(_.prettify(error))
 
-        it 'should reject the promise on delete (404)', (done) ->
-          spyOn(@restMock, 'DELETE').andCallFake (endpoint, callback) -> callback(null, {statusCode: 404, request: {uri: {path: '/foo'}}}, null)
-          @service.byId('123-abc').delete(1)
-          .then (result) -> done('Should not happen')
-          .catch (error) ->
-            expect(error.name).toBe 'NotFound'
-            expect(error.body).toEqual
-              statusCode: 404
-              message: "Endpoint '/foo' not found."
-              originalRequest:
-                endpoint: "#{o.path}/123-abc?version=1"
-            done()
+          it 'should reject the promise on delete (404)', (done) ->
+            spyOn(@restMock, 'DELETE').andCallFake (endpoint, callback) -> callback(null, {statusCode: 404, request: {uri: {path: '/foo'}}}, null)
+            @service.byId('123-abc').delete(1)
+            .then (result) -> done('Should not happen')
+            .catch (error) ->
+              expect(error.name).toBe 'NotFound'
+              expect(error.body).toEqual
+                statusCode: 404
+                message: "Endpoint '/foo' not found."
+                originalRequest:
+                  endpoint: "#{o.path}/123-abc?version=1"
+              done()
 
-        it 'should reject the promise on delete', (done) ->
-          spyOn(@restMock, 'DELETE').andCallFake (endpoint, callback) -> callback('foo', null, null)
-          @service.byId('123-abc').delete(1)
-          .then (result) -> done('Should not happen')
-          .catch (error) ->
-            expect(error.name).toBe 'HttpError'
-            expect(error.body).toEqual
-              statusCode: 500
-              message: 'foo'
-              originalRequest:
-                endpoint: "#{o.path}/123-abc?version=1"
-            done()
+          it 'should reject the promise on delete', (done) ->
+            spyOn(@restMock, 'DELETE').andCallFake (endpoint, callback) -> callback('foo', null, null)
+            @service.byId('123-abc').delete(1)
+            .then (result) -> done('Should not happen')
+            .catch (error) ->
+              expect(error.name).toBe 'HttpError'
+              expect(error.body).toEqual
+                statusCode: 500
+                message: 'foo'
+                originalRequest:
+                  endpoint: "#{o.path}/123-abc?version=1"
+              done()

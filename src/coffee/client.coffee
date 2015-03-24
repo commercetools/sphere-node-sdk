@@ -156,30 +156,6 @@ class SphereClient
       _stats: _.defaults options.stats or {},
         includeHeaders: false
 
-    # DEPRECATED: use methods
-    @cartDiscounts      = new CartDiscountService @_serviceOptions
-    @carts              = new CartService @_serviceOptions
-    @categories         = new CategoryService @_serviceOptions
-    @channels           = new ChannelService @_serviceOptions
-    @comments           = new CommentService @_serviceOptions
-    @customObjects      = new CustomObjectService @_serviceOptions
-    @customers          = new CustomerService @_serviceOptions
-    @customerGroups     = new CustomerGroupService @_serviceOptions
-    @discountCodes      = new DiscountCodeService @_serviceOptions
-    @inventoryEntries   = new InventoryEntryService @_serviceOptions
-    @messages           = new MessageService @_serviceOptions
-    @orders             = new OrderService @_serviceOptions
-    @products           = new ProductService @_serviceOptions
-    @productDiscounts   = new ProductDiscountService @_serviceOptions
-    @productProjections = new ProductProjectionService @_serviceOptions
-    @productTypes       = new ProductTypeService @_serviceOptions
-    @project            = new ProjectService @_serviceOptions
-    @reviews            = new ReviewService @_serviceOptions
-    @shippingMethods    = new ShippingMethodService @_serviceOptions
-    @states             = new StateService @_serviceOptions
-    @taxCategories      = new TaxCategoryService @_serviceOptions
-    @zones              = new ZoneService @_serviceOptions
-
   # Public: Get a new instance of a `CartDiscountService`
   #
   # Returns a new {CartDiscountService}
