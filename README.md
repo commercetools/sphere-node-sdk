@@ -4,7 +4,7 @@
 
 [![NPM](https://nodei.co/npm/sphere-node-sdk.png?downloads=true)](https://www.npmjs.org/package/sphere-node-sdk)
 
-[![Build Status](https://secure.travis-ci.org/sphereio/sphere-node-sdk.png?branch=master)](http://travis-ci.org/sphereio/sphere-node-sdk) [![NPM version](https://badge.fury.io/js/sphere-node-sdk.png)](http://badge.fury.io/js/sphere-node-sdk) [![Coverage Status](https://coveralls.io/repos/sphereio/sphere-node-sdk/badge.png?branch=master)](https://coveralls.io/r/sphereio/sphere-node-sdk?branch=master) [![Dependency Status](https://david-dm.org/sphereio/sphere-node-sdk.png?theme=shields.io)](https://david-dm.org/sphereio/sphere-node-sdk) [![devDependency Status](https://david-dm.org/sphereio/sphere-node-sdk/dev-status.png?theme=shields.io)](https://david-dm.org/sphereio/sphere-node-sdk#info=devDependencies)
+[![NPM version](https://img.shields.io/npm/v/sphere-node-sdk.svg?style=flat)](https://www.npmjs.com/package/sphere-node-sdk) [![Build Status](https://img.shields.io/travis/sphereio/sphere-node-sdk/master.svg?style=flat)](https://travis-ci.org/sphereio/sphere-node-sdk) [![Coverage Status](https://img.shields.io/coveralls/sphereio/sphere-node-sdk/master.svg?style=flat)](https://coveralls.io/r/sphereio/sphere-node-sdk?branch=master) [![Dependency Status](https://img.shields.io/david/sphereio/sphere-node-sdk.svg?style=flat)](https://david-dm.org/sphereio/sphere-node-sdk)
 
 [SPHERE.IO](http://sphere.io/) is the first **Platform-as-a-Service** solution for eCommerce.
 
