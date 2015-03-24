@@ -28,7 +28,7 @@ sync = new ProductSync # or one of the other *Sync objects
 
 synced = sync.buildActions(new_prod, old_prod)
 if synced.shouldUpdate()
-  client.products.byId(synced.getUpdateId()).update(synced.getUpdatePayload())
+  client.products().byId(synced.getUpdateId()).update(synced.getUpdatePayload())
   .then (result) -> expect(result.statusCode).toBe 200
   .fail (e) -> logger.error e
 else
@@ -62,7 +62,7 @@ The Promise APIs is basically the same as for `Q`, just some methods are differe
 > The library offers way more utility functions though, so make sure to check the [API documentation](https://github.com/petkaantonov/bluebird/blob/master/API.md) for building applications in a more functional way.
 
 ### Sync APIs
-Being now a pure utils library, the [Sync API](SYNC.md) has been adjusted like following.
+Being now a pure utils library, the `Sync API` has been adjusted like following.
 Deprecated methods:
 - `get`
 - `update`

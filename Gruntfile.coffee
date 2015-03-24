@@ -74,7 +74,7 @@ module.exports = (grunt) ->
       doc:
         options:
           node_env: 'development'
-          script: './server-doc.js'
+          script: './scripts/server-doc.js'
 
     shell:
       options:
@@ -97,6 +97,8 @@ module.exports = (grunt) ->
         command: 'npm publish'
       doc:
         command: './node_modules/.bin/biscotto'
+      doc_publish:
+        command: './scripts/publish-doc'
 
     bump:
       options:
@@ -125,6 +127,7 @@ module.exports = (grunt) ->
   # register tasks
   grunt.registerTask 'default', ['build']
   grunt.registerTask 'doc', ['shell:doc']
+  grunt.registerTask 'doc:publish', ['build', 'shell:doc', 'shell:doc_publish']
   grunt.registerTask 'build', ['clean', 'coffeelint', 'coffee', 'concat']
   grunt.registerTask 'test', 'Run test with optional target', (target) ->
     suffix = if target then "-#{target}" else ''
