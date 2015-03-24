@@ -1,11 +1,12 @@
 _ = require 'underscore'
 jsondiffpatch = require 'jsondiffpatch'
 
-###
-Base Utils class
-###
+# Abstract: base utilities for sync objects
+#
+# This class should **not be exposed** and **must be extended** when defining a new `*Utils`.
 class BaseUtils
 
+  # Internal: Construct a `*Utils` object.
   constructor: ->
     @diffpatcher = jsondiffpatch.create
       # provide a hash function to work with objects in arrays
@@ -19,10 +20,13 @@ class BaseUtils
         # https://github.com/benjamine/jsondiffpatch/blob/master/docs/deltas.md#text-diffs
         minLength: 300
 
+  # Internal: Compute the difference between given objects
   diff: (old_obj, new_obj) -> @diffpatcher.diff(old_obj, new_obj)
 
+  # Internal: Patch the given object based on the delta
   patch: (obj, delta) -> @diffpatcher.patch(obj, delta)
 
+  # Internal: Pick correct value based on delta format
   getDeltaValue: (arr, obj) ->
     throw new Error 'Expected array to extract delta value' unless _.isArray(arr)
     size = arr.length
@@ -43,7 +47,4 @@ class BaseUtils
         else
           throw new Error "Got unsupported number #{arr[2]} in delta value"
 
-###
-Exports object
-###
 module.exports = BaseUtils

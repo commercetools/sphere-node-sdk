@@ -8,7 +8,7 @@ Utils = require '../utils'
 # Private: RegExp to parse time period for last function.
 REGEX_LAST = /^(\d+)([s|m|h|d|w])$/
 
-# Internal: Define a `BaseService` to provide basic methods to interact with the HTTP API.
+# Abstract: Define a `BaseService` to provide basic methods to interact with the HTTP API.
 #
 # This class should **not be exposed** and **must be extended** when defining a new `*Service`.
 #
