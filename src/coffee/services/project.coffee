@@ -14,13 +14,16 @@ class ProjectService extends BaseService
   # Internal: {String} The HTTP endpoint for `Project`
   @baseResourceEndpoint: ''
 
-  # Public: Not supported by the API
+  # Public Unsupported: Not supported by the API
   save: ->
 
-  # Public: Not supported by the API
+  # Public Unsupported: Not supported by the API
+  create: ->
+
+  # Public Unsupported: Not supported by the API
   update: ->
 
-  # Public: Not supported by the API
+  # Public Unsupported: Not supported by the API
   delete: ->
 
 module.exports = ProjectService

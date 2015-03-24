@@ -16,10 +16,16 @@ class MessageService extends BaseService
   # Internal: {String} The HTTP endpoint for `Messages`
   @baseResourceEndpoint: '/messages'
 
-  # Public: Not supported by the API
-  save: ->
+  # Public Unsupported: Not supported by the API
+  save: -> # noop
 
-  # Public: Not supported by the API
-  delete: ->
+  # Public Unsupported: Not supported by the API
+  create: -> # noop
+
+  # Public Unsupported: Not supported by the API
+  update: -> # noop
+
+  # Public Unsupported: Not supported by the API
+  delete: -> # noop
 
 module.exports = MessageService

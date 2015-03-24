@@ -271,13 +271,16 @@ class ProductProjectionService extends BaseService
     @_currentEndpoint = '/product-projections/suggest'
     @fetch()
 
-  # Public: Not supported by the API
-  save: ->
+  # Public Unsupported: Not supported by the API
+  save: -> # noop
 
-  # Public: Not supported by the API
+  # Public Unsupported: Not supported by the API
+  create: -> # noop
+
+  # Public Unsupported: Not supported by the API
   update: ->
 
-  # Public: Not supported by the API
+  # Public Unsupported: Not supported by the API
   delete: ->
 
 module.exports = ProductProjectionService

@@ -17,4 +17,7 @@ class ReviewService extends BaseService
   # Internal: {String} The HTTP endpoint for `Reviews`
   @baseResourceEndpoint: '/reviews'
 
+  # Public Unsupported: Not supported by the API
+  delete: ->
+
 module.exports = ReviewService

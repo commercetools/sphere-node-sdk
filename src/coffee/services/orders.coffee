@@ -80,7 +80,7 @@ class OrderService extends BaseService
       throw new Error "Body payload is required for creating a resource (endpoint: #{endpoint})"
     @_save(endpoint, body)
 
-  # Public: Not supported by the API
+  # Public Unsupported: Not supported by the API
   delete: ->
 
 module.exports = OrderService

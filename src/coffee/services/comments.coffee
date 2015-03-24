@@ -17,4 +17,7 @@ class CommentService extends BaseService
   # Internal: {String} The HTTP endpoint for `Comments`
   @baseResourceEndpoint: '/comments'
 
+  # Public Unsupported: Not supported by the API
+  delete: -> # noop
+
 module.exports = CommentService
