@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>SPHERE.IO Node.js SDK</title>
+  <link rel='stylesheet' href='..&#47;assets/biscotto.css' type='text/css'>
+  <script src='..&#47;assets/biscotto.js'></script>
+  <script src='..&#47;assets/search_data.js'></script>
+</head>
+  <body>
+    <div id='base' data-path='..&#47;'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='..&#47;README.md.html' title='Node.js SDK'>Node.js SDK</a>
+    &raquo;
+    <a href='..&#47;class_index.html' title='Index'>Index</a>
+    &raquo;
+    <span class='title'>docs&#47;CLIENT.md</span>
+    <nav>
+      <ul>
+        <li class='noframes'>
+          (<a class='noframes' href='#'>no frames</a>)
+        </li>
+      </ul>
+    </nav>
+    <div id='search'>
+      <a id='class_list_link' href='..&#47;class_list.html'>Classes</a>
+      <a id='method_list_link' href='..&#47;method_list.html'>Methods</a>
+      <a id='extra_list_link' href='..&#47;extra_list.html'>Extras</a>
+    </div>
+  </div>
+  <iframe id='search_frame'></iframe>
+  <div id='fuzzySearch'>
+    <input type='text'>
+    <ol></ol>
+  </div>
+  <div id='help'>
+    <p>
+      Quickly fuzzy find classes, mixins, methods, file:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-T</span>
+        Open fuzzy finder dialog
+      </li>
+    </ul>
+    <p>
+      In frame mode you can toggle the list navigation frame on the left side:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-L</span>
+        Toggle list view
+      </li>
+    </ul>
+    <p>
+      You can focus a list in frame mode or toggle a tab in frameless mode:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-C</span>
+        Class list
+      </li>
+      <li>
+        <span>Ctrl-I</span>
+        Mixin list
+      </li>
+      <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+      <li>
+        <span>Ctrl-M</span>
+        Method list
+      </li>
+      <li>
+        <span>Ctrl-E</span>
+        Extras list
+      </li>
+    </ul>
+    <p>
+      You can focus and blur the search input:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-S</span>
+        Focus search input
+      </li>
+      <li>
+        <span>Esc</span>
+        Blur search input
+      </li>
+    </ul>
+    <p>
+      In frameless mode you can close the list tab:
+    </p>
+    <ul>
+      <li>
+        <span>Esc</span>
+        Close list tab
+      </li>
+    </ul>
+  </div>
+</div>
+    <div id='content'>
+      <nav class='toc'>
+        <p class='title'>
+          <a class='hide_toc' href='#'>
+            <strong>Table of Contents</strong>
+          </a>
+          <small>
+            (<a class='float_toc' href='#'>left</a>)
+          </small>
+        </p>
+      </nav>
+      <div id='filecontents'>
+        <h2 id="sphere-client">SPHERE CLIENT</h2>
+<pre><code class="lang-coffeescript">{SphereClient} = require &#39;sphere-node-sdk&#39;
+</code></pre>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li><a href="#documentation">Documentation</a><ul>
+<li><a href="#services">Services</a></li>
+<li><a href="#types-of-requests">Types of requests</a><ul>
+<li><a href="#task-queue">Task Queue</a></li>
+<li><a href="#query-request">Query request</a><ul>
+<li><a href="#query-all-limit0">Query all (limit 0)</a></li>
+<li><a href="#query-for-modifications">Query for modifications</a></li>
+<li><a href="#query-and-process-in-batches">Query and process in batches</a></li>
+<li><a href="#staged-products">Staged products</a></li>
+</ul>
+</li>
+<li><a href="#search-request">Search request</a></li>
+<li><a href="#suggest-request">Suggest request</a></li>
+<li><a href="#create-resource">Create resource</a><ul>
+<li><a href="#import-orders">Import orders</a></li>
+<li><a href="#ensure-channels">Ensure channels</a></li>
+</ul>
+</li>
+<li><a href="#update-resource">Update resource</a></li>
+<li><a href="#delete-resource">Delete resource</a></li>
+</ul>
+</li>
+<li><a href="#types-of-responses">Types of responses</a></li>
+<li><a href="#error-handling">Error handling</a><ul>
+<li><a href="#error-types">Error types</a></li>
+</ul>
+</li>
+<li><a href="#statistics">Statistics</a></li>
+</ul>
+</li>
+<li><a href="DEBUGGING.md">Logging &amp; debugging</a></li>
+</ul>
+<h2 id="documentation">Documentation</h2><p>To start using the client you need to create an instance of the <code>SphereClient</code> by passing the credentials (and other optional parameters) in order to connect with the HTTP APIs. Project credentials can be found in the SPHERE.IO <a href="https://admin.sphere.io/">Merchant Center</a> under <code>Developers &gt; API clients</code> section.</p><blockquote><p>For a list of options to pass to the client, see <a href="CONNECT.md#rest">SPHERE CONNECT - Rest</a>.</p></blockquote>
+<pre><code class="lang-coffeescript">client = new SphereClient
+  config:
+    client_id: &quot;CLIENT_ID_HERE&quot;
+    client_secret: &quot;CLIENT_SECRET_HERE&quot;
+    project_key: &quot;PROJECT_KEY_HERE&quot;
+  user_agent: &#39;sphere-node-sdk&#39; # optional
+  task: {} # optional TaskQueue instance
+  rest: {} # optional Rest instance (see SPHERE CONNECT)
+</code></pre>
+<h3 id="services">Services</h3><p>The <code>SphereClient</code> provides a set of Services to connect with the related API endpoints. Currently following services are supported:</p><ul>
+<li><code>carts</code></li>
+<li><code>categories</code></li>
+<li><code>channels</code></li>
+<li><code>comments</code></li>
+<li><code>customObjects</code></li>
+<li><code>customerGroups</code></li>
+<li><code>customers</code></li>
+<li><code>inventoryEntries</code></li>
+<li><code>messages</code></li>
+<li><code>orders</code></li>
+<li><code>productDiscounts</code></li>
+<li><code>productProjections</code></li>
+<li><code>productTypes</code></li>
+<li><code>products</code></li>
+<li><code>project</code></li>
+<li><code>reviews</code></li>
+<li><code>shippingMethods</code></li>
+<li><code>states</code></li>
+<li><code>taxCategories</code></li>
+<li><code>zones</code></li>
+</ul>
+<blockquote><p>Note that not all services support the common (CRUD) verbs, it depends on the resource endpoint itself. Please refer to the <a href="http://dev.sphere.io/">HTTP API Documentation</a>.</p></blockquote>
+<h3 id="types-of-requests">Types of requests</h3><p>Requests to the HTTP API are obviously asynchronous and they all return a <a href="https://github.com/petkaantonov/bluebird"><code>Bluebird</code> promise</a>.</p><pre><code class="lang-coffeescript">client = new SphereClient {...}
+
+client.products.fetch()
+.then (result) -&gt;
+  # a JSON object containing a statusCode and a body of either a result or a SPHERE.IO HTTP error
+.catch (error) -&gt;
+  # either the request failed or was rejected (the response returned an error)
+</code></pre><p>Current methods using promises are:</p><ul>
+<li><code>fetch</code> HTTP <code>GET</code> request</li>
+<li><code>save</code> HTTP <code>POST</code> request</li>
+<li><code>create</code> HTTP <code>POST</code> request (<em>alias for <code>save</code></em>)</li>
+<li><code>update</code> HTTP <code>POST</code> request</li>
+<li><code>delete</code> HTTP <code>DELETE</code> request</li>
+<li><code>process</code> HTTP <code>GET</code> request (in batches)</li>
+</ul>
+<h4 id="task-queue">Task Queue</h4><p>To optimize processing lots of requests all together, e.g.: avoiding connection timeouts, we introduced <a href="TASK-QUEUE.md">TaskQueue</a>.</p><p>Every request is internally pushed in a queue which automatically starts resolving promises (requests) and will process concurrently some of them based on the <code>maxParallel</code> parameter. You can set this parameter by calling the following method</p><ul>
+<li><code>setMaxParallel(n)</code> defines the number of max parallel requests to be processed by the <a href="TASK-QUEUE.md">TaskQueue</a> (default is <code>20</code>). <strong>If &lt; 1 it throws an error</strong></li>
+</ul>
+<pre><code class="lang-coffeescript">client = new SphereClient {...} # a TaskQueue is internally initialized at this point with maxParallel of 20
+client.setMaxParallel 5
+
+# let&#39;s trigger 100 parallel requests with `Promise.all`, but process them max 5 at a time
+Promise.all _.map [1..100], -&gt; client.products.byId(&#39;123-abc&#39;).fetch()
+.then (results) -&gt;
+</code></pre>
+<blockquote><p>You can pass an existing <code>TaskQueue</code> object when initializing the <code>SphereClient</code></p></blockquote>
+<pre><code class="lang-coffeescript">{SphereClient, TaskQueue} = require &#39;sphere-node-sdk&#39;
+taskQueue = new TaskQueue maxParallel: 10
+client = new SphereClient
+  task: taskQueue
+</code></pre>
+<h4 id="query-request">Query request</h4><p>All resource endpoints support queries, returning a list of results of type <a href="http://dev.sphere.io/http-api.html#paged-query-response">PagedQueryResponse</a>.</p><blockquote><p>Fetching and endpoint without specifying and <code>ID</code> returns a <code>PagedQueryResponse</code></p></blockquote><p>A query request can be configured with following query parameters:</p><ul>
+<li><code>where</code> (<a href="http://dev.sphere.io/http-api.html#predicates">Predicate</a>)</li>
+<li><code>sort</code> (<a href="http://dev.sphere.io/http-api.html#sorting">Sort</a>)</li>
+<li><code>limit</code> (Number)</li>
+<li><code>offset</code> (Number)</li>
+<li><code>expand</code> (<a href="http://dev.sphere.io/http-api.html#reference-expansion">Expansion Path</a>)</li>
+</ul><p>The <code>SphereClient</code> helps you build those requests with following methods:</p><ul>
+<li><code>where(predicate)</code> defines a URI encoded predicate from the given string (can be set multiple times)</li>
+<li><code>whereOperator(operator)</code> defines the logical operator to combine multiple where parameters</li>
+<li><code>last(period)</code> defines a <a href="#query-for-modifications">time period</a> for a query on the <code>lastModifiedAt</code> attribute of all resources</li>
+<li><code>sort(path, ascending)</code> defines how the query result should be sorted - true (default) defines ascending where as false indicates descascending</li>
+<li><code>page(n)</code> defines the page number to be requested from the complete query result (default is <code>1</code>). <strong>If &lt; 1 it throws an error</strong></li>
+<li><code>perPage(n)</code> defines the number of results to return from a query (default is <code>100</code>). If set to <code>0</code> all results are returned (<em>more <a href="CONNECT#paged-requests">info</a></em>). <strong>If &lt; 0 it throws an error</strong></li>
+<li><code>all()</code> alias for <code>perPage(0)</code></li>
+<li><code>expand(expansionPath)</code> defines a URI encoded expansion path from the given string (can be set multiple times) used for expanding references of a resource</li>
+</ul>
+<blockquote><p>All these methods are chainable</p></blockquote>
+<pre><code class="lang-coffeescript"># example
+
+client = new SphereClient {...}
+client.products
+.where(&#39;name(en=&quot;Foo&quot;)&#39;)
+.where(&#39;id=&quot;1234567890&quot;&#39;)
+.whereOperator(&#39;or&#39;)
+.page(3)
+.perPage(25)
+.sort(&#39;name&#39;, false)
+.expand(&#39;masterData.staged.productType&#39;)
+.expand(&#39;masterData.staged.categories[*]&#39;)
+.fetch()
+
+# HTTP request
+# /{project_key}/products?where=name(en%3D%22Foo%22)%20or%20id%3D%221234567890%22&amp;limit=25&amp;offset=50&amp;sort=name%20desc
+</code></pre>
+<h5 id="query-all-limit-0-">Query all (limit=0)</h5><p>If you want to retrieve all results of a resource, you can set the <code>perPage</code> param to <code>0</code>, or use the alias function <code>all()</code>.
+In that case the results are recursively requested in chunks and returned all together once completed.</p><pre><code class="lang-coffeescript">client = new SphereClient {...}
+client.perPage(0).fetch()
+.then (result) -&gt; # `results` is still a `PagedQueryResponse` containing all results of the query
+.catch (error) -&gt;
+</code></pre><p>Since the request is executed recursively until all results are returned, you can <strong>subscribe to the progress notification</strong> in order to follow the progress</p><pre><code class="lang-coffeescript">client = new SphereClient {...}
+client.perPage(0).fetch()
+.then (result) -&gt;
+.progress (progress) -&gt;
+  # progress is an object containing the current progress percentage
+  # and the value of the current results (array)
+  # e.g. {percentage: 20, value: [r1, r2, r3, ...]}
+  console.log &quot;#{progress.percentage}% completed...&quot;
+.catch (error) -&gt;
+</code></pre><p>More info <a href="CONNECT#paged-requests">here</a>.</p><h5 id="query-for-modifications">Query for modifications</h5><p>If you want to retrieve only those resources that changed over a given time, you can chain the <code>last</code> functions,
+that builds a query for you based on the <code>lastModifiedAt</code> attribute.</p><p>The format of the <code>period</code> parameter is a number followed by one of the following characters:</p><ul>
+<li><code>s</code> for seconds - eg. <code>30s</code></li>
+<li><code>m</code> for minutes - eg. <code>15m</code></li>
+<li><code>h</code> for hours - eg. <code>6h</code></li>
+<li><code>d</code> for days - eg. <code>7d</code></li>
+</ul>
+<pre><code class="lang-coffeescript"># example
+
+client = new SphereClient {...}
+client.orders.last(&#39;2h&#39;).fetch()
+</code></pre>
+<blockquote><p>Please be aware that <code>last</code> is just another <code>where</code> clause and thus depends on the <code>operator</code> you choose - default is <code>and</code>.</p></blockquote>
+<h5 id="query-and-process-in-batches">Query and process in batches</h5><p>Sometimes you need to query all results (or some pages) of a resource and do some other operations with those infos.
+That means that you would need to fetch lots of data (see <a href="#query-all-limit0">query with limit 0</a>) and have it all saved in memory, which can be quite dangerous and not really performant.
+To help you with that, we provide you a <code>process</code> function to work with batches.</p><blockquote><p>Batch processing allows to process a lot of resources in chunks. Using this approach you can balance between memory usage and parallelism.</p></blockquote><p>The <code>process</code> function takes a function <code>fn</code> (which returns a <em>Promise</em>) and will start <strong>fetching</strong> resources in <a href="http://dev.sphere.io/http-api.html#paged-query-response">pages</a>. On each page, the <code>fn</code> function will be executed and once it gets resolved, the next page will be fetched and so on.</p><pre><code class="lang-coffeescript"># Define your custom function, which returns a promise
+fn = (payload) -&gt;
+  new Promise (resolve, reject) -&gt;
+    # do something with the payload
+    if # something unexpected happens
+      reject &#39;BAD&#39;
+    else # good case
+      resolve &#39;OK&#39;
+
+client.products.perPage(20).process(fn)
+.then (result) -&gt;
+  # here we get the total result, which is just an array of all pages accumulated
+  # eg: [&#39;OK&#39;, &#39;OK&#39;, &#39;OK&#39;] if you have 41 to 60 products - the function fn is called three times
+.catch (error) -&gt;
+  # eg: &#39;BAD&#39;
+</code></pre><p>You can pass some options as second argument:</p><ul>
+<li><code>accumulate</code> whether the results should be accumulated or not (default <code>true</code>). If not, an empty array will be returned from the resolved promise.</li>
+</ul>
+<h5 id="staged-products">Staged products</h5><p>The <code>ProductProjectionService</code> returns a representation of the products called <a href="http://dev.sphere.io/http-api-projects-products.html#product-projection">ProductProjection</a> which corresponds basically to a <strong>catalog</strong> or <strong>staged</strong> representation of a product. When using this service you can specify which projection of the product you would like to have by defining a <code>staged</code> parameter (default is <code>true</code>).</p><pre><code class="lang-coffeescript"># example
+
+client = new SphereClient {...}
+client.productProjections
+.staged()
+.fetch()
+
+# HTTP request
+# /{project_key}/products-projections?staged=true
+</code></pre>
+<h4 id="search-request">Search request</h4><p>The <code>ProductProjectionService</code> supports <strong>searching</strong>, returning a list of results of type <a href="http://dev.sphere.io/http-api.html#paged-query-response">PagedQueryResponse</a>.</p><p>A search request can be configured with following query parameters:</p><ul>
+<li><code>lang</code> (ISO language tag)</li>
+<li><code>text</code> (String)</li>
+<li><code>filter</code> (<a href="http://dev.sphere.io/http-api-projects-products-search.html#search-filters">Filter</a>)</li>
+<li><code>filter.query</code> (<a href="http://dev.sphere.io/http-api-projects-products-search.html#search-filters">Filter</a>)</li>
+<li><code>filter.facets</code> (<a href="http://dev.sphere.io/http-api-projects-products-search.html#search-filters">Filter</a>)</li>
+<li><code>facet</code> (<a href="http://dev.sphere.io/http-api-projects-products-search.html#search-facets">Facet</a>)</li>
+<li><code>sort</code> (<a href="http://dev.sphere.io/http-api.html#sorting">Sort</a>)</li>
+<li><code>limit</code> (Number)</li>
+<li><code>offset</code> (Number)</li>
+<li><code>staged</code> (Boolean)</li>
+</ul><p>The <code>SphereClient</code> helps you build those requests with following methods:</p><ul>
+<li><code>lang(language)</code> defines the ISO language tag</li>
+<li><code>text(text)</code> defines the text to analyze and search for</li>
+<li><code>filter(filter)</code> defines a URI encoded string for the <code>filter</code> parameter (can be set multiple times)</li>
+<li><code>filterByQuery(filter)</code> defines a URI encoded string for the <code>filter.query</code> parameter (can be set multiple times)</li>
+<li><code>filterByFacets(filter)</code> defines a URI encoded string for the <code>filter.facets</code> parameter (can be set multiple times)</li>
+<li><code>facet(facet)</code> defines a URI encoded string for the <code>facet</code> parameter (can be set multiple times)</li>
+<li><code>sort(path, ascending)</code> defines how the query result should be sorted - true (default) defines ascending where as false indicates descascending</li>
+<li><code>page(n)</code> defines the page number to be requested from the complete query result (default is <code>1</code>). <strong>If &lt; 1 it throws an error</strong></li>
+<li><code>perPage(n)</code> defines the number of results to return from a query (default is <code>100</code>). If set to <code>0</code> all results are returned (<em>more <a href="CONNECT#paged-requests">info</a></em>). <strong>If &lt; 0 it throws an error</strong></li>
+<li><code>staged(staged)</code> defines whether to search for staged or current projection (see <a href="#staged-products">Staged products</a>)</li>
+</ul>
+<blockquote><p>All these methods are chainable</p></blockquote>
+<pre><code class="lang-coffeescript"># example
+
+client = new SphereClient {...}
+client.productProjections
+.page(3)
+.perPage(25)
+.sort(&#39;createdAt&#39;)
+.lang(&#39;de&#39;)
+.text(&#39;T-shirt&#39;)
+.filter(&#39;variants.attributes.color:red&#39;)
+.filterByQuery(&#39;variants.attributes.color:red&#39;)
+.filterByFacets(&#39;variants.attributes.color:red&#39;)
+.facet(&#39;variants.attributes.color:red&#39;)
+.search()
+</code></pre>
+<h4 id="suggest-request">Suggest request</h4><p>The <code>ProductProjectionService</code> supports also a <strong>suggest</strong> endpoint, used for implementing an auto-completion functionality, returning a list of results of type <a href="http://dev.sphere.io/http-api-projects-products-search.html#suggest-representations-result">SuggestionResult</a>.</p><h4 id="create-resource">Create resource</h4><p>All endpoints allow a resource to be created by posting a JSON <code>Representation</code> of the selected resource as a body payload.</p><pre><code class="lang-coffeescript">product =
+  name:
+    en: &#39;Foo&#39;
+  slug:
+    en: &#39;foo&#39;
+  ...
+
+client.products.save(product)
+.then (result) -&gt;
+  # a JSON object containing either a result or a SPHERE.IO HTTP error
+.catch (error) -&gt;
+  # either the request failed or was rejected (the response returned an error)
+</code></pre>
+<blockquote><p>You can use also <code>create</code> instead of <code>save</code> (it&#39;s an alias)</p></blockquote>
+<h5 id="import-orders">Import orders</h5><p>The <code>OrderService</code> exposes a specific function to <a href="http://dev.sphere.io/http-api-projects-orders-import.html">import orders</a>.
+Use it as you would use the <code>save</code> function, just internally the correct API endpoint is set.</p><pre><code class="lang-coffeescript">client.orders.import(order)
+</code></pre>
+<h5 id="ensure-channels">Ensure channels</h5><p>The <code>ChannelService</code> provides a convenience method to retrieve a channel with given key/role. The method ensures, that the requested channel can be returned in case it&#39;s not existing or doesn&#39;t have the requried role yet.</p><pre><code class="lang-coffeescript"># makes sure a channel with key &#39;OrderFileExport&#39; and role &#39;OrderExport&#39; exists
+client.channels.ensure(&#39;OrderFileExport&#39;, &#39;OrderExport&#39;)
+.then (result) -&gt;
+  # pretty print channel instance
+  console.log _u.prettify(result.body)
+.catch (error) -&gt;
+  # either the request failed or was rejected (the response returned an error)
+</code></pre>
+<h4 id="update-resource">Update resource</h4><p>Updates are just a POST request to the endpoint specified by an <code>ID</code>, provided with a body payload of <a href="http://dev.sphere.io/http-api.html#partial-updates">Update Actions</a>.</p><blockquote><p>The <code>update</code> method requires that the given resource <code>ID</code> is set. If no <code>ID</code> is provided it will throw an Error.</p></blockquote>
+<pre><code class="lang-coffeescript"># new product
+product =
+  name:
+    en: &#39;Foo&#39;
+  slug:
+    en: &#39;foo&#39;
+  ...
+
+# update action for product name
+update =
+  version: 1,
+  actions: [
+    {
+      action: &#39;changeName&#39;
+      name:
+        en: &#39;Foo&#39;
+    }
+  ]
+
+client.products.byId(&#39;123-abc&#39;).update(product)
+.then (result) -&gt;
+  # a JSON object containing either a result or a SPHERE.IO HTTP error
+.catch (error) -&gt;
+  # either the request failed or was rejected (the response returned an error)
+</code></pre>
+<h4 id="delete-resource">Delete resource</h4><p>Some endpoints (for now) allow a resource to be deleted by providing the <code>version</code> of current resource as a query parameter.</p><pre><code class="lang-coffeescript"># assume that we have a product
+client.products.byId(&#39;123-abc&#39;).fetch()
+.then (product) -&gt;
+  client.products.byId(&#39;123-abc&#39;).delete(product.version)
+.then (result) -&gt;
+  # a JSON object containing either a result or a SPHERE.IO HTTP error
+.catch (error) -&gt;
+  # either the request failed or was rejected (the response returned an error)
+</code></pre>
+<h4 id="types-of-responses">Types of responses</h4><p>When a <a href="https://github.com/petkaantonov/bluebird"><code>Bluebird</code> promise</a> is resolved or rejected a JSON object is always returned and it contains a <code>statusCode</code> plus the response body or error messages</p><pre><code class="lang-coffeescript"># promise resolved
+{
+  statusCode: 200 # or other successful status codes
+  body: { ... } # the body of the response coming from SPHERE.IO
+}
+
+# promise rejected
+{
+  statusCode: 400 # or other error codes
+  message: &#39;Oops, something went wrong&#39; # see http://dev.sphere.io/http-api-errors.html
+  ...
+}
+</code></pre>
+<blockquote><p>When a promise is rejected, the response object contains a field <code>originalRequest</code>, providing some information about the related request (<code>endpoint</code>, <code>payload</code>). This is useful to better understand the error in relation with the failed request.</p></blockquote>
+<h3 id="error-handling">Error handling</h3><p>As the HTTP API <em>gracefully</em> <a href="CONNECT#error-handling">handles errors</a> by providing a JSON body with error codes and messages, the <code>SphereClient</code> handles that by providing an intuitive way of dealing with responses.</p><p>Since a Promise can be either resolved or rejected, the result is determined by valuating the <code>statusCode</code> of the response:</p><ul>
+<li><code>resolved</code> everything with a successful HTTP status code</li>
+<li><code>rejected</code> everything else</li>
+</ul>
+<h4 id="error-types">Error types</h4><p>All Sphere response <em>errors</em> are then wrapped in a custom <code>Error</code> type and returned as a rejected Promise value.
+That means you can do type check as well as getting the JSON response body</p><pre><code class="lang-coffeescript">{ConcurrentModification} = Errors.SphereHttpError
+client.products.byId(productId).update(payload)
+.then (result) -&gt;
+  # we know the request was successful (e.g.: 2xx) and `result` is a JSON of a resource representation
+.catch (e) -&gt;
+  # something went wrong, either an unexpected error or a HTTP API error response
+  # here we can check the error type to differentiate the error
+  if e instanceof ConcurrentModification
+    # e.code =&gt; 409
+    # e.message =&gt; &#39;Different version then expected&#39;
+    # e.body =&gt; {statusCode: 409, message: ...}
+    # e instanceof SphereError =&gt; true
+  else
+    throw e
+</code></pre><p>Following error types are exposed:</p><ul>
+<li><code>HttpError</code></li>
+<li><code>SphereError</code></li>
+<li><code>SphereHttpError</code><ul>
+<li><code>BadRequest</code></li>
+<li><code>NotFound</code></li>
+<li><code>ConcurrentModification</code></li>
+<li><code>InternalServerError</code></li>
+<li><code>ServiceUnavailable</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="statistics">Statistics</h3><p>You can retrieve some statistics (more to come) by passing some options when creating a new <code>SphereClient</code> instance.</p><p>Current options are available:</p><ul>
+<li><code>includeHeaders</code> will include some HTTP header information in the <a href="#types-of-responses">response</a>, wrapped in a JSON object called <code>http</code></li>
+</ul>
+<pre><code class="lang-coffeescript">client = new SphereClient
+  config: # credentials
+  stats:
+    includeHeaders: true
+</code></pre>
+<pre><code class="lang-javascript">{
+  &quot;http&quot;: { // HTTP header information
+    &quot;request&quot;: {
+      &quot;method&quot;: &quot;GET&quot;,
+      &quot;httpVersion&quot;: &quot;1.1&quot;,
+      &quot;uri&quot;: {
+        &quot;protocol&quot;: &quot;https:&quot;,
+        &quot;slashes&quot;: true,
+        &quot;auth&quot;: null,
+        &quot;host&quot;: &quot;api.sphere.io&quot;,
+        &quot;port&quot;: 443,
+        &quot;hostname&quot;: &quot;api.sphere.io&quot;,
+        &quot;hash&quot;: null,
+        &quot;search&quot;: null,
+        &quot;query&quot;: null,
+        &quot;pathname&quot;: &quot;/foo/bar&quot;,
+        &quot;path&quot;: &quot;/foo/bar&quot;,
+        &quot;href&quot;: &quot;https://api.sphere.io/foo/bar&quot;,
+      },
+      &quot;header&quot;: &quot;GET /foo/bar HTTP/1.1\r\nUser-Agent: sphere-node-sdk\r\nAuthorization: Bearer XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\r\nhost: api.sphere.io\r\naccept: application/json\r\nConnection: keep-alive\r\n\r\n&quot;,
+      &quot;headers&quot;: {
+        &quot;User-Agent&quot;: &quot;sphere-node-sdk&quot;,
+        &quot;Authorization&quot;: &quot;Bearer XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX&quot;,
+        &quot;accept&quot;: &quot;application/json&quot;
+      }
+    },
+    &quot;response&quot;: {
+      &quot;headers&quot;: {
+        &quot;server&quot;: &quot;nginx&quot;,
+        &quot;date&quot;: &quot;Wed, 01 Jan 2014 12:00:00 GMT&quot;,
+        &quot;content-type&quot;: &quot;application/json; charset=utf-8&quot;,
+        &quot;transfer-encoding&quot;: &quot;chunked&quot;,
+        &quot;connection&quot;: &quot;keep-alive&quot;,
+        &quot;x-served-by&quot;: &quot;app2.sphere.prod.commercetools.de&quot;,
+        &quot;x-served-config&quot;: &quot;sphere-projects-ws-1.0&quot;,
+        &quot;access-control-allow-origin&quot;: &quot;*&quot;,
+        &quot;access-control-allow-headers&quot;: &quot;Accept, Authorization, Content-Type, Origin&quot;,
+        &quot;access-control-allow-methods&quot;: &quot;GET, POST, DELETE, OPTIONS&quot;
+      }
+    }
+  }
+  &quot;statusCode&quot;: 200
+  &quot;body&quot;: { ... }
+}
+</code></pre>
+
+      </div>
+    </div>
+    <div id='footer'>
+  Generated on
+  Mon Mar 23 2015 10:02:47 GMT+0100 (CET)
+  by
+  <a href='https://github.com/gjtorikian/biscotto' title='TomDoc-CoffeeScript API documentation generator'>Biscotto</a>
+  v2.3.1
+  (Node.js v0.10.33).
+  &#10034;
+  Press Ctrl-h to see the keyboard shortcuts
+</div>
+  </body>
+</html>

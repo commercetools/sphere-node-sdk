@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>SPHERE.IO Node.js SDK</title>
+  <link rel='stylesheet' href='..&#47;assets/biscotto.css' type='text/css'>
+  <script src='..&#47;assets/biscotto.js'></script>
+  <script src='..&#47;assets/search_data.js'></script>
+</head>
+  <body>
+    <div id='base' data-path='..&#47;'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='..&#47;README.md.html' title='Node.js SDK'>Node.js SDK</a>
+    &raquo;
+    <a href='..&#47;class_index.html' title='Index'>Index</a>
+    &raquo;
+    <span class='title'>SphereClient</span>
+    <nav>
+      <ul>
+        <li class='noframes'>
+          (<a class='noframes' href='#'>no frames</a>)
+        </li>
+      </ul>
+    </nav>
+    <div id='search'>
+      <a id='class_list_link' href='..&#47;class_list.html'>Classes</a>
+      <a id='method_list_link' href='..&#47;method_list.html'>Methods</a>
+      <a id='extra_list_link' href='..&#47;extra_list.html'>Extras</a>
+    </div>
+  </div>
+  <iframe id='search_frame'></iframe>
+  <div id='fuzzySearch'>
+    <input type='text'>
+    <ol></ol>
+  </div>
+  <div id='help'>
+    <p>
+      Quickly fuzzy find classes, mixins, methods, file:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-T</span>
+        Open fuzzy finder dialog
+      </li>
+    </ul>
+    <p>
+      In frame mode you can toggle the list navigation frame on the left side:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-L</span>
+        Toggle list view
+      </li>
+    </ul>
+    <p>
+      You can focus a list in frame mode or toggle a tab in frameless mode:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-C</span>
+        Class list
+      </li>
+      <li>
+        <span>Ctrl-I</span>
+        Mixin list
+      </li>
+      <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+      <li>
+        <span>Ctrl-M</span>
+        Method list
+      </li>
+      <li>
+        <span>Ctrl-E</span>
+        Extras list
+      </li>
+    </ul>
+    <p>
+      You can focus and blur the search input:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-S</span>
+        Focus search input
+      </li>
+      <li>
+        <span>Esc</span>
+        Blur search input
+      </li>
+    </ul>
+    <p>
+      In frameless mode you can close the list tab:
+    </p>
+    <ul>
+      <li>
+        <span>Esc</span>
+        Close list tab
+      </li>
+    </ul>
+  </div>
+</div>
+    <div id='content'>
+      <h1>
+        Class
+        SphereClient
+      </h1>
+      <table class='box'>
+        <tr>
+          <td>Defined in:</td>
+          <td>src&#47;coffee&#47;client.coffee</td>
+        </tr>
+      </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>The <code>SphereClient</code> provides a set of Services to connect with the related API endpoints. To configure the underlying Http client see <a href='../classes/Rest.html'>Rest</a></p><pre><code class="lang-coffeescript">SphereClient = require(&#39;sphere-node-sdk&#39;).SphereClient
+</code></pre><p>Requests to the HTTP API are obviously asynchronous and they all return a <a href='../classes/Promise.html'>Promise</a>.
+If the request is resolved, the <code>result</code> contains:</p><ul>
+<li><code>statusCode</code></li>
+<li><code>body</code>
+If the request is rejected, the <code>error</code> is an instance of a <a href='../classes/HttpError.html'>HttpError</a> or a <a href='../classes/SphereError.html'>SphereError</a>.</li>
+</ul><p>When a promise is rejected, the response object contains a field <code>originalRequest</code>,
+providing some information about the related request (<code>endpoint</code>, <code>payload</code>).
+This is useful to better understand the error in relation with the failed request.</p><h3 id="taskqueue">TaskQueue</h3><p>To optimize processing lots of requests all together, e.g.: avoiding connection timeouts, we introduced <a href='../classes/TaskQueue.html'>TaskQueue</a>.
+Every request is internally pushed in a queue which automatically starts resolving promises (requests)
+and will process concurrently some of them based on the <code>maxParallel</code> parameter. You can set this parameter by calling <a href='../classes/SphereClient.html#setMaxParallel-instance'>::setMaxParallel</a>.</p><pre><code class="lang-coffeescript">client = new SphereClient # a TaskQueue is internally initialized at this point with maxParallel of 20
+client.setMaxParallel 5
+
+# let&#39;s trigger 100 parallel requests with `Promise.all`, but process them max 5 at a time
+Promise.all _.map [1..100], -&gt; client.products.byId(&#39;123-abc&#39;).fetch()
+.then (results) -&gt;
+</code></pre>
+<h3 id="error-handling">Error handling</h3><p>As the HTTP API <em>gracefully</em> handles errors by providing a JSON body with error codes and messages,
+the <code>SphereClient</code> handles that by providing an intuitive way of dealing with responses.</p><p>Since a <a href='../classes/Promise.html'>Promise</a> can be either <code>resolved</code> or <code>rejected</code>, the result is determined by valuating the <code>statusCode</code> of the response:</p><ul>
+<li><code>resolved</code> everything with a successful HTTP status code</li>
+<li><code>rejected</code> everything else</li>
+</ul>
+<h3 id="error-types">Error types</h3><p>All SPHERE.IO response <em>errors</em> are then wrapped in a custom <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Error'>Error</a> type (either a <a href='../classes/HttpError.html'>HttpError</a> or <a href='../classes/SphereError.html'>SphereError</a>)
+and returned as a rejected <a href='../classes/Promise.html'>Promise</a> value. That means you can do type check as well as getting the JSON response body.</p><pre><code class="lang-coffeescript">Errors = require(&#39;sphere-node-sdk&#39;).Errors
+client.products().byId(productId).update(payload)
+.then (result) -&gt;
+  # we know the request was successful (e.g.: 2xx) and `result` is a JSON of a resource representation
+.catch (e) -&gt;
+  # something went wrong, either an unexpected error or a HTTP API error response
+  # here we can check the error type to differentiate the error
+  if e instanceof Errors.SphereHttpError.ConcurrentModification
+    # e.code =&gt; 409
+    # e.message =&gt; &#39;Different version then expected&#39;
+    # e.body =&gt; statusCode: 409, message: ...
+    # e instanceof SphereError =&gt; true
+  else
+    throw e
+</code></pre><p>Following error types are exposed:</p><ul>
+<li><code><a href='../classes/HttpError.html'>HttpError</a></code></li>
+<li><code><a href='../classes/SphereError.html'>SphereError</a></code></li>
+<li><code>SphereHttpError</code><ul>
+<li><code><a href='../classes/BadRequest.html'>BadRequest</a></code></li>
+<li><code><a href='../classes/NotFound.html'>NotFound</a></code></li>
+<li><code><a href='../classes/ConcurrentModification.html'>ConcurrentModification</a></code></li>
+<li><code><a href='../classes/InternalServerError.html'>InternalServerError</a></code></li>
+<li><code><a href='../classes/ServiceUnavailable.html'>ServiceUnavailable</a></code></li>
+</ul>
+</li>
+</ul>
+<h3 id="statistics">Statistics</h3><p>Some statistics (more to come) are provided by passing some options when creating a new <code>SphereClient</code> instance.</p><p>Current options are available:</p><ul>
+<li><code>includeHeaders</code> will include some HTTP header information in the response, wrapped in a JSON object called <code>http</code></li>
+</ul>
+<pre><code class="lang-coffeescript">client = new SphereClient
+  config: # credentials
+  stats:
+    includeHeaders: true
+client.products().fetch()
+.then (result) -&gt;
+  # result.statusCode
+  # result.body
+  # result.http
+  # result.http.request
+  # result.http.response
+</code></pre>
+
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>{SphereClient} = require &#39;sphere-node-sdk&#39;
+client = new SphereClient
+  config:
+    project_key: &#39;foo&#39;
+    client_id: &#39;123&#39;
+    client_secret: &#39;secret&#39;
+  user_agent: &#39;sphere-node-sdk&#39;
+  task: {} # optional TaskQueue instance
+  stats:
+    includeHeaders: true
+client.products()
+.where(&#39;name(en=&quot;Foo&quot;)&#39;)
+.where(&#39;id=&quot;1234567890&quot;&#39;)
+.whereOperator(&#39;or&#39;)
+.page(3)
+.perPage(25)
+.sort(&#39;name&#39;, false)
+.expand(&#39;masterData.staged.productType&#39;)
+.expand(&#39;masterData.staged.categories[*]&#39;)
+.fetch() </code></pre>
+  </div>
+</div>
+<div class='tags'>
+</div>
+      <h2>Instance Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#cartDiscounts-instance'>
+        CartDiscountService ::<strong>cartDiscounts</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Get a new instance of a <code>CartDiscountService</code></p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#carts-instance'>
+        CartService ::<strong>carts</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Get a new instance of a <code>CartService</code></p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#categories-instance'>
+        CategoryService ::<strong>categories</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Get a new instance of a <code>CategoryService</code></p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#channels-instance'>
+        ChannelService ::<strong>channels</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Get a new instance of a <code>ChannelService</code></p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#comments-instance'>
+        CommentService ::<strong>comments</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Get a new instance of a <code>CommentService</code></p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#constructor-instance'>
+        ::<strong>constructor</strong>(options = {})
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Construct a <code>SphereClient</code> object.</p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#customObjects-instance'>
+        CustomObjectService ::<strong>customObjects</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Get a new instance of a <code>CustomObjectService</code></p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#customerGroups-instance'>
+        CustomerGroupService ::<strong>customerGroups</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Get a new instance of a <code>CustomerGroupService</code></p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#customers-instance'>
+        CustomerService ::<strong>customers</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Get a new instance of a <code>CustomerService</code></p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#discountCodes-instance'>
+        DiscountCodeService ::<strong>discountCodes</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Get a new instance of a <code>DiscountCodeService</code></p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#inventoryEntries-instance'>
+        InventoryEntryService ::<strong>inventoryEntries</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Get a new instance of a <code>InventoryEntryService</code></p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#messages-instance'>
+        MessageService ::<strong>messages</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Get a new instance of a <code>MessageService</code></p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#orders-instance'>
+        OrderService ::<strong>orders</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Get a new instance of a <code>OrderService</code></p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#productDiscounts-instance'>
+        ProductDiscountService ::<strong>productDiscounts</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Get a new instance of a <code>ProductDiscountService</code></p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#productProjections-instance'>
+        ProductProjectionService ::<strong>productProjections</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Get a new instance of a <code>ProductProjectionService</code></p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#productTypes-instance'>
+        ProductTypeService ::<strong>productTypes</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Get a new instance of a <code>ProductTypeService</code></p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#products-instance'>
+        ProductService ::<strong>products</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Get a new instance of a <code>ProductService</code></p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#project-instance'>
+        ProjectService ::<strong>project</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Get a new instance of a <code>ProjectService</code></p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#reviews-instance'>
+        ReviewService ::<strong>reviews</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Get a new instance of a <code>ReviewService</code></p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#setMaxParallel-instance'>
+        ::<strong>setMaxParallel</strong>(maxParallel)
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Define max parallel request to be sent on each request from the <a href='../classes/TaskQueue.html'>TaskQueue</a></p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#shippingMethods-instance'>
+        ShippingMethodService ::<strong>shippingMethods</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Get a new instance of a <code>ShippingMethodService</code></p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#states-instance'>
+        StateService ::<strong>states</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Get a new instance of a <code>StateService</code></p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#taxCategories-instance'>
+        TaxCategoryService ::<strong>taxCategories</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Get a new instance of a <code>TaxCategoryService</code></p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#zones-instance'>
+        ZoneService ::<strong>zones</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Get a new instance of a <code>ZoneService</code></p>
+    </span>
+  </li>
+</ul>
+      <h2>Constructor Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='constructor-instance'>
+      ::<strong>constructor</strong>(options = {})
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;client.coffee#L143'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Construct a <code>SphereClient</code> object.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='type'>(Object)</span>
+      <span class='name'>options</span>
+      &mdash;
+      <span class='desc'>An <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object'>Object</a> to configure the client</span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='cartDiscounts-instance'>
+      CartDiscountService ::<strong>cartDiscounts</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;client.coffee#L161'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Get a new instance of a <code>CartDiscountService</code></p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../classes/CartDiscountService.html'>CartDiscountService</a></tt>)
+      &mdash;
+      <span class='desc'> a new <a href='../classes/CartDiscountService.html'>CartDiscountService</a></span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='carts-instance'>
+      CartService ::<strong>carts</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;client.coffee#L166'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Get a new instance of a <code>CartService</code></p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../classes/CartService.html'>CartService</a></tt>)
+      &mdash;
+      <span class='desc'> a new <a href='../classes/CartService.html'>CartService</a></span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='categories-instance'>
+      CategoryService ::<strong>categories</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;client.coffee#L171'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Get a new instance of a <code>CategoryService</code></p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../classes/CategoryService.html'>CategoryService</a></tt>)
+      &mdash;
+      <span class='desc'> a new <a href='../classes/CategoryService.html'>CategoryService</a></span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='channels-instance'>
+      ChannelService ::<strong>channels</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;client.coffee#L176'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Get a new instance of a <code>ChannelService</code></p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../classes/ChannelService.html'>ChannelService</a></tt>)
+      &mdash;
+      <span class='desc'> a new <a href='../classes/ChannelService.html'>ChannelService</a></span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='comments-instance'>
+      CommentService ::<strong>comments</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;client.coffee#L181'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Get a new instance of a <code>CommentService</code></p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../classes/CommentService.html'>CommentService</a></tt>)
+      &mdash;
+      <span class='desc'> a new <a href='../classes/CommentService.html'>CommentService</a></span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='customObjects-instance'>
+      CustomObjectService ::<strong>customObjects</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;client.coffee#L186'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Get a new instance of a <code>CustomObjectService</code></p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../classes/CustomObjectService.html'>CustomObjectService</a></tt>)
+      &mdash;
+      <span class='desc'> a new <a href='../classes/CustomObjectService.html'>CustomObjectService</a></span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='customerGroups-instance'>
+      CustomerGroupService ::<strong>customerGroups</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;client.coffee#L196'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Get a new instance of a <code>CustomerGroupService</code></p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../classes/CustomerGroupService.html'>CustomerGroupService</a></tt>)
+      &mdash;
+      <span class='desc'> a new <a href='../classes/CustomerGroupService.html'>CustomerGroupService</a></span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='customers-instance'>
+      CustomerService ::<strong>customers</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;client.coffee#L191'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Get a new instance of a <code>CustomerService</code></p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../classes/CustomerService.html'>CustomerService</a></tt>)
+      &mdash;
+      <span class='desc'> a new <a href='../classes/CustomerService.html'>CustomerService</a></span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='discountCodes-instance'>
+      DiscountCodeService ::<strong>discountCodes</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;client.coffee#L201'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Get a new instance of a <code>DiscountCodeService</code></p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../classes/DiscountCodeService.html'>DiscountCodeService</a></tt>)
+      &mdash;
+      <span class='desc'> a new <a href='../classes/DiscountCodeService.html'>DiscountCodeService</a></span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='inventoryEntries-instance'>
+      InventoryEntryService ::<strong>inventoryEntries</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;client.coffee#L206'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Get a new instance of a <code>InventoryEntryService</code></p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../classes/InventoryEntryService.html'>InventoryEntryService</a></tt>)
+      &mdash;
+      <span class='desc'> a new <a href='../classes/InventoryEntryService.html'>InventoryEntryService</a></span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='messages-instance'>
+      MessageService ::<strong>messages</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;client.coffee#L211'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Get a new instance of a <code>MessageService</code></p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../classes/MessageService.html'>MessageService</a></tt>)
+      &mdash;
+      <span class='desc'> a new <a href='../classes/MessageService.html'>MessageService</a></span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='orders-instance'>
+      OrderService ::<strong>orders</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;client.coffee#L216'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Get a new instance of a <code>OrderService</code></p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../classes/OrderService.html'>OrderService</a></tt>)
+      &mdash;
+      <span class='desc'> a new <a href='../classes/OrderService.html'>OrderService</a></span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='productDiscounts-instance'>
+      ProductDiscountService ::<strong>productDiscounts</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;client.coffee#L226'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Get a new instance of a <code>ProductDiscountService</code></p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../classes/ProductDiscountService.html'>ProductDiscountService</a></tt>)
+      &mdash;
+      <span class='desc'> a new <a href='../classes/ProductDiscountService.html'>ProductDiscountService</a></span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='productProjections-instance'>
+      ProductProjectionService ::<strong>productProjections</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;client.coffee#L231'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Get a new instance of a <code>ProductProjectionService</code></p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../classes/ProductProjectionService.html'>ProductProjectionService</a></tt>)
+      &mdash;
+      <span class='desc'> a new <a href='../classes/ProductProjectionService.html'>ProductProjectionService</a></span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='productTypes-instance'>
+      ProductTypeService ::<strong>productTypes</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;client.coffee#L236'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Get a new instance of a <code>ProductTypeService</code></p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../classes/ProductTypeService.html'>ProductTypeService</a></tt>)
+      &mdash;
+      <span class='desc'> a new <a href='../classes/ProductTypeService.html'>ProductTypeService</a></span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='products-instance'>
+      ProductService ::<strong>products</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;client.coffee#L221'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Get a new instance of a <code>ProductService</code></p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../classes/ProductService.html'>ProductService</a></tt>)
+      &mdash;
+      <span class='desc'> a new <a href='../classes/ProductService.html'>ProductService</a></span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='project-instance'>
+      ProjectService ::<strong>project</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;client.coffee#L241'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Get a new instance of a <code>ProjectService</code></p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../classes/ProjectService.html'>ProjectService</a></tt>)
+      &mdash;
+      <span class='desc'> a new <a href='../classes/ProjectService.html'>ProjectService</a></span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='reviews-instance'>
+      ReviewService ::<strong>reviews</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;client.coffee#L246'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Get a new instance of a <code>ReviewService</code></p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../classes/ReviewService.html'>ReviewService</a></tt>)
+      &mdash;
+      <span class='desc'> a new <a href='../classes/ReviewService.html'>ReviewService</a></span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='setMaxParallel-instance'>
+      ::<strong>setMaxParallel</strong>(maxParallel)
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;client.coffee#L271'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Define max parallel request to be sent on each request from the <a href='../classes/TaskQueue.html'>TaskQueue</a></p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='type'>(Number)</span>
+      <span class='name'>maxParallel</span>
+      &mdash;
+      <span class='desc'>A <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Number'>Number</a> between 1 and 100 (default is 20)</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='shippingMethods-instance'>
+      ShippingMethodService ::<strong>shippingMethods</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;client.coffee#L251'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Get a new instance of a <code>ShippingMethodService</code></p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../classes/ShippingMethodService.html'>ShippingMethodService</a></tt>)
+      &mdash;
+      <span class='desc'> a new <a href='../classes/ShippingMethodService.html'>ShippingMethodService</a></span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='states-instance'>
+      StateService ::<strong>states</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;client.coffee#L256'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Get a new instance of a <code>StateService</code></p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../classes/StateService.html'>StateService</a></tt>)
+      &mdash;
+      <span class='desc'> a new <a href='../classes/StateService.html'>StateService</a></span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='taxCategories-instance'>
+      TaxCategoryService ::<strong>taxCategories</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;client.coffee#L261'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Get a new instance of a <code>TaxCategoryService</code></p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../classes/TaxCategoryService.html'>TaxCategoryService</a></tt>)
+      &mdash;
+      <span class='desc'> a new <a href='../classes/TaxCategoryService.html'>TaxCategoryService</a></span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='zones-instance'>
+      ZoneService ::<strong>zones</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;client.coffee#L266'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Get a new instance of a <code>ZoneService</code></p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../classes/ZoneService.html'>ZoneService</a></tt>)
+      &mdash;
+      <span class='desc'> a new <a href='../classes/ZoneService.html'>ZoneService</a></span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+    </div>
+    <div id='footer'>
+  Generated on
+  Tue Mar 24 2015 15:42:45 GMT+0100 (CET)
+  by
+  <a href='https://github.com/gjtorikian/biscotto' title='TomDoc-CoffeeScript API documentation generator'>Biscotto</a>
+  v2.3.1
+  (Node.js v0.10.33).
+  &#10034;
+  Press Ctrl-h to see the keyboard shortcuts
+</div>
+  </body>
+</html>

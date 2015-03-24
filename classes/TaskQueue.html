@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>SPHERE.IO Node.js SDK</title>
+  <link rel='stylesheet' href='..&#47;assets/biscotto.css' type='text/css'>
+  <script src='..&#47;assets/biscotto.js'></script>
+  <script src='..&#47;assets/search_data.js'></script>
+</head>
+  <body>
+    <div id='base' data-path='..&#47;'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='..&#47;README.md.html' title='Node.js SDK'>Node.js SDK</a>
+    &raquo;
+    <a href='..&#47;class_index.html' title='Index'>Index</a>
+    &raquo;
+    <span class='title'>TaskQueue</span>
+    <nav>
+      <ul>
+        <li class='noframes'>
+          (<a class='noframes' href='#'>no frames</a>)
+        </li>
+      </ul>
+    </nav>
+    <div id='search'>
+      <a id='class_list_link' href='..&#47;class_list.html'>Classes</a>
+      <a id='method_list_link' href='..&#47;method_list.html'>Methods</a>
+      <a id='extra_list_link' href='..&#47;extra_list.html'>Extras</a>
+    </div>
+  </div>
+  <iframe id='search_frame'></iframe>
+  <div id='fuzzySearch'>
+    <input type='text'>
+    <ol></ol>
+  </div>
+  <div id='help'>
+    <p>
+      Quickly fuzzy find classes, mixins, methods, file:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-T</span>
+        Open fuzzy finder dialog
+      </li>
+    </ul>
+    <p>
+      In frame mode you can toggle the list navigation frame on the left side:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-L</span>
+        Toggle list view
+      </li>
+    </ul>
+    <p>
+      You can focus a list in frame mode or toggle a tab in frameless mode:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-C</span>
+        Class list
+      </li>
+      <li>
+        <span>Ctrl-I</span>
+        Mixin list
+      </li>
+      <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+      <li>
+        <span>Ctrl-M</span>
+        Method list
+      </li>
+      <li>
+        <span>Ctrl-E</span>
+        Extras list
+      </li>
+    </ul>
+    <p>
+      You can focus and blur the search input:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-S</span>
+        Focus search input
+      </li>
+      <li>
+        <span>Esc</span>
+        Blur search input
+      </li>
+    </ul>
+    <p>
+      In frameless mode you can close the list tab:
+    </p>
+    <ul>
+      <li>
+        <span>Esc</span>
+        Close list tab
+      </li>
+    </ul>
+  </div>
+</div>
+    <div id='content'>
+      <h1>
+        Class
+        TaskQueue
+      </h1>
+      <table class='box'>
+        <tr>
+          <td>Defined in:</td>
+          <td>src&#47;coffee&#47;task-queue.coffee</td>
+        </tr>
+      </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>A <code>TaskQueue</code> allows to queue <code>tasks</code> (that return <code>Promises</code>) which will be executed in parallel until a <code>max limit</code>, meaning that new tasks will not be triggered until the previous ones are resolved.</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>callMe = -&gt;
+  new Promise (resolve, reject) -&gt;
+    setTimeout -&gt;
+      resolve true
+    , 5000
+task = new TaskQueue maxParallel: 50 # default 20
+task.addTask callMe
+.then (result) -&gt; # result == true
+.catch (error) -&gt; </code></pre>
+  </div>
+</div>
+<div class='tags'>
+</div>
+      <h2>Instance Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#addTask-instance'>
+        Promise ::<strong>addTask</strong>(taskFn)
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Add a new <code>task</code> to the queue</p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#constructor-instance'>
+        ::<strong>constructor</strong>(options = {})
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Initialize the <code>TaskQueue</code></p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#setMaxParallel-instance'>
+        ::<strong>setMaxParallel</strong>(maxParallel = 20)
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Set the <code>maxParallel</code> parameter</p>
+    </span>
+  </li>
+</ul>
+      <h2>Constructor Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='constructor-instance'>
+      ::<strong>constructor</strong>(options = {})
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;task-queue.coffee#L23'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Initialize the <code>TaskQueue</code></p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='type'>(Object)</span>
+      <span class='name'>options</span>
+      &mdash;
+      <span class='desc'>An <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object'>Object</a> to configure the service</span>
+    </li>
+    <ul class='options'>
+      <li>
+        <span class='type'>(Number)</span>
+        <span class='name'>maxParallel</span>
+        &mdash;
+        <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Number'>Number</a> The limit to how many parallel tasks can run</span>
+      </li>
+    </ul>
+  </ul>
+</div>
+  </div>
+</div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='addTask-instance'>
+      Promise ::<strong>addTask</strong>(taskFn)
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;task-queue.coffee#L49'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Add a new <code>task</code> to the queue</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>queue = new TaskQueue
+task = -&gt;
+  new Promise (resolve, reject) -&gt;
+    resolve &#39;ok&#39;
+queue.addTask task </code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='type'>(Function)</span>
+      <span class='name'>taskFn</span>
+      &mdash;
+      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Function'>Function</a> The function that will be resolved once the task is executed</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../classes/Promise.html'>Promise</a></tt>)
+      &mdash;
+      <span class='desc'> a <a href='../classes/Promise.html'>Promise</a></span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='setMaxParallel-instance'>
+      ::<strong>setMaxParallel</strong>(maxParallel = 20)
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;task-queue.coffee#L32'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Set the <code>maxParallel</code> parameter</p>
+</div>
+<div class='tags'>
+  <h3>Throws:</h3>
+  <ul class='throw'>
+    <li>
+      <span class='type'></span>
+      (<tt>Error</tt>)
+      &mdash;
+      <span class='desc'>Throws an <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Error'>Error</a> if <code>maxParallel</code> is not between <code>1</code> and <code>100</code></span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+    </div>
+    <div id='footer'>
+  Generated on
+  Tue Mar 24 2015 15:42:45 GMT+0100 (CET)
+  by
+  <a href='https://github.com/gjtorikian/biscotto' title='TomDoc-CoffeeScript API documentation generator'>Biscotto</a>
+  v2.3.1
+  (Node.js v0.10.33).
+  &#10034;
+  Press Ctrl-h to see the keyboard shortcuts
+</div>
+  </body>
+</html>

@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>SPHERE.IO Node.js SDK</title>
+  <link rel='stylesheet' href='..&#47;assets/biscotto.css' type='text/css'>
+  <script src='..&#47;assets/biscotto.js'></script>
+  <script src='..&#47;assets/search_data.js'></script>
+</head>
+  <body>
+    <div id='base' data-path='..&#47;'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='..&#47;README.md.html' title='Node.js SDK'>Node.js SDK</a>
+    &raquo;
+    <a href='..&#47;class_index.html' title='Index'>Index</a>
+    &raquo;
+    <span class='title'>BaseService</span>
+    <nav>
+      <ul>
+        <li class='noframes'>
+          (<a class='noframes' href='#'>no frames</a>)
+        </li>
+      </ul>
+    </nav>
+    <div id='search'>
+      <a id='class_list_link' href='..&#47;class_list.html'>Classes</a>
+      <a id='method_list_link' href='..&#47;method_list.html'>Methods</a>
+      <a id='extra_list_link' href='..&#47;extra_list.html'>Extras</a>
+    </div>
+  </div>
+  <iframe id='search_frame'></iframe>
+  <div id='fuzzySearch'>
+    <input type='text'>
+    <ol></ol>
+  </div>
+  <div id='help'>
+    <p>
+      Quickly fuzzy find classes, mixins, methods, file:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-T</span>
+        Open fuzzy finder dialog
+      </li>
+    </ul>
+    <p>
+      In frame mode you can toggle the list navigation frame on the left side:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-L</span>
+        Toggle list view
+      </li>
+    </ul>
+    <p>
+      You can focus a list in frame mode or toggle a tab in frameless mode:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-C</span>
+        Class list
+      </li>
+      <li>
+        <span>Ctrl-I</span>
+        Mixin list
+      </li>
+      <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+      <li>
+        <span>Ctrl-M</span>
+        Method list
+      </li>
+      <li>
+        <span>Ctrl-E</span>
+        Extras list
+      </li>
+    </ul>
+    <p>
+      You can focus and blur the search input:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-S</span>
+        Focus search input
+      </li>
+      <li>
+        <span>Esc</span>
+        Blur search input
+      </li>
+    </ul>
+    <p>
+      In frameless mode you can close the list tab:
+    </p>
+    <ul>
+      <li>
+        <span>Esc</span>
+        Close list tab
+      </li>
+    </ul>
+  </div>
+</div>
+    <div id='content'>
+      <h1>
+        Class
+        BaseService
+        <span class='note title'>Abstract</span>
+        <span class='note private title'>Private</span>
+      </h1>
+      <table class='box'>
+        <tr>
+          <td>Defined in:</td>
+          <td>src&#47;coffee&#47;services&#47;base.coffee</td>
+        </tr>
+      </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <div class='abstract note'>
+    <strong>
+      This
+      class
+      is abstract.
+    </strong>
+  </div>
+  <div class='note private'>
+    <strong>
+      This
+      class
+      is private.
+    </strong>
+  </div>
+  <p>Define a <code>BaseService</code> to provide basic methods to interact with the HTTP API.</p><p>This class should <strong>not be exposed</strong> and <strong>must be extended</strong> when defining a new <code>*Service</code>.</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>class FooService extends BaseService
+  @baseResourceEndpoint: &#39;&#47;foo&#39; </code></pre>
+  </div>
+</div>
+<div class='tags'>
+</div>
+      <h2>Subclasses</h2>
+      <p class='children'>
+                <a href='..&#47;classes/CartDiscountService.html'>CartDiscountService</a>,
+                <a href='..&#47;classes/CartService.html'>CartService</a>,
+                <a href='..&#47;classes/CategoryService.html'>CategoryService</a>,
+                <a href='..&#47;classes/ChannelService.html'>ChannelService</a>,
+                <a href='..&#47;classes/CommentService.html'>CommentService</a>,
+                <a href='..&#47;classes/CustomObjectService.html'>CustomObjectService</a>,
+                <a href='..&#47;classes/CustomerGroupService.html'>CustomerGroupService</a>,
+                <a href='..&#47;classes/CustomerService.html'>CustomerService</a>,
+                <a href='..&#47;classes/DiscountCodeService.html'>DiscountCodeService</a>,
+                <a href='..&#47;classes/InventoryEntryService.html'>InventoryEntryService</a>,
+                <a href='..&#47;classes/MessageService.html'>MessageService</a>,
+                <a href='..&#47;classes/OrderService.html'>OrderService</a>,
+                <a href='..&#47;classes/ProductDiscountService.html'>ProductDiscountService</a>,
+                <a href='..&#47;classes/ProductProjectionService.html'>ProductProjectionService</a>,
+                <a href='..&#47;classes/ProductTypeService.html'>ProductTypeService</a>,
+                <a href='..&#47;classes/ProductService.html'>ProductService</a>,
+                <a href='..&#47;classes/ProjectService.html'>ProjectService</a>,
+                <a href='..&#47;classes/ReviewService.html'>ReviewService</a>,
+                <a href='..&#47;classes/ShippingMethodService.html'>ShippingMethodService</a>,
+                <a href='..&#47;classes/StateService.html'>StateService</a>,
+                <a href='..&#47;classes/TaxCategoryService.html'>TaxCategoryService</a>,
+        <a href='..&#47;classes/ZoneService.html'>ZoneService</a>
+      </p>
+      <h2>Instance Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#all-instance'>
+        ::<strong>all</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      <p>A convenient method to set <a href='../classes/BaseService.html#perPage-instance'>::perPage</a> to <code>0</code>, which will fetch all pages recursively in chunks and return them all together once completed.</p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#byId-instance'>
+        ::<strong>byId</strong>(id)
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Build the endpoint path by appending the given id</p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#byQueryString-instance'>
+        ::<strong>byQueryString</strong>(query, withEncodedParams = false)
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Allow to pass a literal query string</p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#constructor-instance'>
+        ::<strong>constructor</strong>(options = {})
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Construct a <code>*Service</code> object.</p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#create-instance'>
+        ::<strong>create</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Alias of <a href='../classes/BaseService.html#save-instance'>::save</a></p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#delete-instance'>
+        Promise ::<strong>delete</strong>(version)
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Delete an existing resource defined by the <code>Service</code></p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#expand-instance'>
+        ::<strong>expand</strong>(expansionPath)
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Define an <a href="http://dev.sphere.io/http-api.html#reference-expansion">ExpansionPath</a> used for expanding <a href="http://dev.sphere.io/http-api-types.html#reference">Reference</a>s of a resource.</p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#fetch-instance'>
+        Promise ::<strong>fetch</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Fetch resource defined by the <code>Service</code> with all chained query parameters.</p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#last-instance'>
+        ::<strong>last</strong>(period)
+      </a>
+    </span>
+    <span class='desc'>
+      <p>This is a convenient method to query for the latest changes.</p><p>Please be aware that <code>last</code> is just another <code>where</code> clause and thus
+depends on the <code>operator</code> you choose.</p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#page-instance'>
+        ::<strong>page</strong>(page)
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Define the page number to be requested from the complete query result (used for pagination as <code>offset</code>)</p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#perPage-instance'>
+        ::<strong>perPage</strong>(perPage)
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Define the number of results to return from a query (used for pagination as <code>limit</code>)</p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#process-instance'>
+        Promise ::<strong>process</strong>(fn, options = {})
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Process the resources for each <code>page</code> separately using the function <code>fn</code>. The function <code>fn</code> will then be called once per page and has to return a <a href='../classes/Promise.html'>Promise</a> that should be resolved when all elements of the page are processed.</p><p>Batch processing allows to process a lot of resources in chunks.
+Using this approach you can balance between memory usage and parallelism.</p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#save-instance'>
+        Promise ::<strong>save</strong>(body)
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Save a new resource defined by the <code>Service</code> by passing the payload <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object'>Object</a>.</p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#sort-instance'>
+        ::<strong>sort</strong>(path, ascending = true)
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Define how the query should be sorted. It is possible to add several sort criteria, thereby the order is relevant.</p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#update-instance'>
+        Promise ::<strong>update</strong>(body)
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Update a resource defined by the <code>Service</code> by passing the payload <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object'>Object</a> with <a href="http://dev.sphere.io/http-api.html#partial-updates">UpdateAction</a>. The <code>id</code> of the resource must be provided with <a href='../classes/BaseService.html#byId-instance'>::byId</a>.</p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#where-instance'>
+        ::<strong>where</strong>(predicate)
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Define a URI encoded <a href="http://dev.sphere.io/http-api.html#predicates">Predicate</a> from the given string, used for quering and filtering a resource. Can be set multiple times.</p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#whereOperator-instance'>
+        ::<strong>whereOperator</strong>(operator = 'and')
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Define the logical operator to combine multiple <a href='../classes/BaseService.html#where-instance'>::where</a> query parameters.</p>
+    </span>
+  </li>
+</ul>
+      <h2>Constructor Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='constructor-instance'>
+      ::<strong>constructor</strong>(options = {})
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;services&#47;base.coffee#L28'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Construct a <code>*Service</code> object.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='type'>(Object)</span>
+      <span class='name'>options</span>
+      &mdash;
+      <span class='desc'>An <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object'>Object</a> to configure the service</span>
+    </li>
+    <ul class='options'>
+      <li>
+        <span class='type'>(Rest)</span>
+        <span class='name'>_rest</span>
+        &mdash;
+        <span class='desc'>a <a href='../classes/Rest.html'>Rest</a> instance</span>
+      </li>
+      <li>
+        <span class='type'>(TaskQueue)</span>
+        <span class='name'>_task</span>
+        &mdash;
+        <span class='desc'>a <a href='../classes/TaskQueue.html'>TaskQueue</a> instance</span>
+      </li>
+      <li>
+        <span class='type'>(Object)</span>
+        <span class='name'>_stats</span>
+        &mdash;
+        <span class='desc'>an <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object'>Object</a> to configure statistics</span>
+      </li>
+    </ul>
+  </ul>
+</div>
+  </div>
+</div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='all-instance'>
+      ::<strong>all</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;services&#47;base.coffee#L199'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>A convenient method to set <a href='../classes/BaseService.html#perPage-instance'>::perPage</a> to <code>0</code>, which will fetch all pages recursively in chunks and return them all together once completed.</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>service = client.products()
+service.all().fetch() </code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      <span class='desc'> a chained instance of <code>this</code> class</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='byId-instance'>
+      ::<strong>byId</strong>(id)
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;services&#47;base.coffee#L56'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Build the endpoint path by appending the given id</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>service = client.products()
+service.byId(&#39;123&#39;).fetch() </code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='type'>(String)</span>
+      <span class='name'>id</span>
+      &mdash;
+      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/String'>String</a> The resource specific id</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      <span class='desc'> a chained instance of <code>this</code> class</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='byQueryString-instance'>
+      ::<strong>byQueryString</strong>(query, withEncodedParams = false)
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;services&#47;base.coffee#L231'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Allow to pass a literal query string</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>service = client.products()
+service.byQueryString(&#39;where=slug(en = &quot;my-slug&quot;)&amp;limit=5&amp;staged=true&#39;, false)
+.fetch() </code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='type'>(String)</span>
+      <span class='name'>query</span>
+      &mdash;
+      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/String'>String</a> The literal query string</span>
+    </li>
+    <li>
+      <span class='type'>(Boolean)</span>
+      <span class='name'>withEncodedParams</span>
+      &mdash;
+      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Boolean'>Boolean</a> Whether the given query string has encoded params or not (default false)</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      <span class='desc'> a chained instance of <code>this</code> class</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='create-instance'>
+      ::<strong>create</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;services&#47;base.coffee#L388'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Alias of <a href='../classes/BaseService.html#save-instance'>::save</a></p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='delete-instance'>
+      Promise ::<strong>delete</strong>(version)
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;services&#47;base.coffee#L432'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Delete an existing resource defined by the <code>Service</code></p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>service = client.products()
+service.byId(&#39;123&#39;).delete(2) </code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='type'>(Number)</span>
+      <span class='name'>version</span>
+      &mdash;
+      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Number'>Number</a> The current version of the resource to delete</span>
+    </li>
+  </ul>
+  <h3>Throws:</h3>
+  <ul class='throw'>
+    <li>
+      <span class='type'></span>
+      (<tt>Error</tt>)
+      &mdash;
+      <span class='desc'>Throws an <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Error'>Error</a> if <code>version</code> is missing</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../classes/Promise.html'>Promise</a></tt>)
+      &mdash;
+      <span class='desc'> a <a href='../classes/Promise.html'>Promise</a>, fulfilled with an <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object'>Object</a> or rejected with an instance of an <a href='../classes/HttpError.html'>HttpError</a> or <a href='../classes/SphereError.html'>SphereError</a></span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='expand-instance'>
+      ::<strong>expand</strong>(expansionPath)
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;services&#47;base.coffee#L212'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Define an <a href="http://dev.sphere.io/http-api.html#reference-expansion">ExpansionPath</a> used for expanding <a href="http://dev.sphere.io/http-api-types.html#reference">Reference</a>s of a resource.</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>service = client.products()
+service.expand(&#39;productType&#39;).fetch() </code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='type'>(String)</span>
+      <span class='name'>expansionPath</span>
+      &mdash;
+      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/String'>String</a> An <a href="http://dev.sphere.io/http-api.html#reference-expansion">ExpansionPath</a> for the <code>expand</code> query parameter</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      <span class='desc'> a chained instance of <code>this</code> class</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='fetch-instance'>
+      Promise ::<strong>fetch</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;services&#47;base.coffee#L268'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Fetch resource defined by the <code>Service</code> with all chained query parameters.</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>service = client.products()
+service.where(&#39;name(en = &quot;Foo&quot;)&#39;).sort(&#39;createdAt desc&#39;).fetch()</code></pre>
+    <pre><code class='coffee'>client.products().fetch() </code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../classes/Promise.html'>Promise</a></tt>)
+      &mdash;
+      <span class='desc'> a <a href='../classes/Promise.html'>Promise</a>, fulfilled with an <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object'>Object</a> or rejected with an instance of <a href='../classes/HttpError.html'>HttpError</a> or <a href='../classes/SphereError.html'>SphereError</a></span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='last-instance'>
+      ::<strong>last</strong>(period)
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;services&#47;base.coffee#L120'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>This is a convenient method to query for the latest changes.</p><p>Please be aware that <code>last</code> is just another <code>where</code> clause and thus
+depends on the <code>operator</code> you choose.</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>service = client.products()
+service.last(&#39;10d&#39;).fetch() </code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='type'>(String)</span>
+      <span class='name'>predicate</span>
+      &mdash;
+      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/String'>String</a> Time period of format <code>numberX</code> where <code>X</code> is one of the follwing units:</span>
+    </li>
+    <ul class='options'>
+      <li>
+        <span class='name'>s</span>
+        &mdash;
+        <span class='desc'>seconds</span>
+      </li>
+      <li>
+        <span class='name'>m</span>
+        &mdash;
+        <span class='desc'>minutes</span>
+      </li>
+      <li>
+        <span class='name'>h</span>
+        &mdash;
+        <span class='desc'>hours</span>
+      </li>
+      <li>
+        <span class='name'>d</span>
+        &mdash;
+        <span class='desc'>days</span>
+      </li>
+      <li>
+        <span class='name'>w</span>
+        &mdash;
+        <span class='desc'>weeks</span>
+      </li>
+    </ul>
+  </ul>
+  <h3>Throws:</h3>
+  <ul class='throw'>
+    <li>
+      <span class='type'></span>
+      (<tt>Error</tt>)
+      &mdash;
+      <span class='desc'>Throws an <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Error'>Error</a> if <code>period</code> cannot be parsed</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      <span class='desc'> a chained instance of <code>this</code> class</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='page-instance'>
+      ::<strong>page</strong>(page)
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;services&#47;base.coffee#L166'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Define the page number to be requested from the complete query result (used for pagination as <code>offset</code>)</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>service = client.products()
+service.page(4).fetch() </code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='type'>(Number)</span>
+      <span class='name'>page</span>
+      &mdash;
+      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Number'>Number</a> The page number <code>&gt;= 1</code> (default is 1)</span>
+    </li>
+  </ul>
+  <h3>Throws:</h3>
+  <ul class='throw'>
+    <li>
+      <span class='type'></span>
+      (<tt>Error</tt>)
+      &mdash;
+      <span class='desc'>Throws an <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Error'>Error</a> if <code>page</code> is not a positive number</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      <span class='desc'> a chained instance of <code>this</code> class</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='perPage-instance'>
+      ::<strong>perPage</strong>(perPage)
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;services&#47;base.coffee#L184'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Define the number of results to return from a query (used for pagination as <code>limit</code>)</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>service = client.products()
+service.perPage(50).fetch() </code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='type'>(Number)</span>
+      <span class='name'>perPage</span>
+      &mdash;
+      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Number'>Number</a> How many results in a page, it must be <code>&gt;= 0</code> (default is 100)</span>
+    </li>
+  </ul>
+  <h3>Throws:</h3>
+  <ul class='throw'>
+    <li>
+      <span class='type'></span>
+      (<tt>Error</tt>)
+      &mdash;
+      <span class='desc'>Throws an <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Error'>Error</a> if <code>perPage</code> is not a positive number</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      <span class='desc'> a chained instance of <code>this</code> class</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='process-instance'>
+      Promise ::<strong>process</strong>(fn, options = {})
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;services&#47;base.coffee#L314'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Process the resources for each <code>page</code> separately using the function <code>fn</code>. The function <code>fn</code> will then be called once per page and has to return a <a href='../classes/Promise.html'>Promise</a> that should be resolved when all elements of the page are processed.</p><p>Batch processing allows to process a lot of resources in chunks.
+Using this approach you can balance between memory usage and parallelism.</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'># Define your custom function, which returns a promise
+fn = (payload) -&gt;
+  new Promise (resolve, reject) -&gt;
+    # do something with the payload
+    if # something unexpected happens
+      reject &#39;BAD&#39;
+    else # good case
+      resolve &#39;OK&#39;
+service = client.products()
+service.perPage(20).process(fn)
+.then (result) -&gt;
+  # here we get the total result, which is just an array of all pages accumulated
+  # eg: [&#39;OK&#39;, &#39;OK&#39;, &#39;OK&#39;] if you have 41 to 60 products - the function fn is called three times
+.catch (error) -&gt;
+  # eg: &#39;BAD&#39; </code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='type'>(Function)</span>
+      <span class='name'>fn</span>
+      &mdash;
+      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Function'>Function</a> The function called for each processing page (it must return a <a href='../classes/Promise.html'>Promise</a>)</span>
+    </li>
+    <li>
+      <span class='type'>(Object)</span>
+      <span class='name'>options</span>
+      &mdash;
+      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object'>Object</a> To configure the processing</span>
+    </li>
+    <ul class='options'>
+      <li>
+        <span class='type'>(Boolean)</span>
+        <span class='name'>accumulate</span>
+        &mdash;
+        <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Boolean'>Boolean</a> Whether the results should be accumulated or not (default true)</span>
+      </li>
+    </ul>
+  </ul>
+  <h3>Throws:</h3>
+  <ul class='throw'>
+    <li>
+      <span class='type'></span>
+      (<tt>Error</tt>)
+      &mdash;
+      <span class='desc'>Throws an <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Error'>Error</a> if <code>fn</code> is not a <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Function'>Function</a></span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../classes/Promise.html'>Promise</a></tt>)
+      &mdash;
+      <span class='desc'> a <a href='../classes/Promise.html'>Promise</a>, fulfilled with an <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Array'>Array</a> of the results of each resolved
+page from the `fn`, or rejected with an instance of an <a href='../classes/HttpError.html'>HttpError</a> or <a href='../classes/SphereError.html'>SphereError</a></span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='save-instance'>
+      Promise ::<strong>save</strong>(body)
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;services&#47;base.coffee#L379'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Save a new resource defined by the <code>Service</code> by passing the payload <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object'>Object</a>.</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>service = client.products()
+service.save
+  name:
+    en: &#39;Foo&#39;
+  slug:
+    en: &#39;foo&#39;
+  productType:
+    id: &#39;123&#39;
+    typeId: &#39;product-type&#39; </code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='type'>(Object)</span>
+      <span class='name'>body</span>
+      &mdash;
+      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object'>Object</a> The payload described by the related API resource as JSON</span>
+    </li>
+  </ul>
+  <h3>Throws:</h3>
+  <ul class='throw'>
+    <li>
+      <span class='type'></span>
+      (<tt>Error</tt>)
+      &mdash;
+      <span class='desc'>Throws an <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Error'>Error</a> if <code>body</code> is missing</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../classes/Promise.html'>Promise</a></tt>)
+      &mdash;
+      <span class='desc'> a <a href='../classes/Promise.html'>Promise</a>, fulfilled with an <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object'>Object</a> or rejected with an instance of an <a href='../classes/HttpError.html'>HttpError</a> or <a href='../classes/SphereError.html'>SphereError</a></span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='sort-instance'>
+      ::<strong>sort</strong>(path, ascending = true)
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;services&#47;base.coffee#L148'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Define how the query should be sorted. It is possible to add several sort criteria, thereby the order is relevant.</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>service = client.products()
+service.sort(&#39;name.en&#39;, true).fetch() </code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='type'>(String)</span>
+      <span class='name'>path</span>
+      &mdash;
+      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/String'>String</a> Sort path to search for</span>
+    </li>
+    <li>
+      <span class='type'>(Boolean)</span>
+      <span class='name'>ascending</span>
+      &mdash;
+      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Boolean'>Boolean</a> Whether the direction should be ascending or not, (default <code>asc</code>)</span>
+    </li>
+    <ul class='options'>
+      <li>
+        <span class='name'>true</span>
+        &mdash;
+        <span class='desc'><code>asc</code></span>
+      </li>
+      <li>
+        <span class='name'>false</span>
+        &mdash;
+        <span class='desc'><code>desc</code></span>
+      </li>
+    </ul>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      <span class='desc'> a chained instance of <code>this</code> class</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='update-instance'>
+      Promise ::<strong>update</strong>(body)
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;services&#47;base.coffee#L412'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Update a resource defined by the <code>Service</code> by passing the payload <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object'>Object</a> with <a href="http://dev.sphere.io/http-api.html#partial-updates">UpdateAction</a>. The <code>id</code> of the resource must be provided with <a href='../classes/BaseService.html#byId-instance'>::byId</a>.</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>service = client.products()
+service.byId(&#39;123&#39;).update
+  version: 2
+  actions: [
+    {
+      action: &#39;changeName&#39;
+      name:
+        en: Bar
+    }
+  ] </code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='type'>(Object)</span>
+      <span class='name'>body</span>
+      &mdash;
+      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object'>Object</a> The payload described by the related API resource as JSON</span>
+    </li>
+  </ul>
+  <h3>Throws:</h3>
+  <ul class='throw'>
+    <li>
+      <span class='type'></span>
+      (<tt>Error</tt>)
+      &mdash;
+      <span class='desc'>Throws an <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Error'>Error</a> if resource <code>id</code> is missing</span>
+    </li>
+    <li>
+      <span class='type'></span>
+      (<tt>Error</tt>)
+      &mdash;
+      <span class='desc'>Throws an <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Error'>Error</a> if <code>body</code> is missing</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../classes/Promise.html'>Promise</a></tt>)
+      &mdash;
+      <span class='desc'> a <a href='../classes/Promise.html'>Promise</a>, fulfilled with an <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object'>Object</a> or rejected with an instance of an <a href='../classes/HttpError.html'>HttpError</a> or <a href='../classes/SphereError.html'>SphereError</a></span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='where-instance'>
+      ::<strong>where</strong>(predicate)
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;services&#47;base.coffee#L73'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Define a URI encoded <a href="http://dev.sphere.io/http-api.html#predicates">Predicate</a> from the given string, used for quering and filtering a resource. Can be set multiple times.</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>service = client.products()
+service.where(&#39;name(en = &quot;Foo&quot;)&#39;).fetch() </code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='type'>(String)</span>
+      <span class='name'>predicate</span>
+      &mdash;
+      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/String'>String</a> A <a href="http://dev.sphere.io/http-api.html#predicates">Predicate</a> string for the <code>where</code> query parameter.</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      <span class='desc'> a chained instance of <code>this</code> class</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='whereOperator-instance'>
+      ::<strong>whereOperator</strong>(operator = 'and')
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;services&#47;base.coffee#L93'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Define the logical operator to combine multiple <a href='../classes/BaseService.html#where-instance'>::where</a> query parameters.</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>service = client.products()
+service.whereOperator(&#39;or&#39;)
+.where(&#39;name(en = &quot;Red&quot;)&#39;)
+.where(&#39;name(de = &quot;Rot&quot;)&#39;)
+.fetch() </code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='type'>(String)</span>
+      <span class='name'>operator</span>
+      &mdash;
+      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/String'>String</a> A logical operator (default <code>and</code>)</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      <span class='desc'> a chained instance of <code>this</code> class</span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+    </div>
+    <div id='footer'>
+  Generated on
+  Tue Mar 24 2015 15:42:45 GMT+0100 (CET)
+  by
+  <a href='https://github.com/gjtorikian/biscotto' title='TomDoc-CoffeeScript API documentation generator'>Biscotto</a>
+  v2.3.1
+  (Node.js v0.10.33).
+  &#10034;
+  Press Ctrl-h to see the keyboard shortcuts
+</div>
+  </body>
+</html>

@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>SPHERE.IO Node.js SDK</title>
+  <link rel='stylesheet' href='..&#47;assets/biscotto.css' type='text/css'>
+  <script src='..&#47;assets/biscotto.js'></script>
+  <script src='..&#47;assets/search_data.js'></script>
+</head>
+  <body>
+    <div id='base' data-path='..&#47;'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='..&#47;README.md.html' title='Node.js SDK'>Node.js SDK</a>
+    &raquo;
+    <a href='..&#47;class_index.html' title='Index'>Index</a>
+    &raquo;
+    <span class='title'>ProductProjectionService</span>
+    <nav>
+      <ul>
+        <li class='noframes'>
+          (<a class='noframes' href='#'>no frames</a>)
+        </li>
+      </ul>
+    </nav>
+    <div id='search'>
+      <a id='class_list_link' href='..&#47;class_list.html'>Classes</a>
+      <a id='method_list_link' href='..&#47;method_list.html'>Methods</a>
+      <a id='extra_list_link' href='..&#47;extra_list.html'>Extras</a>
+    </div>
+  </div>
+  <iframe id='search_frame'></iframe>
+  <div id='fuzzySearch'>
+    <input type='text'>
+    <ol></ol>
+  </div>
+  <div id='help'>
+    <p>
+      Quickly fuzzy find classes, mixins, methods, file:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-T</span>
+        Open fuzzy finder dialog
+      </li>
+    </ul>
+    <p>
+      In frame mode you can toggle the list navigation frame on the left side:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-L</span>
+        Toggle list view
+      </li>
+    </ul>
+    <p>
+      You can focus a list in frame mode or toggle a tab in frameless mode:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-C</span>
+        Class list
+      </li>
+      <li>
+        <span>Ctrl-I</span>
+        Mixin list
+      </li>
+      <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+      <li>
+        <span>Ctrl-M</span>
+        Method list
+      </li>
+      <li>
+        <span>Ctrl-E</span>
+        Extras list
+      </li>
+    </ul>
+    <p>
+      You can focus and blur the search input:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-S</span>
+        Focus search input
+      </li>
+      <li>
+        <span>Esc</span>
+        Blur search input
+      </li>
+    </ul>
+    <p>
+      In frameless mode you can close the list tab:
+    </p>
+    <ul>
+      <li>
+        <span>Esc</span>
+        Close list tab
+      </li>
+    </ul>
+  </div>
+</div>
+    <div id='content'>
+      <h1>
+        Class
+        ProductProjectionService
+      </h1>
+      <table class='box'>
+        <tr>
+          <td>Defined in:</td>
+          <td>src&#47;coffee&#47;services&#47;product-projections.coffee</td>
+        </tr>
+        <tr>
+          <td>Inherits:</td>
+          <td>
+            <a href='..&#47;classes/BaseService.html'>BaseService</a>
+          </td>
+        </tr>
+      </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>Define a <code>ProductProjectionService</code> to interact with the HTTP <a href="http://dev.sphere.io/http-api-projects-products.html"><code>product-projections</code></a> endpoint. A <a href="http://dev.sphere.io/http-api-projects-products.html#product-projection"><code>ProductProjection</code></a> is a representation of a the <code>current</code> or <code>staged</code> version of a product (<strong>only GET requests</strong>).</p><p><em>Products are the sellable goods in an e-commerce project on SPHERE.IO. This document explains some design concepts of products on SPHERE.IO and describes the available HTTP APIs for working with them.</em></p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>service = client.productProjections()
+service.where(&#39;name(en = &quot;Foo&quot;)&#39;).staged(true).fetch() </code></pre>
+  </div>
+</div>
+<div class='tags'>
+</div>
+      <h2>Instance Method Summary</h2>
+      <ul class='summary'>
+  <li deprecated>
+    <span class='signature'>
+      <a href='#create-instance'>
+        ::<strong>create</strong>()
+      </a>
+    </span>
+    <span class='note title unsupported'>Unsupported</span>
+    <span class='desc'>
+      <p>Not supported by the API</p>
+    </span>
+  </li>
+  <li deprecated>
+    <span class='signature'>
+      <a href='#delete-instance'>
+        ::<strong>delete</strong>()
+      </a>
+    </span>
+    <span class='note title unsupported'>Unsupported</span>
+    <span class='desc'>
+      <p>Not supported by the API</p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#facet-instance'>
+        ::<strong>facet</strong>(facet)
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Define a <a href="http://dev.sphere.io/http-api-projects-products-search.html#search-facets">facet</a> used for calculating statistical counts for searched product projections.</p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#filter-instance'>
+        ::<strong>filter</strong>(filter)
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Define a <a href="http://dev.sphere.io/http-api-projects-products-search.html#search-filters">filter</a> used for filtering searched product projections.</p><p>The <code>filter</code> parameter applies a filter to the query results <em>after</em> facets have been calculated.
+Filter in this scope doesn&#39;t influence facet counts.</p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#filterByFacets-instance'>
+        ::<strong>filterByFacets</strong>(filter)
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Define a <a href="http://dev.sphere.io/http-api-projects-products-search.html#search-filters">filter</a> used for filtering searched product projections.</p><p>The <code>filter.facets</code> parameter applies a filter to all facet calculations (but not query results),
+except for those facets that operate on the exact same field as the filter.
+This behavior in combination with the <code>filter</code> scope enables multi-select faceting.</p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#filterByQuery-instance'>
+        ::<strong>filterByQuery</strong>(filter)
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Define a <a href="http://dev.sphere.io/http-api-projects-products-search.html#search-filters">filter</a> used for filtering searched product projections.</p><p>The <code>filter.query</code> parameter applies a filter to the query results <em>before</em> facets have been calculated.
+Filter in this scope does influence facet counts. If facets are not used, this scope should be preferred over <code>filter</code>.</p>
+    </span>
+  </li>
+  <li deprecated>
+    <span class='signature'>
+      <a href='#save-instance'>
+        ::<strong>save</strong>()
+      </a>
+    </span>
+    <span class='note title unsupported'>Unsupported</span>
+    <span class='desc'>
+      <p>Not supported by the API</p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#search-instance'>
+        Promise ::<strong>search</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Search <code>ProductProjections</code> with all the search parameters</p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#searchKeywords-instance'>
+        ::<strong>searchKeywords</strong>(text, lang)
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Define a <a href="http://dev.sphere.io/http-api-projects-products-search.html#suggest">Suggestion</a> used for matching tokens for product projections, via a suggest tokenizer. The suggestions can be used to implement a basic auto-complete functionality. The source of data for suggestions is the searchKeyword field in a product.</p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#staged-instance'>
+        ::<strong>staged</strong>(staged = true)
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Define whether to query for staged or current product projection.</p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#suggest-instance'>
+        Promise ::<strong>suggest</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Query suggestions based on search keywords (used e.g. for auto-complete functionality)</p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#text-instance'>
+        ::<strong>text</strong>(text, language)
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Define the text to analyze and (<a href="http://dev.sphere.io/http-api-projects-products-search.html#search-text">full-text</a>) search.</p>
+    </span>
+  </li>
+  <li deprecated>
+    <span class='signature'>
+      <a href='#update-instance'>
+        ::<strong>update</strong>()
+      </a>
+    </span>
+    <span class='note title unsupported'>Unsupported</span>
+    <span class='desc'>
+      <p>Not supported by the API</p>
+    </span>
+  </li>
+</ul>
+      <h2>
+        <small>Inherited Method Summary</small>
+      </h2>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='..&#47;classes/BaseService.html'>BaseService</a>
+      </h3>
+      <p class='inherited'>
+                <a href='..&#47;classes/BaseService.html#constructor-instance'>.constructor</a>,
+                <a href='..&#47;classes/BaseService.html#byId-instance'>.byId</a>,
+                <a href='..&#47;classes/BaseService.html#where-instance'>.where</a>,
+                <a href='..&#47;classes/BaseService.html#whereOperator-instance'>.whereOperator</a>,
+                <a href='..&#47;classes/BaseService.html#last-instance'>.last</a>,
+                <a href='..&#47;classes/BaseService.html#sort-instance'>.sort</a>,
+                <a href='..&#47;classes/BaseService.html#page-instance'>.page</a>,
+                <a href='..&#47;classes/BaseService.html#perPage-instance'>.perPage</a>,
+                <a href='..&#47;classes/BaseService.html#all-instance'>.all</a>,
+                <a href='..&#47;classes/BaseService.html#expand-instance'>.expand</a>,
+                <a href='..&#47;classes/BaseService.html#byQueryString-instance'>.byQueryString</a>,
+                <a href='..&#47;classes/BaseService.html#fetch-instance'>.fetch</a>,
+                <a href='..&#47;classes/BaseService.html#process-instance'>.process</a>,
+                <a href='..&#47;classes/BaseService.html#save-instance'>.save</a>,
+                <a href='..&#47;classes/BaseService.html#create-instance'>.create</a>,
+                <a href='..&#47;classes/BaseService.html#update-instance'>.update</a>,
+        <a href='..&#47;classes/BaseService.html#delete-instance'>.delete</a>
+      </p>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='create-instance'>
+      ::<strong>create</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;services&#47;product-projections.coffee#L271'>Source</a>
+    </p>
+    <div class='docstring'>
+  <div class='note unsupported'>
+    <strong>Unsupported.</strong>
+  </div>
+  <p>Not supported by the API</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='delete-instance'>
+      ::<strong>delete</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;services&#47;product-projections.coffee#L277'>Source</a>
+    </p>
+    <div class='docstring'>
+  <div class='note unsupported'>
+    <strong>Unsupported.</strong>
+  </div>
+  <p>Not supported by the API</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='facet-instance'>
+      ::<strong>facet</strong>(facet)
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;services&#47;product-projections.coffee#L172'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Define a <a href="http://dev.sphere.io/http-api-projects-products-search.html#search-facets">facet</a> used for calculating statistical counts for searched product projections.</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>service = client.productProjections()
+service.facet(&#39;categories.id:&quot;123&quot;&#39;).search()</code></pre>
+    <pre><code class='coffee'># you can also chain multiple facet expressions
+service = client.productProjections()
+service
+.facet(&#39;categories.id:&quot;123&quot;&#39;)
+.facet(&#39;variants.attributes.foo:&quot;bar&quot;&#39;)
+.facet(&#39;variants.attributes.custom-price.currencyCode:1500&#39;)
+.search() </code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='type'>(String)</span>
+      <span class='name'>facet</span>
+      &mdash;
+      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/String'>String</a> A facet expression</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      <span class='desc'> a chained instance of <code>this</code> class</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='filter-instance'>
+      ::<strong>filter</strong>(filter)
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;services&#47;product-projections.coffee#L89'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Define a <a href="http://dev.sphere.io/http-api-projects-products-search.html#search-filters">filter</a> used for filtering searched product projections.</p><p>The <code>filter</code> parameter applies a filter to the query results <em>after</em> facets have been calculated.
+Filter in this scope doesn&#39;t influence facet counts.</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>service = client.productProjections()
+service.filter(&#39;variants.price.centAmount:1000&#39;).search()</code></pre>
+    <pre><code class='coffee'># you can also chain multiple filter expressions
+service = client.productProjections()
+service
+.filter(&#39;categories.id:&quot;111&quot;&#39;)
+.filter(&#39;variants.price.centAmount:range (0 to 999), (2000 to 10000)&#39;)
+.filter(&#39;variants.attributes.color.key:&quot;red&quot;&#39;)
+.search() </code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='type'>(String)</span>
+      <span class='name'>filter</span>
+      &mdash;
+      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/String'>String</a> A filter expression</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      <span class='desc'> a chained instance of <code>this</code> class</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='filterByFacets-instance'>
+      ::<strong>filterByFacets</strong>(filter)
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;services&#47;product-projections.coffee#L146'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Define a <a href="http://dev.sphere.io/http-api-projects-products-search.html#search-filters">filter</a> used for filtering searched product projections.</p><p>The <code>filter.facets</code> parameter applies a filter to all facet calculations (but not query results),
+except for those facets that operate on the exact same field as the filter.
+This behavior in combination with the <code>filter</code> scope enables multi-select faceting.</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>service = client.productProjections()
+service.filterByFacets(&#39;variants.attributes.foo:&quot;bar&quot;&#39;).search()</code></pre>
+    <pre><code class='coffee'># you can also chain multiple filter expressions
+service = client.productProjections()
+service
+.filterByFacets(&#39;variants.price.centAmount:1500&#39;)
+.filterByFacets(&#39;variants.attributes.color.key:&quot;red&quot;&#39;)
+.search() </code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='type'>(String)</span>
+      <span class='name'>filter</span>
+      &mdash;
+      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/String'>String</a> A filter expression</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      <span class='desc'> a chained instance of <code>this</code> class</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='filterByQuery-instance'>
+      ::<strong>filterByQuery</strong>(filter)
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;services&#47;product-projections.coffee#L117'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Define a <a href="http://dev.sphere.io/http-api-projects-products-search.html#search-filters">filter</a> used for filtering searched product projections.</p><p>The <code>filter.query</code> parameter applies a filter to the query results <em>before</em> facets have been calculated.
+Filter in this scope does influence facet counts. If facets are not used, this scope should be preferred over <code>filter</code>.</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>service = client.productProjections()
+service.filterByQuery(&#39;categories.id:&quot;123&quot;&#39;).search()</code></pre>
+    <pre><code class='coffee'># you can also chain multiple filter expressions
+service = client.productProjections()
+service
+.filterByQuery(&#39;variants.price.centAmount:1500&#39;)
+.filterByQuery(&#39;variants.attributes.color.key:&quot;red&quot;&#39;)
+.search() </code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='type'>(String)</span>
+      <span class='name'>filter</span>
+      &mdash;
+      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/String'>String</a> A filter expression</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      <span class='desc'> a chained instance of <code>this</code> class</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='save-instance'>
+      ::<strong>save</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;services&#47;product-projections.coffee#L268'>Source</a>
+    </p>
+    <div class='docstring'>
+  <div class='note unsupported'>
+    <strong>Unsupported.</strong>
+  </div>
+  <p>Not supported by the API</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='search-instance'>
+      Promise ::<strong>search</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;services&#47;product-projections.coffee#L244'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Search <code>ProductProjections</code> with all the search parameters</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>service = client.products()
+service
+.text(&#39;Red Shirt&#39;)
+.sort(&#39;createdAt desc&#39;)
+.filter(&#39;variants.attributes.foo:&quot;bar&quot;&#39;)
+.search() </code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../classes/Promise.html'>Promise</a></tt>)
+      &mdash;
+      <span class='desc'> a <a href='../classes/Promise.html'>Promise</a>, fulfilled with an <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object'>Object</a> or rejected with an instance of an <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Error'>Error</a></span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='searchKeywords-instance'>
+      ::<strong>searchKeywords</strong>(text, lang)
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;services&#47;product-projections.coffee#L195'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Define a <a href="http://dev.sphere.io/http-api-projects-products-search.html#suggest">Suggestion</a> used for matching tokens for product projections, via a suggest tokenizer. The suggestions can be used to implement a basic auto-complete functionality. The source of data for suggestions is the searchKeyword field in a product.</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>service = client.productProjections()
+service.searchKeywords(&#39;Swiss Army Knife&#39;, &#39;en&#39;).suggest() </code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='type'>(String)</span>
+      <span class='name'>text</span>
+      &mdash;
+      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/String'>String</a> The suggested text</span>
+    </li>
+    <li>
+      <span class='type'>(String)</span>
+      <span class='name'>lang</span>
+      &mdash;
+      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/String'>String</a> An ISO language tag, used for search the given text in localized product content</span>
+    </li>
+  </ul>
+  <h3>Throws:</h3>
+  <ul class='throw'>
+    <li>
+      <span class='type'></span>
+      (<tt>Error</tt>)
+      &mdash;
+      <span class='desc'>Throws an <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Error'>Error</a> if <code>text</code> or <code>lang</code> is missing</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      <span class='desc'> a chained instance of <code>this</code> class</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='staged-instance'>
+      ::<strong>staged</strong>(staged = true)
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;services&#47;product-projections.coffee#L41'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Define whether to query for staged or current product projection.</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>service = client.productProjections()
+service.byId(&#39;123&#39;).staged(false).fetch() </code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='type'>(Boolean)</span>
+      <span class='name'>staged</span>
+      &mdash;
+      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Boolean'>Boolean</a> <code>true</code> to query <code>staged</code> products (default), <code>false</code> to query <code>current</code> (published) products</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      <span class='desc'> a chained instance of <code>this</code> class</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='suggest-instance'>
+      Promise ::<strong>suggest</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;services&#47;product-projections.coffee#L263'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Query suggestions based on search keywords (used e.g. for auto-complete functionality)</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>service = client.products()
+service.searchKeywords(&#39;Swiss Army Knife&#39;, &#39;en&#39;).suggest() </code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../classes/Promise.html'>Promise</a></tt>)
+      &mdash;
+      <span class='desc'> a <a href='../classes/Promise.html'>Promise</a>, fulfilled with an <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object'>Object</a> or rejected with an instance of an <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Error'>Error</a></span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='text-instance'>
+      ::<strong>text</strong>(text, language)
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;services&#47;product-projections.coffee#L59'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Define the text to analyze and (<a href="http://dev.sphere.io/http-api-projects-products-search.html#search-text">full-text</a>) search.</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>service = client.productProjections()
+service.text(&#39;Red Shirt&#39;, &#39;en&#39;).search() </code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='type'>(String)</span>
+      <span class='name'>text</span>
+      &mdash;
+      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/String'>String</a> The string to search for</span>
+    </li>
+    <li>
+      <span class='type'>(String)</span>
+      <span class='name'>language</span>
+      &mdash;
+      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/String'>String</a> An ISO language tag, used for search the given text in localized product content</span>
+    </li>
+  </ul>
+  <h3>Throws:</h3>
+  <ul class='throw'>
+    <li>
+      <span class='type'></span>
+      (<tt>Error</tt>)
+      &mdash;
+      <span class='desc'>Throws an <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Error'>Error</a> if <code>language</code> is missing</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      <span class='desc'> a chained instance of <code>this</code> class</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='update-instance'>
+      ::<strong>update</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;services&#47;product-projections.coffee#L274'>Source</a>
+    </p>
+    <div class='docstring'>
+  <div class='note unsupported'>
+    <strong>Unsupported.</strong>
+  </div>
+  <p>Not supported by the API</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+</div>
+    </div>
+    <div id='footer'>
+  Generated on
+  Tue Mar 24 2015 15:42:45 GMT+0100 (CET)
+  by
+  <a href='https://github.com/gjtorikian/biscotto' title='TomDoc-CoffeeScript API documentation generator'>Biscotto</a>
+  v2.3.1
+  (Node.js v0.10.33).
+  &#10034;
+  Press Ctrl-h to see the keyboard shortcuts
+</div>
+  </body>
+</html>

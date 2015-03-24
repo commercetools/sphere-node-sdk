@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>SPHERE.IO Node.js SDK</title>
+  <link rel='stylesheet' href='..&#47;assets/biscotto.css' type='text/css'>
+  <script src='..&#47;assets/biscotto.js'></script>
+  <script src='..&#47;assets/search_data.js'></script>
+</head>
+  <body>
+    <div id='base' data-path='..&#47;'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='..&#47;README.md.html' title='Node.js SDK'>Node.js SDK</a>
+    &raquo;
+    <a href='..&#47;class_index.html' title='Index'>Index</a>
+    &raquo;
+    <span class='title'>BaseSync</span>
+    <nav>
+      <ul>
+        <li class='noframes'>
+          (<a class='noframes' href='#'>no frames</a>)
+        </li>
+      </ul>
+    </nav>
+    <div id='search'>
+      <a id='class_list_link' href='..&#47;class_list.html'>Classes</a>
+      <a id='method_list_link' href='..&#47;method_list.html'>Methods</a>
+      <a id='extra_list_link' href='..&#47;extra_list.html'>Extras</a>
+    </div>
+  </div>
+  <iframe id='search_frame'></iframe>
+  <div id='fuzzySearch'>
+    <input type='text'>
+    <ol></ol>
+  </div>
+  <div id='help'>
+    <p>
+      Quickly fuzzy find classes, mixins, methods, file:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-T</span>
+        Open fuzzy finder dialog
+      </li>
+    </ul>
+    <p>
+      In frame mode you can toggle the list navigation frame on the left side:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-L</span>
+        Toggle list view
+      </li>
+    </ul>
+    <p>
+      You can focus a list in frame mode or toggle a tab in frameless mode:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-C</span>
+        Class list
+      </li>
+      <li>
+        <span>Ctrl-I</span>
+        Mixin list
+      </li>
+      <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+      <li>
+        <span>Ctrl-M</span>
+        Method list
+      </li>
+      <li>
+        <span>Ctrl-E</span>
+        Extras list
+      </li>
+    </ul>
+    <p>
+      You can focus and blur the search input:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-S</span>
+        Focus search input
+      </li>
+      <li>
+        <span>Esc</span>
+        Blur search input
+      </li>
+    </ul>
+    <p>
+      In frameless mode you can close the list tab:
+    </p>
+    <ul>
+      <li>
+        <span>Esc</span>
+        Close list tab
+      </li>
+    </ul>
+  </div>
+</div>
+    <div id='content'>
+      <h1>
+        Class
+        BaseSync
+      </h1>
+      <table class='box'>
+        <tr>
+          <td>Defined in:</td>
+          <td>src&#47;coffee&#47;sync&#47;base-sync.coffee</td>
+        </tr>
+      </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <div class='internal note'>
+    <strong>
+      This
+      class
+      is internal.
+    </strong>
+  </div>
+  <p>Define a <code>BaseSync</code> to provide basic methods to sync SPHERE.IO resources.</p><p>This class should <strong>not be exposed</strong> and <strong>must be extended</strong> when defining a new <code>*Sync</code>.</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>class FooSync extends BaseSync
+  _doMapActions: (diff, new_obj, old_obj) -&gt;
+  _doUpdate: -&gt; </code></pre>
+  </div>
+</div>
+<div class='tags'>
+</div>
+      <h2>Subclasses</h2>
+      <p class='children'>
+                <a href='..&#47;classes/CategorySync.html'>CategorySync</a>,
+                <a href='..&#47;classes/InventorySync.html'>InventorySync</a>,
+                <a href='..&#47;classes/OrderSync.html'>OrderSync</a>,
+        <a href='..&#47;classes/ProductSync.html'>ProductSync</a>
+      </p>
+      <h2>Instance Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#buildActions-instance'>
+        ::<strong>buildActions</strong>(new_obj, old_obj)
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Build all actions related to the given resource by diffing the two given objects. The actions mapped will be defined by overriding the <code>_doMapActions</code> function.</p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#config-instance'>
+        ::<strong>config</strong>(actionGroups)
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Pass a list of <code>actions groups</code> in order to restrict the actions that will be built Groups gives you the ability to configure the sync to include / exclude them when the actions are <a href='../classes/BaseSync.html#buildActions-instance'>built</a>. This concept can be expressed in terms of <em>blacklisting</em> and <em>whitelisting</em>.</p><p>See specific <code>*Sync</code> type for related list.</p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#constructor-instance'>
+        ::<strong>constructor</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Construct a <code>*Sync</code> object.</p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#filterActions-instance'>
+        ::<strong>filterActions</strong>(fn)
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Allow to pass a custom function to filter built actions</p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getUpdateActions-instance'>
+        Array ::<strong>getUpdateActions</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Retrieve the generated actions that needs to be updated</p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getUpdateId-instance'>
+        String ::<strong>getUpdateId</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Retrieve the resource <code>id</code> that needs to be updated (<code>old_obj.id</code>)</p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getUpdatePayload-instance'>
+        Object ::<strong>getUpdatePayload</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Retrieve the generated payload for the update (containing the <code>actions</code> list and <code>version</code>)</p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#shouldUpdate-instance'>
+        Boolean ::<strong>shouldUpdate</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Check if there is something to update or not</p>
+    </span>
+  </li>
+</ul>
+      <h2>Constructor Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='constructor-instance'>
+      ::<strong>constructor</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;sync&#47;base-sync.coffee#L16'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Construct a <code>*Sync</code> object.</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+</div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='buildActions-instance'>
+      ::<strong>buildActions</strong>(new_obj, old_obj)
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;sync&#47;base-sync.coffee#L65'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Build all actions related to the given resource by diffing the two given objects. The actions mapped will be defined by overriding the <code>_doMapActions</code> function.</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>new_obj =
+  name:
+    en: &#39;Foo&#39;
+old_obj =
+  name:
+    en: &#39;Bar&#39;
+sync.buildActions(new_obj, old_obj) </code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='type'>(Object)</span>
+      <span class='name'>new_obj</span>
+      &mdash;
+      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object'>Object</a> The newly object</span>
+    </li>
+    <li>
+      <span class='type'>(Object)</span>
+      <span class='name'>old_obj</span>
+      &mdash;
+      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object'>Object</a> The existing object that needs to be updated (usually fetched from the API)</span>
+    </li>
+  </ul>
+  <h3>Throws:</h3>
+  <ul class='throw'>
+    <li>
+      <span class='type'></span>
+      (<tt>Error</tt>)
+      &mdash;
+      <span class='desc'>Throws an <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Error'>Error</a> if either arguments are missing</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      <span class='desc'> a chained instance of <code>this</code> class</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='config-instance'>
+      ::<strong>config</strong>(actionGroups)
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;sync&#47;base-sync.coffee#L42'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Pass a list of <code>actions groups</code> in order to restrict the actions that will be built Groups gives you the ability to configure the sync to include / exclude them when the actions are <a href='../classes/BaseSync.html#buildActions-instance'>built</a>. This concept can be expressed in terms of <em>blacklisting</em> and <em>whitelisting</em>.</p><p>See specific <code>*Sync</code> type for related list.</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>options = [
+  {type: &#39;base&#39;, group: &#39;black&#39;}
+  {type: &#39;prices&#39;, group: &#39;white&#39;}
+  {type: &#39;variants&#39;, group: &#39;black&#39;}
+]
+# =&gt; this will exclude &#39;base&#39; and &#39;variants&#39; mapping of actions and
+# include the rest (white group is actually implicit if not given)</code></pre>
+    <pre><code class='coffee'>sync.config(options).buildActions(...) </code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='type'>(Array)</span>
+      <span class='name'>options</span>
+      &mdash;
+      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Array'>Array</a> A list of action groups for white/black-listing</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      <span class='desc'> a chained instance of <code>this</code> class</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='filterActions-instance'>
+      ::<strong>filterActions</strong>(fn)
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;sync&#47;base-sync.coffee#L95'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Allow to pass a custom function to filter built actions</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>sync.buildActions(new_obj, old_obj).filterActions (a) -&gt; a.action is &#39;changeName&#39;
+# =&gt; actions payload will now contain only &#39;changeName&#39; action </code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='type'>(Function)</span>
+      <span class='name'>fn</span>
+      &mdash;
+      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Function'>Function</a> The function used to apply the filtering</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      <span class='desc'> a chained instance of <code>this</code> class</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getUpdateActions-instance'>
+      Array ::<strong>getUpdateActions</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;sync&#47;base-sync.coffee#L118'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Retrieve the generated actions that needs to be updated</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Array</tt>)
+      &mdash;
+      <span class='desc'> <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Array'>Array</a> The list of actions, or empty if there are none</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getUpdateId-instance'>
+      String ::<strong>getUpdateId</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;sync&#47;base-sync.coffee#L113'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Retrieve the resource <code>id</code> that needs to be updated (<code>old_obj.id</code>)</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>String</tt>)
+      &mdash;
+      <span class='desc'> <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/String'>String</a> The resource <code>id</code></span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getUpdatePayload-instance'>
+      Object ::<strong>getUpdatePayload</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;sync&#47;base-sync.coffee#L133'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Retrieve the generated payload for the update (containing the <code>actions</code> list and <code>version</code>)</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>sync = new Sync
+syncedActions = sync.buildActions(new_obj, old_obj)
+if syncedActions.shouldUpdate()
+  client.products().byId(syncedActions.getUpdatedId())
+  .update(syncedActions.getUpdatePayload())
+else
+  # do nothing </code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'> <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object'>Object</a> The udpate payload as JSON</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='shouldUpdate-instance'>
+      Boolean ::<strong>shouldUpdate</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.3.1
+/src&#47;coffee&#47;sync&#47;base-sync.coffee#L108'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Check if there is something to update or not</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Boolean</tt>)
+      &mdash;
+      <span class='desc'> <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Boolean'>Boolean</a> <code>true</code> if there are update actions, <code>false</code> if not</span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+    </div>
+    <div id='footer'>
+  Generated on
+  Tue Mar 24 2015 15:42:45 GMT+0100 (CET)
+  by
+  <a href='https://github.com/gjtorikian/biscotto' title='TomDoc-CoffeeScript API documentation generator'>Biscotto</a>
+  v2.3.1
+  (Node.js v0.10.33).
+  &#10034;
+  Press Ctrl-h to see the keyboard shortcuts
+</div>
+  </body>
+</html>
