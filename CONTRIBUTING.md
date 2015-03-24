@@ -9,3 +9,12 @@ Regarding code style like indentation and whitespace, **follow the conventions y
 2. Include thoughtfully-worded, well-structured [Jasmine](http://jasmine.github.io/) specs
 3. Update the documentation to reflect any changes
 4. Push to your fork and submit a pull request
+
+## Releasing
+Releasing a new version is completely automated using the Grunt task `grunt release`.
+
+```javascript
+grunt release // patch release
+grunt release:minor // minor release
+grunt release:major // major release
+```
