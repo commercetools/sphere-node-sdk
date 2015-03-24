@@ -29,14 +29,17 @@
     "test": "grunt coverage"
   },
   "dependencies": {
-    "bluebird": "2.3.x",
     "debug": "2.1.x",
     "jsondiffpatch": "0.1.20",
     "request": "2.49.x",
     "underscore": "1.7.x",
     "underscore-mixins": "0.1.x"
   },
+  "peerDependencies": {
+    "bluebird": ">=2.9.0"
+  },
   "devDependencies": {
+    "bluebird": "2.9.x",
     "biscotto": "emmenko/biscotto",
     "coveralls": "2.10.0",
     "express": "4.12.x",
