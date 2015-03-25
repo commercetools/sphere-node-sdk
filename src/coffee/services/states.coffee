@@ -7,7 +7,7 @@ BaseService = require './base'
 #
 # Examples
 #
-#   service = client.states()
+#   service = client.states
 #   service.byId('123').fetch()
 #   .then (result) ->
 #     service.byId('123').update

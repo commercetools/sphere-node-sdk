@@ -12,7 +12,7 @@ CategoryUtil = require './utils/category'
 #   sync = new CategorySync
 #   syncedActions = sync.buildActions(newCategory, existingCategory)
 #   if syncedActions.shouldUpdate()
-#     client.categories().byId(syncedActions.getUpdatedId())
+#     client.categories.byId(syncedActions.getUpdatedId())
 #     .update(syncedActions.getUpdatePayload())
 #   else
 #     # do nothing

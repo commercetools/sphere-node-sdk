@@ -7,7 +7,7 @@ BaseService = require './base'
 #
 # Examples
 #
-#   service = client.project()
+#   service = client.project
 #   service.fetch()
 class ProjectService extends BaseService
 

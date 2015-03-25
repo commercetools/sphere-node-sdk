@@ -19,7 +19,7 @@ ProductUtils = require './utils/product'
 #   sync = new ProductSync
 #   syncedActions = sync.buildActions(newCategory, existingCategory)
 #   if syncedActions.shouldUpdate()
-#     client.products().byId(syncedActions.getUpdatedId())
+#     client.products.byId(syncedActions.getUpdatedId())
 #     .update(syncedActions.getUpdatePayload())
 #   else
 #     # do nothing

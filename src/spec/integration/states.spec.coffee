@@ -25,7 +25,7 @@ describe 'Integration States', ->
   beforeEach (done) ->
     @client = new SphereClient config: Config
 
-    @client.states().save(newState())
+    @client.states.save(newState())
     .then (result) =>
       expect(result.statusCode).toBe 201
       @state = result.body
@@ -34,7 +34,7 @@ describe 'Integration States', ->
     .catch (error) -> done _.prettify(error)
 
   afterEach (done) ->
-    @client.states().byId(@state.id).delete(@state.version)
+    @client.states.byId(@state.id).delete(@state.version)
     .then (result) =>
       debug "State deleted: #{@state.id}"
       expect(result.statusCode).toBe 200
@@ -42,7 +42,7 @@ describe 'Integration States', ->
     .catch (error) -> done _.prettify(error)
 
   it 'should update a state', (done) ->
-    @client.states().byId(@state.id).update(updateState(@state.version))
+    @client.states.byId(@state.id).update(updateState(@state.version))
     .then (result) =>
       expect(result.statusCode).toBe 200
       @state = result.body
@@ -52,14 +52,14 @@ describe 'Integration States', ->
     .catch (error) -> done _.prettify(error)
 
   it 'should create some states and use them as transitions references', (done) ->
-    Promise.all _.map [1..51], => @client.states().save(newState())
+    Promise.all _.map [1..51], => @client.states.save(newState())
     .then (results) =>
       mainState = _.head(results).body
       otherStates = _.tail results
       transitions = _.map otherStates, (r) ->
         id: r.body.id
         typeId: 'state'
-      @client.states().byId(mainState.id).update
+      @client.states.byId(mainState.id).update
         version: mainState.version
         actions: [
           {action: 'setTransitions', transitions: transitions}
@@ -70,9 +70,9 @@ describe 'Integration States', ->
         expect(mainState.transitions.length).toBe 50
 
         # delete states
-        @client.states().byId(mainState.id).delete(mainState.version)
+        @client.states.byId(mainState.id).delete(mainState.version)
       .then (result) =>
-        Promise.all _.map otherStates, (r) => @client.states().byId(r.body.id).delete(r.body.version)
+        Promise.all _.map otherStates, (r) => @client.states.byId(r.body.id).delete(r.body.version)
       .then (results) ->
         done()
     .catch (error) -> done _.prettify(error)

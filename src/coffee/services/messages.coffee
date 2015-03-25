@@ -9,7 +9,7 @@ BaseService = require './base'
 #
 # Examples
 #
-#   service = client.messages()
+#   service = client.messages
 #   service.byId('123').fetch()
 class MessageService extends BaseService
 

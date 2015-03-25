@@ -14,7 +14,7 @@ InventoryUtils = require './utils/inventory'
 #   sync = new InventorySync
 #   syncedActions = sync.buildActions(newInventory, existingInventory)
 #   if syncedActions.shouldUpdate()
-#     client.inventoryEntries().byId(syncedActions.getUpdatedId())
+#     client.inventoryEntries.byId(syncedActions.getUpdatedId())
 #     .update(syncedActions.getUpdatePayload())
 #   else
 #     # do nothing

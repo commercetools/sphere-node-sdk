@@ -24,6 +24,31 @@ StateService             = require './services/states'
 TaxCategoryService       = require './services/tax-categories'
 ZoneService              = require './services/zones'
 
+ALL_SERVICES = [
+  {key: 'cartDiscounts',      name: CartDiscountService},
+  {key: 'carts',              name: CartService},
+  {key: 'categories',         name: CategoryService},
+  {key: 'channels',           name: ChannelService},
+  {key: 'comments',           name: CommentService},
+  {key: 'customObjects',      name: CustomObjectService},
+  {key: 'customers',          name: CustomerService},
+  {key: 'customerGroups',     name: CustomerGroupService},
+  {key: 'discountCodes',      name: DiscountCodeService},
+  {key: 'inventoryEntries',   name: InventoryEntryService},
+  {key: 'messages',           name: MessageService},
+  {key: 'orders',             name: OrderService},
+  {key: 'products',           name: ProductService},
+  {key: 'productDiscounts',   name: ProductDiscountService},
+  {key: 'productProjections', name: ProductProjectionService},
+  {key: 'productTypes',       name: ProductTypeService},
+  {key: 'project',            name: ProjectService},
+  {key: 'reviews',            name: ReviewService},
+  {key: 'shippingMethods',    name: ShippingMethodService},
+  {key: 'states',             name: StateService},
+  {key: 'taxCategories',      name: TaxCategoryService},
+  {key: 'zones',              name: ZoneService}
+]
+
 # Public: The `SphereClient` provides a set of Services to connect with the related API endpoints.
 # To configure the underlying Http client see {Rest}
 #
@@ -75,7 +100,7 @@ ZoneService              = require './services/zones'
 #
 # ```coffeescript
 # Errors = require('sphere-node-sdk').Errors
-# client.products().byId(productId).update(payload)
+# client.products.byId(productId).update(payload)
 # .then (result) ->
 #   # we know the request was successful (e.g.: 2xx) and `result` is a JSON of a resource representation
 # .catch (e) ->
@@ -115,7 +140,7 @@ ZoneService              = require './services/zones'
 #   config: # credentials
 #   stats:
 #     includeHeaders: true
-# client.products().fetch()
+# client.products.fetch()
 # .then (result) ->
 #   # result.statusCode
 #   # result.body
@@ -136,7 +161,7 @@ ZoneService              = require './services/zones'
 #     task: {} # optional TaskQueue instance
 #     stats:
 #       includeHeaders: true
-#   client.products()
+#   client.products
 #   .where('name(en="Foo")')
 #   .where('id="1234567890"')
 #   .whereOperator('or')
@@ -149,6 +174,40 @@ ZoneService              = require './services/zones'
 class SphereClient
 
   # Public: Construct a `SphereClient` object.
+  #
+  # When the client is instantiated it has all available instances of services
+  # as a property, which can be directly accessed (Note: _this may change in future releases_).
+  #
+  # ```coffeescript
+  # client = new SphereClient
+  # # examples
+  # productService = client.products
+  # cartService = client.carts
+  # ```
+  #
+  # Available services are
+  # - `cartDiscounts`
+  # - `carts`
+  # - `categories`
+  # - `channels`
+  # - `comments`
+  # - `customObjects`
+  # - `customers`
+  # - `customerGroups`
+  # - `discountCodes`
+  # - `inventoryEntries`
+  # - `messages`
+  # - `orders`
+  # - `products`
+  # - `productDiscounts`
+  # - `productProjections`
+  # - `productTypes`
+  # - `project`
+  # - `reviews`
+  # - `shippingMethods`
+  # - `states`
+  # - `taxCategories`
+  # - `zones`
   #
   # options - An {Object} to configure the client
   constructor: (options = {}) ->
@@ -166,139 +225,11 @@ class SphereClient
       _stats: _.defaults options.stats or {},
         includeHeaders: false
 
-    # DEPRECATED: recommended way is to use methods (see below)
-    @_cartDiscounts      = new CartDiscountService _serviceOptions
-    @_carts              = new CartService _serviceOptions
-    @_categories         = new CategoryService _serviceOptions
-    @_channels           = new ChannelService _serviceOptions
-    @_comments           = new CommentService _serviceOptions
-    @_customObjects      = new CustomObjectService _serviceOptions
-    @_customers          = new CustomerService _serviceOptions
-    @_customerGroups     = new CustomerGroupService _serviceOptions
-    @_discountCodes      = new DiscountCodeService _serviceOptions
-    @_inventoryEntries   = new InventoryEntryService _serviceOptions
-    @_messages           = new MessageService _serviceOptions
-    @_orders             = new OrderService _serviceOptions
-    @_products           = new ProductService _serviceOptions
-    @_productDiscounts   = new ProductDiscountService _serviceOptions
-    @_productProjections = new ProductProjectionService _serviceOptions
-    @_productTypes       = new ProductTypeService _serviceOptions
-    @_project            = new ProjectService _serviceOptions
-    @_reviews            = new ReviewService _serviceOptions
-    @_shippingMethods    = new ShippingMethodService _serviceOptions
-    @_states             = new StateService _serviceOptions
-    @_taxCategories      = new TaxCategoryService _serviceOptions
-    @_zones              = new ZoneService _serviceOptions
-
-  # Public: Get a new instance of a `CartDiscountService`
-  #
-  # Returns a {CartDiscountService}
-  cartDiscounts: -> @_cartDiscounts
-
-  # Public: Get a new instance of a `CartService`
-  #
-  # Returns a {CartService}
-  carts: -> @_carts
-
-  # Public: Get a new instance of a `CategoryService`
-  #
-  # Returns a {CategoryService}
-  categories: -> @_categories
-
-  # Public: Get a new instance of a `ChannelService`
-  #
-  # Returns a {ChannelService}
-  channels: -> @_channels
-
-  # Public: Get a new instance of a `CommentService`
-  #
-  # Returns a {CommentService}
-  comments: -> @_comments
-
-  # Public: Get a new instance of a `CustomObjectService`
-  #
-  # Returns a {CustomObjectService}
-  customObjects: -> @_customObjects
-
-  # Public: Get a new instance of a `CustomerService`
-  #
-  # Returns a {CustomerService}
-  customers: -> @_customers
-
-  # Public: Get a new instance of a `CustomerGroupService`
-  #
-  # Returns a {CustomerGroupService}
-  customerGroups: -> @_customerGroups
-
-  # Public: Get a new instance of a `DiscountCodeService`
-  #
-  # Returns a {DiscountCodeService}
-  discountCodes: -> @_discountCodes
-
-  # Public: Get a new instance of a `InventoryEntryService`
-  #
-  # Returns a {InventoryEntryService}
-  inventoryEntries: -> @_inventoryEntries
-
-  # Public: Get a new instance of a `MessageService`
-  #
-  # Returns a {MessageService}
-  messages: -> @_messages
-
-  # Public: Get a new instance of a `OrderService`
-  #
-  # Returns a {OrderService}
-  orders: -> @_orders
-
-  # Public: Get a new instance of a `ProductService`
-  #
-  # Returns a {ProductService}
-  products: -> @_products
-
-  # Public: Get a new instance of a `ProductDiscountService`
-  #
-  # Returns a {ProductDiscountService}
-  productDiscounts: -> @_productDiscounts
-
-  # Public: Get a new instance of a `ProductProjectionService`
-  #
-  # Returns a {ProductProjectionService}
-  productProjections: -> @_productProjections
-
-  # Public: Get a new instance of a `ProductTypeService`
-  #
-  # Returns a {ProductTypeService}
-  productTypes: -> @_productTypes
-
-  # Public: Get a new instance of a `ProjectService`
-  #
-  # Returns a {ProjectService}
-  project: -> @_project
-
-  # Public: Get a new instance of a `ReviewService`
-  #
-  # Returns a {ReviewService}
-  reviews: -> @_reviews
-
-  # Public: Get a new instance of a `ShippingMethodService`
-  #
-  # Returns a {ShippingMethodService}
-  shippingMethods: -> @_shippingMethods
-
-  # Public: Get a new instance of a `StateService`
-  #
-  # Returns a {StateService}
-  states: -> @_states
-
-  # Public: Get a new instance of a `TaxCategoryService`
-  #
-  # Returns a {TaxCategoryService}
-  taxCategories: -> @_taxCategories
-
-  # Public: Get a new instance of a `ZoneService`
-  #
-  # Returns a {ZoneService}
-  zones: -> @_zones
+    # TODO: currently instances are bound to the client as properties (e.g.: client.products)
+    # We may think to provide a better interface for that, so for now we keep it like this
+    # but this may change (breaking change).
+    ALL_SERVICES.forEach (service) =>
+      this[service.key] = new service.name _serviceOptions
 
   # Public: Define max parallel request to be sent on each request from the {TaskQueue}
   #

@@ -36,7 +36,7 @@ describe 'Integration Cart Discounts', ->
   beforeEach (done) ->
     @client = new SphereClient config: Config
 
-    @client.cartDiscounts().save(newCartDiscount())
+    @client.cartDiscounts.save(newCartDiscount())
     .then (result) =>
       expect(result.statusCode).toBe 201
       discount = result.body
@@ -46,25 +46,25 @@ describe 'Integration Cart Discounts', ->
     .catch (error) -> done _.prettify(error.body)
 
   afterEach (done) ->
-    @client.discountCodes().all().fetch()
+    @client.discountCodes.all().fetch()
     .then (result) =>
       codes = result.body.results
       debug 'Cleaning up all discount codes'
-      Promise.all _.map codes, (c) => @client.discountCodes().byId(c.id).delete(c.version)
+      Promise.all _.map codes, (c) => @client.discountCodes.byId(c.id).delete(c.version)
 
-      @client.cartDiscounts().all().fetch()
+      @client.cartDiscounts.all().fetch()
     .then (result) =>
       discounts = result.body.results
       debug 'Cleaning up all cart discounts'
-      Promise.all _.map discounts, (d) => @client.cartDiscounts().byId(d.id).delete(d.version)
+      Promise.all _.map discounts, (d) => @client.cartDiscounts.byId(d.id).delete(d.version)
     .then -> done()
     .catch (error) -> done(_.prettify(error))
 
   it 'should update a cart discount', (done) ->
-    @client.cartDiscounts().byId(@cartDiscountId).fetch()
+    @client.cartDiscounts.byId(@cartDiscountId).fetch()
     .then (result) =>
       expect(result.statusCode).toBe 200
-      @client.cartDiscounts().byId(@cartDiscountId).update
+      @client.cartDiscounts.byId(@cartDiscountId).update
         version: result.body.version
         actions: [
           {action: 'setValidUntil', validUntil: '2024-12-15T09:55:12+0100'}
@@ -76,17 +76,17 @@ describe 'Integration Cart Discounts', ->
     .catch (error) -> done _.prettify(error.body)
 
   it 'should create a discount code and apply it to a cart', (done) ->
-    @client.discountCodes().save(newDiscountCode(@cartDiscountId))
+    @client.discountCodes.save(newDiscountCode(@cartDiscountId))
     .then (result) =>
       expect(result.statusCode).toBe 201
       debug 'discount code created: %j', result.body
 
       # now let's try to delete the cart discount
       # it should fail since it's referenced from a discount code
-      @client.cartDiscounts().byId(@cartDiscountId).fetch()
+      @client.cartDiscounts.byId(@cartDiscountId).fetch()
     .then (result) =>
       debug 'About to delete cart discount'
-      @client.cartDiscounts().byId(result.body.id).delete(result.body.version)
+      @client.cartDiscounts.byId(result.body.id).delete(result.body.version)
       .then -> done('Cart discount deletion should be rejected')
       .catch (e) ->
         expect(e.message).toBe 'Can not delete a cart-discount while it is referenced from at least one discount-code.'

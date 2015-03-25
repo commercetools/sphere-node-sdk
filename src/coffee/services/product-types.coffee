@@ -6,7 +6,7 @@ BaseService = require './base'
 #
 # Examples
 #
-#   service = client.productTypes()
+#   service = client.productTypes
 #   service.byId('123').fetch()
 #   .then (result) ->
 #     service.byId('123').update

@@ -6,7 +6,7 @@ BaseService = require './base'
 #
 # Examples
 #
-#   service = client.orders()
+#   service = client.orders
 #   service.byId('123').fetch()
 #   .then (result) ->
 #     service.byId('123').update
@@ -38,7 +38,7 @@ class OrderService extends BaseService
   #
   # Examples
   #
-  #   service = client.orders()
+  #   service = client.orders
   #   service.import
   #     orderNumber: 'a-123'
   #     customerId: '111'

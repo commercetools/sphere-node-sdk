@@ -10,7 +10,7 @@ BaseService = require './base'
 #
 # Examples
 #
-#   service = client.channels()
+#   service = client.channels
 #   service.byId('123').fetch()
 #   .then (result) ->
 #     service.byId('123').update
@@ -40,7 +40,7 @@ class ChannelService extends BaseService
   #
   # Examples
   #
-  #   service = client.channels()
+  #   service = client.channels
   #   roles = ['InventorySupply', 'OrderImport']
   #   service.ensure('foo', roles)
   ensure: (key, roles) ->

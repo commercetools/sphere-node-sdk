@@ -11,11 +11,11 @@ describe 'Integration Inventories Sync', ->
     @client = new SphereClient config: Config
     @sync = new InventorySync
 
-    @client.inventoryEntries().all().fetch()
+    @client.inventoryEntries.all().fetch()
     .then (result) =>
       stocks = result.body.results
       debug 'Cleaning up all inventory entries'
-      Promise.all _.map stocks, (s) => @client.inventoryEntries().byId(s.id).delete(s.version)
+      Promise.all _.map stocks, (s) => @client.inventoryEntries.byId(s.id).delete(s.version)
     .then -> done()
     .catch (error) -> done(_.prettify(error))
 
@@ -26,12 +26,12 @@ describe 'Integration Inventories Sync', ->
     ieChanged =
       sku: '123'
       quantityOnStock: 7
-    @client.inventoryEntries().create(ie)
+    @client.inventoryEntries.create(ie)
     .then (result) =>
       expect(result.statusCode).toBe 201
       syncedActions = @sync.buildActions(ieChanged, result.body)
       debug 'About to update inventory with synced actions (quantity)'
-      @client.inventoryEntries().byId(syncedActions.getUpdateId()).update(syncedActions.getUpdatePayload())
+      @client.inventoryEntries.byId(syncedActions.getUpdateId()).update(syncedActions.getUpdatePayload())
     .then (result) ->
       expect(result.statusCode).toBe 200
       expect(result.body.quantityOnStock).toBe 7
@@ -46,12 +46,12 @@ describe 'Integration Inventories Sync', ->
       sku: 'x1'
       quantityOnStock: 7
       expectedDelivery: '2000-01-01T01:01:01'
-    @client.inventoryEntries().create(ie)
+    @client.inventoryEntries.create(ie)
     .then (result) =>
       expect(result.statusCode).toBe 201
       syncedActions = @sync.buildActions(ieChanged, result.body)
       debug 'About to update inventory with synced actions (expectedDelivery add)'
-      @client.inventoryEntries().byId(syncedActions.getUpdateId()).update(syncedActions.getUpdatePayload())
+      @client.inventoryEntries.byId(syncedActions.getUpdateId()).update(syncedActions.getUpdatePayload())
     .then (result) ->
       expect(result.statusCode).toBe 200
       expect(result.body.quantityOnStock).toBe 7
@@ -68,12 +68,12 @@ describe 'Integration Inventories Sync', ->
       sku: 'x2'
       quantityOnStock: 3
       expectedDelivery: '2000-01-01T01:01:01.000Z'
-    @client.inventoryEntries().create(ie)
+    @client.inventoryEntries.create(ie)
     .then (result) =>
       expect(result.statusCode).toBe 201
       syncedActions = @sync.buildActions(ieChanged, result.body)
       debug 'About to update inventory with synced actions (expectedDelivery update)'
-      @client.inventoryEntries().byId(syncedActions.getUpdateId()).update(syncedActions.getUpdatePayload())
+      @client.inventoryEntries.byId(syncedActions.getUpdateId()).update(syncedActions.getUpdatePayload())
     .then (result) ->
       expect(result.statusCode).toBe 200
       expect(result.body.quantityOnStock).toBe 3
@@ -89,12 +89,12 @@ describe 'Integration Inventories Sync', ->
     ieChanged =
       sku: 'x3'
       quantityOnStock: 3
-    @client.inventoryEntries().create(ie)
+    @client.inventoryEntries.create(ie)
     .then (result) =>
       expect(result.statusCode).toBe 201
       syncedActions = @sync.buildActions(ieChanged, result.body)
       debug 'About to update inventory with synced actions (expectedDelivery remove)'
-      @client.inventoryEntries().byId(syncedActions.getUpdateId()).update(syncedActions.getUpdatePayload())
+      @client.inventoryEntries.byId(syncedActions.getUpdateId()).update(syncedActions.getUpdatePayload())
     .then (result) ->
       expect(result.statusCode).toBe 200
       expect(result.body.quantityOnStock).toBe 3

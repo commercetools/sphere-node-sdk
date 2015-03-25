@@ -22,6 +22,27 @@ describe 'SphereClient', ->
     expect(@client._rest).toBeDefined()
     expect(@client._rest._options.headers['User-Agent']).toBe 'sphere-node-sdk'
     expect(@client._task).toBeDefined()
+    expect(@client.cartDiscounts).toBeDefined()
+    expect(@client.carts).toBeDefined()
+    expect(@client.categories).toBeDefined()
+    expect(@client.channels).toBeDefined()
+    expect(@client.comments).toBeDefined()
+    expect(@client.customObjects).toBeDefined()
+    expect(@client.customers).toBeDefined()
+    expect(@client.customerGroups).toBeDefined()
+    expect(@client.discountCodes).toBeDefined()
+    expect(@client.inventoryEntries).toBeDefined()
+    expect(@client.messages).toBeDefined()
+    expect(@client.orders).toBeDefined()
+    expect(@client.products).toBeDefined()
+    expect(@client.productDiscounts).toBeDefined()
+    expect(@client.productProjections).toBeDefined()
+    expect(@client.productTypes).toBeDefined()
+    expect(@client.reviews).toBeDefined()
+    expect(@client.shippingMethods).toBeDefined()
+    expect(@client.states).toBeDefined()
+    expect(@client.taxCategories).toBeDefined()
+    expect(@client.zones).toBeDefined()
 
   it 'should throw error if no credentials are given', ->
     client = -> new SphereClient foo: 'bar'
@@ -84,24 +105,21 @@ describe 'SphereClient', ->
       ID = "1234-abcd-5678-efgh"
 
       it 'should get service', ->
-        service = @client[serviceDef.name]()
+        service = @client[serviceDef.name]
         expect(service).toBeDefined()
         expect(service.constructor.name).toBe(serviceDef.className)
 
-      it 'should instantiate service only once', ->
-        expect(@client[serviceDef.name]() is @client[serviceDef.name]()).toBe true
-
       it 'should enable statistic (headers)', ->
-        expect(@client[serviceDef.name]()._stats.includeHeaders).toBe false
+        expect(@client[serviceDef.name]._stats.includeHeaders).toBe false
         client = new SphereClient
           config: Config
           stats:
             includeHeaders: true
-        expect(client[serviceDef.name]()._stats.includeHeaders).toBe true
+        expect(client[serviceDef.name]._stats.includeHeaders).toBe true
 
       it 'should query resource', (done) ->
         spyOn(@client._rest, "GET").andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {foo: 'bar'})
-        service = @client[serviceDef.name]()
+        service = @client[serviceDef.name]
         service
         .where('name(en="Foo")')
         .whereOperator('or')
@@ -115,7 +133,7 @@ describe 'SphereClient', ->
 
       it 'should get resource by id', (done) ->
         spyOn(@client._rest, "GET").andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {foo: 'bar'})
-        service = @client[serviceDef.name]()
+        service = @client[serviceDef.name]
         service.byId(ID).fetch().then (result) ->
           expect(result.statusCode).toBe 200
           expect(result.body).toEqual foo: 'bar'
@@ -126,7 +144,7 @@ describe 'SphereClient', ->
 
         it 'should save new resource', (done) ->
           spyOn(@client._rest, "POST").andCallFake (endpoint, payload, callback) -> callback(null, {statusCode: 200}, {foo: 'bar'})
-          service = @client[serviceDef.name]()
+          service = @client[serviceDef.name]
           service.save({foo: 'bar'}).then (result) ->
             expect(result.statusCode).toBe 200
             expect(result.body).toEqual foo: 'bar'
@@ -137,7 +155,7 @@ describe 'SphereClient', ->
 
         it 'should delete resource', (done) ->
           spyOn(@client._rest, "DELETE").andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {foo: 'bar'})
-          service = @client[serviceDef.name]()
+          service = @client[serviceDef.name]
           service.byId('123-abc').delete(4).then (result) =>
             expect(result.statusCode).toBe 200
             expect(result.body).toEqual foo: 'bar'

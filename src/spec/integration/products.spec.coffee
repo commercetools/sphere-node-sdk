@@ -83,12 +83,12 @@ describe 'Integration Products', ->
     @client = new SphereClient config: Config
 
     debug 'Creating a ProductType'
-    @client.productTypes().save(newProductType())
+    @client.productTypes.save(newProductType())
     .then (result) =>
       expect(result.statusCode).toBe 201
       @productType = result.body
       debug 'Creating 50 products'
-      Promise.all _.map [1..50], => @client.products().save(newProduct(@productType))
+      Promise.all _.map [1..50], => @client.products.save(newProduct(@productType))
     .then (results) ->
       debug "Created #{results.length} products"
       done()
@@ -97,25 +97,25 @@ describe 'Integration Products', ->
 
   afterEach (done) ->
     debug 'Unpublishing all products'
-    @client.products().sort('id').where('masterData(published = "true")').process (payload) =>
+    @client.products.sort('id').where('masterData(published = "true")').process (payload) =>
       Promise.all _.map payload.body.results, (product) =>
-        @client.products().byId(product.id).update(updateUnpublish(product.version))
+        @client.products.byId(product.id).update(updateUnpublish(product.version))
     .then (results) =>
       debug "Unpublished #{results.length} products"
       debug 'About to delete all products'
-      @client.products().perPage(0).fetch()
+      @client.products.perPage(0).fetch()
     .then (payload) =>
       debug "Deleting #{payload.body.total} products"
       Promise.all _.map payload.body.results, (product) =>
-        @client.products().byId(product.id).delete(product.version)
+        @client.products.byId(product.id).delete(product.version)
     .then (results) =>
       debug "Deleted #{results.length} products"
       debug 'About to delete all product types'
-      @client.productTypes().perPage(0).fetch()
+      @client.productTypes.perPage(0).fetch()
     .then (payload) =>
       debug "Deleting #{payload.body.total} product types"
       Promise.all _.map payload.body.results, (productType) =>
-        @client.productTypes().byId(productType.id).delete(productType.version)
+        @client.productTypes.byId(productType.id).delete(productType.version)
     .then (results) ->
       debug "Deleted #{results.length} product types"
       done()
@@ -124,16 +124,16 @@ describe 'Integration Products', ->
 
   it 'should publish all products', (done) ->
     debug 'About to publish all products'
-    @client.products().sort('id').where('masterData(published = "false")').process (payload) =>
+    @client.products.sort('id').where('masterData(published = "false")').process (payload) =>
       Promise.all _.map payload.body.results, (product) =>
-        @client.products().byId(product.id).update(updatePublish(product.version))
+        @client.products.byId(product.id).update(updatePublish(product.version))
     .then (results) -> done()
     .catch (error) -> done(_.prettify(error))
   , 60000 # 1min
 
   it 'should add attribute to product type', (done) ->
     debug 'Creating attribute definitions'
-    @client.productTypes().byId(@productType.id).update(updateAttribute(@productType.version))
+    @client.productTypes.byId(@productType.id).update(updateAttribute(@productType.version))
     .then (result) ->
       expect(result.statusCode).toBe 200
       done()
@@ -142,12 +142,12 @@ describe 'Integration Products', ->
 
   it 'should search for suggestions', (done) ->
     debug 'Creating products with search keywords'
-    Promise.all _.map [1..5], => @client.products().save(newProductWithSearchKeywords(@productType))
+    Promise.all _.map [1..5], => @client.products.save(newProductWithSearchKeywords(@productType))
 
     _suggest = (text, lang, expectedResult) =>
       new Promise (resolve, reject) =>
         debug 'searching for %s', text
-        @client.productProjections()
+        @client.productProjections
         .staged(true)
         .searchKeywords(text, lang)
         .suggest()
@@ -173,23 +173,23 @@ describe 'Integration Products', ->
   it "should query using 'byQueryString'", (done) ->
     slugToLookFor = 'this-is-what-we-are-looking-for'
     # let's create a special product that we can securely query for
-    @client.products().save(_.extend newProduct(@productType), {slug: {en: slugToLookFor}, masterVariant: {sku: '01234'}})
+    @client.products.save(_.extend newProduct(@productType), {slug: {en: slugToLookFor}, masterVariant: {sku: '01234'}})
 
     # let's wait a bit to give ES time to create the index
     setTimeout =>
       # query for limit
-      @client.productProjections().byQueryString('limit=3&staged=true', true).fetch()
+      @client.productProjections.byQueryString('limit=3&staged=true', true).fetch()
       .then (result) =>
         expect(result.body.count).toBe 3
 
         # query for slug
-        @client.productProjections().byQueryString("where=slug(en = \"#{slugToLookFor}\")&staged=true", false).fetch()
+        @client.productProjections.byQueryString("where=slug(en = \"#{slugToLookFor}\")&staged=true", false).fetch()
       .then (result) =>
         expect(result.body.count).toBe 1
         expect(result.body.results[0].slug.en).toBe slugToLookFor
 
         # search for sku
-        @client.productProjections().byQueryString("text.en=01234&staged=true", false).search()
+        @client.productProjections.byQueryString("text.en=01234&staged=true", false).search()
       .then (result) ->
         expect(result.body.count).toBe 1
         expect(result.body.results[0].slug.en).toBe slugToLookFor
@@ -201,16 +201,16 @@ describe 'Integration Products', ->
   it 'should uses search endpoint', (done) ->
     slugToLookFor = 'this-is-what-we-are-looking-for'
     # let's create a special product that we can securely search for
-    @client.products().save(_.extend newProduct(@productType), {slug: {en: slugToLookFor}})
+    @client.products.save(_.extend newProduct(@productType), {slug: {en: slugToLookFor}})
 
     # let's wait a bit to give ES time to create the index
     setTimeout =>
-      @client.productProjections().text('sku', 'en').staged(true).perPage(80).search()
+      @client.productProjections.text('sku', 'en').staged(true).perPage(80).search()
       .then (result) =>
         expect(result.body.count).toBe 51
         expect(result.body.total).toBe 51
 
-        @client.productProjections().text(slugToLookFor, 'en').staged(true).search()
+        @client.productProjections.text(slugToLookFor, 'en').staged(true).search()
       .then (result) ->
         expect(result.body.count).toBe 1
         expect(result.body.results[0].slug.en).toBe slugToLookFor

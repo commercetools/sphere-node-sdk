@@ -6,7 +6,7 @@ BaseService = require './base'
 #
 # Examples
 #
-#   service = client.reviews()
+#   service = client.reviews
 #   service.save
 #     productId: '111'
 #     customerId: '222'

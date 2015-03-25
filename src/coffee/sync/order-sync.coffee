@@ -15,7 +15,7 @@ OrderUtils = require './utils/order'
 #   sync = new OrderSync
 #   syncedActions = sync.buildActions(newCategory, existingCategory)
 #   if syncedActions.shouldUpdate()
-#     client.orders().byId(syncedActions.getUpdatedId())
+#     client.orders.byId(syncedActions.getUpdatedId())
 #     .update(syncedActions.getUpdatePayload())
 #   else
 #     # do nothing

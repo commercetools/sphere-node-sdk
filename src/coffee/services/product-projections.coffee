@@ -10,7 +10,7 @@ BaseService = require './base'
 #
 # Examples
 #
-#   service = client.productProjections()
+#   service = client.productProjections
 #   service.where('name(en = "Foo")').staged(true).fetch()
 class ProductProjectionService extends BaseService
 
@@ -38,7 +38,7 @@ class ProductProjectionService extends BaseService
   #
   # Examples
   #
-  #   service = client.productProjections()
+  #   service = client.productProjections
   #   service.byId('123').staged(false).fetch()
   staged: (staged = true) ->
     @_params.query.staged = staged
@@ -56,7 +56,7 @@ class ProductProjectionService extends BaseService
   #
   # Examples
   #
-  #   service = client.productProjections()
+  #   service = client.productProjections
   #   service.text('Red Shirt', 'en').search()
   text: (text, language) ->
     throw new Error 'Language parameter is required for searching' unless language
@@ -78,11 +78,11 @@ class ProductProjectionService extends BaseService
   #
   # Examples
   #
-  #   service = client.productProjections()
+  #   service = client.productProjections
   #   service.filter('variants.price.centAmount:1000').search()
   #
   #   # you can also chain multiple filter expressions
-  #   service = client.productProjections()
+  #   service = client.productProjections
   #   service
   #   .filter('categories.id:"111"')
   #   .filter('variants.price.centAmount:range (0 to 999), (2000 to 10000)')
@@ -107,11 +107,11 @@ class ProductProjectionService extends BaseService
   #
   # Examples
   #
-  #   service = client.productProjections()
+  #   service = client.productProjections
   #   service.filterByQuery('categories.id:"123"').search()
   #
   #   # you can also chain multiple filter expressions
-  #   service = client.productProjections()
+  #   service = client.productProjections
   #   service
   #   .filterByQuery('variants.price.centAmount:1500')
   #   .filterByQuery('variants.attributes.color.key:"red"')
@@ -136,11 +136,11 @@ class ProductProjectionService extends BaseService
   #
   # Examples
   #
-  #   service = client.productProjections()
+  #   service = client.productProjections
   #   service.filterByFacets('variants.attributes.foo:"bar"').search()
   #
   #   # you can also chain multiple filter expressions
-  #   service = client.productProjections()
+  #   service = client.productProjections
   #   service
   #   .filterByFacets('variants.price.centAmount:1500')
   #   .filterByFacets('variants.attributes.color.key:"red"')
@@ -161,11 +161,11 @@ class ProductProjectionService extends BaseService
   #
   # Examples
   #
-  #   service = client.productProjections()
+  #   service = client.productProjections
   #   service.facet('categories.id:"123"').search()
   #
   #   # you can also chain multiple facet expressions
-  #   service = client.productProjections()
+  #   service = client.productProjections
   #   service
   #   .facet('categories.id:"123"')
   #   .facet('variants.attributes.foo:"bar"')
@@ -192,7 +192,7 @@ class ProductProjectionService extends BaseService
   #
   # Examples
   #
-  #   service = client.productProjections()
+  #   service = client.productProjections
   #   service.searchKeywords('Swiss Army Knife', 'en').suggest()
   searchKeywords: (text, lang) ->
     throw new Error 'Suggestion text parameter is required for searching for a suggestion' unless text
@@ -242,7 +242,7 @@ class ProductProjectionService extends BaseService
   #
   # Examples
   #
-  #   service = client.products()
+  #   service = client.products
   #   service
   #   .text('Red Shirt')
   #   .sort('createdAt desc')
@@ -265,7 +265,7 @@ class ProductProjectionService extends BaseService
   #
   # Examples
   #
-  #   service = client.products()
+  #   service = client.products
   #   service.searchKeywords('Swiss Army Knife', 'en').suggest()
   suggest: ->
     @_currentEndpoint = '/product-projections/suggest'

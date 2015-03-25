@@ -54,7 +54,7 @@ class BaseService
   #
   # Examples
   #
-  #   service = client.products()
+  #   service = client.products
   #   service.byId('123').fetch()
   byId: (id) ->
     @_currentEndpoint = "#{@constructor.baseResourceEndpoint}/#{id}"
@@ -71,7 +71,7 @@ class BaseService
   #
   # Examples
   #
-  #   service = client.products()
+  #   service = client.products
   #   service.where('name(en = "Foo")').fetch()
   where: (predicate) ->
     # TODO: use query builder (for specific service) to faciliate build queries
@@ -90,7 +90,7 @@ class BaseService
   #
   # Examples
   #
-  #   service = client.products()
+  #   service = client.products
   #   service.whereOperator('or')
   #   .where('name(en = "Red")')
   #   .where('name(de = "Rot")')
@@ -120,7 +120,7 @@ class BaseService
   #
   # Examples
   #
-  #   service = client.products()
+  #   service = client.products
   #   service.last('10d').fetch()
   last: (period) ->
     throw new Error "Cannot parse period '#{period}'" unless REGEX_LAST.test(period)
@@ -148,7 +148,7 @@ class BaseService
   #
   # Examples
   #
-  #   service = client.products()
+  #   service = client.products
   #   service.sort('name.en', true).fetch()
   sort: (path, ascending = true) ->
     direction = if ascending then 'asc' else 'desc'
@@ -166,7 +166,7 @@ class BaseService
   #
   # Examples
   #
-  #   service = client.products()
+  #   service = client.products
   #   service.page(4).fetch()
   page: (page) ->
     throw new Error 'Page must be a number >= 1' if _.isNumber(page) and page < 1
@@ -184,7 +184,7 @@ class BaseService
   #
   # Examples
   #
-  #   service = client.products()
+  #   service = client.products
   #   service.perPage(50).fetch()
   perPage: (perPage) ->
     throw new Error 'PerPage (limit) must be a number >= 0' if _.isNumber(perPage) and perPage < 0
@@ -199,7 +199,7 @@ class BaseService
   #
   # Examples
   #
-  #   service = client.products()
+  #   service = client.products
   #   service.all().fetch()
   all: -> @perPage(0)
 
@@ -212,7 +212,7 @@ class BaseService
   #
   # Examples
   #
-  #   service = client.products()
+  #   service = client.products
   #   service.expand('productType').fetch()
   expand: (expansionPath) ->
     return this unless expansionPath
@@ -230,7 +230,7 @@ class BaseService
   #
   # Examples
   #
-  #   service = client.products()
+  #   service = client.products
   #   service.byQueryString('where=slug(en = "my-slug")&limit=5&staged=true', false)
   #   .fetch()
   byQueryString: (query, withEncodedParams = false) ->
@@ -267,10 +267,10 @@ class BaseService
   #
   # Examples
   #
-  #   service = client.products()
+  #   service = client.products
   #   service.where('name(en = "Foo")').sort('createdAt desc').fetch()
   #
-  #   client.products().fetch()
+  #   client.products.fetch()
   fetch: ->
     _getEndpoint = =>
       queryString = @_queryString()
@@ -311,7 +311,7 @@ class BaseService
   #         reject 'BAD'
   #       else # good case
   #         resolve 'OK'
-  #   service = client.products()
+  #   service = client.products
   #   service.perPage(20).process(fn)
   #   .then (result) ->
   #     # here we get the total result, which is just an array of all pages accumulated
@@ -374,7 +374,7 @@ class BaseService
   #
   # Examples
   #
-  #   service = client.products()
+  #   service = client.products
   #   service.save
   #     name:
   #       en: 'Foo'
@@ -406,7 +406,7 @@ class BaseService
   #
   # Examples
   #
-  #   service = client.products()
+  #   service = client.products
   #   service.byId('123').update
   #     version: 2
   #     actions: [
@@ -434,7 +434,7 @@ class BaseService
   #
   # Examples
   #
-  #   service = client.products()
+  #   service = client.products
   #   service.byId('123').delete(2)
   delete: (version) ->
     # TODO: automatically fetch the resource if no version is given?

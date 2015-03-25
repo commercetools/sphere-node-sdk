@@ -9,7 +9,7 @@ BaseService = require './base'
 #
 # Examples
 #
-#   service = client.products()
+#   service = client.products
 #   service.byId('123').fetch()
 #   .then (result) ->
 #     service.byId('123').update

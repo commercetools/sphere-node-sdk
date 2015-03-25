@@ -26,7 +26,7 @@ describe 'Integration Categories', ->
     @client = new SphereClient config: Config
 
     debug 'Creating 10 categories'
-    Promise.all _.map [1..10], => @client.categories().save(newCategory())
+    Promise.all _.map [1..10], => @client.categories.save(newCategory())
     .then (results) ->
       debug "Created #{results.length} categories"
       done()
@@ -35,12 +35,12 @@ describe 'Integration Categories', ->
 
   afterEach (done) ->
     debug 'About to delete all categories'
-    @client.categories().all().fetch()
+    @client.categories.all().fetch()
     .then (payload) =>
       debug "Deleting #{payload.body.total} categories (maxParallel: 1)"
       @client.setMaxParallel(1)
       Promise.all _.map payload.body.results, (category) =>
-        @client.categories().byId(category.id).delete(category.version)
+        @client.categories.byId(category.id).delete(category.version)
     .then (results) ->
       debug "Deleted #{results.length} categories"
       done()
@@ -48,10 +48,10 @@ describe 'Integration Categories', ->
   , 60000 # 1min
 
   it 'should update descriptions with process', (done) ->
-    @client.categories().sort('id').perPage(1).process (payload) =>
+    @client.categories.sort('id').perPage(1).process (payload) =>
       cat = payload.body.results[0]
       if cat
-        @client.categories().byId(cat.id).update
+        @client.categories.byId(cat.id).update
           version: cat.version
           actions: [
             {action: 'setDescription', description: {en: 'A new description'}}

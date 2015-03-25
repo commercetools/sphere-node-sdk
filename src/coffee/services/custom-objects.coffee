@@ -6,7 +6,7 @@ BaseService = require './base'
 #
 # Examples
 #
-#   service = client.customObjects()
+#   service = client.customObjects
 #   service.save
 #     container: 'myNamespace'
 #     key: 'myKey'

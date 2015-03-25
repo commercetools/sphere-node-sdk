@@ -127,7 +127,7 @@ class BaseSync
   #   sync = new Sync
   #   syncedActions = sync.buildActions(new_obj, old_obj)
   #   if syncedActions.shouldUpdate()
-  #     client.products().byId(syncedActions.getUpdatedId())
+  #     client.products.byId(syncedActions.getUpdatedId())
   #     .update(syncedActions.getUpdatePayload())
   #   else
   #     # do nothing
