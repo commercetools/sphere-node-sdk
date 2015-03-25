@@ -124,7 +124,7 @@
   <p>Define a <code>ProductDiscountService</code> to interact with the HTTP <a href="http://dev.sphere.io/http-api-projects-productDiscounts.html"><code>customers</code></a> endpoint.</p><p><em>Product discounts are used to change certain product prices.</em></p>
   <div class='examples'>
     <h3>Examples:</h3>
-    <pre><code class='coffee'>service = client.productDiscounts()
+    <pre><code class='coffee'>service = client.productDiscounts
 service.byId(&#39;123&#39;).fetch()
 .then (result) -&gt;
   service.byId(&#39;123&#39;).update

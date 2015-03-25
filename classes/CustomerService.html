@@ -124,7 +124,7 @@
   <p>Define a <code>CustomerService</code> to interact with the HTTP <a href="http://dev.sphere.io/http-api-projects-customers.html"><code>customers</code></a> endpoint.</p><p><em>A customer is a person purchasing products. Carts, Orders, Comments and Reviews can be associated to a customer.</em></p>
   <div class='examples'>
     <h3>Examples:</h3>
-    <pre><code class='coffee'>service = client.customers()
+    <pre><code class='coffee'>service = client.customers
 service.byId(&#39;123&#39;).fetch()
 .then (result) -&gt;
   service.byId(&#39;123&#39;).update

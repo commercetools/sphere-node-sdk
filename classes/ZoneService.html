@@ -124,7 +124,7 @@
   <p>Define a <code>ZoneService</code> to interact with the HTTP <a href="http://dev.sphere.io/http-api-projects-zones.html"><code>zones</code></a> endpoint.</p><p><em>Zones define Shipping Rates for a set of Locations.</em></p>
   <div class='examples'>
     <h3>Examples:</h3>
-    <pre><code class='coffee'>service = client.zones()
+    <pre><code class='coffee'>service = client.zones
 service.byId(&#39;123&#39;).fetch()
 .then (result) -&gt;
   service.byId(&#39;123&#39;).update

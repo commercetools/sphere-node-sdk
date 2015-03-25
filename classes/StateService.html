@@ -125,7 +125,7 @@
 States can be combined together by defining transitions between each state, thus allowing to create work-flows.</em></p>
   <div class='examples'>
     <h3>Examples:</h3>
-    <pre><code class='coffee'>service = client.states()
+    <pre><code class='coffee'>service = client.states
 service.byId(&#39;123&#39;).fetch()
 .then (result) -&gt;
   service.byId(&#39;123&#39;).update

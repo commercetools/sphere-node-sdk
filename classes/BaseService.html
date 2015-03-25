@@ -398,7 +398,7 @@ Using this approach you can balance between memory usage and parallelism.</p>
   <p>A convenient method to set <a href='../classes/BaseService.html#perPage-instance'>::perPage</a> to <code>0</code>, which will fetch all pages recursively in chunks and return them all together once completed.</p>
   <div class='examples'>
     <h3>Examples:</h3>
-    <pre><code class='coffee'>service = client.products()
+    <pre><code class='coffee'>service = client.products
 service.all().fetch() </code></pre>
   </div>
 </div>
@@ -423,7 +423,7 @@ service.all().fetch() </code></pre>
   <p>Build the endpoint path by appending the given id</p>
   <div class='examples'>
     <h3>Examples:</h3>
-    <pre><code class='coffee'>service = client.products()
+    <pre><code class='coffee'>service = client.products
 service.byId(&#39;123&#39;).fetch() </code></pre>
   </div>
 </div>
@@ -457,7 +457,7 @@ service.byId(&#39;123&#39;).fetch() </code></pre>
   <p>Allow to pass a literal query string</p>
   <div class='examples'>
     <h3>Examples:</h3>
-    <pre><code class='coffee'>service = client.products()
+    <pre><code class='coffee'>service = client.products
 service.byQueryString(&#39;where=slug(en = &quot;my-slug&quot;)&amp;limit=5&amp;staged=true&#39;, false)
 .fetch() </code></pre>
   </div>
@@ -511,7 +511,7 @@ service.byQueryString(&#39;where=slug(en = &quot;my-slug&quot;)&amp;limit=5&amp;
   <p>Delete an existing resource defined by the <code>Service</code></p>
   <div class='examples'>
     <h3>Examples:</h3>
-    <pre><code class='coffee'>service = client.products()
+    <pre><code class='coffee'>service = client.products
 service.byId(&#39;123&#39;).delete(2) </code></pre>
   </div>
 </div>
@@ -556,7 +556,7 @@ service.byId(&#39;123&#39;).delete(2) </code></pre>
   <p>Define an <a href="http://dev.sphere.io/http-api.html#reference-expansion">ExpansionPath</a> used for expanding <a href="http://dev.sphere.io/http-api-types.html#reference">Reference</a>s of a resource.</p>
   <div class='examples'>
     <h3>Examples:</h3>
-    <pre><code class='coffee'>service = client.products()
+    <pre><code class='coffee'>service = client.products
 service.expand(&#39;productType&#39;).fetch() </code></pre>
   </div>
 </div>
@@ -590,9 +590,9 @@ service.expand(&#39;productType&#39;).fetch() </code></pre>
   <p>Fetch resource defined by the <code>Service</code> with all chained query parameters.</p>
   <div class='examples'>
     <h3>Examples:</h3>
-    <pre><code class='coffee'>service = client.products()
+    <pre><code class='coffee'>service = client.products
 service.where(&#39;name(en = &quot;Foo&quot;)&#39;).sort(&#39;createdAt desc&#39;).fetch()</code></pre>
-    <pre><code class='coffee'>client.products().fetch() </code></pre>
+    <pre><code class='coffee'>client.products.fetch() </code></pre>
   </div>
 </div>
 <div class='tags'>
@@ -619,7 +619,7 @@ service.where(&#39;name(en = &quot;Foo&quot;)&#39;).sort(&#39;createdAt desc&#39
 depends on the <code>operator</code> you choose.</p>
   <div class='examples'>
     <h3>Examples:</h3>
-    <pre><code class='coffee'>service = client.products()
+    <pre><code class='coffee'>service = client.products
 service.last(&#39;10d&#39;).fetch() </code></pre>
   </div>
 </div>
@@ -689,7 +689,7 @@ service.last(&#39;10d&#39;).fetch() </code></pre>
   <p>Define the page number to be requested from the complete query result (used for pagination as <code>offset</code>)</p>
   <div class='examples'>
     <h3>Examples:</h3>
-    <pre><code class='coffee'>service = client.products()
+    <pre><code class='coffee'>service = client.products
 service.page(4).fetch() </code></pre>
   </div>
 </div>
@@ -732,7 +732,7 @@ service.page(4).fetch() </code></pre>
   <p>Define the number of results to return from a query (used for pagination as <code>limit</code>)</p>
   <div class='examples'>
     <h3>Examples:</h3>
-    <pre><code class='coffee'>service = client.products()
+    <pre><code class='coffee'>service = client.products
 service.perPage(50).fetch() </code></pre>
   </div>
 </div>
@@ -784,7 +784,7 @@ fn = (payload) -&gt;
       reject &#39;BAD&#39;
     else # good case
       resolve &#39;OK&#39;
-service = client.products()
+service = client.products
 service.perPage(20).process(fn)
 .then (result) -&gt;
   # here we get the total result, which is just an array of all pages accumulated
@@ -849,7 +849,7 @@ page from the `fn`, or rejected with an instance of an <a href='../classes/HttpE
   <p>Save a new resource defined by the <code>Service</code> by passing the payload <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object'>Object</a>.</p>
   <div class='examples'>
     <h3>Examples:</h3>
-    <pre><code class='coffee'>service = client.products()
+    <pre><code class='coffee'>service = client.products
 service.save
   name:
     en: &#39;Foo&#39;
@@ -901,7 +901,7 @@ service.save
   <p>Define how the query should be sorted. It is possible to add several sort criteria, thereby the order is relevant.</p>
   <div class='examples'>
     <h3>Examples:</h3>
-    <pre><code class='coffee'>service = client.products()
+    <pre><code class='coffee'>service = client.products
 service.sort(&#39;name.en&#39;, true).fetch() </code></pre>
   </div>
 </div>
@@ -953,7 +953,7 @@ service.sort(&#39;name.en&#39;, true).fetch() </code></pre>
   <p>Update a resource defined by the <code>Service</code> by passing the payload <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object'>Object</a> with <a href="http://dev.sphere.io/http-api.html#partial-updates">UpdateAction</a>. The <code>id</code> of the resource must be provided with <a href='../classes/BaseService.html#byId-instance'>::byId</a>.</p>
   <div class='examples'>
     <h3>Examples:</h3>
-    <pre><code class='coffee'>service = client.products()
+    <pre><code class='coffee'>service = client.products
 service.byId(&#39;123&#39;).update
   version: 2
   actions: [
@@ -1012,7 +1012,7 @@ service.byId(&#39;123&#39;).update
   <p>Define a URI encoded <a href="http://dev.sphere.io/http-api.html#predicates">Predicate</a> from the given string, used for quering and filtering a resource. Can be set multiple times.</p>
   <div class='examples'>
     <h3>Examples:</h3>
-    <pre><code class='coffee'>service = client.products()
+    <pre><code class='coffee'>service = client.products
 service.where(&#39;name(en = &quot;Foo&quot;)&#39;).fetch() </code></pre>
   </div>
 </div>
@@ -1046,7 +1046,7 @@ service.where(&#39;name(en = &quot;Foo&quot;)&#39;).fetch() </code></pre>
   <p>Define the logical operator to combine multiple <a href='../classes/BaseService.html#where-instance'>::where</a> query parameters.</p>
   <div class='examples'>
     <h3>Examples:</h3>
-    <pre><code class='coffee'>service = client.products()
+    <pre><code class='coffee'>service = client.products
 service.whereOperator(&#39;or&#39;)
 .where(&#39;name(en = &quot;Red&quot;)&#39;)
 .where(&#39;name(de = &quot;Rot&quot;)&#39;)

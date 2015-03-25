@@ -124,7 +124,7 @@
   <p>Define a <code>ProductTypeService</code> to interact with the HTTP <a href="http://dev.sphere.io/http-api-projects-productTypes.html"><code>product-types</code></a> endpoint.</p><p><em>Product types are used to describe common characteristics, most importantly common custom attributes, of many concrete products.</em></p>
   <div class='examples'>
     <h3>Examples:</h3>
-    <pre><code class='coffee'>service = client.productTypes()
+    <pre><code class='coffee'>service = client.productTypes
 service.byId(&#39;123&#39;).fetch()
 .then (result) -&gt;
   service.byId(&#39;123&#39;).update

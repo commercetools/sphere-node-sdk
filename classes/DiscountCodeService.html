@@ -124,7 +124,7 @@
   <p>Define a <code>DiscountCodeService</code> to interact with the HTTP <a href="http://dev.sphere.io/http-api-projects-discountCodes.html"><code>discount-codes</code></a> endpoint.</p><p><em>Discount codes can be added to a cart to enable certain cart discounts.</em></p>
   <div class='examples'>
     <h3>Examples:</h3>
-    <pre><code class='coffee'>service = client.discountCodes()
+    <pre><code class='coffee'>service = client.discountCodes
 service.byId(&#39;123&#39;).fetch()
 .then (result) -&gt;
   service.byId(&#39;123&#39;).update

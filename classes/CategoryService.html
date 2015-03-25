@@ -124,7 +124,7 @@
   <p>Define a <code>CategoryService</code> to interact with the HTTP <a href="http://dev.sphere.io/http-api-projects-categories.html"><code>categories</code></a> endpoint.</p><p><em>Categories are used to organize products in a hierarchical structure.</em></p>
   <div class='examples'>
     <h3>Examples:</h3>
-    <pre><code class='coffee'>service = client.categories()
+    <pre><code class='coffee'>service = client.categories
 service.byId(&#39;123&#39;).fetch()
 .then (result) -&gt;
   service.byId(&#39;123&#39;).update

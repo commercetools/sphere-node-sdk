@@ -124,7 +124,7 @@
   <p>Define a <code>ShippingMethodService</code> to interact with the HTTP <a href="http://dev.sphere.io/http-api-projects-shippingMethods.html"><code>shipping-methods</code></a> endpoint.</p><p><em>Shipping Methods define where orders can be shipped and what the costs are.</em></p>
   <div class='examples'>
     <h3>Examples:</h3>
-    <pre><code class='coffee'>service = client.shippingMethods()
+    <pre><code class='coffee'>service = client.shippingMethods
 service.byId(&#39;123&#39;).fetch()
 .then (result) -&gt;
   service.byId(&#39;123&#39;).update

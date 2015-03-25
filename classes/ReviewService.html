@@ -124,7 +124,7 @@
   <p>Define a <code>ReviewService</code> to interact with the HTTP <a href="http://dev.sphere.io/http-api-projects-reviews.html"><code>reviews</code></a> endpoint.</p><p><em>Review of a product by a customer. A customer can create only one review per product.</em></p>
   <div class='examples'>
     <h3>Examples:</h3>
-    <pre><code class='coffee'>service = client.reviews()
+    <pre><code class='coffee'>service = client.reviews
 service.save
   productId: &#39;111&#39;
   customerId: &#39;222&#39;

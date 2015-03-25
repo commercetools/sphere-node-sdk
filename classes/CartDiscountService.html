@@ -124,7 +124,7 @@
   <p>Define a <code>CartDiscountService</code> to interact with the HTTP <a href="http://dev.sphere.io/http-api-projects-cartDiscounts.html"><code>cart-discounts</code></a> endpoint.</p><p><em>Cart discounts are used to change the prices of different elements within a cart like Line Items.</em></p>
   <div class='examples'>
     <h3>Examples:</h3>
-    <pre><code class='coffee'>service = client.cartDisounts()
+    <pre><code class='coffee'>service = client.cartDisounts
 service.byId(&#39;123&#39;).fetch()
 .then (result) -&gt;
   service.byId(&#39;123&#39;).update

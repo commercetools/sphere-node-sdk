@@ -124,7 +124,7 @@
   <p>Define a <code>OrderService</code> to interact with the HTTP <a href="http://dev.sphere.io/http-api-projects-orders.html"><code>orders</code></a> endpoint.</p><p><em>An order is the final state of a cart, usually created after a checkout process has been completed.</em></p>
   <div class='examples'>
     <h3>Examples:</h3>
-    <pre><code class='coffee'>service = client.orders()
+    <pre><code class='coffee'>service = client.orders
 service.byId(&#39;123&#39;).fetch()
 .then (result) -&gt;
   service.byId(&#39;123&#39;).update
@@ -218,7 +218,7 @@ service.byId(&#39;123&#39;).fetch()
   <p>Create directly an <code>Order</code> by importing it instead of creating it from a <code>Cart</code>.</p>
   <div class='examples'>
     <h3>Examples:</h3>
-    <pre><code class='coffee'>service = client.orders()
+    <pre><code class='coffee'>service = client.orders
 service.import
   orderNumber: &#39;a-123&#39;
   customerId: &#39;111&#39;

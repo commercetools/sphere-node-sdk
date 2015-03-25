@@ -124,7 +124,7 @@
   <p>Define a <code>InventoryEntryService</code> to interact with the HTTP <a href="http://dev.sphere.io/http-api-projects-inventory.html"><code>inventory</code></a> endpoint.</p><p><em>Inventory allows you to track stock quantities.</em></p>
   <div class='examples'>
     <h3>Examples:</h3>
-    <pre><code class='coffee'>service = client.inventoryEntries()
+    <pre><code class='coffee'>service = client.inventoryEntries
 service.byId(&#39;123&#39;).fetch()
 .then (result) -&gt;
   service.byId(&#39;123&#39;).update

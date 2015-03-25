@@ -124,7 +124,7 @@
   <p>Define a <code>TaxCategoryService</code> to interact with the HTTP <a href="http://dev.sphere.io/http-api-projects-taxCategories.html"><code>tax-categories</code></a> endpoint.</p><p><em>Tax Categories define how products are to be taxed in different countries.</em></p>
   <div class='examples'>
     <h3>Examples:</h3>
-    <pre><code class='coffee'>service = client.taxCategories()
+    <pre><code class='coffee'>service = client.taxCategories
 service.byId(&#39;123&#39;).fetch()
 .then (result) -&gt;
   service.byId(&#39;123&#39;).update

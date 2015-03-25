@@ -124,7 +124,7 @@
   <p>Define a <code>ChannelService</code> to interact with the HTTP <a href="http://dev.sphere.io/http-api-projects-channels.html"><code>channels</code></a> endpoint.</p><p><em>Channels represent a source or destination of different entities.</em></p>
   <div class='examples'>
     <h3>Examples:</h3>
-    <pre><code class='coffee'>service = client.channels()
+    <pre><code class='coffee'>service = client.channels
 service.byId(&#39;123&#39;).fetch()
 .then (result) -&gt;
   service.byId(&#39;123&#39;).update
@@ -192,7 +192,7 @@ service.byId(&#39;123&#39;).fetch()
   <p>Ensure a <code>channel</code> exists. It tries fetching one with given <code>key</code>, if not found it will create one otherwise will update it. Given <code>roles</code> are also ensured to exist.</p>
   <div class='examples'>
     <h3>Examples:</h3>
-    <pre><code class='coffee'>service = client.channels()
+    <pre><code class='coffee'>service = client.channels
 roles = [&#39;InventorySupply&#39;, &#39;OrderImport&#39;]
 service.ensure(&#39;foo&#39;, roles) </code></pre>
   </div>
