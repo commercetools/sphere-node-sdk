@@ -218,3 +218,22 @@ describe 'Integration Products', ->
       .catch (error) -> done(_.prettify(error))
     , 5000 # 5sec
   , 20000 # 20sec
+
+  it 'should search with full-text for special characters', (done) ->
+    specialChar = 'äöüß'
+    @client.products.save(_.extend newProduct(@productType), {name: {en: specialChar}})
+
+    # let's wait a bit to give ES time to create the index
+    setTimeout =>
+      @client.productProjections
+      .text(specialChar, 'en')
+      .staged(true)
+      .perPage(1)
+      .search()
+      .then (result) =>
+        expect(result.body.count).toBe 1
+        expect(result.body.results[0].name.en).toBe specialChar
+        done()
+      .catch (error) -> done(_.prettify(error))
+    , 5000 # 5sec
+  , 20000 # 20sec

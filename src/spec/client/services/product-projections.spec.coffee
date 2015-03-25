@@ -65,6 +65,9 @@ describe 'ProductProjectionService', ->
   it 'should query for text', ->
     expect(@service.text('foo', 'de')._queryString()).toBe 'text.de=foo'
 
+  it 'should encode query for text', ->
+    expect(@service.text('äöüß', 'de')._queryString()).toBe "text.de=#{encodeURIComponent('äöüß')}"
+
   it 'should throw if lang is not defined', ->
     expect(=> @service.text('foo')).toThrow new Error 'Language parameter is required for searching'
 
@@ -177,9 +180,9 @@ describe 'ProductProjectionService', ->
       @service
       .searchKeywords('foo1', 'de')
       .searchKeywords('foo2', 'en')
-      .searchKeywords('foo3', 'it')
+      .searchKeywords('äöüß', 'it')
       .suggest()
-      expect(@service._queryString()).toBe 'searchKeywords.de=foo1&searchKeywords.en=foo2&searchKeywords.it=foo3'
+      expect(@service._queryString()).toBe "searchKeywords.de=foo1&searchKeywords.en=foo2&searchKeywords.it=#{encodeURIComponent('äöüß')}"
 
     it 'should throw if text or lang are not defined', ->
       expect(=> @service.searchKeywords()).toThrow new Error 'Suggestion text parameter is required for searching for a suggestion'

@@ -62,7 +62,7 @@ class ProductProjectionService extends BaseService
     throw new Error 'Language parameter is required for searching' unless language
     @_params.query.text =
       lang: language
-      value: text
+      value: encodeURIComponent(text)
     debug 'setting text.%s: %s', language, text
     this
 
@@ -198,7 +198,7 @@ class ProductProjectionService extends BaseService
     throw new Error 'Suggestion text parameter is required for searching for a suggestion' unless text
     throw new Error 'Language parameter is required for searching for a suggestion' unless lang
 
-    @_params.query.searchKeywords.push {text: text, lang: lang}
+    @_params.query.searchKeywords.push {text: encodeURIComponent(text), lang: lang}
     debug 'setting searchKeywords: %s, %s', text, lang
     this
 
