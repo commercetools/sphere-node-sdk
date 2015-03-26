@@ -34,7 +34,7 @@
     "request": "2.54.x"
   },
   "peerDependencies": {
-    "bluebird": ">=2.9.0",
+    "bluebird": ">=2.3.0",
     "underscore": ">=1.8.0",
     "underscore-mixins": "^0.1.x"
   },
