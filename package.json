@@ -20,44 +20,21 @@
       "url": "https://github.com/sphereio/sphere-node-sdk/blob/master/LICENSE-MIT"
     }
   ],
-  "main": "./lib/main",
+  "main": "./lib",
   "engines": {
     "node": ">= 0.10.0"
   },
   "scripts": {
-    "build": "grunt build",
-    "test": "grunt coverage"
+    "test": "echo 'Error: no test specified' && exit 1"
   },
   "dependencies": {
-    "debug": "2.1.x",
-    "jsondiffpatch": "0.1.31",
-    "request": "2.54.x"
-  },
-  "peerDependencies": {
-    "bluebird": ">=2.3.0",
-    "underscore": ">=1.8.0",
-    "underscore-mixins": "^0.1.x"
+    "babel": "5.1.11",
+    "babel-runtime": "5.1.11"
   },
   "devDependencies": {
-    "bluebird": "2.9.x",
-    "biscotto": "emmenko/biscotto#v2.4.0",
-    "coveralls": "2.11.x",
-    "express": "4.12.x",
-    "gh-pages": "0.2.x",
-    "grunt": "0.4.5",
-    "grunt-bump": "0.0.13",
-    "grunt-coffeelint": "0.0.8",
-    "grunt-contrib-clean": "0.6.0",
-    "grunt-contrib-coffee": "0.13.x",
-    "grunt-contrib-concat": "0.5.0",
-    "grunt-contrib-watch": "0.6.1",
-    "grunt-express-server": "0.4.x",
-    "grunt-shell": "1.1.x",
-    "istanbul": "0.3.x",
-    "jasmine-node": "1.14.5",
-    "sphere-coffeelint": "git://github.com/sphereio/sphere-coffeelint.git#master",
-    "underscore": "1.8.x",
-    "underscore-mixins": "0.1.x"
+    "babel-core": "5.1.11",
+    "babel-eslint": "3.0.1",
+    "babel-loader": "5.0.0"
   },
   "keywords": [
     "sphere",
