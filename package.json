@@ -25,9 +25,11 @@
     "node": ">= 0.10.0"
   },
   "scripts": {
-    "build": "mkdir -p dist && babel lib --out-dir dist/lib",
-    "build:test": "mkdir -p dist && babel test --out-dir dist/test",
-    "test": "npm run build && npm run build:test && jasmine JASMINE_CONFIG_PATH=test/jasmine.config.json"
+    "clean": "rm -rf dist && mkdir -p dist",
+    "build": "npm run clean && babel lib --out-dir dist/lib",
+    "build:test": "npm run clean && babel test --out-dir dist/test",
+    "test": "npm run build && npm run build:test && jasmine JASMINE_CONFIG_PATH=test/jasmine.config.json",
+    "preinstall": "npm run build"
   },
   "dependencies": {
     "babel": "5.1.11",
