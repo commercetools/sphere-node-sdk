@@ -1,4 +1,4 @@
-import { productProjectionsFn } from '../../../lib/client/services'
+import { productProjections } from '../../../lib/client/services'
 
 describe('ProductProjections', () => {
 
@@ -9,8 +9,11 @@ describe('ProductProjections', () => {
         host: 'https://api.sphere.io'
       }
     }
-    const productProjectionsService = productProjectionsFn(requestStub, opts)
-    productProjectionsService.fetch()
+    const service = Object.assign({}, productProjections)
+    service.request = requestStub
+    service.options = opts
+
+    service.fetch()
     expect(requestStub)
       .toHaveBeenCalledWith('https://api.sphere.io/product-projections')
   })
