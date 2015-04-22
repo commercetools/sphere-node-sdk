@@ -27,8 +27,10 @@
   "scripts": {
     "clean": "rm -rf dist && mkdir -p dist",
     "build": "npm run clean && babel lib --out-dir dist/lib",
-    "build:test": "npm run clean && babel test --out-dir dist/test",
-    "test": "npm run build && npm run build:test && jasmine JASMINE_CONFIG_PATH=test/jasmine.config.json",
+    "build:test": "npm run build && babel test --out-dir dist/test",
+    "jasmine": "JASMINE_CONFIG_PATH=test/jasmine.config.json jasmine",
+    "test": "npm run build:test && npm run jasmine",
+    "test:watch": "nodemon",
     "preinstall": "npm run build"
   },
   "dependencies": {
@@ -39,7 +41,8 @@
   "devDependencies": {
     "babel-core": "5.1.11",
     "babel-eslint": "3.0.1",
-    "jasmine": "2.2.1"
+    "jasmine": "2.2.1",
+    "nodemon": "1.3.7"
   },
   "keywords": [
     "sphere",
