@@ -14,17 +14,6 @@ describe('SphereClient', () => {
     expect(productProjectionsService).toBeDefined()
   })
 
-  it('should inject data into service', () => {
-    const client = new SphereClient({})
-    const productProjectionsService = client.productProjections
-    expect(productProjectionsService.request).toBeDefined()
-    expect(productProjectionsService.options).toEqual({
-      request: {
-        host: 'https://api.sphere.io'
-      }
-    })
-  })
-
   it('should ensure service instance is not shared', () => {
     const client1 = new SphereClient({})
     const productProjectionsService1 = client1.productProjections
