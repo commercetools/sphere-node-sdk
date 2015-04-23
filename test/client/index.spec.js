@@ -18,6 +18,8 @@ describe('SphereClient', () => {
 
   it('should initialize with default options', () => {
     const client = SphereClient.create({})
+    expect(client.productProjections.request.Promise).toEqual(
+      jasmine.any(Function))
     expect(client.productProjections.options).toEqual({
       request: {
         headers: {},
@@ -37,8 +39,10 @@ describe('SphereClient', () => {
     const timeout = 1000
     const urlPrefix = '/public'
     const client = SphereClient.create({
+      Promise: { foo: 'bar' },
       request: { headers, timeout, urlPrefix }
     })
+    expect(client.productProjections.request.Promise).toEqual({ foo: 'bar' })
     expect(client.productProjections.options).toEqual({
       request: {
         headers,
