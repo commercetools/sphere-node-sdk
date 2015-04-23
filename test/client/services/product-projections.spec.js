@@ -9,7 +9,8 @@ describe('ProductProjections', () => {
       request: jasmine.createSpy('request'),
       options: {
         request: {
-          host: 'https://api.sphere.io'
+          host: 'api.sphere.io',
+          protocol: 'https'
         }
       }
     }
@@ -23,11 +24,20 @@ describe('ProductProjections', () => {
     expect(service.fetch).toEqual(jasmine.any(Function))
   })
 
-  it('should build fetch url', () => {
+  it('should build default fetch url', () => {
     const service = productProjectionsFn(mockDeps)
 
     service.fetch()
-    expect(mockDeps.request)
-      .toHaveBeenCalledWith('https://api.sphere.io/product-projections')
+    expect(mockDeps.request).toHaveBeenCalledWith(
+      'https://api.sphere.io/product-projections')
+  })
+
+  it('should build custom fetch url', () => {
+    mockDeps.options.request.urlPrefix = '/public'
+    const service = productProjectionsFn(mockDeps)
+
+    service.byId('123').fetch()
+    expect(mockDeps.request).toHaveBeenCalledWith(
+      'https://api.sphere.io/public/product-projections/123')
   })
 })
