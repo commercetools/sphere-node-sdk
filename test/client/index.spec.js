@@ -1,3 +1,4 @@
+import https from 'https'
 import { SphereClient } from '../../lib'
 
 const SERVICES = [
@@ -18,10 +19,11 @@ describe('SphereClient', () => {
 
   it('should initialize with default options', () => {
     const client = SphereClient.create({})
-    expect(client.productProjections.request.Promise).toEqual(
-      jasmine.any(Function))
+    expect(client.productProjections.http).toEqual(jasmine.any(Object))
     expect(client.productProjections.options).toEqual({
+      Promise: jasmine.any(Function),
       request: {
+        agent: undefined,
         headers: {},
         host: 'api.sphere.io',
         protocol: 'https',
@@ -32,6 +34,7 @@ describe('SphereClient', () => {
   })
 
   it('should initialize with custom options', () => {
+    const agent = new https.Agent({})
     const headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer qwertzuiopasdfghjkl'
@@ -40,11 +43,12 @@ describe('SphereClient', () => {
     const urlPrefix = '/public'
     const client = SphereClient.create({
       Promise: { foo: 'bar' },
-      request: { headers, timeout, urlPrefix }
+      request: { agent, headers, timeout, urlPrefix }
     })
-    expect(client.productProjections.request.Promise).toEqual({ foo: 'bar' })
     expect(client.productProjections.options).toEqual({
+      Promise: { foo: 'bar' },
       request: {
+        agent,
         headers,
         host: 'api.sphere.io',
         protocol: 'https',

@@ -1,11 +1,11 @@
-import * as utils from '../../lib/utils'
+import compose from '../../lib/utils/compose'
 
 describe('Utils', () => {
 
   describe('::compose', () => {
 
     it('should freeze non-function property and make it non-enumerable', () => {
-      const composed = utils.compose(
+      const composed = compose(
         { foo: 'bar' },
         { bar: { a: 1, b: 2 } },
         { getFoo () { return this.foo } },

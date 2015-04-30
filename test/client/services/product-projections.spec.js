@@ -6,7 +6,11 @@ describe('ProductProjections', () => {
 
   beforeEach(() => {
     mockDeps = {
-      request: jasmine.createSpy('request'),
+      http: {
+        get: jasmine.createSpy('get'),
+        post: jasmine.createSpy('get'),
+        delete: jasmine.createSpy('get')
+      },
       options: {
         request: {
           host: 'api.sphere.io',
@@ -28,7 +32,7 @@ describe('ProductProjections', () => {
     const service = productProjectionsFn(mockDeps)
 
     service.fetch()
-    expect(mockDeps.request).toHaveBeenCalledWith(
+    expect(mockDeps.http.get).toHaveBeenCalledWith(
       'https://api.sphere.io/product-projections')
   })
 
@@ -37,7 +41,7 @@ describe('ProductProjections', () => {
     const service = productProjectionsFn(mockDeps)
 
     service.byId('123').fetch()
-    expect(mockDeps.request).toHaveBeenCalledWith(
+    expect(mockDeps.http.get).toHaveBeenCalledWith(
       'https://api.sphere.io/public/product-projections/123')
   })
 })
