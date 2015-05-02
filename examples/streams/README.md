@@ -9,3 +9,5 @@ npm run exec -- promise.js
 npm run exec -- bluebird.js
 npm run exec -- q.js
 ```
+
+> TODO: use SPHERE.IO API for examples
