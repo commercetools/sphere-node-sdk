@@ -1,0 +1,15 @@
+{
+  "private": true,
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "scripts": {
+    "exec": "mkdir -p output && babel-node"
+  },
+  "dependencies": {
+    "babel": "5.1.13",
+    "babel-core": "5.1.13",
+    "bluebird": "2.9.25",
+    "node-fetch": "1.1.2"
+  }
+}
