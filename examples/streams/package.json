@@ -10,6 +10,7 @@
     "babel": "5.1.13",
     "babel-core": "5.1.13",
     "bluebird": "2.9.25",
-    "node-fetch": "1.1.2"
+    "node-fetch": "1.1.2",
+    "q": "2.0.3"
   }
 }
