@@ -24,7 +24,7 @@ describe('SphereClient', () => {
       Promise: Promise,
       auth: {
         accessToken: undefined,
-        credentials: undefined,
+        credentials: {},
         shouldRetrieveToken: jasmine.any(Function)
       },
       request: {

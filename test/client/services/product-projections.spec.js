@@ -8,10 +8,18 @@ describe('ProductProjections', () => {
     mockDeps = {
       http: {
         get: jasmine.createSpy('get'),
-        post: jasmine.createSpy('get'),
-        delete: jasmine.createSpy('get')
+        post: jasmine.createSpy('post'),
+        delete: jasmine.createSpy('delete')
+      },
+      queue: {
+        addTask: (fn) => fn()
       },
       options: {
+        auth: {
+          credentials: {
+            projectKey: 'foo'
+          }
+        },
         request: {
           host: 'api.sphere.io',
           protocol: 'https'
@@ -33,7 +41,7 @@ describe('ProductProjections', () => {
 
     service.fetch()
     expect(mockDeps.http.get).toHaveBeenCalledWith(
-      'https://api.sphere.io/product-projections')
+      'https://api.sphere.io/foo/product-projections')
   })
 
   it('should build custom fetch url', () => {
@@ -42,6 +50,6 @@ describe('ProductProjections', () => {
 
     service.byId('123').fetch()
     expect(mockDeps.http.get).toHaveBeenCalledWith(
-      'https://api.sphere.io/public/product-projections/123')
+      'https://api.sphere.io/public/foo/product-projections/123')
   })
 })

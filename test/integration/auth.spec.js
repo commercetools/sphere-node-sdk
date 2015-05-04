@@ -15,6 +15,7 @@ describe('Integration - Auth', () => {
   beforeEach(() => {
     httpFetch = http({
       Promise: Promise,
+      auth: {},
       request: {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
