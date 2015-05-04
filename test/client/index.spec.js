@@ -21,11 +21,17 @@ describe('SphereClient', () => {
     const client = SphereClient.create({})
     expect(client.productProjections.http).toEqual(jasmine.any(Object))
     expect(client.productProjections.options).toEqual({
-      Promise: jasmine.any(Function),
+      Promise: Promise,
+      auth: {
+        accessToken: undefined,
+        credentials: undefined,
+        shouldRetrieveToken: jasmine.any(Function)
+      },
       request: {
         agent: undefined,
         headers: {},
         host: 'api.sphere.io',
+        maxParallel: 20,
         protocol: 'https',
         timeout: 20000,
         urlPrefix: undefined
@@ -41,16 +47,27 @@ describe('SphereClient', () => {
     }
     const timeout = 1000
     const urlPrefix = '/public'
+    const maxParallel = 10
+    const credentials = {
+      projectKey: 'foo',
+      clientId: '123',
+      clientSecret: 'secret'
+    }
+    const shouldRetrieveToken = cb => { cb(false) }
+
     const client = SphereClient.create({
       Promise: { foo: 'bar' },
-      request: { agent, headers, timeout, urlPrefix }
+      auth: { credentials, shouldRetrieveToken },
+      request: { agent, headers, maxParallel, timeout, urlPrefix }
     })
     expect(client.productProjections.options).toEqual({
       Promise: { foo: 'bar' },
+      auth: { accessToken: undefined, credentials, shouldRetrieveToken },
       request: {
         agent,
         headers,
         host: 'api.sphere.io',
+        maxParallel,
         protocol: 'https',
         timeout,
         urlPrefix
