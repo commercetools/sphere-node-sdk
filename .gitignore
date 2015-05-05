@@ -1,9 +1,5 @@
 .DS_Store
 node_modules
 *.log
-_docs
-lib
-test
 config.js
-.coveralls.yml
-coverage
+dist
