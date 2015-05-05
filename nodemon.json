@@ -1,5 +1,0 @@
-{
-  "verbose": true,
-  "watch": ["lib", "test"],
-  "exec": "npm test"
-}

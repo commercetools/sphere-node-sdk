@@ -1,3 +1,4 @@
+import { expect } from 'chai'
 import * as auth from '../../lib/utils/auth'
 
 describe('Utils', () => {
@@ -14,8 +15,8 @@ describe('Utils', () => {
       const expectedBody = 'grant_type=client_credentials' +
         '&scope=manage_project:foo'
 
-      expect(authRequest.endpoint).toEqual(expectedEndpoint)
-      expect(authRequest.body).toEqual(expectedBody)
+      expect(authRequest.endpoint).to.equal(expectedEndpoint)
+      expect(authRequest.body).to.equal(expectedBody)
     })
 
   })

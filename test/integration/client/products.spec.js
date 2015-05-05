@@ -1,5 +1,6 @@
+import { expect } from 'chai'
 import { SphereClient } from '../../../lib'
-import credentials from '../../../../config'
+import credentials from '../../../config'
 
 describe('Integration - Client', () => {
 
@@ -28,10 +29,10 @@ describe('Integration - Client', () => {
       client.productProjections.fetch()
         .then(res => res.json())
         .then(res => {
-          expect(res.total).toBe(0)
+          expect(res.total).to.equal(0)
           done()
         })
-        .catch(done.fail)
+        .catch(done)
     })
   })
 })

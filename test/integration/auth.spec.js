@@ -1,6 +1,7 @@
+import { expect } from 'chai'
 import * as auth from '../../lib/utils/auth'
 import http from '../../lib/utils/http'
-import credentials from '../../../config'
+import credentials from '../../config'
 
 const authRequest = auth.buildRequest({
   projectKey: credentials.project_key,
@@ -30,10 +31,11 @@ describe('Integration - Auth', () => {
     httpFetch.post(authRequest.endpoint, authRequest.body)
       .then(res => res.json())
       .then(res => {
-        expect(res.access_token).toEqual(jasmine.any(String))
+        expect(res.access_token).to.be.a('string')
+          .and.to.have.length.above(0)
         done()
       })
-      .catch(done.fail)
+      .catch(done)
   })
 
 })

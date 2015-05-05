@@ -3,3 +3,5 @@ node_modules
 config.js
 .travis.yml
 create_config.sh
+lib
+test

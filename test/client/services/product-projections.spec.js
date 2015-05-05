@@ -1,4 +1,9 @@
+import chai, { expect } from 'chai'
+import sinon from 'sinon'
+import sinonChai from 'sinon-chai'
 import { productProjectionsFn } from '../../../lib/client/services'
+
+chai.use(sinonChai)
 
 describe('ProductProjections', () => {
 
@@ -7,9 +12,9 @@ describe('ProductProjections', () => {
   beforeEach(() => {
     mockDeps = {
       http: {
-        get: jasmine.createSpy('get'),
-        post: jasmine.createSpy('post'),
-        delete: jasmine.createSpy('delete')
+        get: sinon.stub(),
+        post: sinon.stub(),
+        delete: sinon.stub()
       },
       queue: {
         addTask: (fn) => fn()
@@ -30,17 +35,17 @@ describe('ProductProjections', () => {
 
   it('should initialize service', () => {
     const service = productProjectionsFn(mockDeps)
-    expect(service.baseEndpoint).toBe('/product-projections')
-    expect(service.byId).toEqual(jasmine.any(Function))
-    expect(service.where).toEqual(jasmine.any(Function))
-    expect(service.fetch).toEqual(jasmine.any(Function))
+    expect(service.baseEndpoint).to.equal('/product-projections')
+    expect(service.byId).to.be.a('function')
+    expect(service.where).to.be.a('function')
+    expect(service.fetch).to.be.a('function')
   })
 
   it('should build default fetch url', () => {
     const service = productProjectionsFn(mockDeps)
 
     service.fetch()
-    expect(mockDeps.http.get).toHaveBeenCalledWith(
+    expect(mockDeps.http.get).to.have.been.calledWith(
       'https://api.sphere.io/foo/product-projections')
   })
 
@@ -49,7 +54,7 @@ describe('ProductProjections', () => {
     const service = productProjectionsFn(mockDeps)
 
     service.byId('123').fetch()
-    expect(mockDeps.http.get).toHaveBeenCalledWith(
+    expect(mockDeps.http.get).to.have.been.calledWith(
       'https://api.sphere.io/public/foo/product-projections/123')
   })
 })

@@ -1,3 +1,4 @@
+import { expect } from 'chai'
 import taskQueueFn from '../../lib/utils/task-queue'
 
 describe('Utils', () => {
@@ -17,7 +18,7 @@ describe('Utils', () => {
 
     it('should expose public getter', () => {
       const taskQueue = taskQueueFn(options)
-      expect(taskQueue.addTask).toEqual(jasmine.any(Function))
+      expect(taskQueue.addTask).to.be.a('function')
     })
 
     it('should add a task to the queue', done => {
@@ -32,10 +33,10 @@ describe('Utils', () => {
         })
       })
       task.then(res => {
-          expect(res).toBe('ok')
+          expect(res).to.equal('ok')
           done()
         })
-        .catch(done.fail)
+        .catch(done)
     })
 
   })

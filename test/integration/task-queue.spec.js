@@ -1,5 +1,6 @@
+import { expect } from 'chai'
 import taskQueueFn from '../../lib/utils/task-queue'
-import credentials from '../../../config'
+import credentials from '../../config'
 
 describe('Integration - TaskQueue token retrieval', () => {
 
@@ -31,11 +32,11 @@ describe('Integration - TaskQueue token retrieval', () => {
       })
     })
     task.then(res => {
-        expect(options.auth.accessToken).toEqual(jasmine.any(String))
-        expect(res).toBe('ok')
+        expect(options.auth.accessToken).to.be.a('string')
+        expect(res).to.equal('ok')
         done()
       })
-      .catch(done.fail)
+      .catch(done)
   })
 
 })

@@ -1,3 +1,4 @@
+import { expect } from 'chai'
 import compose from '../../lib/utils/compose'
 
 describe('Utils', () => {
@@ -12,10 +13,10 @@ describe('Utils', () => {
         { getBar () { return this.bar } }
       )
       Object.keys(composed).forEach(key => {
-        expect(typeof composed[key]).toBe('function')
+        expect(composed[key]).to.be.a('function')
       })
-      expect(Object.keys(composed).length).toBe(2)
-      expect(Object.getOwnPropertyNames(composed).length).toBe(4)
+      expect(Object.keys(composed)).to.have.length.of(2)
+      expect(Object.getOwnPropertyNames(composed)).to.have.length.of(4)
     })
 
   })

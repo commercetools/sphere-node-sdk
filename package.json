@@ -21,19 +21,17 @@
       "url": "https://github.com/sphereio/sphere-node-sdk/blob/master/LICENSE-MIT"
     }
   ],
-  "main": "./dist/lib",
+  "main": "./dist",
   "engines": {
     "node": ">= 0.10.0"
   },
   "scripts": {
     "clean": "rm -rf dist && mkdir -p dist",
-    "build": "npm run clean && babel lib --out-dir dist/lib",
-    "build:test": "npm run build && babel test --out-dir dist/test",
-    "jasmine": "JASMINE_CONFIG_PATH=test/jasmine.config.json jasmine",
+    "dist": "npm run clean && babel lib --out-dir dist",
     "lint": "eslint lib test",
-    "test": "npm run build:test && npm run jasmine",
-    "test:watch": "nodemon",
-    "preinstall": "npm run build"
+    "test": "mocha --compilers js:babel/register --recursive",
+    "test:watch": "npm run test -- --watch",
+    "postinstall": "npm run dist"
   },
   "dependencies": {
     "babel": "5.2.9",
@@ -43,9 +41,11 @@
   "devDependencies": {
     "babel-core": "5.2.9",
     "babel-eslint": "3.0.1",
+    "chai": "2.3.0",
     "eslint": "0.19.0",
-    "jasmine": "2.3.1",
-    "nodemon": "1.3.7"
+    "mocha": "2.2.4",
+    "sinon": "1.14.1",
+    "sinon-chai": "2.7.0"
   },
   "keywords": [
     "sphere",
@@ -55,6 +55,7 @@
     "sdk",
     "sync",
     "promise",
+    "stream",
     "ecommerce"
   ]
 }
