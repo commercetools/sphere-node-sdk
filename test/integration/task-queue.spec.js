@@ -4,7 +4,7 @@ import credentials from '../../config'
 
 describe('Integration - TaskQueue token retrieval', () => {
 
-  let options
+  let options, taskQueue
 
   beforeEach(() => {
     options = {
@@ -24,8 +24,12 @@ describe('Integration - TaskQueue token retrieval', () => {
     }
   })
 
+  afterEach(() => {
+    taskQueue.destroy()
+  })
+
   it('should request a new token before processing the task', done => {
-    const taskQueue = taskQueueFn(options)
+    taskQueue = taskQueueFn(options)
     const task = taskQueue.addTask(() => {
       return new Promise(resolve => {
         resolve('ok')
@@ -37,6 +41,33 @@ describe('Integration - TaskQueue token retrieval', () => {
         done()
       })
       .catch(done)
+  })
+
+  it('should fail to request a new token if credentials are wrong', done => {
+    taskQueue = taskQueueFn(Object.assign({}, options, {
+      auth: Object.assign({}, options.auth, {
+        credentials: {
+          projectKey: 'foo',
+          clientId: '123',
+          clientSecret: 'secret'
+        }
+      })
+    }))
+    const task = taskQueue.addTask(() => {
+      return new Promise(resolve => {
+        resolve('ok')
+      })
+    })
+    task.then(() => {
+        done('Should have failed')
+      })
+      .catch(e => {
+        expect(e).to.have.property('error', 'invalid_client')
+        expect(e).to.have.property('error_description',
+          'Please provide valid client credentials using ' +
+          'HTTP Basic Authentication.')
+        done()
+      })
   })
 
 })
