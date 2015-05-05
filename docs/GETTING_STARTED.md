@@ -1,7 +1,7 @@
 # Getting started
 Install the module with `npm install sphere-node-sdk`
 
-The module exposes some objects but the most important one is [`SphereClient`](/classes/SphereClient.html).
+The module exposes some objects but the most important one is [`SphereClient`](/sphere-node-sdk/classes/SphereClient.html).
 
 ```coffeescript
 {SphereClient} = require 'sphere-node-sdk'
@@ -18,4 +18,4 @@ productService = client.products()
 cartService = client.carts()
 ```
 
-Each `service` provides multiple methods to build request. CRUD methods return then a [Promises](/classes/Promise.html) object that you can use for better async / functional programming.
+Each `service` provides multiple methods to build request. CRUD methods return then a [Promises](/sphere-node-sdk/classes/Promise.html) object that you can use for better async / functional programming.
