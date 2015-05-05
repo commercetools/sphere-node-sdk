@@ -114,14 +114,14 @@
         </p>
       </nav>
       <div id='filecontents'>
-        <h1 id="getting-started">Getting started</h1><p>Install the module with <code>npm install sphere-node-sdk</code></p><p>The module exposes some objects but the most important one is <a href="/classes/SphereClient.html"><code>SphereClient</code></a>.</p><pre><code class="lang-coffeescript">{SphereClient} = require &#39;sphere-node-sdk&#39;
+        <h1 id="getting-started">Getting started</h1><p>Install the module with <code>npm install sphere-node-sdk</code></p><p>The module exposes some objects but the most important one is <a href="/sphere-node-sdk/classes/SphereClient.html"><code>SphereClient</code></a>.</p><pre><code class="lang-coffeescript">{SphereClient} = require &#39;sphere-node-sdk&#39;
 
 client = new SphereClient {} # configuration
 </code></pre><p>The <code>SphereClient</code> communicates asynchronously with the SPHERE.IO API via HTTPS and takes care about authentication.
 The client itself doesn&#39;t allow to make any request, instead you need to instantiate a specific <code>service</code> based on the related API resource you want to access.</p><pre><code class="lang-coffeescript"># examples
 productService = client.products()
 cartService = client.carts()
-</code></pre><p>Each <code>service</code> provides multiple methods to build request. CRUD methods return then a <a href="/classes/Promise.html">Promises</a> object that you can use for better async / functional programming.</p>
+</code></pre><p>Each <code>service</code> provides multiple methods to build request. CRUD methods return then a <a href="/sphere-node-sdk/classes/Promise.html">Promises</a> object that you can use for better async / functional programming.</p>
       </div>
     </div>
     <div id='footer'>
