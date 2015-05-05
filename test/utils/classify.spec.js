@@ -1,17 +1,17 @@
 import { expect } from 'chai'
-import compose from '../../lib/utils/compose'
+import classify from '../../lib/utils/classify'
 
 describe('Utils', () => {
 
-  describe('::compose', () => {
+  describe('::classify', () => {
 
     it('should freeze non-function property and make it non-enumerable', () => {
-      const composed = compose(
+      const composed = classify(Object.assign({},
         { foo: 'bar' },
         { bar: { a: 1, b: 2 } },
         { getFoo () { return this.foo } },
         { getBar () { return this.bar } }
-      )
+      ))
       Object.keys(composed).forEach(key => {
         expect(composed[key]).to.be.a('function')
       })
