@@ -4,6 +4,7 @@ Promise = require 'bluebird'
 
 ERRORS = [
   {name: 'BadRequest', code: 400}
+  {name: 'Unauthorized', code: 401}
   {name: 'NotFound', code: 404}
   {name: 'ConcurrentModification', code: 409}
   {name: 'InternalServerError', code: 500}

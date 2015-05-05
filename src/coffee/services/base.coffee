@@ -558,14 +558,16 @@ class BaseService
             message: "Endpoint '#{endpoint}' not found."
             originalRequest: originalRequest
       else
-        # a ShereError response e.g.: {statusCode: 400, message: 'Oops, something went wrong'}
-        errorMessage = body.message or 'Undefined SPHERE.IO error message'
+        # a SphereError response e.g.: {statusCode: 400, message: 'Oops, something went wrong'}
+        errorMessage = body.message or body.error_description or body.error or 'Undefined SPHERE.IO error message'
         errorBody = _.extend responseJson, body,
           statusCode: body.statusCode or response.statusCode
           originalRequest: originalRequest
+
         # TODO: automatically retry code 503, 504
-        reject switch body.statusCode
+        reject switch errorBody.statusCode
           when 400 then new SphereHttpError.BadRequest errorMessage, errorBody
+          when 401 then new SphereHttpError.Unauthorized errorMessage, errorBody
           when 409 then new SphereHttpError.ConcurrentModification errorMessage, errorBody
           when 500 then new SphereHttpError.InternalServerError errorMessage, errorBody
           when 503 then new SphereHttpError.ServiceUnavailable errorMessage, errorBody

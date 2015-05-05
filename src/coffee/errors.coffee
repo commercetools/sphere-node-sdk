@@ -34,6 +34,18 @@ class BadRequest extends SphereError
     @code = 400
     Error.captureStackTrace(@, BadRequest)
 
+# Public: A specific {SphereError} type for `Unauthorized` errors (HTTP 401)
+class Unauthorized extends SphereError
+
+  # Public: Create a new `Unauthorized`
+  #
+  # message - {String} The error message
+  # body - {Object} A JSON object with optional information to pass to the error, like the error response body
+  constructor: (@message, @body = {}) ->
+    @name = "Unauthorized"
+    @code = 401
+    Error.captureStackTrace(@, SphereError)
+
 # Public: A specific {SphereError} type for `NotFound` errors (HTTP 404)
 class NotFound extends SphereError
 
@@ -87,6 +99,7 @@ module.exports =
   SphereError: SphereError
   SphereHttpError:
     BadRequest: BadRequest
+    Unauthorized: Unauthorized
     NotFound: NotFound
     ConcurrentModification: ConcurrentModification
     InternalServerError: InternalServerError

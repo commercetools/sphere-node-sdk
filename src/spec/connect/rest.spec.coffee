@@ -102,20 +102,21 @@ describe 'Rest', ->
 
     describe ':: _preRequest', ->
 
-      it 'should fail to getting an access_token after 10 attempts', ->
+      it 'should fail to getting an access_token after 10 attempts', (done) ->
         rest = new Rest config: Config
-        spyOn(rest._oauth, 'getAccessToken').andCallFake (callback) -> callback(null, {statusCode: 401}, null)
-        req = -> rest._preRequest(rest._oauth, {}, {}, -> )
-        expect(req).toThrow new Error 'Could not retrieve access_token after 10 attempts.\n' +
-          'Status code: 401\n' +
-          'Body: null\n'
+        spyOn(rest._oauth, 'getAccessToken').andCallFake (callback) -> callback(null, {statusCode: 401}, {error: 'invalid_client'})
+        rest._preRequest({}, (error, response, body) ->
+          expect(body).toEqual({ error: 'invalid_client' })
+          done()
+        )
 
-      it 'should fail on error', ->
+      it 'should fail on error', (done) ->
         rest = new Rest config: Config
-        spyOn(rest._oauth, 'getAccessToken').andCallFake (callback) -> callback('Connection read timeout', null, null)
-        req = -> rest._preRequest(rest._oauth, {}, {}, -> )
-        expect(req).toThrow new Error 'Error on retrieving access_token after 10 attempts.\n' +
-          'Error: Connection read timeout\n'
+        spyOn(rest._oauth, 'getAccessToken').andCallFake (callback) -> callback('Connection read timeout', {statusCode: 401}, null)
+        rest._preRequest({}, (error, response, body) ->
+          expect(error).toEqual('Connection read timeout')
+          done()
+        )
 
     describe ':: GET', ->
 

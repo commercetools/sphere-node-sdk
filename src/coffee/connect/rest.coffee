@@ -115,17 +115,14 @@ class Rest
         @_oauth.getAccessToken (error, response, body) =>
           if error
             if retry is 10
-              throw new Error 'Error on retrieving access_token after 10 attempts.\n' +
-                "Error: #{error}\n"
+              callback(error, response, body)
             else
               debug "Failed to retrieve access_token (error: %j), retrying...#{retry + 1}", error
               return _req(retry + 1)
           if response.statusCode isnt 200
             # try again to get an access token
             if retry is 10
-              throw new Error 'Could not retrieve access_token after 10 attempts.\n' +
-                "Status code: #{response.statusCode}\n" +
-                "Body: #{JSON.stringify(body)}\n"
+              callback(error, response, body)
             else
               debug "Failed to retrieve access_token (statusCode: #{response.statusCode}), retrying...#{retry + 1}"
               _req(retry + 1)
