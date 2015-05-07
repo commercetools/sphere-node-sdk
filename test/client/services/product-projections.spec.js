@@ -11,13 +11,8 @@ describe('ProductProjections', () => {
 
   beforeEach(() => {
     mockDeps = {
-      http: {
-        get: sinon.stub(),
-        post: sinon.stub(),
-        delete: sinon.stub()
-      },
       queue: {
-        addTask: (fn) => fn()
+        addTask: sinon.stub()
       },
       options: {
         auth: {
@@ -45,8 +40,10 @@ describe('ProductProjections', () => {
     const service = productProjectionsFn(mockDeps)
 
     service.fetch()
-    expect(mockDeps.http.get).to.have.been.calledWith(
-      'https://api.sphere.io/foo/product-projections')
+    expect(mockDeps.queue.addTask).to.have.been.calledWith({
+      'method': 'GET',
+      'url': 'https://api.sphere.io/foo/product-projections'
+    })
   })
 
   it('should build custom fetch url', () => {
@@ -54,7 +51,9 @@ describe('ProductProjections', () => {
     const service = productProjectionsFn(mockDeps)
 
     service.byId('123').fetch()
-    expect(mockDeps.http.get).to.have.been.calledWith(
-      'https://api.sphere.io/public/foo/product-projections/123')
+    expect(mockDeps.queue.addTask).to.have.been.calledWith({
+      'method': 'GET',
+      'url': 'https://api.sphere.io/public/foo/product-projections/123'
+    })
   })
 })

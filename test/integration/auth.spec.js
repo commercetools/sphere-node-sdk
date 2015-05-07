@@ -1,22 +1,24 @@
 import { expect } from 'chai'
 import * as auth from '../../lib/utils/auth'
-import http from '../../lib/utils/http'
 import credentials from '../../config'
 
 const authRequest = auth.buildRequest({
-  projectKey: credentials.project_key,
-  clientId: credentials.client_id,
-  clientSecret: credentials.client_secret
 })
 
 describe('Integration - Auth', () => {
 
-  let httpFetch
+  let options
 
   beforeEach(() => {
-    httpFetch = http({
+    options = {
       Promise: Promise,
-      auth: {},
+      auth: {
+        credentials: {
+          projectKey: credentials.project_key,
+          clientId: credentials.client_id,
+          clientSecret: credentials.client_secret
+        }
+      },
       request: {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -24,12 +26,11 @@ describe('Integration - Auth', () => {
         },
         timeout: 20000
       }
-    })
+    }
   })
 
   it('should request a new token', done => {
-    httpFetch.post(authRequest.endpoint, authRequest.body)
-      .then(res => res.json())
+    auth.getAccessToken(options)
       .then(res => {
         expect(res.access_token).to.be.a('string')
           .and.to.have.length.above(0)

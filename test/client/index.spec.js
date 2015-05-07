@@ -20,7 +20,6 @@ describe('SphereClient', () => {
 
   it('should initialize with default options', () => {
     const client = SphereClient.create({})
-    expect(client.productProjections.http).to.be.instanceof(Object)
     expect(client.productProjections.queue).to.be.instanceof(Object)
     expect(client.productProjections.options)
       .to.have.property('Promise', Promise)
