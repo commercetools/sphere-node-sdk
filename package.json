@@ -29,11 +29,12 @@
     "clean": "rm -rf dist && mkdir -p dist",
     "dist": "npm run clean && babel lib --out-dir dist",
     "lint": "eslint lib test",
-    "test": "mocha --compilers js:babel/register --recursive",
+    "test": "NODE_ENV=test mocha --compilers js:babel/register --recursive",
     "test:watch": "npm run test -- --watch",
     "postinstall": "npm run dist"
   },
   "dependencies": {
+    "async": "0.9.0",
     "babel": "5.2.16",
     "babel-runtime": "5.2.16",
     "isomorphic-fetch": "2.0.2"

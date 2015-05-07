@@ -1,7 +1,6 @@
 import chai, { expect } from 'chai'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
-import Dispatcher from '../../lib/client/dispatcher'
 import taskQueueFn from '../../lib/utils/task-queue'
 import credentials from '../../config'
 
@@ -9,10 +8,9 @@ chai.use(sinonChai)
 
 describe('Integration - TaskQueue token retrieval', () => {
 
-  let options, taskQueue, dispatcher
+  let options, taskQueue
 
   beforeEach(() => {
-    dispatcher = new Dispatcher()
     options = {
       Promise: Promise,
       auth: {
@@ -32,9 +30,10 @@ describe('Integration - TaskQueue token retrieval', () => {
   })
 
   it('should request a new token before processing the task', done => {
-    sinon.spy(dispatcher, 'pause')
-    sinon.spy(dispatcher, 'resume')
-    taskQueue = taskQueueFn(dispatcher, options)
+    taskQueue = taskQueueFn(options)
+    const _queue = taskQueue.getQueue()
+    sinon.spy(_queue, 'pause')
+    sinon.spy(_queue, 'resume')
 
     const task = taskQueue.addTask({
       method: 'GET',
@@ -42,8 +41,8 @@ describe('Integration - TaskQueue token retrieval', () => {
     })
 
     task.then(res => {
-        expect(dispatcher.pause).to.have.been.calledOnce
-        expect(dispatcher.resume).to.have.been.calledOnce
+        expect(_queue.pause).to.have.been.calledOnce
+        expect(_queue.resume).to.have.been.calledOnce
         expect(options.auth.accessToken).to.be.a('string')
         expect(res).to.have.property('ok', true)
         done()
@@ -52,9 +51,7 @@ describe('Integration - TaskQueue token retrieval', () => {
   })
 
   it('should fail to request a new token if credentials are wrong', done => {
-    sinon.spy(dispatcher, 'pause')
-    sinon.spy(dispatcher, 'resume')
-    taskQueue = taskQueueFn(dispatcher, Object.assign({}, options, {
+    taskQueue = taskQueueFn(Object.assign({}, options, {
       auth: Object.assign({}, options.auth, {
         credentials: {
           projectKey: 'foo',
@@ -63,6 +60,9 @@ describe('Integration - TaskQueue token retrieval', () => {
         }
       })
     }))
+    const _queue = taskQueue.getQueue()
+    sinon.spy(_queue, 'pause')
+    sinon.spy(_queue, 'resume')
 
     const task = taskQueue.addTask({
       method: 'GET',
@@ -72,8 +72,8 @@ describe('Integration - TaskQueue token retrieval', () => {
         done('Should have failed')
       })
       .catch(e => {
-        expect(dispatcher.pause).to.have.been.calledOnce
-        expect(dispatcher.resume).not.to.have.been.called
+        expect(_queue.pause).to.have.been.calledOnce
+        expect(_queue.resume).not.to.have.been.called
         expect(e).to.have.property('error', 'invalid_client')
         expect(e).to.have.property('error_description',
           'Please provide valid client credentials using ' +

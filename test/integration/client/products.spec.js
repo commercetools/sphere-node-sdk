@@ -20,16 +20,21 @@ describe('Integration - Client', () => {
         request: {
           headers: {
             'Content-Type': 'application/json'
-          }
+          },
+          maxParallel: 2
         }
       })
     })
 
-    it('should get some products', done => {
-      client.productProjections.fetch()
-        .then(res => res.json())
-        .then(res => {
-          expect(res.total).to.equal(0)
+    it('should get some products', function (done) {
+      this.timeout(5000)
+      Promise.all(Array.apply(null, Array(10))
+          .map(x => client.productProjections.fetch()))
+        .then(allRes => Promise.all(allRes.map(res => res.json())))
+        .then(allJsonRes => {
+          allJsonRes.forEach(res => {
+            expect(res).to.have.property('results')
+          })
           done()
         })
         .catch(done)
