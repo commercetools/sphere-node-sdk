@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import http from '../../../lib/utils/http'
+import { http } from '../../../lib'
 
 /*
   Example of streaming response body from a fetch request
@@ -12,6 +12,9 @@ export default function streamResponse (promiseLibrary, filePrefix) {
 
   const httpFetch = http({
     Promise: promiseLibrary,
+    auth: {
+      shouldRetrieveToken: cb => cb(false)
+    },
     request: {
       headers: {
         'Content-Type': 'application/json'
