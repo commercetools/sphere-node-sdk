@@ -6,14 +6,12 @@ describe('Utils', () => {
 
   describe('::http', () => {
 
-    it('should expose crud methods', () => {
+    it('should expose a function', () => {
       const http = httpFn({
         Promise: sinon.stub(),
         request: {}
       })
-      expect(http.get).to.be.a('function')
-      expect(http.post).to.be.a('function')
-      expect(http.delete).to.be.a('function')
+      expect(http).to.be.a('function')
     })
 
   })

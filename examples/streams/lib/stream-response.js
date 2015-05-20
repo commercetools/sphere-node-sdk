@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { http } from '../../../lib'
+import { http as httpFn} from '../../../lib'
 
 /*
   Example of streaming response body from a fetch request
@@ -10,11 +10,8 @@ import { http } from '../../../lib'
 
 export default function streamResponse (promiseLibrary, filePrefix) {
 
-  const httpFetch = http({
+  const http = httpFn({
     Promise: promiseLibrary,
-    auth: {
-      shouldRetrieveToken: cb => cb(false)
-    },
     request: {
       headers: {
         'Content-Type': 'application/json'
@@ -26,7 +23,7 @@ export default function streamResponse (promiseLibrary, filePrefix) {
   const endpoint = 'http://jsonplaceholder.typicode.com/posts'
 
   // TODO: use API endpoint
-  httpFetch.get(endpoint)
+  http(endpoint)
     .then(res => {
       console.log('Streaming response (pipe)...')
       const ws = fs.createWriteStream(
@@ -34,7 +31,7 @@ export default function streamResponse (promiseLibrary, filePrefix) {
       res.body.pipe(ws)
     })
 
-  httpFetch.get(endpoint)
+  http(endpoint)
     .then(res => {
       console.log('Streaming response (chunks)...')
       const chunks = []

@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { http } from '../../../lib'
+import { http as httpFn } from '../../../lib'
 
 /*
   Example of request with readable stream as body
@@ -8,11 +8,8 @@ import { http } from '../../../lib'
 
 export default function streamRequest (promiseLibrary) {
 
-  const httpFetch = http({
+  const http = httpFn({
     Promise: promiseLibrary,
-    auth: {
-      shouldRetrieveToken: cb => cb(false)
-    },
     request: {
       headers: {
         'Content-Type': 'application/json'
@@ -27,7 +24,7 @@ export default function streamRequest (promiseLibrary) {
 
   // TODO: use API endpoint
   console.log('Streaming request body...')
-  httpFetch.post(endpoint, body)
+  http(endpoint, { body, method: 'POST' })
     .then(res => res.json())
     .then(res => {
       console.log('Successfully posted body: ', res)
