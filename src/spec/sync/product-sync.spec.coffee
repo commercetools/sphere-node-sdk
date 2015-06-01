@@ -14,29 +14,29 @@ OLD_PRODUCT =
   masterVariant:
     id: 1
     prices: [
-      {value: {currencyCode: 'EUR', centAmount: 100}},
-      {value: {currencyCode: 'EUR', centAmount: 1000}},
-      {value: {currencyCode: 'EUR', centAmount: 1100}, country: 'DE'},
-      {value: {currencyCode: 'EUR', centAmount: 1200}, customerGroup: {id: '984a64de-24a4-42c0-868b-da7abfe1c5f6', typeId: 'customer-group'}}
+      {id: 'p-1', value: {currencyCode: 'EUR', centAmount: 100}},
+      {id: 'p-2', value: {currencyCode: 'EUR', centAmount: 1000}},
+      {id: 'p-3', value: {currencyCode: 'EUR', centAmount: 1100}, country: 'DE'},
+      {id: 'p-4', value: {currencyCode: 'EUR', centAmount: 1200}, customerGroup: {id: '984a64de-24a4-42c0-868b-da7abfe1c5f6', typeId: 'customer-group'}}
     ]
   variants: [
     {
       id: 2
       prices: [
-        {value: {currencyCode: 'EUR', centAmount: 100}},
-        {value: {currencyCode: 'EUR', centAmount: 2000}},
-        {value: {currencyCode: 'EUR', centAmount: 2100}, country: 'US'},
-        {value: {currencyCode: 'EUR', centAmount: 2200}, customerGroup: {id: '59c64f80-6472-474e-b5be-dc57b45b2faf', typeId: 'customer-group'}}
+        {id: 'p-6', value: {currencyCode: 'EUR', centAmount: 100}},
+        {id: 'p-7', value: {currencyCode: 'EUR', centAmount: 2000}},
+        {id: 'p-8', value: {currencyCode: 'EUR', centAmount: 2100}, country: 'US'},
+        {id: 'p-9', value: {currencyCode: 'EUR', centAmount: 2200}, customerGroup: {id: '59c64f80-6472-474e-b5be-dc57b45b2faf', typeId: 'customer-group'}}
       ]
     }
     { id: 4 }
     {
       id: 77
       prices: [
-        {value: {currencyCode: 'EUR', centAmount: 5889}, country: 'DE'},
-        {value: {currencyCode: 'EUR', centAmount: 5889}, country: 'AT'},
-        {value: {currencyCode: 'EUR', centAmount: 6559}, country: 'FR'},
-        {value: {currencyCode: 'EUR', centAmount: 13118}, country: 'BE'}
+        {id: 'p-10', value: {currencyCode: 'EUR', centAmount: 5889}, country: 'DE'},
+        {id: 'p-11', value: {currencyCode: 'EUR', centAmount: 5889}, country: 'AT'},
+        {id: 'p-12', value: {currencyCode: 'EUR', centAmount: 6559}, country: 'FR'},
+        {id: 'p-13', value: {currencyCode: 'EUR', centAmount: 13118}, country: 'BE'}
       ]
     }
   ]

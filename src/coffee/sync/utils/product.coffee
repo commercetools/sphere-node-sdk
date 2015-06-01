@@ -19,6 +19,7 @@ class ProductUtils extends BaseUtils
         _.each variant.prices, (price, index) ->
           price._MATCH_CRITERIA = "#{index}"
           delete price.discounted # discount values should not be diffed
+          delete price.id # ids should not be diffed
 
     # Let's compare variants with their SKU, if present.
     # Otherwise let's use the provided id.

@@ -17,27 +17,27 @@ OLD_PRODUCT =
   masterVariant:
     id: 1
     prices: [
-      { value: { currencyCode: 'EUR', centAmount: 1 } }
-      { value: { currencyCode: 'EUR', centAmount: 7 } }
+      { id: 'p-1', value: { currencyCode: 'EUR', centAmount: 1 } }
+      { id: 'p-2', value: { currencyCode: 'EUR', centAmount: 7 } }
     ]
   variants: [
     {
       id: 2
       prices: [
-        { value: { currencyCode: 'USD', centAmount: 3 } }
+        { id: 'p-3', value: { currencyCode: 'USD', centAmount: 3 } }
       ]
     },
     {
       id: 3
       prices: [
-        { value: { currencyCode: 'EUR', centAmount: 2100 }, country: 'DE' }
-        { value: { currencyCode: 'EUR', centAmount: 2200 }, customerGroup: { id: '123', typeId: 'customer-group' } }
+        { id: 'p-4', value: { currencyCode: 'EUR', centAmount: 2100 }, country: 'DE' }
+        { id: 'p-5', value: { currencyCode: 'EUR', centAmount: 2200 }, customerGroup: { id: '123', typeId: 'customer-group' } }
       ]
     },
     {
       id: 4
       prices: [
-        { value: { currencyCode: 'YEN', centAmount: 7777 } }
+        { id: 'p-6', value: { currencyCode: 'YEN', centAmount: 7777 } }
       ]
     },
     {
@@ -1081,15 +1081,15 @@ describe 'ProductUtils', ->
         masterVariant:
           id: 1
           prices: [
-            {value: {currencyCode: 'EUR', centAmount: 2}}
-            {value: {currencyCode: 'EUR', centAmount: 10}, country: 'DE'}
+            {id: 'p-1', value: {currencyCode: 'EUR', centAmount: 2}}
+            {id: 'p-2', value: {currencyCode: 'EUR', centAmount: 10}, country: 'DE'}
           ]
         variants: [
           {
             id: 2
             prices: [
-              {value: {currencyCode: 'EUR', centAmount: 2}, customerGroup: {id: '987', typeId: 'customer-group'}}
-              {value: {currencyCode: 'EUR', centAmount: 10}, country: 'DE'}
+              {id: 'p-3', value: {currencyCode: 'EUR', centAmount: 2}, customerGroup: {id: '987', typeId: 'customer-group'}}
+              {id: 'p-4', value: {currencyCode: 'EUR', centAmount: 10}, country: 'DE'}
             ]
           }
         ]
@@ -1125,6 +1125,7 @@ describe 'ProductUtils', ->
           id: 1
           prices: [
             {
+              id: 'p-1'
               value:
                 currencyCode: 'EUR'
                 centAmount: 100
@@ -1142,6 +1143,7 @@ describe 'ProductUtils', ->
             id: 2
             prices: [
               {
+                id: 'p-2'
                 value:
                   currencyCode: 'EUR'
                   centAmount: 200
