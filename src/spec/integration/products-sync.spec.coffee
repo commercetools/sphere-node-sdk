@@ -69,12 +69,14 @@ describe 'Integration Products Sync', ->
   , 60000 # 1min
 
   it 'should create and sync product', (done) ->
+    pName = uniqueId('Foo')
+    pSlug = uniqueId('foo')
     OLD_PROD =
       productType:
         id: @productType.id
         typeId: 'product-type'
-      name: {en: 'Foo'}
-      slug: {en: 'foo'}
+      name: {en: pName}
+      slug: {en: pSlug}
       description: {en: 'A foo product'}
       metaTitle: {en: 'The Foo'}
       metaDescription: {en: 'The Foo product'}
@@ -96,8 +98,8 @@ describe 'Integration Products Sync', ->
       productType:
         id: @productType.id
         typeId: 'product-type'
-      name: {de: 'Foo'}
-      slug: {de: 'foo'}
+      name: {de: pName}
+      slug: {de: pSlug}
       description: {de: 'A foo product'}
       metaTitle: {de: 'The Foo'}
       metaDescription: {de: 'The Foo product'}
@@ -140,8 +142,8 @@ describe 'Integration Products Sync', ->
       @client.productProjections.byId(result.body.id).staged(true).fetch()
     .then (result) ->
       updated = result.body
-      expect(updated.name).toEqual {de: 'Foo'}
-      expect(updated.slug).toEqual {de: 'foo'}
+      expect(updated.name).toEqual {de: pName}
+      expect(updated.slug).toEqual {de: pSlug}
       expect(updated.description).toEqual {de: 'A foo product'}
       expect(updated.metaTitle).toEqual {de: 'The Foo'}
       expect(updated.metaDescription).toEqual {de: 'The Foo product'}
