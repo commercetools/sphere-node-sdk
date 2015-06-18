@@ -160,3 +160,20 @@ describe 'CategoryUtils', ->
       expect(update).toEqual [
         { action: 'setExternalId' }
       ]
+
+    it 'should create actions for meta attributes', ->
+      category =
+        id: '123'
+
+      otherCategory = _.deepClone category
+      otherCategory.metaTitle = 'super category'
+      otherCategory.metaDescription = 'It is a super category'
+      otherCategory.metaKeywords = 'category,super'
+
+      delta = @utils.diff category, otherCategory
+      update = @utils.actionsMap delta, otherCategory
+      expect(update).toEqual [
+        { action: 'setMetaTitle', metaTitle: 'super category' }
+        { action: 'setMetaDescription', metaDescription: 'It is a super category' }
+        { action: 'setMetaKeywords', metaKeywords: 'category,super' }
+      ]

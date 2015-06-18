@@ -58,6 +58,18 @@ actionsList = ->
     {
       action: 'setExternalId'
       key: 'externalId'
+    },
+    {
+      action: 'setMetaTitle'
+      key: 'metaTitle'
+    },
+    {
+      action: 'setMetaDescription'
+      key: 'metaDescription'
+    },
+    {
+      action: 'setMetaKeywords'
+      key: 'metaKeywords'
     }
 
   ]
