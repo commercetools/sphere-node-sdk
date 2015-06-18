@@ -24,7 +24,9 @@ class CategoryUtils extends BaseUtils
           else
             data[key] = new_obj[key]
 
-          actions.push data
+          if not (data.action.match(/^change.*$/) and _.isUndefined(data[key]))
+            actions.push data
+
     actions
 
 module.exports = CategoryUtils

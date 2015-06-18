@@ -73,24 +73,22 @@ describe 'CategorySync', ->
     it 'should not create an update action for categories without orderHint', ->
       category =
         id: 'c123'
-
-      newCategory =
-        id: 'c123'
         orderHint: '0.1'
 
-      update = @sync.buildActions(newCategory, category).getUpdatePayload()
-      expect(update).toBeDefined()
-      expect(_.size update.actions).toBe 0
-
-    it 'should not create an update action for categories without orderHint', ->
-      category =
+      newCategory =
         id: 'c123'
 
-      newCategory =
+      update = @sync.buildActions(newCategory, category).getUpdatePayload()
+      expect(update).toBeUndefined()
+
+    it 'should not create an update action for categories without slug', ->
+      category =
         id: 'c123'
         slug:
           en: 'slug'
 
+      newCategory =
+        id: 'c123'
+
       update = @sync.buildActions(newCategory, category).getUpdatePayload()
-      expect(update).toBeDefined()
-      expect(_.size update.actions).toBe 0
+      expect(update).toBeUndefined()
