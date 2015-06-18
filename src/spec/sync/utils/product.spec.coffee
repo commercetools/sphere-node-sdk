@@ -696,8 +696,6 @@ describe 'ProductUtils', ->
       ]
       expect(update).toEqual expected_update
 
-  describe ':: actionsMapMetaAttributes', ->
-
     it 'should diff meta attributes', ->
       OLD =
         id: '123'
@@ -721,43 +719,19 @@ describe 'ProductUtils', ->
           id: 1
 
       delta = @utils.diff OLD, NEW
-      update = @utils.actionsMapMetaAttributes(delta, OLD)
+      update = @utils.actionsMapBase(delta, OLD)
       expected_update = [
         {
-          action: 'setMetaAttributes'
+          action: 'setMetaTitle'
           metaTitle: {en: 'A new title'}
-          metaDescription: {en: 'A new description'}
-          metaKeywords: {en: 'foo, bar, qux'}
         }
-      ]
-      expect(update).toEqual expected_update
-
-    it 'should build meta attributes action with original values, if not all are changed', ->
-      OLD =
-        id: '123'
-        metaTitle:
-          en: 'A title'
-        metaDescription:
-          en: 'A description'
-        metaKeywords:
-          en: 'foo, bar'
-        masterVariant:
-          id: 1
-      NEW =
-        id: '123'
-        metaTitle:
-          en: 'A new title'
-        masterVariant:
-          id: 1
-
-      delta = @utils.diff OLD, NEW
-      update = @utils.actionsMapMetaAttributes(delta, OLD)
-      expected_update = [
         {
-          action: 'setMetaAttributes'
-          metaTitle: {en: 'A new title'}
-          metaDescription: {en: 'A description'}
-          metaKeywords: {en: 'foo, bar'}
+          action: 'setMetaDescription'
+          metaDescription: {en: 'A new description'}
+        }
+        {
+          action: 'setMetaKeywords'
+          metaKeywords: {en: 'foo, bar, qux'}
         }
       ]
       expect(update).toEqual expected_update

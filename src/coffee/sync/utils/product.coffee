@@ -89,38 +89,11 @@ class ProductUtils extends BaseUtils
   #
   # Returns {Array} The list of actions, or empty if there are none
   actionsMapBase: (diff, old_obj) ->
-    list = _.filter actionsBaseList(), (a) ->
-      switch a.key
-        when 'name', 'slug', 'description' then true
-        else false
     actions = []
-    _.each list, (item) =>
+    _.each actionsBaseList(), (item) =>
       action = @_buildBaseAttributesAction(item, diff, old_obj)
       actions.push action if action
     actions
-
-  # Private: map product meta attributes
-  #
-  # diff - {Object} The result of diff from `jsondiffpatch`
-  # old_obj - {Object} The existing product
-  #
-  # Returns {Array} The list of actions, or empty if there are none
-  actionsMapMetaAttributes: (diff, old_obj) ->
-    list = _.filter actionsBaseList(), (a) ->
-      switch a.key
-        when 'metaTitle', 'metaDescription', 'metaKeywords' then true
-        else false
-    actions = []
-    _.each list, (item) =>
-      action = @_buildBaseAttributesAction(item, diff, old_obj)
-      actions.push action if action
-    return [] if _.isEmpty actions
-    # since there is only one action for each of those attributes, we can reduce them to one
-    reduced = _.reduce actions, (memo, action) ->
-      _.extend {}, memo, action
-    , {action: 'setMetaAttributes'}
-    defaults = _.pick old_obj, 'metaTitle', 'metaDescription', 'metaKeywords'
-    [_.defaults(reduced, defaults)]
 
   # Private: map product variants
   #
@@ -532,15 +505,15 @@ actionsBaseList = ->
       key: 'description'
     },
     {
-      action: 'setMetaAttributes'
+      action: 'setMetaTitle'
       key: 'metaTitle'
     },
     {
-      action: 'setMetaAttributes'
+      action: 'setMetaDescription'
       key: 'metaDescription'
     },
     {
-      action: 'setMetaAttributes'
+      action: 'setMetaKeywords'
       key: 'metaKeywords'
     }
   ]

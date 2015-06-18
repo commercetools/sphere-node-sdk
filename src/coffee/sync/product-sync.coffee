@@ -11,7 +11,6 @@ ProductUtils = require './utils/product'
 # - `attributes`
 # - `images`
 # - `variants`
-# - `metaAttributes`
 #
 # Examples
 #
@@ -42,7 +41,6 @@ class ProductSync extends BaseSync
     allActions.push @_mapActionOrNot 'attributes', => @_utils.actionsMapAttributes(diff, old_obj, new_obj, @sameForAllAttributeNames)
     allActions.push @_mapActionOrNot 'images', => @_utils.actionsMapImages(diff, old_obj, new_obj)
     allActions.push @_mapActionOrNot 'variants', => @_utils.actionsMapVariants(diff, old_obj, new_obj)
-    allActions.push @_mapActionOrNot 'metaAttributes', => @_utils.actionsMapMetaAttributes(diff, old_obj, new_obj)
     _.flatten allActions
 
 module.exports = ProductSync
