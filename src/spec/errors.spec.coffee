@@ -3,12 +3,12 @@ Promise = require 'bluebird'
 {Errors} = require '../lib/main'
 
 ERRORS = [
-  {name: 'BadRequest', code: 400}
-  {name: 'Unauthorized', code: 401}
-  {name: 'NotFound', code: 404}
-  {name: 'ConcurrentModification', code: 409}
-  {name: 'InternalServerError', code: 500}
-  {name: 'ServiceUnavailable', code: 503}
+  {name: 'BadRequest', statusCode: 400}
+  {name: 'Unauthorized', statusCode: 401}
+  {name: 'NotFound', statusCode: 404}
+  {name: 'ConcurrentModification', statusCode: 409}
+  {name: 'InternalServerError', statusCode: 500}
+  {name: 'ServiceUnavailable', statusCode: 503}
 ]
 
 describe 'Errors', ->
@@ -17,7 +17,7 @@ describe 'Errors', ->
     e = new Errors.HttpError 'My bad', {statusCode: 500}
 
     expect(e.message).toBe 'My bad'
-    expect(e.code).toBe 500
+    expect(e.statusCode).toBe 500
     expect(e.body).toEqual statusCode: 500
     expect(e instanceof Error).toBe true
     expect(e instanceof Errors.HttpError).toBe true
@@ -26,7 +26,7 @@ describe 'Errors', ->
     e = new Errors.SphereError 'My bad'
 
     expect(e.message).toBe 'My bad'
-    expect(e.code).not.toBeDefined()
+    expect(e.statusCode).not.toBeDefined()
     expect(e.body).toEqual {}
     expect(e instanceof Error).toBe true
     expect(e instanceof Errors.SphereError).toBe true
@@ -38,7 +38,7 @@ describe 'Errors', ->
         message: 'Object e6490269-2733-4531-978d-316047e44a56 has a different version than expected. Expected: 1 - Actual: 2.'
         errors: [
           {
-            code: 'ConcurrentModification',
+            statusCode: 'ConcurrentModification',
             message: 'Object e6490269-2733-4531-978d-316047e44a56 has a different version than expected. Expected: 1 - Actual: 2.'
           }
         ]
@@ -52,7 +52,7 @@ describe 'Errors', ->
       ce = new Errors.SphereHttpError[error.name] 'Ooops', expectedBody
 
       expect(ce.message).toBe 'Ooops'
-      expect(ce.code).toBe error.code
+      expect(ce.statusCode).toBe error.statusCode
       expect(ce.body).toBeDefined()
       expect(ce.body).toEqual expectedBody
       expect(ce instanceof Error).toBe true

@@ -107,7 +107,7 @@ ALL_SERVICES = [
 #   # something went wrong, either an unexpected error or a HTTP API error response
 #   # here we can check the error type to differentiate the error
 #   if e instanceof Errors.SphereHttpError.ConcurrentModification
-#     # e.code => 409
+#     # e.statusCode => 409
 #     # e.message => 'Different version then expected'
 #     # e.body => statusCode: 409, message: ...
 #     # e instanceof SphereError => true
