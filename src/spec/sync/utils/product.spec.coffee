@@ -1050,6 +1050,35 @@ describe 'ProductUtils', ->
       ]
       expect(update).toEqual expected_update
 
+    it 'should build prices actions (even with missing new variant id)', ->
+      oldProd =
+        masterVariant: { id: 1 }
+        variants: [
+          {
+            id: 2
+            sku: 'foo'
+            prices: []
+          }
+        ]
+      newProd =
+        masterVariant: { id: 1 }
+        variants: [
+          {
+            sku: 'foo'
+            prices: [
+              {value: {currencyCode: 'EUR', centAmount: 5}, customerGroup: {id: '987', typeId: 'customer-group'}}
+              {value: {currencyCode: 'EUR', centAmount: 20}, country: 'DE'}
+            ]
+          }
+        ]
+
+      delta = @utils.diff oldProd, newProd
+      update = @utils.actionsMapPrices delta, oldProd, newProd
+
+      expect(update.length).toBe 2
+      expect(update[0]).toEqual {action: 'addPrice', variantId: 2, price: {value: {currencyCode: 'EUR', centAmount: 5}, customerGroup: {id: '987', typeId: 'customer-group'}}}
+      expect(update[1]).toEqual {action: 'addPrice', variantId: 2, price: {value: {currencyCode: 'EUR', centAmount: 20}, country: 'DE'}}
+
     it 'should build change price actions', ->
       oldPrice =
         masterVariant:

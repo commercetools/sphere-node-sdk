@@ -191,7 +191,7 @@ class ProductUtils extends BaseUtils
         else
           removeAction = @_buildRemovePriceAction(old_variant, index)
           actions.push removeAction if removeAction
-          addAction = @_buildAddPriceAction(new_variant, index)
+          addAction = @_buildAddPriceAction(old_variant, new_variant, index)
           actions.push addAction if addAction
 
     if diff.masterVariant
@@ -333,14 +333,13 @@ class ProductUtils extends BaseUtils
         price: price
     action
 
-  _buildAddPriceAction: (variant, index) ->
-    # TODO: throw if variantId is missing
-    price = variant.prices[index]
+  _buildAddPriceAction: (old_variant, new_variant, index) ->
+    price = new_variant.prices[index]
     if price
       delete price._MATCH_CRITERIA
       action =
         action: 'addPrice'
-        variantId: variant.id
+        variantId: old_variant.id
         price: price
     action
 
