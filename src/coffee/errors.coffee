@@ -8,6 +8,7 @@ class HttpError extends Error
   constructor: (@message, @body = {}) ->
     @name = "HttpError"
     @statusCode = @body.statusCode if @body.statusCode
+    @code = @statusCode
     Error.captureStackTrace(@, HttpError)
 
 # Public: A general {Error} type, specific for Sphere
@@ -20,6 +21,7 @@ class SphereError extends Error
   constructor: (@message, @body = {}) ->
     @name = "SphereError"
     @statusCode = @body.statusCode if @body.statusCode
+    @code = @statusCode
     Error.captureStackTrace(@, SphereError)
 
 # Public: A specific {SphereError} type for `BadRequest` errors (HTTP 400)
@@ -32,6 +34,7 @@ class BadRequest extends SphereError
   constructor: (@message, @body = {}) ->
     @name = "BadRequest"
     @statusCode = 400
+    @code = @statusCode
     Error.captureStackTrace(@, BadRequest)
 
 # Public: A specific {SphereError} type for `Unauthorized` errors (HTTP 401)
@@ -44,6 +47,7 @@ class Unauthorized extends SphereError
   constructor: (@message, @body = {}) ->
     @name = "Unauthorized"
     @statusCode = 401
+    @code = @statusCode
     Error.captureStackTrace(@, SphereError)
 
 # Public: A specific {SphereError} type for `NotFound` errors (HTTP 404)
@@ -56,6 +60,7 @@ class NotFound extends SphereError
   constructor: (@message, @body = {}) ->
     @name = "NotFound"
     @statusCode = 404
+    @code = @statusCode
     Error.captureStackTrace(@, NotFound)
 
 # Public: A specific {SphereError} type for `ConcurrentModification` errors (HTTP 409)
@@ -68,6 +73,7 @@ class ConcurrentModification extends SphereError
   constructor: (@message, @body = {}) ->
     @name = "ConcurrentModification"
     @statusCode = 409
+    @code = @statusCode
     Error.captureStackTrace(@, ConcurrentModification)
 
 # Public: A specific {SphereError} type for `InternalServerError` errors (HTTP 500)
@@ -80,6 +86,7 @@ class InternalServerError extends SphereError
   constructor: (@message, @body = {}) ->
     @name = "InternalServerError"
     @statusCode = 500
+    @code = @statusCode
     Error.captureStackTrace(@, InternalServerError)
 
 # Public: A specific {SphereError} type for `ServiceUnavailable` errors (HTTP 503)
@@ -92,6 +99,7 @@ class ServiceUnavailable extends SphereError
   constructor: (@message, @body = {}) ->
     @name = "ServiceUnavailable"
     @statusCode = 503
+    @code = @statusCode
     Error.captureStackTrace(@, ServiceUnavailable)
 
 module.exports =
