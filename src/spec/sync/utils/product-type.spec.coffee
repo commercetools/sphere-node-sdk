@@ -43,6 +43,26 @@ describe 'ProductTypeUtils', ->
         { action: 'addPlainEnumValue', name: 'color', value: { key: 'grey', label: 'Label for grey' } }
       ]
 
+    it 'should create action for lenum values', ->
+      pt_old =
+        name: 'my colorful products'
+        version: 4
+        attributes: [
+          { name: 'color', type: { name: 'lenum' }, values: [ 'red', 'green' ] }
+        ]
+      pt_new =
+        name: 'my colorful products'
+        attributes: [
+          { name: 'color', type: { name: 'lenum' }, values: [ 'red', 'green', 'brown' ] }
+        ]
+
+      delta = @utils.diff pt_old, pt_new
+      update = @utils.actionsForEnumValues delta, pt_new
+
+      expect(update).toEqual [
+        { action: 'addLocalizedEnumValue', name: 'color', value: { key: 'brown', label: { en: 'Label for brown' } } }
+      ]
+
     it 'should do nothing for removed enum values', ->
       pt_old =
         name: 'my sized clothes'

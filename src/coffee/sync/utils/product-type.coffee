@@ -14,7 +14,18 @@ class ProductTypeUtils extends BaseUtils
             if not _.isArray value
               _.each value.values, (v, k) ->
                 if k.match(/^\d+$/)
-                  actions.push { action: 'addPlainEnumValue', name: new_product_type.attributes[key].name, value: { key: v[0], label: "Label for #{v[0]}"} }
+                  a =
+                    name: new_product_type.attributes[key].name
+                    value:
+                      key: v[0]
+                  if new_product_type.attributes[key].type.name is 'lenum'
+                    a.action = 'addLocalizedEnumValue'
+                    a.value.label =
+                      en: "Label for #{v[0]}"
+                  else
+                    a.action = 'addPlainEnumValue'
+                    a.value.label = "Label for #{v[0]}"
+                  actions.push a
 
     actions
 
