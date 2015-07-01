@@ -42,3 +42,39 @@ describe 'ProductTypeUtils', ->
       expect(update).toEqual [
         { action: 'addPlainEnumValue', name: 'color', value: { key: 'grey', label: 'Label for grey' } }
       ]
+
+    it 'should do nothing for removed enum values', ->
+      pt_old =
+        name: 'my sized clothes'
+        version: 4
+        attributes: [
+          { name: 'size', type: { name: 'enum' }, values: [ 'S', 'M', 'L' ] }
+        ]
+      pt_new =
+        name: 'my sized products'
+        attributes: [
+          { name: 'size', type: { name: 'enum' }, values: [ 'S', 'M' ] }
+        ]
+
+      delta = @utils.diff pt_old, pt_new
+      update = @utils.actionsForEnumValues delta, pt_new
+
+      expect(update).toEqual []
+
+    it 'should do nothing for order changes in enum values', ->
+      pt_old =
+        name: 'my sized clothes'
+        version: 4
+        attributes: [
+          { name: 'size', type: { name: 'enum' }, values: [ 'S', 'M', 'L' ] }
+        ]
+      pt_new =
+        name: 'my sized products'
+        attributes: [
+          { name: 'size', type: { name: 'enum' }, values: [ 'L', 'M', 'S' ] }
+        ]
+
+      delta = @utils.diff pt_old, pt_new
+      update = @utils.actionsForEnumValues delta, pt_new
+
+      expect(update).toEqual []
