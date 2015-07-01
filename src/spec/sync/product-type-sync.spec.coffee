@@ -27,7 +27,7 @@ describe 'ProductTypeSync', ->
       update = @sync.buildActions(new_pt, old_pt).getUpdatePayload()
       expected_update =
         actions: [
-          { action: 'addPlainEnumValue', name: 'size', value: 'S' }
+          { action: 'addPlainEnumValue', name: 'size', value: { key: 'S', label: 'Label for S' } }
         ]
         version: old_pt.version
       expect(update).toEqual expected_update

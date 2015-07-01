@@ -22,3 +22,23 @@ describe 'ProductTypeUtils', ->
       update = @utils.actionsForEnumValues delta, pt
 
       expect(update).toEqual []
+
+    it 'should create action for enum values', ->
+      pt_old =
+        name: 'my colorful products'
+        version: 4
+        attributes: [
+          { name: 'color', type: { name: 'enum' }, values: [ 'black', 'white' ] }
+        ]
+      pt_new =
+        name: 'my colorful products'
+        attributes: [
+          { name: 'color', type: { name: 'enum' }, values: [ 'black', 'grey', 'white' ] }
+        ]
+
+      delta = @utils.diff pt_old, pt_new
+      update = @utils.actionsForEnumValues delta, pt_new
+
+      expect(update).toEqual [
+        { action: 'addPlainEnumValue', name: 'color', value: { key: 'grey', label: 'Label for grey' } }
+      ]
