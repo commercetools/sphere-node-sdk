@@ -27,7 +27,7 @@ describe 'Integration Customers', ->
 
   it 'should update descriptions with process', (done) ->
     customer =
-      email: 'someone@example.com'
+      email: "someone+#{uniqueId}@example.com"
       firstName: 'Some'
       lastName: 'One'
       password: 'TopSecret'
