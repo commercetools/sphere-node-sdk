@@ -23,4 +23,9 @@ class CustomerService extends BaseService
   # Internal: {String} The HTTP endpoint for `Customers`
   @baseResourceEndpoint: '/customers'
 
+  login: (body) ->
+    unless body
+      throw new Error 'Body payload is required for login the customer'
+    @_save('/login', body)
+
 module.exports = CustomerService
