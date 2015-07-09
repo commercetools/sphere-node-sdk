@@ -201,25 +201,49 @@ describe 'ProductProjectionService', ->
   describe ':: process', ->
 
     it 'should call each page with the same query (default sorting)', (done) ->
-      spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: 21, endpoint: endpoint})
+      offset = -20
+      count = 20
+      spyOn(@restMock, 'GET').andCallFake (endpoint, callback) ->
+        offset += 20
+        callback(null, {statusCode: 200}, {
+          total: 90
+          count: if offset is 80 then 10 else count
+          offset: offset
+          results: [{id: '123', endpoint}]
+        })
       fn = (payload) ->
-        Promise.resolve payload.body.endpoint
+        Promise.resolve payload.body.results[0]
       @service.where('foo=bar').whereOperator('or').staged(true).process(fn)
       .then (result) ->
-        expect(_.size result).toBe 2
-        expect(result[0]).toMatch /\?where=foo%3Dbar&limit=20&sort=id%20asc&staged=true$/
-        expect(result[1]).toMatch /\?where=foo%3Dbar&limit=20&offset=20&sort=id%20asc&staged=true$/
+        expect(_.size result).toBe 5
+        expect(result[0].endpoint).toMatch /\?where=foo%3Dbar&sort=id%20asc&staged=true$/
+        expect(result[1].endpoint).toMatch /\?where=foo%3Dbar%20or%20id%20%3E%20%22123%22&sort=id%20asc&staged=true$/
+        expect(result[2].endpoint).toMatch /\?where=foo%3Dbar%20or%20id%20%3E%20%22123%22&sort=id%20asc&staged=true$/
+        expect(result[3].endpoint).toMatch /\?where=foo%3Dbar%20or%20id%20%3E%20%22123%22&sort=id%20asc&staged=true$/
+        expect(result[4].endpoint).toMatch /\?where=foo%3Dbar%20or%20id%20%3E%20%22123%22&sort=id%20asc&staged=true$/
         done()
       .catch (err) -> done(_.prettify err)
 
     it 'should call each page with the same query (given sorting)', (done) ->
-      spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: 21, endpoint: endpoint})
+      offset = -20
+      count = 20
+      spyOn(@restMock, 'GET').andCallFake (endpoint, callback) ->
+        offset += 20
+        callback(null, {statusCode: 200}, {
+          total: 90
+          count: if offset is 80 then 10 else count
+          offset: offset
+          results: [{id: '123', endpoint}]
+        })
       fn = (payload) ->
-        Promise.resolve payload.body.endpoint
+        Promise.resolve payload.body.results[0]
       @service.where('foo=bar').whereOperator('or').staged(true).sort('name', false).process(fn)
       .then (result) ->
-        expect(_.size result).toBe 2
-        expect(result[0]).toMatch /\?where=foo%3Dbar&limit=20&sort=name%20desc&staged=true$/
-        expect(result[1]).toMatch /\?where=foo%3Dbar&limit=20&offset=20&sort=name%20desc&staged=true$/
+        expect(_.size result).toBe 5
+        expect(result[0].endpoint).toMatch /\?where=foo%3Dbar&sort=name%20desc&staged=true$/
+        expect(result[1].endpoint).toMatch /\?where=foo%3Dbar%20or%20id%20%3E%20%22123%22&sort=name%20desc&staged=true$/
+        expect(result[2].endpoint).toMatch /\?where=foo%3Dbar%20or%20id%20%3E%20%22123%22&sort=name%20desc&staged=true$/
+        expect(result[3].endpoint).toMatch /\?where=foo%3Dbar%20or%20id%20%3E%20%22123%22&sort=name%20desc&staged=true$/
+        expect(result[4].endpoint).toMatch /\?where=foo%3Dbar%20or%20id%20%3E%20%22123%22&sort=name%20desc&staged=true$/
         done()
       .catch (err) -> done(_.prettify err)

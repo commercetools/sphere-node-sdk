@@ -289,7 +289,12 @@ describe 'Service', ->
           expect(promise.isPending()).toBe true
 
         it 'should call process function for one page', (done) ->
-          spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: 1, results: []})
+          spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {
+            total: 1
+            count: 1
+            offset: 0
+            results: []
+          })
           fn = (payload) -> Promise.resolve 'done'
           @service.process(fn)
           .then (result) ->
@@ -298,28 +303,50 @@ describe 'Service', ->
           .catch (error) -> done(_.prettify(error))
 
         it 'should call process function for several pages (default sorting)', (done) ->
-          spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: 90, endpoint: endpoint})
+          offset = -20
+          count = 20
+          spyOn(@restMock, 'GET').andCallFake (endpoint, callback) ->
+            offset += 20
+            callback(null, {statusCode: 200}, {
+              total: 90
+              count: if offset is 80 then 10 else count
+              offset: offset
+              results: [{id: '123', endpoint}]
+            })
           fn = (payload) ->
-            Promise.resolve payload.body.endpoint
-          @service.page(3).perPage(20).process(fn)
+            Promise.resolve payload.body.results[0]
+          @service.page(3).perPage(count).process(fn)
           .then (result) ->
-            expect(_.size result).toBe 3
-            expect(result[0]).toMatch /\?limit=20&offset=40&sort=id%20asc$/
-            expect(result[1]).toMatch /\?limit=20&offset=60&sort=id%20asc$/
-            expect(result[2]).toMatch /\?limit=20&offset=80&sort=id%20asc$/
+            expect(_.size result).toBe 5
+            expect(result[0].endpoint).toMatch /\?limit=20&offset=40&sort=id%20asc$/
+            expect(result[1].endpoint).toMatch /\?where=id%20%3E%20%22123%22&limit=20&offset=40&sort=id%20asc$/
+            expect(result[2].endpoint).toMatch /\?where=id%20%3E%20%22123%22&limit=20&offset=40&sort=id%20asc$/
+            expect(result[3].endpoint).toMatch /\?where=id%20%3E%20%22123%22&limit=20&offset=40&sort=id%20asc$/
+            expect(result[4].endpoint).toMatch /\?where=id%20%3E%20%22123%22&limit=20&offset=40&sort=id%20asc$/
             done()
           .catch (error) -> done(_.prettify(error))
 
         it 'should call process function for several pages (given sorting)', (done) ->
-          spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: 90, endpoint: endpoint})
+          offset = -20
+          count = 20
+          spyOn(@restMock, 'GET').andCallFake (endpoint, callback) ->
+            offset += 20
+            callback(null, {statusCode: 200}, {
+              total: 90
+              count: if offset is 80 then 10 else count
+              offset: offset
+              results: [{id: '123', endpoint}]
+            })
           fn = (payload) ->
-            Promise.resolve payload.body.endpoint
+            Promise.resolve payload.body.results[0]
           @service.page(3).perPage(20).sort('foo').process(fn)
           .then (result) ->
-            expect(_.size result).toBe 3
-            expect(result[0]).toMatch /\?limit=20&offset=40&sort=foo%20asc$/
-            expect(result[1]).toMatch /\?limit=20&offset=60&sort=foo%20asc$/
-            expect(result[2]).toMatch /\?limit=20&offset=80&sort=foo%20asc$/
+            expect(_.size result).toBe 5
+            expect(result[0].endpoint).toMatch /\?limit=20&offset=40&sort=foo%20asc$/
+            expect(result[1].endpoint).toMatch /\?where=id%20%3E%20%22123%22&limit=20&offset=40&sort=foo%20asc$/
+            expect(result[2].endpoint).toMatch /\?where=id%20%3E%20%22123%22&limit=20&offset=40&sort=foo%20asc$/
+            expect(result[3].endpoint).toMatch /\?where=id%20%3E%20%22123%22&limit=20&offset=40&sort=foo%20asc$/
+            expect(result[4].endpoint).toMatch /\?where=id%20%3E%20%22123%22&limit=20&offset=40&sort=foo%20asc$/
             done()
           .catch (error) -> done(_.prettify(error))
 
@@ -334,14 +361,26 @@ describe 'Service', ->
             done()
 
         it 'should call each page with the same query', (done) ->
-          spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: 21, endpoint: endpoint})
+          offset = -20
+          count = 20
+          spyOn(@restMock, 'GET').andCallFake (endpoint, callback) ->
+            offset += 20
+            callback(null, {statusCode: 200}, {
+              total: 90
+              count: if offset is 80 then 10 else count
+              offset: offset
+              results: [{id: '123', endpoint}]
+            })
           fn = (payload) ->
-            Promise.resolve payload.body.endpoint
+            Promise.resolve payload.body.results[0]
           @service.where('foo=bar').whereOperator('or').sort('name', false).process(fn)
           .then (result) ->
-            expect(_.size result).toBe 2
-            expect(result[0]).toMatch /\?where=foo%3Dbar&limit=20&sort=name%20desc$/
-            expect(result[1]).toMatch /\?where=foo%3Dbar&limit=20&offset=20&sort=name%20desc$/
+            expect(_.size result).toBe 5
+            expect(result[0].endpoint).toMatch /\?where=foo%3Dbar&sort=name%20desc$/
+            expect(result[1].endpoint).toMatch /\?where=foo%3Dbar%20or%20id%20%3E%20%22123%22&sort=name%20desc$/
+            expect(result[2].endpoint).toMatch /\?where=foo%3Dbar%20or%20id%20%3E%20%22123%22&sort=name%20desc$/
+            expect(result[3].endpoint).toMatch /\?where=foo%3Dbar%20or%20id%20%3E%20%22123%22&sort=name%20desc$/
+            expect(result[4].endpoint).toMatch /\?where=foo%3Dbar%20or%20id%20%3E%20%22123%22&sort=name%20desc$/
             done()
           .catch (error) -> done(_.prettify(error))
 
@@ -350,18 +389,17 @@ describe 'Service', ->
           expect(=> @service.process()).toThrow new Error 'Please provide a function to process the elements'
           expect(@restMock.GET).not.toHaveBeenCalled()
 
-        it 'should handle pagination for changes in total', (done) ->
-          total = 5
-          spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: total--, results: []})
-          fn = (payload) -> Promise.resolve 'done'
-          @service.perPage(1).process(fn)
-          .then (result) ->
-            expect(result).toEqual _.map [0..5], -> 'done'
-            done()
-          .catch (error) -> done(_.prettify(error))
-
         it 'should not accumulate results if explicitly set', (done) ->
-          spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: 10, results: [1..10]})
+          offset = -20
+          count = 20
+          spyOn(@restMock, 'GET').andCallFake (endpoint, callback) ->
+            offset += 20
+            callback(null, {statusCode: 200}, {
+              total: 90
+              count: if offset is 80 then 10 else count
+              offset: offset
+              results: [{id: '123', endpoint}]
+            })
           fn = (payload) -> Promise.resolve 'done'
           @service.perPage(1).process(fn, accumulate: false)
           .then (result) ->

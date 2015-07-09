@@ -188,10 +188,15 @@ describe 'Rest', ->
           access_token: 'foo'
         @pagedRest = new Rest opts
 
+        offset = -50
+        count = 50
         spyOn(@pagedRest, '_doRequest').andCallFake (options, callback) ->
+          offset += 50
           callback null, {statusCode: 200},
-            total: 1000
-            results: _.map [1..50], (i) -> {id: _.uniqueId("_#{i}"), value: 'foo'}
+            total: 1004
+            count: if offset is 1000 then 4 else count
+            offset: offset
+            results: _.map (if offset is 1000 then [1..4] else [1..50]), (i) -> {id: _.uniqueId("_#{i}"), value: 'foo'}
         spyOn(@pagedRest._oauth, 'getAccessToken').andCallFake (callback) -> callback(null, null, {access_token: 'foo'})
 
       afterEach ->
@@ -201,10 +206,10 @@ describe 'Rest', ->
         @pagedRest.PAGED '/products', (e, r, b) ->
           expect(e).toBe null
           expect(r.statusCode).toBe 200
-          expect(b.total).toBe 1000
-          expect(b.count).toBe 1000
-          expect(b.offset).toBe 0
-          expect(b.results.length).toBe 1000
+          expect(b.total).toBe 1004
+          expect(b.count).toBe 1004
+          expect(b.offset).toBe 1000
+          expect(b.results.length).toBe 1004
           done()
 
       it 'should throw if limit param is not 0', ->

@@ -328,41 +328,37 @@ class BaseService
 
       endpoint = @constructor.baseResourceEndpoint
       originalQuery = @_params.query
+      originalPredicate = @_params.query.where
 
-      _processPage = (page, perPage, total, acc = []) =>
-        debug 'processing next page with params: %j',
-          page: page
-          perPage: perPage,
-          offset: (page - 1) * perPage
-          total: total
-        if total? and (page - 1) * perPage >= total
-          resolve acc
-        else
-          @_params.query = _.extend {}, originalQuery,
-            page: page
-            perPage: perPage
-          @sort 'id' if _.isEmpty @_params.query.sort
-          queryString = @_queryString()
+      _processPage = (lastId, acc = []) =>
+        debug 'processing next page with id: %s', lastId
 
-          @_get("#{endpoint}?#{queryString}")
-          .then (payload) ->
-            fn(payload)
-            .then (result) ->
-              newTotal = payload.body.total
-              if not total or total is newTotal
-                nextPage = page + 1
-              else if total < newTotal
-                nextPage = page
-                debug 'Total is bigger then before, assuming something has been newly created. Processing the same page (%s).', nextPage
-              else
-                nextPage = page - 1
-                nextPage = 1 if nextPage < 1
-                debug 'Total is lesser then before, assuming something has been deleted. Reducing page to %s (min 1).', nextPage
-              accumulated = acc.concat(result) if options.accumulate
-              _processPage nextPage, perPage, newTotal, accumulated
-          .catch (error) -> reject error
-          .done()
-      _processPage(@_params.query.page or 1, @_params.query.perPage or 20)
+        @sort 'id' if _.isEmpty @_params.query.sort
+        @_params.query = _.extend({}, originalQuery,
+          if lastId
+            {where: originalPredicate.slice(0)
+              .concat([encodeURIComponent("id > \"#{lastId}\"")])}
+          else {})
+        queryString = @_queryString()
+
+        @_get("#{endpoint}?#{queryString}")
+        .then (payload) ->
+          fn(payload)
+          .then (result) ->
+            debug 'response: offset %s, count %s, total %s', payload.body.offset, payload.body.count, payload.body.total
+            accumulated = acc.concat(result) if options.accumulate
+            if payload.body.total? and (payload.body.offset + payload.body.count) >= payload.body.total
+              debug 'resolving...'
+              return resolve(accumulated or [])
+
+            last = _.last(payload.body.results)
+            debug 'process last: %j', last
+            newLastId = last && last.id
+            _processPage newLastId, accumulated
+
+        .catch (error) -> reject error
+        .done()
+      _processPage()
 
   # Public: Save a new resource defined by the `Service` by passing the payload {Object}.
   #

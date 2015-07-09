@@ -177,42 +177,53 @@ class Rest
 
     params = _.extend {}, query,
       limit: 50 # limit used for batches
-      offset: 0
     limit = params.limit
     debug 'PAGED request params: %j', params
 
     _buildPagedQueryResponse = (results) ->
       tot = _.size(results)
 
-      offset: params.offset
       count: tot
       total: tot
       results: results
 
     tmpResponse = {}
 
-    _page = (offset, total, accumulator = []) =>
-      debug 'PAGED iteration (offset: %s, total: %s)', offset, total
-      if total? and (offset + limit) >= total + limit
-        notify(percentage: 100, value: accumulator) if notify
-        # return if there are no more pages
-        resolve null, tmpResponse, _buildPagedQueryResponse(accumulator)
-      else
-        queryParams = _.stringifyQuery _.extend {}, params, offset: offset
-        @GET "#{endpoint}?#{queryParams}", (error, response, body) ->
-          notify(
-            percentage: if total then _.percentage(offset, total) else 0
-            value: body
-          ) if notify
-          if error
-            resolve(error, response, body)
+    _page = (lastId, accumulator = []) =>
+      debug 'PAGED iteration (lastId: %s)', lastId
+
+      queryParams = _.stringifyQuery(_.extend({}, queryParams, {sort: encodeURIComponent('id asc')},
+        if lastId then {where: encodeURIComponent("id > \"#{lastId}\"")} else {}))
+
+      @GET "#{endpoint}?#{queryParams}", (error, response, body) ->
+        debug 'PAGED response: offset %s, count %s, total %s', body.offset, body.count, body.total
+        tmpResponse = response
+        acc = accumulator.concat(body.results)
+
+        if body.total? and (body.offset + body.count) >= body.total
+          notify(percentage: 100, value: acc) if notify
+          # return if there are no more pages
+          return resolve null, tmpResponse,
+            count: body.total
+            offset: body.offset
+            total: body.total
+            results: acc
+
+        notify(
+          percentage: _.percentage(body.offset, body.total)
+          value: body
+        ) if notify
+        if error
+          resolve(error, response, body)
+        else
+          if response.statusCode is 200
+            last = _.last(body.results)
+            newLastId = last && last.id
+            _page(newLastId, acc)
           else
-            if response.statusCode is 200
-              tmpResponse = response
-              _page(offset + limit, body.total, accumulator.concat(body.results))
-            else
-              resolve(error, response, body)
-    _page(params.offset)
+            resolve(error, response, body)
+
+    _page()
     return
 
 module.exports = Rest
