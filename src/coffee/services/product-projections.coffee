@@ -250,7 +250,6 @@ class ProductProjectionService extends BaseService
   #   .search()
   search: ->
     @_currentEndpoint = '/product-projections/search'
-    @fetch()
 
   ###*
    * Query suggestions based on search keywords (used e.g. for auto-complete functionality)
