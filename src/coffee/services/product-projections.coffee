@@ -249,6 +249,23 @@ class ProductProjectionService extends BaseService
   #   .filter('variants.attributes.foo:"bar"')
   #   .search()
   search: ->
+    @asSearch()
+    @fetch()
+
+
+  # Public: Define to use search instead of query endpoint.
+  # Compared to {search} this allows for further chaining.
+  # For example to use {process} to deal with product search results in batches.
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.products
+  #   service
+  #   .asSearch()
+  #   .process(...)
+  asSearch: ->
     @_currentEndpoint = '/product-projections/search'
 
   ###*
