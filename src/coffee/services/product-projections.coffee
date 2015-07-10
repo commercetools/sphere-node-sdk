@@ -249,9 +249,7 @@ class ProductProjectionService extends BaseService
   #   .filter('variants.attributes.foo:"bar"')
   #   .search()
   search: ->
-    @asSearch()
-    @fetch()
-
+    @asSearch().fetch()
 
   # Public: Define to use search instead of query endpoint.
   # Compared to {search} this allows for further chaining.
@@ -267,6 +265,7 @@ class ProductProjectionService extends BaseService
   #   .process(...)
   asSearch: ->
     @_currentEndpoint = '/product-projections/search'
+    this
 
   ###*
    * Query suggestions based on search keywords (used e.g. for auto-complete functionality)

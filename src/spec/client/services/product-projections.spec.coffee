@@ -167,6 +167,13 @@ describe 'ProductProjectionService', ->
       expect(@service.fetch).toHaveBeenCalled()
       expect(@service._currentEndpoint).toBe '/product-projections/search'
 
+  describe ':: asSearch', ->
+
+    it 'should change the endpoint and return itself', ->
+      s = @service.asSearch()
+      expect(@service._currentEndpoint).toBe '/product-projections/search'
+      expect(s).toBe @service
+
   describe ':: suggest', ->
 
     it 'should call \'fetch\' after setting suggest endpoint', ->
