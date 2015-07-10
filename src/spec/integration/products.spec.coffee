@@ -103,7 +103,7 @@ describe 'Integration Products', ->
     .then (results) =>
       debug "Unpublished #{results.length} products"
       debug 'About to delete all products'
-      @client.products.perPage(0).fetch()
+      @client.products.all().fetch()
     .then (payload) =>
       debug "Deleting #{payload.body.total} products"
       Promise.all _.map payload.body.results, (product) =>
@@ -111,7 +111,7 @@ describe 'Integration Products', ->
     .then (results) =>
       debug "Deleted #{results.length} products"
       debug 'About to delete all product types'
-      @client.productTypes.perPage(0).fetch()
+      @client.productTypes.all().fetch()
     .then (payload) =>
       debug "Deleting #{payload.body.total} product types"
       Promise.all _.map payload.body.results, (productType) =>
@@ -208,7 +208,7 @@ describe 'Integration Products', ->
       @client.productProjections.text('sku', 'en').staged(true).perPage(80).search()
       .then (result) =>
         expect(result.body.count).toBe 51
-        expect(result.body.total).toBe 51
+        expect(result.body.results.length).toBe 51
 
         @client.productProjections.text(slugToLookFor, 'en').staged(true).search()
       .then (result) ->

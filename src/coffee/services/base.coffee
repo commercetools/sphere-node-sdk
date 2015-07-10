@@ -341,14 +341,14 @@ class BaseService
           else {})
         queryString = @_queryString()
 
-        @_get("#{endpoint}?#{queryString}")
+        @_get("#{endpoint}?#{queryString}&withTotal=false")
         .then (payload) ->
           fn(payload)
           .then (result) ->
-            debug 'response: offset %s, count %s, total %s', payload.body.offset, payload.body.count, payload.body.total
-            accumulated = acc.concat(result) if options.accumulate
-            if payload.body.total? and (payload.body.offset + payload.body.count) >= payload.body.total
-              debug 'resolving...'
+            resultsSize = _.size(payload.body.results)
+            debug 'accumulating: size %s, offset %s, count %s', resultsSize, payload.body.offset, payload.body.count
+            accumulated = acc.concat(result or []) if options.accumulate
+            if resultsSize < (originalQuery.perPage or 20)
               return resolve(accumulated or [])
 
             last = _.last(payload.body.results)

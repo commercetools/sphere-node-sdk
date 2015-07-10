@@ -16,7 +16,7 @@ describe 'ProductProjectionService', ->
       POST: -> (endpoint, payload, callback) ->
       PUT: ->
       DELETE: -> (endpoint, callback) ->
-      PAGED: -> (endpoint, callback, notify) ->
+      PAGED: -> (endpoint, callback) ->
       _preRequest: ->
       _doRequest: ->
     @task = new TaskQueue
@@ -206,21 +206,20 @@ describe 'ProductProjectionService', ->
       spyOn(@restMock, 'GET').andCallFake (endpoint, callback) ->
         offset += 20
         callback(null, {statusCode: 200}, {
-          total: 90
-          count: if offset is 80 then 10 else count
+          # total: 50
+          count: if offset is 40 then 10 else count
           offset: offset
-          results: [{id: '123', endpoint}]
+          results: _.map (if offset is 40 then [1..10] else [1..20]), (i) -> {id: "id_#{i}", endpoint}
+
         })
       fn = (payload) ->
         Promise.resolve payload.body.results[0]
       @service.where('foo=bar').whereOperator('or').staged(true).process(fn)
       .then (result) ->
-        expect(_.size result).toBe 5
-        expect(result[0].endpoint).toMatch /\?where=foo%3Dbar&sort=id%20asc&staged=true$/
-        expect(result[1].endpoint).toMatch /\?where=foo%3Dbar%20or%20id%20%3E%20%22123%22&sort=id%20asc&staged=true$/
-        expect(result[2].endpoint).toMatch /\?where=foo%3Dbar%20or%20id%20%3E%20%22123%22&sort=id%20asc&staged=true$/
-        expect(result[3].endpoint).toMatch /\?where=foo%3Dbar%20or%20id%20%3E%20%22123%22&sort=id%20asc&staged=true$/
-        expect(result[4].endpoint).toMatch /\?where=foo%3Dbar%20or%20id%20%3E%20%22123%22&sort=id%20asc&staged=true$/
+        expect(_.size result).toBe 3
+        expect(result[0].endpoint).toMatch /\?where=foo%3Dbar&sort=id%20asc&staged=true&withTotal=false$/
+        expect(result[1].endpoint).toMatch /\?where=foo%3Dbar%20or%20id%20%3E%20%22id_20%22&sort=id%20asc&staged=true&withTotal=false$/
+        expect(result[2].endpoint).toMatch /\?where=foo%3Dbar%20or%20id%20%3E%20%22id_20%22&sort=id%20asc&staged=true&withTotal=false$/
         done()
       .catch (err) -> done(_.prettify err)
 
@@ -230,20 +229,19 @@ describe 'ProductProjectionService', ->
       spyOn(@restMock, 'GET').andCallFake (endpoint, callback) ->
         offset += 20
         callback(null, {statusCode: 200}, {
-          total: 90
-          count: if offset is 80 then 10 else count
+          # total: 50
+          count: if offset is 40 then 10 else count
           offset: offset
-          results: [{id: '123', endpoint}]
+          results: _.map (if offset is 40 then [1..10] else [1..20]), (i) -> {id: "id_#{i}", endpoint}
+
         })
       fn = (payload) ->
         Promise.resolve payload.body.results[0]
       @service.where('foo=bar').whereOperator('or').staged(true).sort('name', false).process(fn)
       .then (result) ->
-        expect(_.size result).toBe 5
-        expect(result[0].endpoint).toMatch /\?where=foo%3Dbar&sort=name%20desc&staged=true$/
-        expect(result[1].endpoint).toMatch /\?where=foo%3Dbar%20or%20id%20%3E%20%22123%22&sort=name%20desc&staged=true$/
-        expect(result[2].endpoint).toMatch /\?where=foo%3Dbar%20or%20id%20%3E%20%22123%22&sort=name%20desc&staged=true$/
-        expect(result[3].endpoint).toMatch /\?where=foo%3Dbar%20or%20id%20%3E%20%22123%22&sort=name%20desc&staged=true$/
-        expect(result[4].endpoint).toMatch /\?where=foo%3Dbar%20or%20id%20%3E%20%22123%22&sort=name%20desc&staged=true$/
+        expect(_.size result).toBe 3
+        expect(result[0].endpoint).toMatch /\?where=foo%3Dbar&sort=name%20desc&staged=true&withTotal=false$/
+        expect(result[1].endpoint).toMatch /\?where=foo%3Dbar%20or%20id%20%3E%20%22id_20%22&sort=name%20desc&staged=true&withTotal=false$/
+        expect(result[2].endpoint).toMatch /\?where=foo%3Dbar%20or%20id%20%3E%20%22id_20%22&sort=name%20desc&staged=true&withTotal=false$/
         done()
       .catch (err) -> done(_.prettify err)

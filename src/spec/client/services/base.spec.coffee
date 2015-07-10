@@ -65,7 +65,7 @@ describe 'Service', ->
           POST: -> (endpoint, payload, callback) ->
           PUT: ->
           DELETE: -> (endpoint, callback) ->
-          PAGED: -> (endpoint, callback, notify) ->
+          PAGED: -> (endpoint, callback) ->
           _preRequest: ->
           _doRequest: ->
         @task = new TaskQueue
@@ -290,7 +290,6 @@ describe 'Service', ->
 
         it 'should call process function for one page', (done) ->
           spyOn(@restMock, 'GET').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {
-            total: 1
             count: 1
             offset: 0
             results: []
@@ -308,21 +307,20 @@ describe 'Service', ->
           spyOn(@restMock, 'GET').andCallFake (endpoint, callback) ->
             offset += 20
             callback(null, {statusCode: 200}, {
-              total: 90
-              count: if offset is 80 then 10 else count
+              # total: 50
+              count: if offset is 40 then 10 else count
               offset: offset
-              results: [{id: '123', endpoint}]
+              results: _.map (if offset is 40 then [1..10] else [1..20]), (i) -> {id: "id_#{i}", endpoint}
+
             })
           fn = (payload) ->
             Promise.resolve payload.body.results[0]
           @service.page(3).perPage(count).process(fn)
           .then (result) ->
-            expect(_.size result).toBe 5
-            expect(result[0].endpoint).toMatch /\?limit=20&offset=40&sort=id%20asc$/
-            expect(result[1].endpoint).toMatch /\?where=id%20%3E%20%22123%22&limit=20&offset=40&sort=id%20asc$/
-            expect(result[2].endpoint).toMatch /\?where=id%20%3E%20%22123%22&limit=20&offset=40&sort=id%20asc$/
-            expect(result[3].endpoint).toMatch /\?where=id%20%3E%20%22123%22&limit=20&offset=40&sort=id%20asc$/
-            expect(result[4].endpoint).toMatch /\?where=id%20%3E%20%22123%22&limit=20&offset=40&sort=id%20asc$/
+            expect(_.size result).toBe 3
+            expect(result[0].endpoint).toMatch /\?limit=20&offset=40&sort=id%20asc&withTotal=false$/
+            expect(result[1].endpoint).toMatch /\?where=id%20%3E%20%22id_20%22&limit=20&offset=40&sort=id%20asc&withTotal=false$/
+            expect(result[2].endpoint).toMatch /\?where=id%20%3E%20%22id_20%22&limit=20&offset=40&sort=id%20asc&withTotal=false$/
             done()
           .catch (error) -> done(_.prettify(error))
 
@@ -332,21 +330,19 @@ describe 'Service', ->
           spyOn(@restMock, 'GET').andCallFake (endpoint, callback) ->
             offset += 20
             callback(null, {statusCode: 200}, {
-              total: 90
-              count: if offset is 80 then 10 else count
+              # total: 50
+              count: if offset is 40 then 10 else count
               offset: offset
-              results: [{id: '123', endpoint}]
+              results: _.map (if offset is 40 then [1..10] else [1..20]), (i) -> {id: "id_#{i}", endpoint}
             })
           fn = (payload) ->
             Promise.resolve payload.body.results[0]
-          @service.page(3).perPage(20).sort('foo').process(fn)
+          @service.page(3).perPage(count).sort('foo').process(fn)
           .then (result) ->
-            expect(_.size result).toBe 5
-            expect(result[0].endpoint).toMatch /\?limit=20&offset=40&sort=foo%20asc$/
-            expect(result[1].endpoint).toMatch /\?where=id%20%3E%20%22123%22&limit=20&offset=40&sort=foo%20asc$/
-            expect(result[2].endpoint).toMatch /\?where=id%20%3E%20%22123%22&limit=20&offset=40&sort=foo%20asc$/
-            expect(result[3].endpoint).toMatch /\?where=id%20%3E%20%22123%22&limit=20&offset=40&sort=foo%20asc$/
-            expect(result[4].endpoint).toMatch /\?where=id%20%3E%20%22123%22&limit=20&offset=40&sort=foo%20asc$/
+            expect(_.size result).toBe 3
+            expect(result[0].endpoint).toMatch /\?limit=20&offset=40&sort=foo%20asc&withTotal=false$/
+            expect(result[1].endpoint).toMatch /\?where=id%20%3E%20%22id_20%22&limit=20&offset=40&sort=foo%20asc&withTotal=false$/
+            expect(result[2].endpoint).toMatch /\?where=id%20%3E%20%22id_20%22&limit=20&offset=40&sort=foo%20asc&withTotal=false$/
             done()
           .catch (error) -> done(_.prettify(error))
 
@@ -366,21 +362,19 @@ describe 'Service', ->
           spyOn(@restMock, 'GET').andCallFake (endpoint, callback) ->
             offset += 20
             callback(null, {statusCode: 200}, {
-              total: 90
-              count: if offset is 80 then 10 else count
+              # total: 50
+              count: if offset is 40 then 10 else count
               offset: offset
-              results: [{id: '123', endpoint}]
+              results: _.map (if offset is 40 then [1..10] else [1..20]), (i) -> {id: "id_#{i}", endpoint}
             })
           fn = (payload) ->
             Promise.resolve payload.body.results[0]
           @service.where('foo=bar').whereOperator('or').sort('name', false).process(fn)
           .then (result) ->
-            expect(_.size result).toBe 5
-            expect(result[0].endpoint).toMatch /\?where=foo%3Dbar&sort=name%20desc$/
-            expect(result[1].endpoint).toMatch /\?where=foo%3Dbar%20or%20id%20%3E%20%22123%22&sort=name%20desc$/
-            expect(result[2].endpoint).toMatch /\?where=foo%3Dbar%20or%20id%20%3E%20%22123%22&sort=name%20desc$/
-            expect(result[3].endpoint).toMatch /\?where=foo%3Dbar%20or%20id%20%3E%20%22123%22&sort=name%20desc$/
-            expect(result[4].endpoint).toMatch /\?where=foo%3Dbar%20or%20id%20%3E%20%22123%22&sort=name%20desc$/
+            expect(_.size result).toBe 3
+            expect(result[0].endpoint).toMatch /\?where=foo%3Dbar&sort=name%20desc&withTotal=false$/
+            expect(result[1].endpoint).toMatch /\?where=foo%3Dbar%20or%20id%20%3E%20%22id_20%22&sort=name%20desc&withTotal=false$/
+            expect(result[2].endpoint).toMatch /\?where=foo%3Dbar%20or%20id%20%3E%20%22id_20%22&sort=name%20desc&withTotal=false$/
             done()
           .catch (error) -> done(_.prettify(error))
 
@@ -391,16 +385,17 @@ describe 'Service', ->
 
         it 'should not accumulate results if explicitly set', (done) ->
           offset = -20
-          count = 20
+          count = 1
           spyOn(@restMock, 'GET').andCallFake (endpoint, callback) ->
             offset += 20
             callback(null, {statusCode: 200}, {
-              total: 90
-              count: if offset is 80 then 10 else count
+              # total: 50
+              count: if offset is 40 then 0 else count
               offset: offset
-              results: [{id: '123', endpoint}]
+              results: if offset is 40 then [] else [{id: '123', endpoint}]
             })
-          fn = (payload) -> Promise.resolve 'done'
+          fn = (payload) ->
+            Promise.resolve payload.body.results[0]
           @service.perPage(1).process(fn, accumulate: false)
           .then (result) ->
             expect(result).toEqual []

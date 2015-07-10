@@ -160,7 +160,9 @@ class Rest
       callback(e, r, b)
 
   # Public: Fetch all results of a Sphere resource query endpoint in batches of pages using a recursive function.
-  # Supports subscription of progress notifications.
+  #
+  # Note that traversing with pagination has been optimized. It now fetches pages sorted by `id` and iterates
+  # using a query with the `id` greater then the last one of the previous page.
   #
   # resource - {String} The API resource endpoint, with query string parameters.
   # resolve - {Function} A function fulfilled with `error, response, body` arguments. Body is an {Object} of `PagedQueryResponse`.
@@ -168,7 +170,7 @@ class Rest
   #                     This function is called for each batch iteration, allowing you to track the progress.
   #
   # Throws an {Error} if `limit` param is not `0`
-  PAGED: (resource, resolve, notify) ->
+  PAGED: (resource, resolve) ->
     splitted = resource.split('?')
     endpoint = splitted[0]
     query = _.parseQuery splitted[1]
@@ -180,41 +182,28 @@ class Rest
     limit = params.limit
     debug 'PAGED request params: %j', params
 
-    _buildPagedQueryResponse = (results) ->
-      tot = _.size(results)
-
-      count: tot
-      total: tot
-      results: results
-
-    tmpResponse = {}
-
     _page = (lastId, accumulator = []) =>
       debug 'PAGED iteration (lastId: %s)', lastId
 
-      queryParams = _.stringifyQuery(_.extend({}, queryParams, {sort: encodeURIComponent('id asc')},
-        if lastId then {where: encodeURIComponent("id > \"#{lastId}\"")} else {}))
+      queryParams = _.stringifyQuery(_.extend({}, queryParams,
+        sort: encodeURIComponent('id asc')
+        limit: limit
+        withTotal: false
+      , if lastId then {where: encodeURIComponent("id > \"#{lastId}\"")} else {}))
 
       @GET "#{endpoint}?#{queryParams}", (error, response, body) ->
-        debug 'PAGED response: offset %s, count %s, total %s', body.offset, body.count, body.total
-        tmpResponse = response
+        debug 'PAGED response: offset %s, count %s', body.offset, body.count
         acc = accumulator.concat(body.results)
 
-        if body.total? and (body.offset + body.count) >= body.total
-          notify(percentage: 100, value: acc) if notify
-          # return if there are no more pages
-          return resolve null, tmpResponse,
+        if _.size(body.results) < limit
+          return resolve null, response,
             count: body.total
             offset: body.offset
-            total: body.total
+            total: _.size(acc)
             results: acc
 
-        notify(
-          percentage: _.percentage(body.offset, body.total)
-          value: body
-        ) if notify
         if error
-          resolve(error, response, body)
+          resolve error, response, body
         else
           if response.statusCode is 200
             last = _.last(body.results)

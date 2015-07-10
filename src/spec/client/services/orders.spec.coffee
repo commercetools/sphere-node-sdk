@@ -13,7 +13,7 @@ describe 'OrderService', ->
       POST: -> (endpoint, payload, callback) ->
       PUT: ->
       DELETE: -> (endpoint, callback) ->
-      PAGED: -> (endpoint, callback, notify) ->
+      PAGED: -> (endpoint, callback) ->
       _preRequest: ->
       _doRequest: ->
     @task = new TaskQueue

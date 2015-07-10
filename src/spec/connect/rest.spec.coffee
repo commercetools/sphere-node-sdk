@@ -217,11 +217,3 @@ describe 'Rest', ->
 
       it 'should not throw if limit param is 0', (done) ->
         expect(=> @pagedRest.PAGED '/products?limit=0', -> done()).not.toThrow()
-
-      it 'should subscribe to notifications', (done) ->
-        expectedProgress = 0
-        @pagedRest.PAGED '/products', (e, r, b) ->
-          done()
-        , (progress) ->
-          expect(progress.percentage).toBe expectedProgress
-          expectedProgress += 5 # total is 1000 and limit is 50, so each progress is incremented by 5
