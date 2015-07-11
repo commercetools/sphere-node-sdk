@@ -65,7 +65,7 @@ describe 'Integration Products Sync', ->
     .then (results) ->
       debug "Deleted #{results.length} product types"
       done()
-    .catch (error) -> done(_.prettify(error))
+    .catch (error) -> done(_.prettify(error.body))
   , 60000 # 1min
 
   it 'should create and sync product', (done) ->
@@ -156,5 +156,5 @@ describe 'Integration Products Sync', ->
       expect(updated.variants[1].prices[0].value.centAmount).toBe 3000
       expect(updated.variants[1].prices[0].country).toBe 'FR'
       done()
-    .catch (error) -> done(_.prettify(error.body))
+    .catch (error) -> done(_.prettify(error))
   , 10000 # 10sec
