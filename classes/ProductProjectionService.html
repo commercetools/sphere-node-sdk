@@ -139,7 +139,7 @@ service.where(&#39;name(en = &quot;Foo&quot;)&#39;).staged(true).fetch() </code>
       </a>
     </span>
     <span class='desc'>
-      <p>Define to use search instead of query endpoint. Compared to <a href='../classes/ProductProjectionService.html#search-instance'>::search</a> this allows for further chaining. For example to use {::process} to deal with product search results in batches.</p>
+      <p>Define to use search instead of query endpoint. Compared to <a href='../classes/ProductProjectionService.html#search-instance'>::search</a> this allows for further chaining. For example to use <a href='../classes/BaseService.html#process-instance'>BaseService::process</a> to deal with product search results in batches.</p>
     </span>
   </li>
   <li deprecated>
@@ -317,7 +317,7 @@ Filter in this scope does influence facet counts. If facets are not used, this s
 /src&#47;coffee&#47;services&#47;product-projections.coffee#L259'>Source</a>
     </p>
     <div class='docstring'>
-  <p>Define to use search instead of query endpoint. Compared to <a href='../classes/ProductProjectionService.html#search-instance'>::search</a> this allows for further chaining. For example to use {::process} to deal with product search results in batches.</p>
+  <p>Define to use search instead of query endpoint. Compared to <a href='../classes/ProductProjectionService.html#search-instance'>::search</a> this allows for further chaining. For example to use <a href='../classes/BaseService.html#process-instance'>BaseService::process</a> to deal with product search results in batches.</p>
   <div class='examples'>
     <h3>Examples:</h3>
     <pre><code class='coffee'>service = client.productProjections
