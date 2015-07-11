@@ -242,7 +242,7 @@ class ProductProjectionService extends BaseService
   #
   # Examples
   #
-  #   service = client.products
+  #   service = client.productProjections
   #   service
   #   .text('Red Shirt')
   #   .sort('createdAt desc')
@@ -259,12 +259,13 @@ class ProductProjectionService extends BaseService
   #
   # Examples
   #
-  #   service = client.products
+  #   service = client.productProjections
   #   service
   #   .asSearch()
   #   .process(...)
   asSearch: ->
     @_currentEndpoint = '/product-projections/search'
+    debug 'setting search endpoint: %s', @_currentEndpoint
     this
 
   ###*
@@ -280,10 +281,11 @@ class ProductProjectionService extends BaseService
   #
   # Examples
   #
-  #   service = client.products
+  #   service = client.productProjections
   #   service.searchKeywords('Swiss Army Knife', 'en').suggest()
   suggest: ->
     @_currentEndpoint = '/product-projections/suggest'
+    debug 'setting suggest endpoint: %s', @_currentEndpoint
     @fetch()
 
   # Public Unsupported: Not supported by the API
