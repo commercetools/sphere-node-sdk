@@ -1,7 +1,6 @@
 debug = require('debug')('spec-integration:channels')
 _ = require 'underscore'
 _.mixin require 'underscore-mixins'
-Promise = require 'bluebird'
 {SphereClient} = require '../../lib/main'
 Config = require('../../config').config
 
