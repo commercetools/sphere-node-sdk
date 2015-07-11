@@ -226,7 +226,7 @@ describe 'Rest', ->
           expect(b.offset).toBe 1000
           expect(b.results.length).toBe 1004
           expect(@pagedRest._doRequest.calls.length).toBe 21
-          expect(@pagedRest._doRequest.calls[0].args[0].uri).toEqual 'https://api.sphere.io/nicola/products?sort=id%20asc&limit=50&withTotal=false'
+          expect(@pagedRest._doRequest.calls[0].args[0].uri).toEqual 'https://api.sphere.io/nicola/products?sort=id%20asc&limit=50&withTotal=false&where=sku%20in%20(%22123%22%2C%20%22456%22)'
           expect(@pagedRest._doRequest.calls[1].args[0].uri).toEqual 'https://api.sphere.io/nicola/products?sort=id%20asc&limit=50&withTotal=false&where=sku%20in%20(%22123%22%2C%20%22456%22)%20and%20id%20%3E%20%22_501054%22'
           done()
 
