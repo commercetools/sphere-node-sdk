@@ -132,6 +132,16 @@ service.where(&#39;name(en = &quot;Foo&quot;)&#39;).staged(true).fetch() </code>
 </div>
       <h2>Instance Method Summary</h2>
       <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#asSearch-instance'>
+        ::<strong>asSearch</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Define to use search instead of query endpoint. Compared to {search} this allows for further chaining. For example to use {process} to deal with product search results in batches.</p>
+    </span>
+  </li>
   <li deprecated>
     <span class='signature'>
       <a href='#create-instance'>
@@ -300,11 +310,38 @@ Filter in this scope does influence facet counts. If facets are not used, this s
       <h2>Instance Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
+    <p class='signature' id='asSearch-instance'>
+      ::<strong>asSearch</strong>()
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.4.0
+/src&#47;coffee&#47;services&#47;product-projections.coffee#L259'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Define to use search instead of query endpoint. Compared to {search} this allows for further chaining. For example to use {process} to deal with product search results in batches.</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>service = client.productProjections
+service
+.asSearch()
+.process(...) </code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      <span class='desc'> a chained instance of <code>this</code> class</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='create-instance'>
       ::<strong>create</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.3.3
-/src&#47;coffee&#47;services&#47;product-projections.coffee#L271'>Source</a>
+&#47;blob&#47;v1.4.0
+/src&#47;coffee&#47;services&#47;product-projections.coffee#L288'>Source</a>
     </p>
     <div class='docstring'>
   <div class='note unsupported'>
@@ -319,8 +356,8 @@ Filter in this scope does influence facet counts. If facets are not used, this s
     <p class='signature' id='delete-instance'>
       ::<strong>delete</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.3.3
-/src&#47;coffee&#47;services&#47;product-projections.coffee#L277'>Source</a>
+&#47;blob&#47;v1.4.0
+/src&#47;coffee&#47;services&#47;product-projections.coffee#L294'>Source</a>
     </p>
     <div class='docstring'>
   <div class='note unsupported'>
@@ -335,7 +372,7 @@ Filter in this scope does influence facet counts. If facets are not used, this s
     <p class='signature' id='facet-instance'>
       ::<strong>facet</strong>(facet)
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.3.3
+&#47;blob&#47;v1.4.0
 /src&#47;coffee&#47;services&#47;product-projections.coffee#L172'>Source</a>
     </p>
     <div class='docstring'>
@@ -376,7 +413,7 @@ service
     <p class='signature' id='filter-instance'>
       ::<strong>filter</strong>(filter)
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.3.3
+&#47;blob&#47;v1.4.0
 /src&#47;coffee&#47;services&#47;product-projections.coffee#L89'>Source</a>
     </p>
     <div class='docstring'>
@@ -418,7 +455,7 @@ service
     <p class='signature' id='filterByFacets-instance'>
       ::<strong>filterByFacets</strong>(filter)
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.3.3
+&#47;blob&#47;v1.4.0
 /src&#47;coffee&#47;services&#47;product-projections.coffee#L146'>Source</a>
     </p>
     <div class='docstring'>
@@ -460,7 +497,7 @@ service
     <p class='signature' id='filterByQuery-instance'>
       ::<strong>filterByQuery</strong>(filter)
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.3.3
+&#47;blob&#47;v1.4.0
 /src&#47;coffee&#47;services&#47;product-projections.coffee#L117'>Source</a>
     </p>
     <div class='docstring'>
@@ -501,8 +538,8 @@ service
     <p class='signature' id='save-instance'>
       ::<strong>save</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.3.3
-/src&#47;coffee&#47;services&#47;product-projections.coffee#L268'>Source</a>
+&#47;blob&#47;v1.4.0
+/src&#47;coffee&#47;services&#47;product-projections.coffee#L285'>Source</a>
     </p>
     <div class='docstring'>
   <div class='note unsupported'>
@@ -517,14 +554,14 @@ service
     <p class='signature' id='search-instance'>
       Promise ::<strong>search</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.3.3
+&#47;blob&#47;v1.4.0
 /src&#47;coffee&#47;services&#47;product-projections.coffee#L244'>Source</a>
     </p>
     <div class='docstring'>
   <p>Search <code>ProductProjections</code> with all the search parameters</p>
   <div class='examples'>
     <h3>Examples:</h3>
-    <pre><code class='coffee'>service = client.products
+    <pre><code class='coffee'>service = client.productProjections
 service
 .text(&#39;Red Shirt&#39;)
 .sort(&#39;createdAt desc&#39;)
@@ -548,7 +585,7 @@ service
     <p class='signature' id='searchKeywords-instance'>
       ::<strong>searchKeywords</strong>(text, lang)
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.3.3
+&#47;blob&#47;v1.4.0
 /src&#47;coffee&#47;services&#47;product-projections.coffee#L195'>Source</a>
     </p>
     <div class='docstring'>
@@ -597,7 +634,7 @@ service.searchKeywords(&#39;Swiss Army Knife&#39;, &#39;en&#39;).suggest() </cod
     <p class='signature' id='staged-instance'>
       ::<strong>staged</strong>(staged = true)
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.3.3
+&#47;blob&#47;v1.4.0
 /src&#47;coffee&#47;services&#47;product-projections.coffee#L41'>Source</a>
     </p>
     <div class='docstring'>
@@ -631,14 +668,14 @@ service.byId(&#39;123&#39;).staged(false).fetch() </code></pre>
     <p class='signature' id='suggest-instance'>
       Promise ::<strong>suggest</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.3.3
-/src&#47;coffee&#47;services&#47;product-projections.coffee#L263'>Source</a>
+&#47;blob&#47;v1.4.0
+/src&#47;coffee&#47;services&#47;product-projections.coffee#L279'>Source</a>
     </p>
     <div class='docstring'>
   <p>Query suggestions based on search keywords (used e.g. for auto-complete functionality)</p>
   <div class='examples'>
     <h3>Examples:</h3>
-    <pre><code class='coffee'>service = client.products
+    <pre><code class='coffee'>service = client.productProjections
 service.searchKeywords(&#39;Swiss Army Knife&#39;, &#39;en&#39;).suggest() </code></pre>
   </div>
 </div>
@@ -658,7 +695,7 @@ service.searchKeywords(&#39;Swiss Army Knife&#39;, &#39;en&#39;).suggest() </cod
     <p class='signature' id='text-instance'>
       ::<strong>text</strong>(text, language)
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.3.3
+&#47;blob&#47;v1.4.0
 /src&#47;coffee&#47;services&#47;product-projections.coffee#L59'>Source</a>
     </p>
     <div class='docstring'>
@@ -707,8 +744,8 @@ service.text(&#39;Red Shirt&#39;, &#39;en&#39;).search() </code></pre>
     <p class='signature' id='update-instance'>
       ::<strong>update</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.3.3
-/src&#47;coffee&#47;services&#47;product-projections.coffee#L274'>Source</a>
+&#47;blob&#47;v1.4.0
+/src&#47;coffee&#47;services&#47;product-projections.coffee#L291'>Source</a>
     </p>
     <div class='docstring'>
   <div class='note unsupported'>
