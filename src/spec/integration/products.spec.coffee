@@ -124,7 +124,11 @@ describe 'Integration Products', ->
 
   it 'should publish all products', (done) ->
     debug 'About to publish all products'
-    @client.products.sort('id').where('masterData(published = "false")').process (payload) =>
+    @client.products.sort('id')
+    .where('masterData(published = "false")')
+    .where('masterData(hasStagedChanges = "true")')
+    .whereOperator('or')
+    .process (payload) =>
       Promise.all _.map payload.body.results, (product) =>
         @client.products.byId(product.id).update(updatePublish(product.version))
     .then (results) -> done()

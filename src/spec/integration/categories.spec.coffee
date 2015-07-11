@@ -8,9 +8,9 @@ Config = require('../../config').config
 uniqueId = (prefix) ->
   _.uniqueId "#{prefix}#{new Date().getTime()}_"
 
-newCategory = ->
+newCategory = (name = 'Category name') ->
   name:
-    en: 'Category name'
+    en: name
   slug:
     en: uniqueId 'c'
 
@@ -64,3 +64,38 @@ describe 'Integration Categories', ->
       done()
     .catch (error) -> done(_.prettify(error))
   , 120000 # 2min
+
+  it 'should traverse all pages for given predicate', (done) ->
+    debug 'creating category A'
+    Promise.map [1..100], (i) =>
+      @client.categories.save(newCategory('FooA'))
+    , {concurrency: 20}
+    .then =>
+      debug 'creating category B'
+      Promise.map [1..10], (i) =>
+        @client.categories.save(newCategory('FooB'))
+    .then =>
+      debug 'query for category A'
+      @client.categories.all().where('name(en = "FooA")').fetch()
+    .then (result) =>
+      expect(result.body.total).toBe 100
+
+      debug 'query for category B'
+      @client.categories.all().where('name(en = "FooB")').fetch()
+    .then (result) =>
+      expect(result.body.total).toBe 10
+
+      debug 'cleanup categories'
+      @client.categories.all()
+      .where('name(en = "FooA")')
+      .where('name(en = "FooB")')
+      .whereOperator('or')
+      .perPage(20)
+      .process (payload) =>
+        Promise.map payload.body.results, (group) =>
+          @client.categories.byId(group.id).delete(group.version)
+    .then (results) ->
+      debug "Deleted #{results.length} categories"
+      done()
+    .catch (error) -> done _.prettify(error)
+  , 30000 # 30sec
