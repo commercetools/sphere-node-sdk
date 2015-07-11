@@ -1,4 +1,5 @@
 _ = require 'underscore'
+_.mixin require('underscore-mixins')
 {Rest} = require '../../lib/main'
 Config = require('../../config').config
 
@@ -203,13 +204,30 @@ describe 'Rest', ->
         @pagedRest = null
 
       it 'should send PAGED request', (done) ->
-        @pagedRest.PAGED '/products', (e, r, b) ->
+        @pagedRest.PAGED '/products', (e, r, b) =>
           expect(e).toBe null
           expect(r.statusCode).toBe 200
           expect(b.total).toBe 1004
           expect(b.count).toBe 1004
           expect(b.offset).toBe 1000
           expect(b.results.length).toBe 1004
+          expect(@pagedRest._doRequest.calls.length).toBe 21
+          done()
+
+      it 'should send PAGED request and preserving query parameters', (done) ->
+        queryParams = _.stringifyQuery
+          where: encodeURIComponent('sku in ("123", "456")')
+          expand: 'productType'
+        @pagedRest.PAGED "/products?#{queryParams}", (e, r, b) =>
+          expect(e).toBe null
+          expect(r.statusCode).toBe 200
+          expect(b.total).toBe 1004
+          expect(b.count).toBe 1004
+          expect(b.offset).toBe 1000
+          expect(b.results.length).toBe 1004
+          expect(@pagedRest._doRequest.calls.length).toBe 21
+          expect(@pagedRest._doRequest.calls[0].args[0].uri).toEqual 'https://api.sphere.io/nicola/products?sort=id%20asc&limit=50&withTotal=false'
+          expect(@pagedRest._doRequest.calls[1].args[0].uri).toEqual 'https://api.sphere.io/nicola/products?sort=id%20asc&limit=50&withTotal=false&where=sku%20in%20(%22123%22%2C%20%22456%22)%20and%20id%20%3E%20%22_501054%22'
           done()
 
       it 'should throw if limit param is not 0', ->

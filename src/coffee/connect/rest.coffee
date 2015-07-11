@@ -185,11 +185,16 @@ class Rest
     _page = (lastId, accumulator = []) =>
       debug 'PAGED iteration (lastId: %s)', lastId
 
+      wherePredicate =
+        if lastId
+          lastIdPredicate = encodeURIComponent("id > \"#{lastId}\"")
+          {where: if query.where then "#{query.where}%20and%20#{lastIdPredicate}" else lastIdPredicate}
+        else {}
       queryParams = _.stringifyQuery(_.extend({}, queryParams,
         sort: encodeURIComponent('id asc')
         limit: limit
         withTotal: false
-      , if lastId then {where: encodeURIComponent("id > \"#{lastId}\"")} else {}))
+      , wherePredicate))
 
       @GET "#{endpoint}?#{queryParams}", (error, response, body) ->
         debug 'PAGED response: offset %s, count %s', body.offset, body.count
