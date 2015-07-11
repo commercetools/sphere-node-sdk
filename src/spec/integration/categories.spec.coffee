@@ -96,6 +96,7 @@ describe 'Integration Categories', ->
           @client.categories.byId(group.id).delete(group.version)
     .then (results) ->
       debug "Deleted #{results.length} categories"
+      expect(results.length).toBe 110
       done()
     .catch (error) -> done _.prettify(error)
   , 30000 # 30sec
