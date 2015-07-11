@@ -334,14 +334,24 @@ class BaseService
         debug 'processing next page with id: %s', lastId
 
         @sort 'id' if _.isEmpty @_params.query.sort
-        @_params.query = _.extend({}, originalQuery,
-          if lastId
-            {where: originalPredicate.slice(0)
-              .concat([encodeURIComponent("id > \"#{lastId}\"")])}
-          else {})
+        @_params.query = _.extend({}, originalQuery, {where: []})
         queryString = @_queryString()
 
-        @_get("#{endpoint}?#{queryString}&withTotal=false")
+        # manually build where predicate
+        wherePredicate = originalPredicate.join(
+          encodeURIComponent(" #{originalQuery.operator or 'and'} "))
+        if lastId
+          lastIdPredicate = encodeURIComponent("id > \"#{lastId}\"")
+          wherePredicate =
+            if _.isEmpty(originalPredicate) then lastIdPredicate
+            else "#{wherePredicate}%20and%20#{lastIdPredicate}"
+        debug 'process where predicate: %j', wherePredicate
+        enhancedQueryString = [queryString, "withTotal=false"].join('&')
+        if wherePredicate
+          enhancedQueryString = "#{enhancedQueryString}&where=#{wherePredicate}"
+        debug 'enhanced query: %s', enhancedQueryString
+
+        @_get("#{endpoint}?#{enhancedQueryString}")
         .then (payload) ->
           fn(payload)
           .then (result) ->
@@ -352,7 +362,6 @@ class BaseService
               return resolve(accumulated or [])
 
             last = _.last(payload.body.results)
-            debug 'process last: %j', last
             newLastId = last && last.id
             _processPage newLastId, accumulated
 

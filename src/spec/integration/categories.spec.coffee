@@ -39,7 +39,7 @@ describe 'Integration Categories', ->
     .then (payload) =>
       debug "Deleting #{payload.body.total} categories (maxParallel: 1)"
       @client.setMaxParallel(1)
-      Promise.all _.map payload.body.results, (category) =>
+      Promise.map payload.body.results, (category) =>
         @client.categories.byId(category.id).delete(category.version)
     .then (results) ->
       debug "Deleted #{results.length} categories"
@@ -70,28 +70,33 @@ describe 'Integration Categories', ->
     Promise.map [1..100], (i) =>
       @client.categories.save(newCategory('FooA'))
     , {concurrency: 20}
-    .then =>
+    .then (result) =>
+      debug "created #{result.length} categories A"
       debug 'creating category B'
       Promise.map [1..10], (i) =>
         @client.categories.save(newCategory('FooB'))
-    .then =>
+    .then (result) =>
+      debug "created #{result.length} categories B"
       debug 'query for category A'
       @client.categories.all().where('name(en = "FooA")').fetch()
     .then (result) =>
       expect(result.body.total).toBe 100
+      expect(result.body.results.length).toBe 100
 
       debug 'query for category B'
       @client.categories.all().where('name(en = "FooB")').fetch()
     .then (result) =>
       expect(result.body.total).toBe 10
+      expect(result.body.results.length).toBe 10
 
       debug 'cleanup categories'
-      @client.categories.all()
+      @client.categories
       .where('name(en = "FooA")')
       .where('name(en = "FooB")')
       .whereOperator('or')
       .perPage(20)
       .process (payload) =>
+        debug 'fetched categories: %j', payload
         Promise.map payload.body.results, (group) =>
           @client.categories.byId(group.id).delete(group.version)
     .then (results) ->
