@@ -197,23 +197,23 @@ class Rest
       , wherePredicate))
 
       @GET "#{endpoint}?#{queryParams}", (error, response, body) ->
-        debug 'PAGED response: offset %s, count %s', body.offset, body.count
-        acc = accumulator.concat(body.results)
-
-        if _.size(body.results) < limit
-          return resolve null, response,
-            count: body.total
-            offset: body.offset
-            total: _.size(acc)
-            results: acc
-
         if error
           resolve error, response, body
         else
           if response.statusCode is 200
-            last = _.last(body.results)
-            newLastId = last && last.id
-            _page(newLastId, acc)
+            debug 'PAGED response: offset %s, count %s', body.offset, body.count
+
+            acc = accumulator.concat(body.results)
+            if _.size(body.results) < limit
+              resolve null, response,
+                count: body.total
+                offset: body.offset
+                total: _.size(acc)
+                results: acc
+            else
+              last = _.last(body.results)
+              newLastId = last && last.id
+              _page(newLastId, acc)
           else
             resolve(error, response, body)
 

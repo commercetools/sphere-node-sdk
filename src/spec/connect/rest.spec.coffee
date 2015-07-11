@@ -230,6 +230,27 @@ describe 'Rest', ->
           expect(@pagedRest._doRequest.calls[1].args[0].uri).toEqual 'https://api.sphere.io/nicola/products?sort=id%20asc&limit=50&withTotal=false&where=sku%20in%20(%22123%22%2C%20%22456%22)%20and%20id%20%3E%20%22_501054%22'
           done()
 
+      it 'should correctly return error', (done) ->
+        spyOn(@pagedRest, 'GET').andCallFake (endpoint, callback) ->
+          callback('Oops', {statusCode: 500}, null)
+
+        @pagedRest.PAGED "/products", (e, r, b) =>
+          expect(e).toBe 'Oops'
+          expect(r.statusCode).toBe 500
+          expect(b).toBe null
+          done()
+
+      it 'should correctly return error response body', (done) ->
+        spyOn(@pagedRest, 'GET').andCallFake (endpoint, callback) ->
+          callback(null, {statusCode: 400}, {statusCode: 400, message: 'Something went wrong'})
+
+        @pagedRest.PAGED "/products", (e, r, b) =>
+          expect(e).toBe null
+          expect(r.statusCode).toBe 400
+          expect(b.statusCode).toBe 400
+          expect(b.message).toBe 'Something went wrong'
+          done()
+
       it 'should throw if limit param is not 0', ->
         expect(=> @pagedRest.PAGED '/products?limit=100').toThrow new Error 'Query limit doesn\'t seem to be 0. This function queries all results, are you sure you want to use this?'
 
