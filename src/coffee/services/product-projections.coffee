@@ -252,8 +252,8 @@ class ProductProjectionService extends BaseService
     @asSearch().fetch()
 
   # Public: Define to use search instead of query endpoint.
-  # Compared to {search} this allows for further chaining.
-  # For example to use {process} to deal with product search results in batches.
+  # Compared to {::search} this allows for further chaining.
+  # For example to use {BaseService::process} to deal with product search results in batches.
   #
   # Returns a chained instance of `this` class
   #
