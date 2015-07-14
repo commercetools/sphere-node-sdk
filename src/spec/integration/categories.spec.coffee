@@ -35,10 +35,8 @@ describe 'Integration Categories', ->
 
   afterEach (done) ->
     debug 'About to delete all categories'
-    @client.categories.all().fetch()
-    .then (payload) =>
-      debug "Deleting #{payload.body.total} categories (maxParallel: 1)"
-      @client.setMaxParallel(1)
+    @client.categories.process (payload) =>
+      debug "Deleting #{payload.body.total} categories"
       Promise.map payload.body.results, (category) =>
         @client.categories.byId(category.id).delete(category.version)
     .then (results) ->

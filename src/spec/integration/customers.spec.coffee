@@ -13,12 +13,10 @@ describe 'Integration Customers', ->
   beforeEach (done) ->
     @client = new SphereClient config: Config
     debug 'About to delete all customers'
-    @client.customers.all().fetch()
-    .then (payload) =>
-      debug "Deleting #{payload.body.total} customers (maxParallel: 1)"
-      @client.setMaxParallel(1)
-      Promise.all _.map payload.body.results, (category) =>
-        @client.customers.byId(category.id).delete(category.version)
+    @client.customers.process (payload) =>
+      debug "Deleting #{payload.body.total} customers"
+      Promise.map payload.body.results, (customer) =>
+        @client.customers.byId(customer.id).delete(customer.version)
     .then (results) ->
       debug "Deleted #{results.length} customers"
       done()
