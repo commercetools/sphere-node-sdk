@@ -218,6 +218,7 @@ describe 'Rest', ->
         queryParams = _.stringifyQuery
           where: encodeURIComponent('sku in ("123", "456")')
           expand: 'productType'
+          staged: true
         @pagedRest.PAGED "/products?#{queryParams}", (e, r, b) =>
           expect(e).toBe null
           expect(r.statusCode).toBe 200
@@ -226,8 +227,20 @@ describe 'Rest', ->
           expect(b.offset).toBe 1000
           expect(b.results.length).toBe 1004
           expect(@pagedRest._doRequest.calls.length).toBe 21
-          expect(@pagedRest._doRequest.calls[0].args[0].uri).toEqual 'https://api.sphere.io/nicola/products?sort=id%20asc&limit=50&withTotal=false&where=sku%20in%20(%22123%22%2C%20%22456%22)'
-          expect(@pagedRest._doRequest.calls[1].args[0].uri).toEqual 'https://api.sphere.io/nicola/products?sort=id%20asc&limit=50&withTotal=false&where=sku%20in%20(%22123%22%2C%20%22456%22)%20and%20id%20%3E%20%22_501054%22'
+          expect(@pagedRest._doRequest.calls[0].args[0].uri).toEqual 'https://api.sphere.io/nicola/products?' + _.stringifyQuery
+            where: encodeURIComponent('sku in ("123", "456")')
+            expand: 'productType'
+            staged: true
+            limit: 50
+            sort: encodeURIComponent('id asc')
+            withTotal: false
+          expect(@pagedRest._doRequest.calls[1].args[0].uri).toEqual 'https://api.sphere.io/nicola/products?' + _.stringifyQuery
+            where: encodeURIComponent('sku in ("123", "456") and id > "_501054"')
+            expand: 'productType'
+            staged: true
+            limit: 50
+            sort: encodeURIComponent('id asc')
+            withTotal: false
           done()
 
       it 'should correctly return error', (done) ->
