@@ -6,23 +6,26 @@ ProductUtils = require './utils/product'
 #
 # Action groups for products are:
 # - `base` (name, slug, description)
-# - `references` (taxCategory, categories)
+# - `references` (taxCategory)
 # - `prices`
 # - `attributes`
 # - `images`
 # - `variants`
+# - `categories`
 #
 # Examples
 #
 #   {ProductSync} = require 'sphere-node-sdk'
 #   sync = new ProductSync
-#   syncedActions = sync.buildActions(newCategory, existingCategory)
+#   syncedActions = sync.buildActions(newProduct, existingProduct)
 #   if syncedActions.shouldUpdate()
 #     client.products.byId(syncedActions.getUpdatedId())
 #     .update(syncedActions.getUpdatePayload())
 #   else
 #     # do nothing
 class ProductSync extends BaseSync
+
+  @actionGroups = ['base', 'references', 'prices', 'attributes', 'images', 'variants', 'categories']
 
   # Public: Construct a `ProductSync` object.
   constructor: ->
