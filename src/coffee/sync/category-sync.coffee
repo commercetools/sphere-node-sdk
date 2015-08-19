@@ -18,6 +18,8 @@ CategoryUtil = require './utils/category'
 #     # do nothing
 class CategorySync extends BaseSync
 
+  @actionGroups = []
+
   # Public: Construct a `CategorySync` object.
   constructor: ->
     # Override base utils

@@ -21,6 +21,8 @@ OrderUtils = require './utils/order'
 #     # do nothing
 class OrderSync extends BaseSync
 
+  @actionGroups = ['status', 'returnInfo', 'deliveries']
+
   # Public: Construct a `OrderSync` object.
   constructor: ->
     # Override base utils

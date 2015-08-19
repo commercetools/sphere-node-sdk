@@ -1233,7 +1233,7 @@ describe 'ProductUtils', ->
       ]
       expect(update).toEqual expected_update
 
-  describe ':: actionsMapReferences (category)', ->
+  describe ':: actionsMapCategories (category)', ->
 
     beforeEach ->
       @utils = new ProductUtils
@@ -1257,7 +1257,7 @@ describe 'ProductUtils', ->
 
     it 'should build actions to change category', ->
       delta = @utils.diff @OLD_REFERENCE, @NEW_REFERENCE
-      update = @utils.actionsMapReferences delta, @OLD_REFERENCE, @NEW_REFERENCE
+      update = @utils.actionsMapCategories delta, @OLD_REFERENCE, @NEW_REFERENCE
       expected_update = [
         { action: 'removeFromCategory', category: { typeId: 'category', id: 'cat2' } }
         { action: 'addToCategory', category: { typeId: 'category', id: 'cat3' } }
@@ -1284,5 +1284,5 @@ describe 'ProductUtils', ->
           id: 1
 
       delta = @utils.diff before, after
-      update = @utils.actionsMapReferences delta, before, after
+      update = @utils.actionsMapCategories delta, before, after
       expect(update).toEqual []

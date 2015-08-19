@@ -20,6 +20,8 @@ InventoryUtils = require './utils/inventory'
 #     # do nothing
 class InventorySync extends BaseSync
 
+  @actionGroups = ['quantity', 'expectedDelivery']
+
   # Public: Construct a `InventorySync` object.
   constructor: ->
     # Override base utils
