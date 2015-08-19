@@ -227,14 +227,14 @@ describe 'Rest', ->
           expect(b.offset).toBe 1000
           expect(b.results.length).toBe 1004
           expect(@pagedRest._doRequest.calls.length).toBe 21
-          expect(@pagedRest._doRequest.calls[0].args[0].uri).toEqual 'https://api.sphere.io/nicola/products?' + _.stringifyQuery
+          expect(@pagedRest._doRequest.calls[0].args[0].uri).toEqual "https://api.sphere.io/#{Config.project_key}/products?" + _.stringifyQuery
             where: encodeURIComponent('sku in ("123", "456")')
             expand: 'productType'
             staged: true
             limit: 50
             sort: encodeURIComponent('id asc')
             withTotal: false
-          expect(@pagedRest._doRequest.calls[1].args[0].uri).toEqual 'https://api.sphere.io/nicola/products?' + _.stringifyQuery
+          expect(@pagedRest._doRequest.calls[1].args[0].uri).toEqual "https://api.sphere.io/#{Config.project_key}/products?" + _.stringifyQuery
             where: encodeURIComponent('sku in ("123", "456") and id > "_501054"')
             expand: 'productType'
             staged: true

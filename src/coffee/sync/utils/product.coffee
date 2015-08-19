@@ -148,7 +148,15 @@ class ProductUtils extends BaseUtils
           action: 'setTaxCategory'
           taxCategory: new_obj.taxCategory
         actions.push action
+    actions
 
+  # Private: map product categories
+  #
+  # diff - {Object} The result of diff from `jsondiffpatch`
+  #
+  # Returns {Array} The list of actions, or empty if there are none
+  actionsMapCategories: (diff) ->
+    actions = []
     if diff.categories
       _.each diff.categories, (category) ->
         if _.isArray category
