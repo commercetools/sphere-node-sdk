@@ -35,19 +35,20 @@ describe('Integration - TaskQueue token retrieval', () => {
     sinon.spy(_queue, 'pause')
     sinon.spy(_queue, 'resume')
 
+    const projectKey = options.auth.credentials.projectKey
     const task = taskQueue.addTask({
       method: 'GET',
-      url: `https://api.sphere.io/${options.auth.credentials.projectKey}/product-projections`
+      url: `https://api.sphere.io/${projectKey}/product-projections`
     })
 
     task.then(res => {
-        expect(_queue.pause).to.have.been.calledOnce
-        expect(_queue.resume).to.have.been.calledOnce
-        expect(options.auth.accessToken).to.be.a('string')
-        expect(res).to.have.property('ok', true)
-        done()
-      })
-      .catch(done)
+      expect(_queue.pause).to.have.been.calledOnce
+      expect(_queue.resume).to.have.been.calledOnce
+      expect(options.auth.accessToken).to.be.a('string')
+      expect(res).to.have.property('ok', true)
+      done()
+    })
+    .catch(done)
   })
 
   it('should fail to request a new token if credentials are wrong', done => {
@@ -64,22 +65,23 @@ describe('Integration - TaskQueue token retrieval', () => {
     sinon.spy(_queue, 'pause')
     sinon.spy(_queue, 'resume')
 
+    const projectKey = options.auth.credentials.projectKey
     const task = taskQueue.addTask({
       method: 'GET',
-      url: `https://api.sphere.io/${options.auth.credentials.projectKey}/product-projections`
+      url: `https://api.sphere.io/${projectKey}/product-projections`
     })
     task.then(() => {
-        done('Should have failed')
-      })
-      .catch(e => {
-        expect(_queue.pause).to.have.been.calledOnce
-        expect(_queue.resume).not.to.have.been.called
-        expect(e).to.have.property('error', 'invalid_client')
-        expect(e).to.have.property('error_description',
-          'Please provide valid client credentials using ' +
-          'HTTP Basic Authentication.')
-        done()
-      })
+      done('Should have failed')
+    })
+    .catch(e => {
+      expect(_queue.pause).to.have.been.calledOnce
+      expect(_queue.resume).not.to.have.been.called
+      expect(e).to.have.property('error', 'invalid_client')
+      expect(e).to.have.property('error_description',
+        'Please provide valid client credentials using ' +
+        'HTTP Basic Authentication.')
+      done()
+    })
   })
 
 })

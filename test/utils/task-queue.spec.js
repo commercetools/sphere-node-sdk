@@ -43,13 +43,16 @@ describe('Utils', () => {
         url: 'https://api.sphere.io/foo'
       })
       task.then(res => {
-          expect(spy.getCall(0).args[0]).to.have.property('fn').that.is.a('function')
-          expect(spy.getCall(0).args[0]).to.have.property('resolve').that.is.a('function')
-          expect(spy.getCall(0).args[0]).to.have.property('reject').that.is.a('function')
-          expect(res).to.equal('ok')
-          done()
-        })
-        .catch(done)
+        expect(spy.getCall(0).args[0])
+          .to.have.property('fn').that.is.a('function')
+        expect(spy.getCall(0).args[0])
+          .to.have.property('resolve').that.is.a('function')
+        expect(spy.getCall(0).args[0])
+          .to.have.property('reject').that.is.a('function')
+        expect(res).to.equal('ok')
+        done()
+      })
+      .catch(done)
     })
 
   })

@@ -29,7 +29,7 @@ describe('Integration - Client', () => {
     it('should get some products', function (done) {
       this.timeout(5000)
       Promise.all(Array.apply(null, Array(10))
-          .map(x => client.productProjections.fetch()))
+          .map(() => client.productProjections.fetch()))
         .then(allRes => Promise.all(allRes.map(res => res.json())))
         .then(allJsonRes => {
           allJsonRes.forEach(res => {
