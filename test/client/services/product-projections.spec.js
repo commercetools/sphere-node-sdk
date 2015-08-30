@@ -1,5 +1,7 @@
 import expect from 'expect'
 import { productProjectionsFn } from '../../../lib/client/services'
+import { getDefaultQueryParams }
+  from '../../../lib/client/services/commons/default-params'
 
 describe('ProductProjections', () => {
 
@@ -64,5 +66,25 @@ describe('ProductProjections', () => {
       'method': 'GET',
       'url': 'https://api.sphere.io/foo/product-projections?limit=10'
     })
+  })
+
+  it('should reset params after building the request promise', () => {
+    const service = productProjectionsFn(mockDeps)
+
+    const req = service.perPage(10).sort('createdAt', false)
+    expect(req.params).toEqual({
+      id: null,
+      query: {
+        expand: [],
+        operator: 'and',
+        page: null,
+        perPage: 10,
+        sort: [encodeURIComponent('createdAt desc')],
+        where: []
+      }
+    })
+
+    req.fetch()
+    expect(req.params).toEqual(getDefaultQueryParams())
   })
 })
