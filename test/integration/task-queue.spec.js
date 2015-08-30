@@ -38,11 +38,11 @@ describe('Integration - TaskQueue token retrieval', () => {
       url: `https://api.sphere.io/${projectKey}/product-projections`
     })
 
-    task.then(res => {
+    task.then(({ statusCode }) => {
       expect(pauseSpy.calledOnce).toBe(true)
       expect(resumeSpy.calledOnce).toBe(true)
       expect(options.auth.accessToken).toBeA('string')
-      expect(res.ok).toBe(true)
+      expect(statusCode).toBe(200)
       done()
     })
     .catch(done)
@@ -71,7 +71,7 @@ describe('Integration - TaskQueue token retrieval', () => {
     .catch(e => {
       expect(pauseSpy.calledOnce).toBe(true)
       expect(resumeSpy.called).toBe(false)
-      expect(e).toEqual({
+      expect(e.body).toEqual({
         'error': 'invalid_client',
         'error_description': 'Please provide valid client credentials ' +
           'using HTTP Basic Authentication.'

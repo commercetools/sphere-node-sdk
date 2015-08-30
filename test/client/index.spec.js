@@ -3,7 +3,8 @@ import https from 'https'
 import { SphereClient } from '../../lib'
 
 const SERVICES = [
-  'productProjections'
+  'productProjections',
+  'productTypes'
 ]
 
 describe('SphereClient', () => {

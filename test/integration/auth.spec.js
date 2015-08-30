@@ -30,9 +30,9 @@ describe('Integration - Auth', () => {
 
   it('should request a new token', done => {
     auth.getAccessToken(options)
-    .then(res => {
-      expect(res.access_token).toBeA('string')
-      expect(res.access_token.length).toBeGreaterThan(0)
+    .then(({ body }) => {
+      expect(body.access_token).toBeA('string')
+      expect(body.access_token.length).toBeGreaterThan(0)
       done()
     })
     .catch(done)
