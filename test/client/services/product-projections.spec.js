@@ -29,9 +29,6 @@ describe('ProductProjections', () => {
   it('should initialize service', () => {
     const service = productProjectionsFn(mockDeps)
     expect(service.baseEndpoint).toEqual('/product-projections')
-    expect(service.byId).toBeA('function')
-    expect(service.where).toBeA('function')
-    expect(service.fetch).toBeA('function')
   })
 
   it('should build default fetch url', () => {
@@ -40,8 +37,8 @@ describe('ProductProjections', () => {
 
     service.fetch()
     expect(spy).toHaveBeenCalledWith({
-      'method': 'GET',
-      'url': 'https://api.sphere.io/foo/product-projections'
+      method: 'GET',
+      url: 'https://api.sphere.io/foo/product-projections'
     })
   })
 
@@ -52,8 +49,8 @@ describe('ProductProjections', () => {
 
     service.fetch()
     expect(spy).toHaveBeenCalledWith({
-      'method': 'GET',
-      'url': 'https://api.sphere.io/public/foo/product-projections'
+      method: 'GET',
+      url: 'https://api.sphere.io/public/foo/product-projections'
     })
   })
 
@@ -63,8 +60,8 @@ describe('ProductProjections', () => {
 
     service.perPage(10).fetch()
     expect(spy).toHaveBeenCalledWith({
-      'method': 'GET',
-      'url': 'https://api.sphere.io/foo/product-projections?limit=10'
+      method: 'GET',
+      url: 'https://api.sphere.io/foo/product-projections?limit=10'
     })
   })
 
@@ -86,5 +83,40 @@ describe('ProductProjections', () => {
 
     req.fetch()
     expect(req.params).toEqual(getDefaultQueryParams())
+  })
+
+  it('should build default create url', () => {
+    const service = productProjectionsFn(mockDeps)
+    const spy = expect.spyOn(mockDeps.queue, 'addTask')
+
+    service.create({ foo: 'bar' })
+    expect(spy).toHaveBeenCalledWith({
+      method: 'POST',
+      url: 'https://api.sphere.io/foo/product-projections',
+      body: { foo: 'bar' }
+    })
+  })
+
+  it('should build default update url', () => {
+    const service = productProjectionsFn(mockDeps)
+    const spy = expect.spyOn(mockDeps.queue, 'addTask')
+
+    service.byId('123').update({ foo: 'bar' })
+    expect(spy).toHaveBeenCalledWith({
+      method: 'POST',
+      url: 'https://api.sphere.io/foo/product-projections/123',
+      body: { foo: 'bar' }
+    })
+  })
+
+  it('should build default delete url', () => {
+    const service = productProjectionsFn(mockDeps)
+    const spy = expect.spyOn(mockDeps.queue, 'addTask')
+
+    service.byId('123').delete(1)
+    expect(spy).toHaveBeenCalledWith({
+      method: 'DELETE',
+      url: 'https://api.sphere.io/foo/product-projections/123?version=1'
+    })
   })
 })
