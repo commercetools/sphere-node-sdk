@@ -1,5 +1,4 @@
-import { expect } from 'chai'
-import sinon from 'sinon'
+import expect from 'expect'
 import httpFn from '../../lib/utils/http'
 
 describe('Utils', () => {
@@ -8,10 +7,10 @@ describe('Utils', () => {
 
     it('should expose a function', () => {
       const http = httpFn({
-        Promise: sinon.stub(),
+        Promise: () => {},
         request: {}
       })
-      expect(http).to.be.a('function')
+      expect(http).toBeA('function')
     })
 
   })

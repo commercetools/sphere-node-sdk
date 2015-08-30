@@ -1,9 +1,5 @@
-import chai, { expect } from 'chai'
-import sinon from 'sinon'
-import sinonChai from 'sinon-chai'
+import expect from 'expect'
 import { productProjectionsFn } from '../../../lib/client/services'
-
-chai.use(sinonChai)
 
 describe('ProductProjections', () => {
 
@@ -12,7 +8,7 @@ describe('ProductProjections', () => {
   beforeEach(() => {
     mockDeps = {
       queue: {
-        addTask: sinon.stub()
+        addTask: () => {}
       },
       options: {
         auth: {
@@ -30,28 +26,30 @@ describe('ProductProjections', () => {
 
   it('should initialize service', () => {
     const service = productProjectionsFn(mockDeps)
-    expect(service.baseEndpoint).to.equal('/product-projections')
-    expect(service.byId).to.be.a('function')
-    expect(service.where).to.be.a('function')
-    expect(service.fetch).to.be.a('function')
+    expect(service.baseEndpoint).toEqual('/product-projections')
+    expect(service.byId).toBeA('function')
+    expect(service.where).toBeA('function')
+    expect(service.fetch).toBeA('function')
   })
 
   it('should build default fetch url', () => {
     const service = productProjectionsFn(mockDeps)
+    const spy = expect.spyOn(mockDeps.queue, 'addTask')
 
     service.fetch()
-    expect(mockDeps.queue.addTask).to.have.been.calledWith({
+    expect(spy).toHaveBeenCalledWith({
       'method': 'GET',
       'url': 'https://api.sphere.io/foo/product-projections'
     })
   })
 
-  it('should build custom fetch url', () => {
+  it('should build custom fetch url with prefix', () => {
     mockDeps.options.request.urlPrefix = '/public'
     const service = productProjectionsFn(mockDeps)
+    const spy = expect.spyOn(mockDeps.queue, 'addTask')
 
     service.byId('123').fetch()
-    expect(mockDeps.queue.addTask).to.have.been.calledWith({
+    expect(spy).toHaveBeenCalledWith({
       'method': 'GET',
       'url': 'https://api.sphere.io/public/foo/product-projections/123'
     })

@@ -1,4 +1,4 @@
-import { expect } from 'chai'
+import expect from 'expect'
 import { SphereClient } from '../../../lib'
 import credentials from '../../../config'
 
@@ -28,16 +28,17 @@ describe('Integration - Client', () => {
 
     it('should get some products', function (done) {
       this.timeout(5000)
+
       Promise.all(Array.apply(null, Array(10))
-          .map(() => client.productProjections.fetch()))
-        .then(allRes => Promise.all(allRes.map(res => res.json())))
-        .then(allJsonRes => {
-          allJsonRes.forEach(res => {
-            expect(res).to.have.property('results')
-          })
-          done()
+        .map(() => client.productProjections.fetch()))
+      .then(allRes => Promise.all(allRes.map(res => res.json())))
+      .then(allJsonRes => {
+        allJsonRes.forEach(res => {
+          expect(res.results).toExist()
         })
-        .catch(done)
+        done()
+      })
+      .catch(done)
     })
   })
 })

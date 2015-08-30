@@ -1,10 +1,7 @@
-import chai, { expect } from 'chai'
 import sinon from 'sinon'
-import sinonChai from 'sinon-chai'
+import expect from 'expect'
 import taskQueueFn from '../../lib/utils/task-queue'
 import * as constants from '../../lib/utils/constants'
-
-chai.use(sinonChai)
 
 describe('Utils', () => {
 
@@ -23,7 +20,7 @@ describe('Utils', () => {
 
     it('should expose public getter', () => {
       const taskQueue = taskQueueFn(options)
-      expect(taskQueue.addTask).to.be.a('function')
+      expect(taskQueue.addTask).toBeA('function')
     })
 
     it('should add a task to the queue', done => {
@@ -43,13 +40,11 @@ describe('Utils', () => {
         url: 'https://api.sphere.io/foo'
       })
       task.then(res => {
-        expect(spy.getCall(0).args[0])
-          .to.have.property('fn').that.is.a('function')
-        expect(spy.getCall(0).args[0])
-          .to.have.property('resolve').that.is.a('function')
-        expect(spy.getCall(0).args[0])
-          .to.have.property('reject').that.is.a('function')
-        expect(res).to.equal('ok')
+        const call = spy.getCall(0).args[0]
+        expect(call.fn).toBeA('function')
+        expect(call.resolve).toBeA('function')
+        expect(call.reject).toBeA('function')
+        expect(res).toEqual('ok')
         done()
       })
       .catch(done)

@@ -1,9 +1,8 @@
-import { expect } from 'chai'
+import expect from 'expect'
 import * as auth from '../../lib/utils/auth'
 import credentials from '../../config'
 
-const authRequest = auth.buildRequest({
-})
+const authRequest = auth.buildRequest({})
 
 describe('Integration - Auth', () => {
 
@@ -31,12 +30,12 @@ describe('Integration - Auth', () => {
 
   it('should request a new token', done => {
     auth.getAccessToken(options)
-      .then(res => {
-        expect(res.access_token).to.be.a('string')
-          .and.to.have.length.above(0)
-        done()
-      })
-      .catch(done)
+    .then(res => {
+      expect(res.access_token).toBeA('string')
+      expect(res.access_token.length).toBeGreaterThan(0)
+      done()
+    })
+    .catch(done)
   })
 
 })
