@@ -1,7 +1,6 @@
 import expect from 'expect'
 import { productProjectionsFn } from '../../../lib/client/services'
-import { getDefaultQueryParams }
-  from '../../../lib/client/services/commons/default-params'
+import { getDefaultQueryParams } from '../../../lib/utils/default-params'
 
 describe('ProductProjections', () => {
 
