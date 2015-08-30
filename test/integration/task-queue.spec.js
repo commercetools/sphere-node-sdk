@@ -19,7 +19,10 @@ describe('Integration - TaskQueue token retrieval', () => {
         shouldRetrieveToken (cb) { cb(true) }
       },
       request: {
-        headers: {},
+        headers: {
+          'Content-Type': 'application/json',
+          'User-Agent': 'sphere-node-sdk.2.0'
+        },
         maxParallel: 20,
         timeout: 20000
       }

@@ -21,7 +21,8 @@ describe('Integration - Auth', () => {
       request: {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
-          'Content-Length': `${authRequest.body.length}`
+          'Content-Length': `${authRequest.body.length}`,
+          'User-Agent': 'sphere-node-sdk.2.0'
         },
         timeout: 20000
       }

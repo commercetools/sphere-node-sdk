@@ -17,7 +17,8 @@ describe('Integration - Client', () => {
       },
       request: {
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'User-Agent': 'sphere-node-sdk.2.0'
         },
         maxParallel: 2
       }
