@@ -48,10 +48,21 @@ describe('ProductProjections', () => {
     const service = productProjectionsFn(mockDeps)
     const spy = expect.spyOn(mockDeps.queue, 'addTask')
 
-    service.byId('123').fetch()
+    service.fetch()
     expect(spy).toHaveBeenCalledWith({
       'method': 'GET',
-      'url': 'https://api.sphere.io/public/foo/product-projections/123'
+      'url': 'https://api.sphere.io/public/foo/product-projections'
+    })
+  })
+
+  it('should build fetch url with query parameters', () => {
+    const service = productProjectionsFn(mockDeps)
+    const spy = expect.spyOn(mockDeps.queue, 'addTask')
+
+    service.perPage(10).fetch()
+    expect(spy).toHaveBeenCalledWith({
+      'method': 'GET',
+      'url': 'https://api.sphere.io/foo/product-projections?limit=10'
     })
   })
 })
