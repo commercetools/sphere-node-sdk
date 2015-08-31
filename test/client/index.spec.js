@@ -29,7 +29,9 @@ describe('SphereClient', () => {
     expect(options.auth.shouldRetrieveToken).toBeA('function')
     expect(options.request).toEqual({
       agent: undefined,
-      headers: {},
+      headers: {
+        'User-Agent': 'sphere-node-sdk.2.0'
+      },
       host: 'api.sphere.io',
       maxParallel: 20,
       protocol: 'https',

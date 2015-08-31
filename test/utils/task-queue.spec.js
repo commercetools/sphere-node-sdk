@@ -35,15 +35,16 @@ describe('Utils', () => {
         return payload.resolve('ok')
       })
 
-      const task = taskQueue.addTask({
+      const task = {
         method: constants.get,
         url: 'https://api.sphere.io/foo'
-      })
-      task.then(res => {
+      }
+      const taskFn = taskQueue.addTask(task)
+      taskFn.then(res => {
         const call = spy.getCall(0).args[0]
-        expect(call.fn).toBeA('function')
         expect(call.resolve).toBeA('function')
         expect(call.reject).toBeA('function')
+        expect(call.description).toEqual(task)
         expect(res).toEqual('ok')
         done()
       })
