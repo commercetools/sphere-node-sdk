@@ -1,6 +1,7 @@
 import expect from 'expect'
-import * as auth from '../../lib/utils/auth'
 import credentials from '../../config'
+import * as auth from '../../lib/utils/auth'
+import * as headers from '../../lib/utils/headers'
 
 const authRequest = auth.buildRequest({})
 
@@ -20,9 +21,9 @@ describe('Integration - Auth', () => {
       },
       request: {
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Content-Length': `${authRequest.body.length}`,
-          'User-Agent': 'sphere-node-sdk.2.0'
+          [headers.contentType]: headers.formMediaType,
+          [headers.contentLength]: `${authRequest.body.length}`,
+          [headers.userAgent]: headers.defaultUserAgent
         },
         timeout: 20000
       }
