@@ -905,12 +905,15 @@ describe 'ProductUtils', ->
         variants: [
           {
             id: 2
+            attributes: []
+          },
+          {
+            id: 3
             attributes: [
               {
                 name: 'details'
                 value: [
-                  { de: 'Maße: 40 x 32 x 14 cm', en: 'Size: 40 x 32 x 14 cm', it: 'Taglia: 40 x 32 x 14 cm' },
-                  { de: ' Material: Leder ', en: ' Material: leather', it: ' Materiale: pelle' }
+                  { de: 'Farbe: braun ', en: 'Color: brown', it: 'Colore: marrone' }
                 ]
               }
             ]
@@ -934,6 +937,18 @@ describe 'ProductUtils', ->
         variants: [
           {
             id: 2
+            attributes: [
+              {
+                name: 'details'
+                value: [
+                  { de: 'Maße: 40 x 32 x 14 cm', en: 'Size: 40 x 32 x 14 cm', it: 'Taglia: 40 x 32 x 14 cm' },
+                  { de: 'Material: Leder', en: 'Material: leather', it: 'Materiale: pelle' }
+                ]
+              }
+            ]
+          },
+          {
+            id: 3
             attributes: []
           }
         ]
@@ -958,7 +973,16 @@ describe 'ProductUtils', ->
               { de: 'Farbe: braun ', en: 'Color: brown', it: 'Colore: marrone' }
             ]
           },
-          { action: 'setAttribute', variantId: 2, name: 'details', value: undefined }
+          {
+            action: 'setAttribute'
+            variantId: 2
+            name: 'details'
+            value: [
+              { de: 'Maße: 40 x 32 x 14 cm', en: 'Size: 40 x 32 x 14 cm', it: 'Taglia: 40 x 32 x 14 cm' }
+              { de: 'Material: Leder', en: 'Material: leather', it: 'Materiale: pelle' }
+            ]
+          },
+          { action: 'setAttribute', variantId: 3, name: 'details', value: undefined }
         ]
       expect(update).toEqual expected_update
 

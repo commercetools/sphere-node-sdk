@@ -444,6 +444,11 @@ class ProductUtils extends BaseUtils
       variantId: id
       name: attributeName
       value: el.value
+
+    if _.isArray(action.value)
+      _.each action.value, (v) ->
+        delete v._MATCH_CRITERIA unless _.isString(v)
+
     if _.contains(sameForAllAttributeNames, attributeName)
       action.action = 'setAttributeInAllVariants'
       delete action.variantId
