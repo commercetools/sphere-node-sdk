@@ -7,7 +7,6 @@ CartDiscountService      = require '../../../lib/services/cart-discounts'
 CartService              = require '../../../lib/services/carts'
 CategoryService          = require '../../../lib/services/categories'
 ChannelService           = require '../../../lib/services/channels'
-CommentService           = require '../../../lib/services/comments'
 CustomObjectService      = require '../../../lib/services/custom-objects'
 CustomerService          = require '../../../lib/services/customers'
 CustomerGroupService     = require '../../../lib/services/customer-groups'
@@ -36,7 +35,6 @@ describe 'Service', ->
     {name: 'CartService', service: CartService, path: '/carts', blacklist: []}
     {name: 'CategoryService', service: CategoryService, path: '/categories', blacklist: []}
     {name: 'ChannelService', service: ChannelService, path: '/channels', blacklist: []}
-    {name: 'CommentService', service: CommentService, path: '/comments', blacklist: ['delete']}
     {name: 'CustomObjectService', service: CustomObjectService, path: '/custom-objects', blacklist: []}
     {name: 'CustomerService', service: CustomerService, path: '/customers', blacklist: []}
     {name: 'CustomerGroupService', service: CustomerGroupService, path: '/customer-groups', blacklist: []}

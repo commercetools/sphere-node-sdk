@@ -26,7 +26,6 @@ describe 'SphereClient', ->
     expect(@client.carts).toBeDefined()
     expect(@client.categories).toBeDefined()
     expect(@client.channels).toBeDefined()
-    expect(@client.comments).toBeDefined()
     expect(@client.customObjects).toBeDefined()
     expect(@client.customers).toBeDefined()
     expect(@client.customerGroups).toBeDefined()
@@ -81,7 +80,6 @@ describe 'SphereClient', ->
     {name: 'carts', className: 'CartService', blacklist: []}
     {name: 'categories', className: 'CategoryService', blacklist: []}
     {name: 'channels', className: 'ChannelService', blacklist: []}
-    {name: 'comments', className: 'CommentService', blacklist: ['delete']}
     {name: 'customObjects', className: 'CustomObjectService', blacklist: []}
     {name: 'customers', className: 'CustomerService', blacklist: []}
     {name: 'customerGroups', className: 'CustomerGroupService', blacklist: []}

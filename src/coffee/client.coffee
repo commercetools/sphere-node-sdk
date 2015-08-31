@@ -5,7 +5,6 @@ CartDiscountService      = require './services/cart-discounts'
 CartService              = require './services/carts'
 CategoryService          = require './services/categories'
 ChannelService           = require './services/channels'
-CommentService           = require './services/comments'
 CustomObjectService      = require './services/custom-objects'
 CustomerService          = require './services/customers'
 CustomerGroupService     = require './services/customer-groups'
@@ -29,7 +28,6 @@ ALL_SERVICES = [
   {key: 'carts',              name: CartService},
   {key: 'categories',         name: CategoryService},
   {key: 'channels',           name: ChannelService},
-  {key: 'comments',           name: CommentService},
   {key: 'customObjects',      name: CustomObjectService},
   {key: 'customers',          name: CustomerService},
   {key: 'customerGroups',     name: CustomerGroupService},
@@ -190,7 +188,6 @@ class SphereClient
   # - `carts`
   # - `categories`
   # - `channels`
-  # - `comments`
   # - `customObjects`
   # - `customers`
   # - `customerGroups`
