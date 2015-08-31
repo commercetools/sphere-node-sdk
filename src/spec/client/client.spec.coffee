@@ -94,7 +94,7 @@ describe 'SphereClient', ->
     {name: 'productProjections', className: 'ProductProjectionService', blacklist: ['save', 'create', 'update', 'delete']}
     {name: 'productTypes', className: 'ProductTypeService', blacklist: []}
     {name: 'reviews', className: 'ReviewService', blacklist: ['delete']}
-    {name: 'shippingMethods', className: 'ShippingMethodService', blacklist: ['delete']}
+    {name: 'shippingMethods', className: 'ShippingMethodService', blacklist: []}
     {name: 'states', className: 'StateService', blacklist: []}
     {name: 'taxCategories', className: 'TaxCategoryService', blacklist: []}
     {name: 'zones', className: 'ZoneService', blacklist: []}

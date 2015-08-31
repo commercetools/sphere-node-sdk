@@ -23,7 +23,4 @@ class ShippingMethodService extends BaseService
   # Internal: {String} The HTTP endpoint for `ShippingMethods`
   @baseResourceEndpoint: '/shipping-methods'
 
-  # Public Unsupported: Not supported by the API
-  delete: ->
-
 module.exports = ShippingMethodService
