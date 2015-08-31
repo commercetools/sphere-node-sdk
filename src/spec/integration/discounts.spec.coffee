@@ -89,6 +89,6 @@ describe 'Integration Cart Discounts', ->
       @client.cartDiscounts.byId(result.body.id).delete(result.body.version)
       .then -> done('Cart discount deletion should be rejected')
       .catch (e) ->
-        expect(e.message).toBe 'Can not delete a cart-discount while it is referenced from at least one discount-code.'
+        expect(e.message).toBe 'Can not delete a cart-discount while it is referenced by at least one discount-code.'
         done()
     .catch (error) -> done(_.prettify(error))
