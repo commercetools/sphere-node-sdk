@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { http as httpFn} from '../../../lib'
+import { http as httpFn } from '../../../lib'
 
 /*
   Example of streaming response body from a fetch request
