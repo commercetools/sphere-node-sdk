@@ -1,7 +1,7 @@
 import sinon from 'sinon'
 import expect from 'expect'
+import credentials from '../../credentials'
 import taskQueueFn from '../../lib/utils/task-queue'
-import credentials from '../../config'
 import * as headers from '../../lib/utils/headers'
 
 describe('Integration - TaskQueue token retrieval', () => {

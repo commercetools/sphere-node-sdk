@@ -1,6 +1,8 @@
 node_modules
 *.log
 config.js
+credentials.js
 .travis.yml
 create_config.sh
+coverage
 test

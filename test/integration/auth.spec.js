@@ -1,5 +1,5 @@
 import expect from 'expect'
-import credentials from '../../config'
+import credentials from '../../credentials'
 import * as auth from '../../lib/utils/auth'
 import * as headers from '../../lib/utils/headers'
 
