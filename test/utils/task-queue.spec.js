@@ -1,7 +1,6 @@
 import sinon from 'sinon'
 import expect from 'expect'
 import taskQueueFn from '../../lib/utils/task-queue'
-import * as constants from '../../lib/utils/constants'
 
 describe('Utils', () => {
 
@@ -36,7 +35,7 @@ describe('Utils', () => {
       })
 
       const task = {
-        method: constants.get,
+        method: 'GET',
         url: 'https://api.sphere.io/foo'
       }
       const taskFn = taskQueue.addTask(task)
