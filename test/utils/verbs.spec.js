@@ -4,7 +4,7 @@ import * as query from '../../lib/utils/query'
 import * as queryId from '../../lib/utils/query-id'
 import * as queryPage from '../../lib/utils/query-page'
 import * as queryProjection from '../../lib/utils/query-projection'
-import * as search from '../../lib/utils/search'
+import * as querySearch from '../../lib/utils/query-search'
 import { getDefaultQueryParams, getDefaultSearchParams }
   from '../../lib/utils/default-params'
 
@@ -143,7 +143,7 @@ describe('Utils', () => {
       it('should reset params after building the request promise', () => {
         mockService.type = 'product-projections-search'
         Object.assign(mockService,
-          { params: getDefaultSearchParams() }, queryProjection, search)
+          { params: getDefaultSearchParams() }, queryProjection, querySearch)
 
         const req = mockService.staged(false)
           .text('Foo', 'en')
