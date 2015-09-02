@@ -33,6 +33,7 @@ describe 'SphereClient', ->
     expect(@client.inventoryEntries).toBeDefined()
     expect(@client.messages).toBeDefined()
     expect(@client.orders).toBeDefined()
+    expect(@client.payments).toBeDefined()
     expect(@client.products).toBeDefined()
     expect(@client.productDiscounts).toBeDefined()
     expect(@client.productProjections).toBeDefined()
@@ -87,6 +88,7 @@ describe 'SphereClient', ->
     {name: 'inventoryEntries', className: 'InventoryEntryService', blacklist: []}
     {name: 'messages', className: 'MessageService', blacklist: ['save', 'create', 'update', 'delete']}
     {name: 'orders', className: 'OrderService', blacklist: ['delete']}
+    {name: 'payments', className: 'PaymentService', blacklist: []}
     {name: 'products', className: 'ProductService', blacklist: []}
     {name: 'productDiscounts', className: 'ProductDiscountService', blacklist: []}
     {name: 'productProjections', className: 'ProductProjectionService', blacklist: ['save', 'create', 'update', 'delete']}

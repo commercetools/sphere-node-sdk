@@ -12,6 +12,7 @@ DiscountCodeService      = require './services/discount-codes'
 InventoryEntryService    = require './services/inventory-entries'
 MessageService           = require './services/messages'
 OrderService             = require './services/orders'
+PaymentService           = require './services/payments'
 ProductDiscountService   = require './services/product-discounts'
 ProductService           = require './services/products'
 ProductProjectionService = require './services/product-projections'
@@ -35,6 +36,7 @@ ALL_SERVICES = [
   {key: 'inventoryEntries',   name: InventoryEntryService},
   {key: 'messages',           name: MessageService},
   {key: 'orders',             name: OrderService},
+  {key: 'payments',           name: PaymentService},
   {key: 'products',           name: ProductService},
   {key: 'productDiscounts',   name: ProductDiscountService},
   {key: 'productProjections', name: ProductProjectionService},
@@ -195,6 +197,7 @@ class SphereClient
   # - `inventoryEntries`
   # - `messages`
   # - `orders`
+  # - `payments`
   # - `products`
   # - `productDiscounts`
   # - `productProjections`

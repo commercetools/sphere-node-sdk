@@ -14,6 +14,7 @@ DiscountCodeService      = require '../../../lib/services/discount-codes'
 InventoryEntryService    = require '../../../lib/services/inventory-entries'
 MessageService           = require '../../../lib/services/messages'
 OrderService             = require '../../../lib/services/orders'
+PaymentService           = require '../../../lib/services/payments'
 ProductService           = require '../../../lib/services/products'
 ProductDiscountService   = require '../../../lib/services/product-discounts'
 ProductProjectionService = require '../../../lib/services/product-projections'
@@ -42,6 +43,7 @@ describe 'Service', ->
     {name: 'InventoryEntryService', service: InventoryEntryService, path: '/inventory', blacklist: []}
     {name: 'MessageService', service: MessageService, path: '/messages', blacklist: ['save', 'create', 'update', 'delete']}
     {name: 'OrderService', service: OrderService, path: '/orders', blacklist: ['delete']}
+    {name: 'PaymentService', service: PaymentService, path: '/payments', blacklist: []}
     {name: 'ProductService', service: ProductService, path: '/products', blacklist: []}
     {name: 'ProductDiscountService', service: ProductDiscountService, path: '/product-discounts', blacklist: []}
     {name: 'ProductProjectionService', service: ProductProjectionService, path: '/product-projections', blacklist: ['save', 'create', 'update', 'delete']}
