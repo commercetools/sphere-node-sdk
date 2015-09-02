@@ -2,7 +2,11 @@ import expect from 'expect'
 import * as verbs from '../../lib/utils/verbs'
 import * as query from '../../lib/utils/query'
 import * as queryId from '../../lib/utils/query-id'
-import { getDefaultQueryParams } from '../../lib/utils/default-params'
+import * as queryPage from '../../lib/utils/query-page'
+import * as queryProjection from '../../lib/utils/query-projection'
+import * as search from '../../lib/utils/search'
+import { getDefaultQueryParams, getDefaultSearchParams }
+  from '../../lib/utils/default-params'
 
 const projectKey = 'test-project'
 const baseEndpoint = '/test-endpoint'
@@ -27,9 +31,10 @@ describe('Utils', () => {
             protocol: 'https'
           }
         },
+        type: 'test-type',
         params: getDefaultQueryParams(),
         baseEndpoint
-      }, query, queryId, verbs)
+      }, query, queryId, queryPage, verbs)
       spy = expect.spyOn(mockService.queue, 'addTask')
     })
 
@@ -65,10 +70,12 @@ describe('Utils', () => {
         query: {
           expand: [],
           operator: 'and',
+          where: []
+        },
+        pagination: {
           page: null,
           perPage: 10,
-          sort: [encodeURIComponent('createdAt desc')],
-          where: []
+          sort: [encodeURIComponent('createdAt desc')]
         }
       })
 
@@ -99,6 +106,72 @@ describe('Utils', () => {
       expect(spy).toHaveBeenCalledWith({
         method: 'DELETE',
         url: `https://api.sphere.io/${projectKey}${baseEndpoint}/123?version=1`
+      })
+    })
+
+    describe('product-projections', () => {
+
+      it('should reset params after building the request promise', () => {
+        mockService.type = 'product-projections'
+        Object.assign(mockService, queryProjection)
+
+        const req =
+          mockService.staged(false).perPage(10).sort('createdAt', false)
+        expect(req.params).toEqual({
+          id: null,
+          staged: false,
+          query: {
+            expand: [],
+            operator: 'and',
+            where: []
+          },
+          pagination: {
+            page: null,
+            perPage: 10,
+            sort: [encodeURIComponent('createdAt desc')]
+          }
+        })
+
+        req.fetch()
+        expect(req.params).toEqual(
+          Object.assign(getDefaultQueryParams(), { staged: true }))
+      })
+    })
+
+    describe('product-projections-search', () => {
+
+      it('should reset params after building the request promise', () => {
+        mockService.type = 'product-projections-search'
+        Object.assign(mockService,
+          { params: getDefaultSearchParams() }, queryProjection, search)
+
+        const req = mockService.staged(false)
+          .text('Foo', 'en')
+          .facet('variants.attributes.foo:"bar"')
+          .filter('variants.sku:"foo123"')
+          .filter('variants.attributes.color.key:"red"')
+          .sort('createdAt', false)
+        expect(req.params).toEqual({
+          staged: false,
+          pagination: {
+            page: null,
+            perPage: null,
+            sort: [encodeURIComponent('createdAt desc')]
+          },
+          search: {
+            facet: [encodeURIComponent('variants.attributes.foo:"bar"')],
+            filter: [
+              encodeURIComponent('variants.sku:"foo123"'),
+              encodeURIComponent('variants.attributes.color.key:"red"')
+            ],
+            filterByQuery: [],
+            filterByFacets: [],
+            text: { lang: 'en', value: 'Foo' }
+          }
+        })
+
+        req.fetch()
+        expect(req.params).toEqual(getDefaultSearchParams())
       })
     })
 

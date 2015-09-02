@@ -30,7 +30,9 @@ describe('Integration - Auth', () => {
     }
   })
 
-  it('should request a new token', done => {
+  it('should request a new token', function (done) {
+    this.timeout(5000)
+
     auth.getAccessToken(options)
     .then(({ body }) => {
       expect(body.access_token).toBeA('string')

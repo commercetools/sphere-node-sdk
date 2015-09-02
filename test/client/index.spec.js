@@ -6,6 +6,7 @@ import { userAgent, defaultUserAgent, contentType,
 
 const SERVICES = [
   'productProjections',
+  'productProjectionsSearch',
   'productTypes'
 ]
 
