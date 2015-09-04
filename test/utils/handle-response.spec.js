@@ -68,6 +68,7 @@ describe('Utils', () => {
         })
         done()
       })
+      .catch(done)
     })
 
     it('should throw with unexpected error (non json)', done => {
@@ -88,6 +89,7 @@ describe('Utils', () => {
         })
         done()
       })
+      .catch(done)
     })
 
     Object.keys(errorsMap).forEach(code => {
@@ -110,6 +112,7 @@ describe('Utils', () => {
           })
           done()
         })
+        .catch(done)
       })
     })
 

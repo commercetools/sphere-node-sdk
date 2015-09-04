@@ -87,6 +87,7 @@ describe('Integration - TaskQueue token retrieval', () => {
       expect(e.body.headers).toExist()
       done()
     })
+    .catch(done)
   })
 
 })
