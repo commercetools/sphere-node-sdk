@@ -75,17 +75,16 @@ describe('Integration - TaskQueue token retrieval', () => {
     .catch(e => {
       expect(pauseSpy.calledOnce).toBe(true)
       expect(resumeSpy.called).toBe(false)
-      expect(e.body).toEqual({
-        statusCode: 401,
-        error: 'invalid_client',
-        'error_description': 'Please provide valid client credentials ' +
-          'using HTTP Basic Authentication.',
-        originalRequest: {
-          url: 'https://123:secret@auth.sphere.io/oauth/token',
-          method: 'POST',
-          body: 'grant_type=client_credentials&scope=manage_project:foo'
-        }
+      expect(e.body.statusCode).toBe(401)
+      expect(e.body.error).toEqual('invalid_client')
+      expect(e.body.error_description).toEqual('Please provide valid client credentials ' +
+        'using HTTP Basic Authentication.')
+      expect(e.body.originalRequest).toEqual({
+        url: 'https://123:secret@auth.sphere.io/oauth/token',
+        method: 'POST',
+        body: 'grant_type=client_credentials&scope=manage_project:foo'
       })
+      expect(e.body.headers).toExist()
       done()
     })
   })
