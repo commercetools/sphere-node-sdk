@@ -40,7 +40,8 @@ describe('Utils', () => {
     })
 
     it('should throw if page is a number < 1', () => {
-      expect(() => service.page(0)).toThrow(/Parameter `page` must be a number >= 1/)
+      expect(() => service.page(0))
+      .toThrow(/Parameter `page` must be a number >= 1/)
     })
 
     it('should set the perPage param', () => {
@@ -53,7 +54,8 @@ describe('Utils', () => {
     })
 
     it('should throw if perPage is a number < 1', () => {
-      expect(() => service.perPage(-1)).toThrow(/Parameter `perPage` must be a number >= 0/)
+      expect(() => service.perPage(-1))
+      .toThrow(/Parameter `perPage` must be a number >= 0/)
     })
 
   })

@@ -49,7 +49,8 @@ describe('Utils', () => {
     })
 
     it('should throw if expansionPath is missing', () => {
-      expect(() => service.expand()).toThrow(/Parameter `expansionPath` is missing/)
+      expect(() => service.expand())
+      .toThrow(/Parameter `expansionPath` is missing/)
     })
 
   })

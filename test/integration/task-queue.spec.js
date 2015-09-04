@@ -77,8 +77,8 @@ describe('Integration - TaskQueue token retrieval', () => {
       expect(resumeSpy.called).toBe(false)
       expect(e.body.statusCode).toBe(401)
       expect(e.body.error).toEqual('invalid_client')
-      expect(e.body.error_description).toEqual('Please provide valid client credentials ' +
-        'using HTTP Basic Authentication.')
+      expect(e.body.error_description).toEqual('Please provide valid client ' +
+        'credentials using HTTP Basic Authentication.')
       expect(e.body.originalRequest).toEqual({
         url: 'https://123:secret@auth.sphere.io/oauth/token',
         method: 'POST',

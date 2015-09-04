@@ -22,7 +22,8 @@ describe('Utils', () => {
 
     it('should throw if text params are missing', () => {
       expect(() => service.text()).toThrow(/Parameter `text` is missing/)
-      expect(() => service.text('Foo Bar')).toThrow(/Parameter `lang` is missing/)
+      expect(() => service.text('Foo Bar'))
+      .toThrow(/Parameter `lang` is missing/)
     })
 
     it('should set the facet param', () => {
@@ -55,7 +56,8 @@ describe('Utils', () => {
     })
 
     it('should throw if filterByQuery is missing', () => {
-      expect(() => service.filterByQuery()).toThrow(/Parameter `filterByQuery` is missing/)
+      expect(() => service.filterByQuery())
+      .toThrow(/Parameter `filterByQuery` is missing/)
     })
 
     it('should set the filterByFacets param', () => {
@@ -66,7 +68,8 @@ describe('Utils', () => {
     })
 
     it('should throw if filterByFacets is missing', () => {
-      expect(() => service.filterByFacets()).toThrow(/Parameter `filterByFacets` is missing/)
+      expect(() => service.filterByFacets())
+      .toThrow(/Parameter `filterByFacets` is missing/)
     })
 
   })
