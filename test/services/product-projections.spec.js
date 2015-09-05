@@ -1,5 +1,5 @@
 import expect from 'expect'
-import { SphereClient } from '../../../lib'
+import SphereClient from '../../lib'
 
 describe('SphereClient', () => {
 

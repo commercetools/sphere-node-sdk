@@ -1,6 +1,6 @@
 import expect from 'expect'
 import credentials from '../../../credentials'
-import { SphereClient } from '../../../lib'
+import SphereClient from '../../../lib'
 
 describe('Integration - Client', () => {
 

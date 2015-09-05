@@ -1,6 +1,6 @@
 import expect from 'expect'
 import https from 'https'
-import { SphereClient } from '../../lib'
+import SphereClient from '../lib'
 
 const SERVICES = [
   'productProjections',
