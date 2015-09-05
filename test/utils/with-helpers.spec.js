@@ -9,14 +9,16 @@ describe('Utils', () => {
 
     beforeEach(() => {
       service = Object.assign({
-        auth: { credentials: {} },
-        request: { headers: { 'Content-Type': 'application/json' } }
+        options: {
+          auth: { credentials: {} },
+          request: { headers: { 'Content-Type': 'application/json' } }
+        }
       }, withHelpers)
     })
 
     it('should set the given header', () => {
       service.withHeader('Authorization', 'supersecret')
-      expect(service.request.headers).toEqual({
+      expect(service.options.request.headers).toEqual({
         'Authorization': 'supersecret',
         'Content-Type': 'application/json'
       })
@@ -32,7 +34,7 @@ describe('Utils', () => {
 
     it('should set the new credentials header', () => {
       service.withCredentials({ projectKey: 'foo' })
-      expect(service.auth.credentials).toEqual({
+      expect(service.options.auth.credentials).toEqual({
         projectKey: 'foo'
       })
     })
