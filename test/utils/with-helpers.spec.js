@@ -1,16 +1,17 @@
 import expect from 'expect'
-import * as headers from '../../lib/utils/headers'
+import * as withHelpers from '../../lib/utils/with-helpers'
 
 describe('Utils', () => {
 
-  describe('::headers', () => {
+  describe('::with', () => {
 
     let service
 
     beforeEach(() => {
       service = Object.assign({
+        auth: { credentials: {} },
         request: { headers: { 'Content-Type': 'application/json' } }
-      }, headers)
+      }, withHelpers)
     })
 
     it('should set the given header', () => {
@@ -27,6 +28,18 @@ describe('Utils', () => {
 
       expect(() => service.withHeader('foo'))
       .toThrow(/Missing required header arguments/)
+    })
+
+    it('should set the new credentials header', () => {
+      service.withCredentials({ projectKey: 'foo' })
+      expect(service.auth.credentials).toEqual({
+        projectKey: 'foo'
+      })
+    })
+
+    it('should throw if credentials is missing', () => {
+      expect(() => service.withCredentials())
+      .toThrow(/Credentials object is missing/)
     })
 
   })

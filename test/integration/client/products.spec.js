@@ -1,7 +1,6 @@
 import expect from 'expect'
 import credentials from '../../../credentials'
 import { SphereClient } from '../../../lib'
-import * as headers from '../../../lib/utils/headers'
 
 describe('Integration - Client', () => {
 
@@ -18,8 +17,8 @@ describe('Integration - Client', () => {
       },
       request: {
         headers: {
-          [headers.contentType]: headers.jsonMediaType,
-          [headers.userAgent]: headers.defaultUserAgent
+          'Content-Type': 'application/json',
+          'User-Agent': 'sphere-node-sdk'
         },
         maxParallel: 2
       }

@@ -2,7 +2,6 @@ import sinon from 'sinon'
 import expect from 'expect'
 import credentials from '../../credentials'
 import taskQueueFn from '../../lib/utils/task-queue'
-import * as headers from '../../lib/utils/headers'
 
 describe('Integration - TaskQueue token retrieval', () => {
 
@@ -21,8 +20,8 @@ describe('Integration - TaskQueue token retrieval', () => {
       },
       request: {
         headers: {
-          [headers.contentType]: headers.jsonMediaType,
-          [headers.userAgent]: headers.defaultUserAgent
+          'Content-Type': 'application/json',
+          'User-Agent': 'sphere-node-sdk'
         },
         maxParallel: 20,
         timeout: 20000
