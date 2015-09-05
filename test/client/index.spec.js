@@ -1,8 +1,6 @@
 import expect from 'expect'
 import https from 'https'
 import { SphereClient } from '../../lib'
-import { userAgent, defaultUserAgent, contentType,
-  jsonMediaType, authorization } from '../../lib/utils/headers'
 
 const SERVICES = [
   'productProjections',
@@ -32,7 +30,7 @@ describe('SphereClient', () => {
     expect(options.auth.shouldRetrieveToken).toBeA('function')
     expect(options.request).toEqual({
       agent: undefined,
-      headers: { [userAgent]: defaultUserAgent },
+      headers: { 'User-Agent': 'sphere-node-sdk-2.0' },
       host: 'api.sphere.io',
       maxParallel: 20,
       protocol: 'https',
@@ -44,8 +42,8 @@ describe('SphereClient', () => {
   it('should initialize with custom options', () => {
     const agent = new https.Agent({})
     const headers = {
-      [contentType]: jsonMediaType,
-      [authorization]: 'Bearer qwertzuiopasdfghjkl'
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer qwertzuiopasdfghjkl'
     }
     const timeout = 1000
     const urlPrefix = '/public'
