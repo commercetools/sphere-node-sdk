@@ -10,13 +10,13 @@ describe('Utils', () => {
       setDefaultParams('foo', params)
       expect(params).toEqual({
         id: null,
+        expand: [],
         pagination: {
           page: null,
           perPage: null,
           sort: []
         },
         query: {
-          expand: [],
           operator: 'and',
           where: []
         }
@@ -28,6 +28,7 @@ describe('Utils', () => {
       setDefaultParams('product-projections', params)
       expect(params).toEqual({
         id: null,
+        expand: [],
         staged: true,
         pagination: {
           page: null,
@@ -35,7 +36,6 @@ describe('Utils', () => {
           sort: []
         },
         query: {
-          expand: [],
           operator: 'and',
           where: []
         }
@@ -46,6 +46,7 @@ describe('Utils', () => {
       const params = {}
       setDefaultParams('product-projections-search', params)
       expect(params).toEqual({
+        expand: [],
         staged: true,
         pagination: {
           page: null,

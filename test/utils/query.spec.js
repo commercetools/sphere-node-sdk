@@ -43,7 +43,7 @@ describe('Utils', () => {
 
     it('should set the expand param', () => {
       service.expand('productType')
-      expect(service.params.query.expand).toEqual([
+      expect(service.params.expand).toEqual([
         encodeURIComponent('productType')
       ])
     })

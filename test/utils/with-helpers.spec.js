@@ -3,7 +3,7 @@ import * as withHelpers from '../../lib/utils/with-helpers'
 
 describe('Utils', () => {
 
-  describe('::with', () => {
+  describe('::withHelpers', () => {
 
     let service
 

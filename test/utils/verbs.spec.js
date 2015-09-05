@@ -67,8 +67,8 @@ describe('Utils', () => {
       const req = mockService.perPage(10).sort('createdAt', false)
       expect(req.params).toEqual({
         id: null,
+        expand: [],
         query: {
-          expand: [],
           operator: 'and',
           where: []
         },
@@ -119,9 +119,9 @@ describe('Utils', () => {
           mockService.staged(false).perPage(10).sort('createdAt', false)
         expect(req.params).toEqual({
           id: null,
+          expand: [],
           staged: false,
           query: {
-            expand: [],
             operator: 'and',
             where: []
           },
@@ -153,6 +153,7 @@ describe('Utils', () => {
           .sort('createdAt', false)
         expect(req.params).toEqual({
           staged: false,
+          expand: [],
           pagination: {
             page: null,
             perPage: null,
