@@ -41,17 +41,5 @@ describe('Utils', () => {
       .toThrow(/Parameter `operator` is wrong, either `and` or `or`/)
     })
 
-    it('should set the expand param', () => {
-      service.expand('productType')
-      expect(service.params.expand).toEqual([
-        encodeURIComponent('productType')
-      ])
-    })
-
-    it('should throw if expansionPath is missing', () => {
-      expect(() => service.expand())
-      .toThrow(/Parameter `expansionPath` is missing/)
-    })
-
   })
 })
