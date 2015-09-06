@@ -1,7 +1,7 @@
 import expect from 'expect'
 import SphereClient from '../lib'
 
-const { http } = SphereClient
+const { errors, http } = SphereClient
 
 describe('Public exports', () => {
 
@@ -10,7 +10,9 @@ describe('Public exports', () => {
     expect(SphereClient.name).toEqual('SphereClient')
   })
 
-  it('should export http client', () => {
+  it('should export static properties', () => {
+    expect(errors).toExist()
+
     expect(http).toBeA('function')
     expect(http.name).toEqual('http')
   })
