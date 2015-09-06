@@ -12,6 +12,10 @@ describe('Utils', () => {
 
     it('should build fully encoded query string', () => {
       const params = {
+        expand: [
+          encodeURIComponent('productType'),
+          encodeURIComponent('categories[*]')
+        ],
         staged: false,
         pagination: {
           page: 3,
@@ -22,10 +26,6 @@ describe('Utils', () => {
           ]
         },
         query: {
-          expand: [
-            encodeURIComponent('productType'),
-            encodeURIComponent('categories[*]')
-          ],
           operator: 'or',
           where: [
             encodeURIComponent('name(en = "Foo")'),
