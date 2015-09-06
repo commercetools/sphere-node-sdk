@@ -5,6 +5,7 @@ import * as queryId from '../../lib/utils/query-id'
 import * as queryPage from '../../lib/utils/query-page'
 import * as queryProjection from '../../lib/utils/query-projection'
 import * as querySearch from '../../lib/utils/query-search'
+import * as queryCustom from '../../lib/utils/query-custom'
 import { getDefaultQueryParams, getDefaultSearchParams }
   from '../../lib/utils/default-params'
 
@@ -45,7 +46,7 @@ describe('Utils', () => {
         serviceConfig: defaultServiceConfig,
         params: getDefaultQueryParams(),
         baseEndpoint
-      }, query, queryId, queryPage, verbs)
+      }, query, queryId, queryPage, queryCustom, verbs)
       spy = expect.spyOn(mockService.queue, 'addTask')
     })
 
@@ -74,6 +75,15 @@ describe('Utils', () => {
       })
     })
 
+    it('should build fetch url with custom query parameters', () => {
+      const encoded = encodeURIComponent('foo=bar&text="Hello world"')
+      mockService.perPage(10).where('one=two').byQueryString(encoded).fetch()
+      expect(spy).toHaveBeenCalledWith({
+        method: 'GET',
+        url: `https://api.sphere.io/${projectKey}${baseEndpoint}?${encoded}`
+      })
+    })
+
     it('should reset params after building the request promise', () => {
       Object.assign(mockService, {
         serviceConfig: Object.assign({}, defaultServiceConfig, {
@@ -84,6 +94,7 @@ describe('Utils', () => {
       const req = mockService.perPage(10).sort('createdAt', false)
       expect(req.params).toEqual({
         id: null,
+        customQuery: null,
         expand: [],
         query: {
           operator: 'and',
@@ -141,6 +152,7 @@ describe('Utils', () => {
           mockService.staged(false).perPage(10).sort('createdAt', false)
         expect(req.params).toEqual({
           id: null,
+          customQuery: null,
           expand: [],
           staged: false,
           query: {
