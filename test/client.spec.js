@@ -86,4 +86,32 @@ describe('SphereClient', () => {
     expect(productProjectionsService2).toExist()
     expect(productProjectionsService2.params.id).toNotEqual('123')
   })
+
+  it('should register a new service', () => {
+    const client = SphereClient.create({})
+    const serviceConfig = {
+      type: 'my-new-service',
+      endpoint: '/my-service-endpoint',
+      options: {
+        hasRead: true,
+        hasCreate: true,
+        hasUpdate: false,
+        hasDelete: true,
+        hasQuery: true,
+        hasQueryOne: true,
+        hasSearch: false,
+        hasProjection: false
+      }
+    }
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer qwertzuiopasdfghjkl'
+    }
+    client.registerService('myNewService', serviceConfig, { headers })
+
+    expect(client.myNewService).toExist()
+    expect(client.myNewService.baseEndpoint).toBe('/my-service-endpoint')
+    expect(client.myNewService.update).toNotExist()
+    expect(client.myNewService.staged).toNotExist()
+  })
 })

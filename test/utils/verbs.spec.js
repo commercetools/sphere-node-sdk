@@ -15,9 +15,19 @@ describe('Utils', () => {
 
   describe('::verbs', () => {
 
-    let mockService, spy
+    let defaultServiceConfig, mockService, spy
 
     beforeEach(() => {
+      defaultServiceConfig = {
+        hasRead: false,
+        hasCreate: false,
+        hasUpdate: false,
+        hasDelete: false,
+        hasQuery: false,
+        hasQueryOne: false,
+        hasSearch: false,
+        hasProjection: false
+      },
       mockService = Object.assign({
         queue: {
           addTask: () => {}
@@ -32,6 +42,7 @@ describe('Utils', () => {
           }
         },
         type: 'test-type',
+        serviceConfig: defaultServiceConfig,
         params: getDefaultQueryParams(),
         baseEndpoint
       }, query, queryId, queryPage, verbs)
@@ -64,6 +75,12 @@ describe('Utils', () => {
     })
 
     it('should reset params after building the request promise', () => {
+      Object.assign(mockService, {
+        serviceConfig: Object.assign({}, defaultServiceConfig, {
+          hasQueryOne: true,
+          hasQuery: true
+        })
+      })
       const req = mockService.perPage(10).sort('createdAt', false)
       expect(req.params).toEqual({
         id: null,
@@ -112,8 +129,13 @@ describe('Utils', () => {
     describe('product-projections', () => {
 
       it('should reset params after building the request promise', () => {
-        mockService.type = 'product-projections'
-        Object.assign(mockService, queryProjection)
+        Object.assign(mockService, {
+          serviceConfig: Object.assign({}, defaultServiceConfig, {
+            hasQueryOne: true,
+            hasQuery: true,
+            hasProjection: true
+          })
+        }, queryProjection)
 
         const req =
           mockService.staged(false).perPage(10).sort('createdAt', false)
@@ -141,9 +163,13 @@ describe('Utils', () => {
     describe('product-projections-search', () => {
 
       it('should reset params after building the request promise', () => {
-        mockService.type = 'product-projections-search'
-        Object.assign(mockService,
-          { params: getDefaultSearchParams() }, queryProjection, querySearch)
+        Object.assign(mockService, {
+          serviceConfig: Object.assign({}, defaultServiceConfig, {
+            hasProjection: true,
+            hasSearch: true
+          }),
+          params: getDefaultSearchParams()
+        }, queryProjection, querySearch)
 
         const req = mockService.staged(false)
           .text('Foo', 'en')
