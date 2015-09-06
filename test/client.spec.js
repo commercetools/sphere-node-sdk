@@ -6,6 +6,7 @@ const SERVICES = [
   'categories',
   'productProjections',
   'productProjectionsSearch',
+  'products',
   'productTypes'
 ]
 
@@ -114,5 +115,12 @@ describe('SphereClient', () => {
     expect(client.myNewService.baseEndpoint).toBe('/my-service-endpoint')
     expect(client.myNewService.update).toNotExist()
     expect(client.myNewService.staged).toNotExist()
+  })
+
+  it('should replace http client', () => {
+    const client = SphereClient.create({})
+    client.replaceHttpClient('foo')
+
+    expect(client.products.options.httpMock).toBe('foo')
   })
 })
