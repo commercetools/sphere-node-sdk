@@ -72,7 +72,8 @@ describe('SphereClient', () => {
         protocol: 'https',
         timeout,
         urlPrefix
-      }
+      },
+      httpMock: null
     })
   })
 
