@@ -3,6 +3,7 @@ import https from 'https'
 import SphereClient from '../lib'
 
 const SERVICES = [
+  'categories',
   'productProjections',
   'productProjectionsSearch',
   'productTypes'
