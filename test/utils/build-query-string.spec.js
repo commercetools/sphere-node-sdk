@@ -55,9 +55,9 @@ describe('Utils', () => {
       /*eslint-disable max-len*/
       const expectedQueryString =
         `staged=false&` +
-        `where=${encodeURIComponent('name(en = "Foo") or name(en = "Bar") and categories(id = "123")')}&` +
         `expand=productType&` +
         `expand=${encodeURIComponent('categories[*]')}&` +
+        `where=${encodeURIComponent('name(en = "Foo") or name(en = "Bar") and categories(id = "123")')}&` +
         `limit=10&offset=20&` +
         `sort=${encodeURIComponent('name.en desc')}&` +
         `sort=${encodeURIComponent('createdAt asc')}&` +
