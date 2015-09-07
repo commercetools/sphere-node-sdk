@@ -14,6 +14,10 @@ describe('Utils', () => {
 
   describe('::errors', () => {
 
+    it('should export native errors', () => {
+      expect(errors.nativeErrors).toExist()
+    })
+
     it('should create general HttpError', () => {
       const e = new errors.HttpError('My bad', { statusCode: 500 })
 
