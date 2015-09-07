@@ -24,7 +24,7 @@ describe('Utils', () => {
         },
         request: {
           agent: null,
-          headers: { 'User-Agent': 'sphere-node-sdk-2.0' },
+          headers: { 'User-Agent': 'sphere-node-sdk' },
           timeout: 20000,
           urlPrefix: null
         },
@@ -45,7 +45,7 @@ describe('Utils', () => {
         headers: {
           'Authorization': 'supersecret',
           'Content-Length': 13,
-          'User-Agent': 'sphere-node-sdk-2.0'
+          'User-Agent': 'sphere-node-sdk'
         },
         timeout: 20000
       })

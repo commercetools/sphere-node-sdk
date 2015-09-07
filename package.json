@@ -12,22 +12,17 @@
   "bugs": {
     "url": "https://github.com/sphereio/sphere-node-sdk/issues"
   },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "https://github.com/sphereio/sphere-node-sdk/blob/master/LICENSE-MIT"
-    }
-  ],
+  "license": "MIT",
   "main": "./dist",
   "engines": {
     "node": ">= 0.10.0"
   },
   "scripts": {
     "clean": "rm -rf dist && mkdir -p dist",
-    "coverage": "npm run lint && NODE_ENV=test babel-node $(npm bin)/isparta cover $(npm bin)/_mocha -- --compilers js:babel/register --recursive",
-    "dist": "npm run clean && babel lib --out-dir dist",
+    "coverage": "npm run lint && ./scripts/version && NODE_ENV=test babel-node $(npm bin)/isparta cover $(npm bin)/_mocha -- --compilers js:babel/register --recursive",
+    "dist": "npm run clean && ./scripts/version && babel lib --out-dir dist",
     "lint": "eslint lib test",
-    "test": "NODE_ENV=test mocha --compilers js:babel/register --recursive",
+    "test": "./scripts/version && NODE_ENV=test mocha --compilers js:babel/register --recursive",
     "test:watch": "npm run test -- --watch",
     "postinstall": "npm run dist"
   },
