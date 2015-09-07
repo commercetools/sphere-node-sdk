@@ -75,7 +75,7 @@ describe('Utils', () => {
         expect(error.message).toEqual('Unexpected non-JSON error response.')
         expect(error.body).toEqual({
           statusCode: 500,
-          message: 'Oops, too bad!',
+          raw: 'Oops, too bad!',
           originalRequest: mockDescription,
           headers: { ['Content-Type']: 'application/json' }
         })
