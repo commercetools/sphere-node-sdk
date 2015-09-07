@@ -47,5 +47,21 @@ describe('Utils', () => {
       expect(service.delete).toExist()
     })
 
+    it('should throw if config is missing', () => {
+      expect(() => createService())
+      .toThrow(/Cannot create a service without a `config`/)
+    })
+
+    it('should throw if config parameters are missing', () => {
+      expect(() => createService({ type: 'foo' }))
+      .toThrow(/Object `config` is missing required parameters/)
+
+      expect(() => createService({ type: 'foo', endpoint: '/foo' }))
+      .toThrow(/Object `config` is missing required parameters/)
+
+      expect(() => createService({
+        type: 'foo', endpoint: '/foo', options: {} }))
+      .toThrow(/Object `config` is missing required parameters/)
+    })
   })
 })

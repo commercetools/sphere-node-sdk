@@ -2,7 +2,7 @@
 
 var fs = require('fs');
 var path = require('path');
-var pkg = require('../package.json');
+var pkg = require(path.join(__dirname, '../package.json'));
 var version =
   '// This file is auto-generated\n' +
   'export const name = \'' + pkg.name + '\'\n' +

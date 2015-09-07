@@ -1,7 +1,9 @@
 import expect from 'expect'
 import https from 'https'
+import * as version from '../version'
 import SphereClient from '../lib'
 
+const userAgent = `${version.name}-${version.version}`
 const SERVICES = [
   'categories',
   'productProjections',
@@ -32,7 +34,7 @@ describe('SphereClient', () => {
     expect(options.auth.shouldRetrieveToken).toBeA('function')
     expect(options.request).toEqual({
       agent: undefined,
-      headers: { 'User-Agent': 'sphere-node-sdk' },
+      headers: { 'User-Agent': userAgent },
       host: 'api.sphere.io',
       maxParallel: 20,
       protocol: 'https',
