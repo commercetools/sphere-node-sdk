@@ -76,7 +76,7 @@ describe('SphereClient', () => {
         timeout,
         urlPrefix
       },
-      httpMock: null
+      httpMock: undefined
     })
   })
 
