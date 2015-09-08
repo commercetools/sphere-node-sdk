@@ -4,8 +4,7 @@ node_js:
   - '0.12'
   - 'iojs'
 before_script:
-  - npm install -g grunt-cli
-  - ./create_config.sh
+  - ./scripts/credentials
 env:
   global:
     - secure: d4woA9SqqJhEbjsSVZXPovrIhEsVkbrncyxyTfgeBSTMqgGSNyKuaHN2kNVy+3e7z9PDNBDIkq91emsPW+ShlmYxvv6pqEKRVPVauIuy6amTH3bMpPHIjlniTB1GfgiWNWNZiD+DOEIjLiMyt5e/QAQjoJMUFhIF5O9ke+qjC8M=
@@ -20,6 +19,4 @@ notifications:
     format: html
     on_success: change
     on_failure: always
-branches:
-  only:
-    - master
+sudo: false
