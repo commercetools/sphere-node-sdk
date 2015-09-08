@@ -5,7 +5,7 @@ var path = require('path');
 var pkg = require(path.join(__dirname, '../package.json'));
 var version =
   '// This file is auto-generated\n' +
-  'export.name = \'' + pkg.name + '\'\n' +
-  'export.version = \'' + pkg.version + '\'\n'
+  'exports.name = \'' + pkg.name + '\'\n' +
+  'exports.version = \'' + pkg.version + '\'\n'
 fs.writeFileSync(path.join(__dirname, '../version.js'),
   version, { encoding: 'utf-8' });
