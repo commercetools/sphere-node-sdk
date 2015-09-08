@@ -120,6 +120,11 @@ describe('Utils', () => {
       })
     })
 
+    it('should throw if body is missing (create)', () => {
+      expect(() => mockService.create())
+      .toThrow(/Body payload is required for creating a resource/)
+    })
+
     it('should build default update url', () => {
       mockService.byId('123').update({ foo: 'bar' })
       expect(spy).toHaveBeenCalledWith({
@@ -129,12 +134,32 @@ describe('Utils', () => {
       })
     })
 
+    it('should throw if body is missing (update)', () => {
+      expect(() => mockService.update())
+      .toThrow(/Body payload is required for updating a resource/)
+    })
+
+    it('should throw if resource id is missing (update)', () => {
+      expect(() => mockService.update({ foo: 'bar' }))
+      .toThrow(/Missing required `id` param for updating a resource/)
+    })
+
     it('should build default delete url', () => {
       mockService.byId('123').delete(1)
       expect(spy).toHaveBeenCalledWith({
         method: 'DELETE',
         url: `https://api.sphere.io/${projectKey}${baseEndpoint}/123?version=1`
       })
+    })
+
+    it('should throw if version is missing (delete)', () => {
+      expect(() => mockService.delete())
+      .toThrow(/Version number is required for deleting a resource/)
+    })
+
+    it('should throw if resource id is missing (delete)', () => {
+      expect(() => mockService.delete({ foo: 'bar' }))
+      .toThrow(/Missing required `id` param for deleting a resource/)
     })
 
     describe('product-projections', () => {
