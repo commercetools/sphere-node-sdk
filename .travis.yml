@@ -7,6 +7,8 @@ before_script:
   - ./scripts/credentials
 script:
   - npm run coverage
+after_script:
+  - cat ./coverage/lcov.info | $(npm bin)/coveralls
 env:
   global:
     - secure: d4woA9SqqJhEbjsSVZXPovrIhEsVkbrncyxyTfgeBSTMqgGSNyKuaHN2kNVy+3e7z9PDNBDIkq91emsPW+ShlmYxvv6pqEKRVPVauIuy6amTH3bMpPHIjlniTB1GfgiWNWNZiD+DOEIjLiMyt5e/QAQjoJMUFhIF5O9ke+qjC8M=
