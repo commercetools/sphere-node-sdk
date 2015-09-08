@@ -10,6 +10,7 @@
 
 Officially supported Node.js SDK library for working with the SPHERE.IO HTTP API, with OAuth2 support.
 
+> Looking for the [`v2.0`](https://github.com/sphereio/sphere-node-sdk/tree/rewrite-2.0)?
 
 ## Getting Started
 Install the module with `npm install sphere-node-sdk`
