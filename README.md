@@ -2,9 +2,13 @@
 
 # Node.js SDK
 
-# UNDER DEVELOPMENT
+> This is the new development branch for the `2.0` version.
 
-See milestone https://github.com/sphereio/sphere-node-sdk/milestones/v2.x
+See roadmap https://github.com/sphereio/sphere-node-sdk/issues/63
+
+# Documentation
+
+_Will follow soon_
 
 
 ## License
