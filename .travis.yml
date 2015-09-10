@@ -9,6 +9,7 @@ before_script:
   - sh -e /etc/init.d/xvfb start
 script:
   - npm run coverage
+  - npm run test:browser
 after_script:
   - cat ./coverage/lcov.info | $(npm bin)/coveralls
 env:
