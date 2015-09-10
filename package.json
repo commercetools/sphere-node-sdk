@@ -23,7 +23,8 @@
     "dist": "npm run clean && ./scripts/version && babel lib --out-dir dist",
     "lint": "eslint lib test",
     "test": "./scripts/version && NODE_ENV=test babel-tape-runner test | tap-spec",
-    "test:browser": "browserify -t babelify -t [ envify --NODE_ENV test ] test | tape-run",
+    "test:ci": "browserify -t babelify -t [ envify --NODE_ENV test ] test | tape-run -b firefox",
+    "test:browser": "browserify -t babelify -t [ envify --NODE_ENV test ] test | tape-run -b chrome",
     "test:watch": "npm run test -- --watch"
   },
   "dependencies": {
