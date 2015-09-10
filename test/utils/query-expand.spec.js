@@ -1,27 +1,30 @@
-import expect from 'expect'
+import test from 'tape'
 import * as queryExpand from '../../lib/utils/query-expand'
 
-describe('Utils', () => {
+test('Utils::queryExpand', t => {
 
-  describe('::queryExpand', () => {
+  let service
 
-    let service
+  function setup () {
+    service = Object.assign({ params: { expand: [] } }, queryExpand)
+  }
 
-    beforeEach(() => {
-      service = Object.assign({ params: { expand: [] } }, queryExpand)
-    })
+  t.test('should set the expand param', t => {
+    setup()
 
-    it('should set the expand param', () => {
-      service.expand('productType')
-      expect(service.params.expand).toEqual([
-        encodeURIComponent('productType')
-      ])
-    })
-
-    it('should throw if expansionPath is missing', () => {
-      expect(() => service.expand())
-      .toThrow(/Parameter `expansionPath` is missing/)
-    })
-
+    service.expand('productType')
+    t.deepEqual(service.params.expand, [
+      encodeURIComponent('productType')
+    ])
+    t.end()
   })
+
+  t.test('should throw if expansionPath is missing', t => {
+    setup()
+
+    t.throws(() => service.expand(),
+      /Parameter `expansionPath` is missing/)
+    t.end()
+  })
+
 })

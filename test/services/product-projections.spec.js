@@ -1,21 +1,24 @@
-import expect from 'expect'
+import test from 'tape'
 import SphereClient from '../../lib'
 
-describe('SphereClient', () => {
+test('SphereClient', t => {
 
   let client
 
-  beforeEach(() => {
+  function setup () {
     client = new SphereClient({})
-  })
+  }
 
-  describe('::product-projections', () => {
+  t.test('::product-projections', t => {
 
-    it('should have read-only verbs', () => {
-      expect(client.productProjections.fetch).toExist()
-      expect(client.productProjections.create).toNotExist()
-      expect(client.productProjections.update).toNotExist()
-      expect(client.productProjections.delete).toNotExist()
+    t.test('should have read-only verbs', t => {
+      setup()
+
+      t.true(client.productProjections.hasOwnProperty('fetch'))
+      t.false(client.productProjections.hasOwnProperty('create'))
+      t.false(client.productProjections.hasOwnProperty('update'))
+      t.false(client.productProjections.hasOwnProperty('delete'))
+      t.end()
     })
   })
 })

@@ -1,14 +1,14 @@
-import expect from 'expect'
+import test from 'tape'
 import credentials from '../../credentials'
 import * as auth from '../../lib/utils/auth'
 
 const authRequest = auth.buildRequest({})
 
-describe('Integration - Auth', () => {
+test('Integration - Auth', t => {
 
   let options
 
-  beforeEach(() => {
+  function setup () {
     options = {
       Promise: Promise,
       auth: {
@@ -27,18 +27,18 @@ describe('Integration - Auth', () => {
         timeout: 20000
       }
     }
-  })
+  }
 
-  it('should request a new token', function (done) {
-    this.timeout(5000)
+  t.test('should request a new token', { timeout: 5000 }, t => {
+    setup()
 
     auth.getAccessToken(options)
     .then(({ body }) => {
-      expect(body.access_token).toBeA('string')
-      expect(body.access_token.length).toBeGreaterThan(0)
-      done()
+      t.equal(typeof body.access_token, 'string')
+      t.ok(body.access_token.length > 0)
+      t.end()
     })
-    .catch(done)
+    .catch(t.end)
   })
 
 })

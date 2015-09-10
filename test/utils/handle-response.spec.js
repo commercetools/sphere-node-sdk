@@ -1,116 +1,121 @@
+import test from 'tape'
 import sinon from 'sinon'
-import expect from 'expect'
 import handleResponse, { errorsMap } from '../../lib/utils/handle-response'
 import * as errors from '../../lib/utils/errors'
 
-describe('Utils', () => {
+test('Utils::handleResponse', t => {
 
-  describe('::handleResponse', () => {
+  let mockUtils, mockFetch, mockDescription
 
-    let mockUtils, mockFetch, mockDescription
-
-    beforeEach(() => {
-      mockUtils = { httpClient: () => {} }
-      mockFetch = (ok, status, expectBody) => {
-        return { ok, status,
-          headers: {
-            raw: () => ({ ['Content-Type']: 'application/json' })
-          },
-          json: () => Promise.resolve(expectBody),
-          text: () => Promise.resolve(expectBody)
-        }
+  function setup () {
+    mockUtils = { httpClient: () => {} }
+    mockFetch = (ok, status, expectBody) => {
+      return { ok, status,
+        headers: {
+          raw: () => ({ ['Content-Type']: 'application/json' })
+        },
+        json: () => Promise.resolve(expectBody),
+        text: () => Promise.resolve(expectBody)
       }
-      mockDescription = { url: '/foo', method: 'GET' }
-    })
+    }
+    mockDescription = { url: '/foo', method: 'GET' }
+  }
 
-    it('should resolve response', done => {
-      const stub = sinon.stub(mockUtils, 'httpClient', () => {
-        return Promise.resolve(mockFetch(true, 200, { foo: 'bar' }))
-      })
-      handleResponse(mockUtils.httpClient, mockDescription)
-      .then(response => {
-        expect(stub.called).toBe(true)
-        expect(response).toEqual({
-          statusCode: 200,
-          headers: { ['Content-Type']: 'application/json' },
-          body: { foo: 'bar' }
-        })
-        done()
-      })
-      .catch(done)
-    })
+  t.test('should resolve response', t => {
+    setup()
 
-    it('should throw with status code 404', done => {
-      const stub = sinon.stub(mockUtils, 'httpClient', () => {
-        return Promise.resolve(mockFetch(false, 404))
-      })
-      handleResponse(mockUtils.httpClient, mockDescription)
-      .then(() => done('It should have failed'))
-      .catch(error => {
-        expect(stub.called).toBe(true)
-        expect(error).toBeAn(errors.NotFound)
-        expect(error.statusCode).toBe(404)
-        expect(error.message).toEqual('Endpoint /foo not found.')
-        expect(error.body).toEqual({
-          statusCode: 404,
-          message: 'Endpoint /foo not found.',
-          originalRequest: mockDescription,
-          headers: { ['Content-Type']: 'application/json' }
-        })
-        done()
-      })
-      .catch(done)
+    const stub = sinon.stub(mockUtils, 'httpClient', () => {
+      return Promise.resolve(mockFetch(true, 200, { foo: 'bar' }))
     })
-
-    it('should throw with unexpected error (non json)', done => {
-      const stub = sinon.stub(mockUtils, 'httpClient', () => {
-        return Promise.resolve(mockFetch(false, 500, 'Oops, too bad!'))
+    handleResponse(mockUtils.httpClient, mockDescription)
+    .then(response => {
+      t.true(stub.called)
+      t.deepEqual(response, {
+        statusCode: 200,
+        headers: { ['Content-Type']: 'application/json' },
+        body: { foo: 'bar' }
       })
-      handleResponse(mockUtils.httpClient, mockDescription)
-      .then(() => done('It should have failed'))
-      .catch(error => {
-        expect(stub.called).toBe(true)
-        expect(error).toBeAn(errors.HttpError)
-        expect(error.statusCode).toBe(500)
-        expect(error.message).toEqual('Unexpected non-JSON error response.')
-        expect(error.body).toEqual({
-          statusCode: 500,
-          raw: 'Oops, too bad!',
-          originalRequest: mockDescription,
-          headers: { ['Content-Type']: 'application/json' }
-        })
-        done()
-      })
-      .catch(done)
+      t.end()
     })
-
-    Object.keys(Object.assign({}, errorsMap, {
-      511: errors.HttpError
-    })).forEach(code => {
-      it(`should throw with a mapped error ${code}`, done => {
-        const stub = sinon.stub(mockUtils, 'httpClient', () => {
-          return Promise.resolve(mockFetch(false, parseInt(code),
-            JSON.stringify({ message: 'Oops' })))
-        })
-        handleResponse(mockUtils.httpClient, mockDescription)
-        .then(() => done('It should have failed'))
-        .catch(error => {
-          expect(stub.called).toBe(true)
-          expect(error).toBeAn(errorsMap[code] || errors.HttpError)
-          expect(error.statusCode).toBe(parseInt(code))
-          expect(error.message).toEqual(
-            code === 499 ? 'Unknown error with code foo' : 'Oops')
-          expect(error.body).toEqual({
-            message: 'Oops',
-            statusCode: code,
-            originalRequest: mockDescription,
-            headers: { ['Content-Type']: 'application/json' }
-          })
-          done()
-        })
-        .catch(done)
-      })
-    })
-
+    .catch(t.end)
   })
+
+  t.test('should throw with status code 404', t => {
+    setup()
+
+    const stub = sinon.stub(mockUtils, 'httpClient', () => {
+      return Promise.resolve(mockFetch(false, 404))
+    })
+    handleResponse(mockUtils.httpClient, mockDescription)
+    .then(() => t.end('It should have failed'))
+    .catch(error => {
+      t.true(stub.called)
+      t.true(error instanceof errors.NotFound)
+      t.equal(error.statusCode, 404)
+      t.equal(error.message, 'Endpoint /foo not found.')
+      t.deepEqual(error.body, {
+        statusCode: 404,
+        message: 'Endpoint /foo not found.',
+        originalRequest: mockDescription,
+        headers: { ['Content-Type']: 'application/json' }
+      })
+      t.end()
+    })
+    .catch(t.end)
+  })
+
+  t.test('should throw with unexpected error (non json)', t => {
+    setup()
+
+    const stub = sinon.stub(mockUtils, 'httpClient', () => {
+      return Promise.resolve(mockFetch(false, 500, 'Oops, too bad!'))
+    })
+    handleResponse(mockUtils.httpClient, mockDescription)
+    .then(() => t.end('It should have failed'))
+    .catch(error => {
+      t.true(stub.called)
+      t.true(error instanceof errors.HttpError)
+      t.equal(error.statusCode, 500)
+      t.equal(error.message, 'Unexpected non-JSON error response.')
+      t.deepEqual(error.body, {
+        statusCode: 500,
+        raw: 'Oops, too bad!',
+        originalRequest: mockDescription,
+        headers: { ['Content-Type']: 'application/json' }
+      })
+      t.end()
+    })
+    .catch(t.end)
+  })
+
+  Object.keys(Object.assign({}, errorsMap, {
+    511: errors.HttpError
+  })).forEach(code => {
+    t.test(`should throw with a mapped error ${code}`, t => {
+      setup()
+
+      const stub = sinon.stub(mockUtils, 'httpClient', () => {
+        return Promise.resolve(mockFetch(false, parseInt(code),
+          JSON.stringify({ message: 'Oops' })))
+      })
+      handleResponse(mockUtils.httpClient, mockDescription)
+      .then(() => t.end('It should have failed'))
+      .catch(error => {
+        t.true(stub.called)
+        t.true(error instanceof (errorsMap[code] || errors.HttpError))
+        t.equal(error.statusCode, parseInt(code))
+        t.equal(error.message,
+          code === 499 ? 'Unknown error with code foo' : 'Oops')
+        t.deepEqual(error.body, {
+          message: 'Oops',
+          statusCode: parseInt(code),
+          originalRequest: mockDescription,
+          headers: { ['Content-Type']: 'application/json' }
+        })
+        t.end()
+      })
+      .catch(t.end)
+    })
+  })
+
 })

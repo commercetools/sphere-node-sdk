@@ -1,45 +1,57 @@
-import expect from 'expect'
+import test from 'tape'
 import * as query from '../../lib/utils/query'
 import { getDefaultQueryParams } from '../../lib/utils/default-params'
 
-describe('Utils', () => {
+test('Utils::query', t => {
 
-  describe('::query', () => {
+  let service
 
-    let service
+  function setup () {
+    service = Object.assign({ params: getDefaultQueryParams() }, query)
+  }
 
-    beforeEach(() => {
-      service = Object.assign({ params: getDefaultQueryParams() }, query)
-    })
+  t.test('should set the where param', t => {
+    setup()
 
-    it('should set the where param', () => {
-      service.where('name(en = "Foo Bar")')
-      expect(service.params.query.where).toEqual([
-        encodeURIComponent('name(en = "Foo Bar")')
-      ])
-    })
-
-    it('should throw if predicate is missing', () => {
-      expect(() => service.where()).toThrow(/Parameter `predicate` is missing/)
-    })
-
-    it('should set the whereOperator param', () => {
-      service.whereOperator('or')
-      expect(service.params.query.operator).toBe('or')
-
-      service.whereOperator('and')
-      expect(service.params.query.operator).toBe('and')
-    })
-
-    it('should throw if whereOperator is missing', () => {
-      expect(() => service.whereOperator())
-      .toThrow(/Parameter `operator` is missing/)
-    })
-
-    it('should throw if whereOperator is wrong', () => {
-      expect(() => service.whereOperator('foo'))
-      .toThrow(/Parameter `operator` is wrong, either `and` or `or`/)
-    })
-
+    service.where('name(en = "Foo Bar")')
+    t.deepEqual(service.params.query.where, [
+      encodeURIComponent('name(en = "Foo Bar")')
+    ])
+    t.end()
   })
+
+  t.test('should throw if predicate is missing', t => {
+    setup()
+
+    t.throws(() => service.where(), /Parameter `predicate` is missing/)
+    t.end()
+  })
+
+  t.test('should set the whereOperator param', t => {
+    setup()
+
+    service.whereOperator('or')
+    t.equal(service.params.query.operator, 'or')
+
+    service.whereOperator('and')
+    t.equal(service.params.query.operator, 'and')
+    t.end()
+  })
+
+  t.test('should throw if whereOperator is missing', t => {
+    setup()
+
+    t.throws(() => service.whereOperator(),
+      /Parameter `operator` is missing/)
+    t.end()
+  })
+
+  t.test('should throw if whereOperator is wrong', t => {
+    setup()
+
+    t.throws(() => service.whereOperator('foo'),
+      /Parameter `operator` is wrong, either `and` or `or`/)
+    t.end()
+  })
+
 })

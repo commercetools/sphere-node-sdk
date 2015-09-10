@@ -1,13 +1,13 @@
+import test from 'tape'
 import sinon from 'sinon'
-import expect from 'expect'
 import credentials from '../../credentials'
 import taskQueueFn from '../../lib/utils/task-queue'
 
-describe('Integration - TaskQueue token retrieval', () => {
+test('Integration - TaskQueue token retrieval', t => {
 
   let options
 
-  beforeEach(() => {
+  function setup () {
     options = {
       Promise: Promise,
       auth: {
@@ -27,9 +27,11 @@ describe('Integration - TaskQueue token retrieval', () => {
         timeout: 20000
       }
     }
-  })
+  }
 
-  it('should request a new token before processing the task', done => {
+  t.test('should request a new token before processing the task', t => {
+    setup()
+
     const taskQueue = taskQueueFn(options)
     const _queue = taskQueue.getQueue()
     const pauseSpy = sinon.spy(_queue, 'pause')
@@ -42,16 +44,18 @@ describe('Integration - TaskQueue token retrieval', () => {
     })
 
     task.then(({ statusCode }) => {
-      expect(pauseSpy.calledOnce).toBe(true)
-      expect(resumeSpy.calledOnce).toBe(true)
-      expect(options.auth.accessToken).toBeA('string')
-      expect(statusCode).toBe(200)
-      done()
+      t.true(pauseSpy.calledOnce)
+      t.true(resumeSpy.calledOnce)
+      t.equal(typeof options.auth.accessToken, 'string')
+      t.equal(statusCode, 200)
+      t.end()
     })
-    .catch(done)
+    .catch(t.end)
   })
 
-  it('should fail to request a new token if credentials are wrong', done => {
+  t.test('should fail to request a new token if credentials are wrong', t => {
+    setup()
+
     const taskQueue = taskQueueFn(Object.assign({}, options, {
       auth: Object.assign({}, options.auth, {
         credentials: {
@@ -70,23 +74,23 @@ describe('Integration - TaskQueue token retrieval', () => {
       method: 'GET',
       url: `https://api.sphere.io/${projectKey}/product-projections`
     })
-    task.then(() => done('Should have failed'))
+    task.then(() => t.end('Should have failed'))
     .catch(e => {
-      expect(pauseSpy.calledOnce).toBe(true)
-      expect(resumeSpy.called).toBe(false)
-      expect(e.body.statusCode).toBe(401)
-      expect(e.body.error).toEqual('invalid_client')
-      expect(e.body.error_description).toEqual('Please provide valid client ' +
+      t.true(pauseSpy.calledOnce)
+      t.false(resumeSpy.called)
+      t.equal(e.body.statusCode, 401)
+      t.equal(e.body.error, 'invalid_client')
+      t.equal(e.body.error_description, 'Please provide valid client ' +
         'credentials using HTTP Basic Authentication.')
-      expect(e.body.originalRequest).toEqual({
+      t.deepEqual(e.body.originalRequest, {
         url: 'https://123:secret@auth.sphere.io/oauth/token',
         method: 'POST',
         body: 'grant_type=client_credentials&scope=manage_project:foo'
       })
-      expect(e.body.headers).toExist()
-      done()
+      t.ok(e.body.headers)
+      t.end()
     })
-    .catch(done)
+    .catch(t.end)
   })
 
 })

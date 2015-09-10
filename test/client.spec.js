@@ -1,4 +1,4 @@
-import expect from 'expect'
+import test from 'tape'
 import https from 'https'
 import * as version from '../version'
 import SphereClient from '../lib'
@@ -12,27 +12,29 @@ const SERVICES = [
   'productTypes'
 ]
 
-describe('SphereClient', () => {
+test('SphereClient', t => {
 
-  it('should initialize client (as class)', () => {
+  t.test('should initialize client (as class)', t => {
     const client = new SphereClient({})
-    expect(Object.keys(client)).toEqual(SERVICES)
+    t.deepEqual(Object.keys(client), SERVICES)
+    t.end()
   })
 
-  it('should initialize client (as factory)', () => {
+  t.test('should initialize client (as factory)', t => {
     const client = SphereClient.create({})
-    expect(Object.keys(client)).toEqual(SERVICES)
+    t.deepEqual(Object.keys(client), SERVICES)
+    t.end()
   })
 
-  it('should initialize with default options', () => {
+  t.test('should initialize with default options', t => {
     const client = SphereClient.create({})
     const { options, queue } = client.productProjections
-    expect(queue).toBeAn(Object)
-    expect(options.Promise).toBeAn(Object)
-    expect(options.auth.accessToken).toNotExist()
-    expect(options.auth.credentials).toEqual({})
-    expect(options.auth.shouldRetrieveToken).toBeA('function')
-    expect(options.request).toEqual({
+    t.equal(typeof queue, 'object')
+    t.equal(typeof options.Promise, 'function')
+    t.false(options.auth.accessToken)
+    t.deepEqual(options.auth.credentials, {})
+    t.equal(typeof options.auth.shouldRetrieveToken, 'function')
+    t.deepEqual(options.request, {
       agent: undefined,
       headers: { 'User-Agent': userAgent },
       host: 'api.sphere.io',
@@ -41,9 +43,10 @@ describe('SphereClient', () => {
       timeout: 20000,
       urlPrefix: undefined
     })
+    t.end()
   })
 
-  it('should initialize with custom options', () => {
+  t.test('should initialize with custom options', t => {
     const agent = new https.Agent({})
     const headers = {
       'Content-Type': 'application/json',
@@ -64,7 +67,7 @@ describe('SphereClient', () => {
       auth: { credentials, shouldRetrieveToken },
       request: { agent, headers, maxParallel, timeout, urlPrefix }
     })
-    expect(client.productProjections.options).toEqual({
+    t.deepEqual(client.productProjections.options, {
       Promise: { foo: 'bar' },
       auth: { accessToken: undefined, credentials, shouldRetrieveToken },
       request: {
@@ -78,20 +81,22 @@ describe('SphereClient', () => {
       },
       httpMock: undefined
     })
+    t.end()
   })
 
-  it('should ensure service instance is not shared', () => {
+  t.test('should ensure service instance is not shared', t => {
     const client1 = SphereClient.create({})
     const productProjectionsService1 = client1.productProjections
-    expect(productProjectionsService1.byId('123').params.id).toEqual('123')
+    t.equal(productProjectionsService1.byId('123').params.id, '123')
 
     const client2 = SphereClient.create({})
     const productProjectionsService2 = client2.productProjections
-    expect(productProjectionsService2).toExist()
-    expect(productProjectionsService2.params.id).toNotEqual('123')
+    t.true(productProjectionsService2)
+    t.notEqual(productProjectionsService2.params.id, '123')
+    t.end()
   })
 
-  it('should register a new service', () => {
+  t.test('should register a new service', t => {
     const client = SphereClient.create({})
     const serviceConfig = {
       type: 'my-new-service',
@@ -113,16 +118,18 @@ describe('SphereClient', () => {
     }
     client.registerService('myNewService', serviceConfig, { headers })
 
-    expect(client.myNewService).toExist()
-    expect(client.myNewService.baseEndpoint).toBe('/my-service-endpoint')
-    expect(client.myNewService.update).toNotExist()
-    expect(client.myNewService.staged).toNotExist()
+    t.true(client.myNewService)
+    t.equal(client.myNewService.baseEndpoint, '/my-service-endpoint')
+    t.false(client.myNewService.update)
+    t.false(client.myNewService.staged)
+    t.end()
   })
 
-  it('should replace http client', () => {
+  t.test('should replace http client', t => {
     const client = SphereClient.create({})
     client.replaceHttpClient('foo')
 
-    expect(client.products.options.httpMock).toBe('foo')
+    t.equal(client.products.options.httpMock, 'foo')
+    t.end()
   })
 })

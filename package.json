@@ -19,10 +19,11 @@
   },
   "scripts": {
     "clean": "rm -rf dist && mkdir -p dist",
-    "coverage": "npm run lint && ./scripts/version && NODE_ENV=test babel-node $(npm bin)/isparta cover $(npm bin)/_mocha -- --compilers js:babel/register --recursive",
+    "coverage": "npm run lint && ./scripts/version && NODE_ENV=test babel-node $(npm bin)/isparta cover test",
     "dist": "npm run clean && ./scripts/version && babel lib --out-dir dist",
     "lint": "eslint lib test",
-    "test": "./scripts/version && NODE_ENV=test mocha --compilers js:babel/register --recursive",
+    "test": "./scripts/version && NODE_ENV=test babel-tape-runner test | tap-spec",
+    "test:browser": "browserify -t babelify -t [ envify --NODE_ENV test ] test | tape-run -b chrome",
     "test:watch": "npm run test -- --watch"
   },
   "dependencies": {
@@ -35,13 +36,18 @@
     "babel": "^5.8.23",
     "babel-core": "^5.8.23",
     "babel-eslint": "^4.1.1",
+    "babel-tape-runner": "^1.2.0",
+    "babelify": "^6.3.0",
+    "browserify": "^11.0.1",
     "coveralls": "^2.11.4",
+    "envify": "^3.4.0",
     "eslint": "^1.3.1",
     "eslint-config-commercetools": "^0.1.0",
-    "expect": "^1.9.0",
     "isparta": "^3.0.4",
-    "mocha": "^2.3.0",
-    "sinon": "^1.16.1"
+    "sinon": "^1.16.1",
+    "tap-spec": "^4.1.0",
+    "tape": "^4.2.0",
+    "tape-run": "^1.1.0"
   },
   "keywords": [
     "sphere",

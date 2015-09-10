@@ -1,12 +1,12 @@
-import expect from 'expect'
+import test from 'tape'
 import credentials from '../../../credentials'
 import SphereClient from '../../../lib'
 
-describe('Integration - Client', () => {
+test('Integration - Client', t => {
 
   let client
 
-  beforeEach(() => {
+  function setup () {
     client = SphereClient.create({
       auth: {
         credentials: {
@@ -23,12 +23,14 @@ describe('Integration - Client', () => {
         maxParallel: 2
       }
     })
-  })
+  }
 
-  describe('::productTypes', () => {
+  t.test('::productTypes', t => {
 
-    it('should create, update and delete a product type', function (done) {
-      this.timeout(5000)
+    t.test('should create, update and delete a product type',
+      { timeout: 5000 }
+    , t => {
+      setup()
 
       client.productTypes.create({
         name: 'My product type',
@@ -40,33 +42,33 @@ describe('Integration - Client', () => {
       }))
       .then(({ body }) => client.productTypes.byId(body.id).fetch())
       .then(({ body }) => {
-        expect(body.name).toEqual('Type foo')
-        expect(body.version).toBe(2)
+        t.equal(body.name, 'Type foo')
+        t.equal(body.version, 2)
         return client.productTypes.byId(body.id).delete(body.version)
       })
       .then(({ statusCode }) => {
-        expect(statusCode).toBe(200)
-        done()
+        t.equal(statusCode, 200)
+        t.end()
       })
-      .catch(done)
+      .catch(t.end)
     })
 
   })
 
-  describe('::products', () => {
+  t.test('::products', t => {
 
-    it('should get some products', function (done) {
-      this.timeout(5000)
+    t.test('should get some products', { timeout: 5000 }, t => {
+      setup()
 
       Promise.all(Array.apply(null, Array(10))
         .map(() => client.productProjections.fetch()))
       .then(allJsonRes => {
         allJsonRes.forEach(({ body }) => {
-          expect(body.results).toExist()
+          t.ok(body.results, 'body `results` exist')
         })
-        done()
+        t.end()
       })
-      .catch(done)
+      .catch(t.end)
     })
 
   })

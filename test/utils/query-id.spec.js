@@ -1,24 +1,25 @@
-import expect from 'expect'
+import test from 'tape'
 import * as queryId from '../../lib/utils/query-id'
 
-describe('Utils', () => {
+test('Utils::queryId', t => {
 
-  describe('::queryId', () => {
+  let service
 
-    let service
+  function setup () {
+    service = Object.assign({ params: {} }, queryId)
+  }
 
-    beforeEach(() => {
-      service = Object.assign({ params: {} }, queryId)
-    })
+  t.test('should set the id param', t => {
+    setup()
 
-    it('should set the id param', () => {
-      service.byId('123')
-      expect(service.params.id).toBe('123')
-    })
-
-    it('should throw if id is missing', () => {
-      expect(() => service.byId()).toThrow(/Parameter `id` is missing/)
-    })
-
+    service.byId('123')
+    t.equal(service.params.id, '123')
+    t.end()
   })
+
+  t.test('should throw if id is missing', t => {
+    t.throws(() => service.byId(), /Parameter `id` is missing/)
+    t.end()
+  })
+
 })

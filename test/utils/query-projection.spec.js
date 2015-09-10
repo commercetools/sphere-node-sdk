@@ -1,26 +1,26 @@
-import expect from 'expect'
+import test from 'tape'
 import * as queryProjection from '../../lib/utils/query-projection'
 
-describe('Utils', () => {
+test('Utils::queryProjection', t => {
 
-  describe('::queryProjection', () => {
+  let service
 
-    let service
+  function setup () {
+    service = Object.assign({ params: {} }, queryProjection)
+  }
 
-    beforeEach(() => {
-      service = Object.assign({ params: {} }, queryProjection)
-    })
+  t.test('should set the staged param', t => {
+    setup()
 
-    it('should set the staged param', () => {
-      service.staged()
-      expect(service.params.staged).toBe(true)
+    service.staged()
+    t.true(service.params.staged)
 
-      service.staged(false)
-      expect(service.params.staged).toBe(false)
+    service.staged(false)
+    t.false(service.params.staged)
 
-      service.staged(true)
-      expect(service.params.staged).toBe(true)
-    })
-
+    service.staged(true)
+    t.true(service.params.staged)
+    t.end()
   })
+
 })

@@ -1,24 +1,22 @@
-import expect from 'expect'
+import test from 'tape'
 import classify from '../../lib/utils/classify'
 
-describe('Utils', () => {
+test('Utils::classify', t => {
 
-  describe('::classify', () => {
-
-    it('should freeze non-function property and make it non-enumerable',
-      () => {
-        const composed = classify(Object.assign({},
-          { foo: 'bar' },
-          { bar: { a: 1, b: 2 } },
-          { getFoo () { return this.foo } },
-          { getBar () { return this.bar } }
-        ))
-        Object.keys(composed).forEach(key => {
-          expect(composed[key]).toBeA('function')
-        })
-        expect(Object.keys(composed).length).toBe(2)
-        expect(Object.getOwnPropertyNames(composed).length).toBe(4)
+  t.test('should freeze non-function property and make it non-enumerable',
+    t => {
+      const composed = classify(Object.assign({},
+        { foo: 'bar' },
+        { bar: { a: 1, b: 2 } },
+        { getFoo () { return this.foo } },
+        { getBar () { return this.bar } }
+      ))
+      Object.keys(composed).forEach(key => {
+        t.equal(typeof composed[key], 'function')
       })
+      t.equal(Object.keys(composed).length, 2)
+      t.equal(Object.getOwnPropertyNames(composed).length, 4)
+      t.end()
+    })
 
-  })
 })

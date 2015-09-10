@@ -1,19 +1,20 @@
-import expect from 'expect'
+import test from 'tape'
 import SphereClient from '../lib'
 
 const { errors, http } = SphereClient
 
-describe('Public exports', () => {
+test('Public exports', t => {
 
-  it('should export SphereClient', () => {
-    expect(SphereClient).toBeA('function')
-    expect(SphereClient.name).toEqual('SphereClient')
+  t.test('should export SphereClient', t => {
+    t.equal(typeof SphereClient, 'function')
+    t.equal(SphereClient.name, 'SphereClient')
+    t.end()
   })
 
-  it('should export static properties', () => {
-    expect(errors).toExist()
-
-    expect(http).toBeA('function')
-    expect(http.name).toEqual('http')
+  t.test('should export static properties', t => {
+    t.ok(errors)
+    t.equal(typeof http, 'function')
+    t.equal(http.name, 'http')
+    t.end()
   })
 })
