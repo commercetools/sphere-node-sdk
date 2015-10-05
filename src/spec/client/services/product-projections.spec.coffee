@@ -28,7 +28,7 @@ describe 'ProductProjectionService', ->
 
   it 'should reset default params', ->
     expect(@service._params).toEqual
-      encoded: ['where', 'expand', 'sort', 'filter', 'filter.query', 'filter.facets', 'facets']
+      encoded: ['where', 'expand', 'sort', 'staged', 'filter', 'filter.query', 'filter.facets', 'facets', 'searchKeywords']
       query:
         where: []
         operator: 'and'
@@ -113,7 +113,7 @@ describe 'ProductProjectionService', ->
       .facet('facet1:bar1')
       .facet('facet2:bar2')
     expect(@service._params).toEqual
-      encoded: ['where', 'expand', 'sort', 'filter', 'filter.query', 'filter.facets', 'facets']
+      encoded: ['where', 'expand', 'sort', 'staged', 'filter', 'filter.query', 'filter.facets', 'facets', 'searchKeywords']
       query:
         where: []
         operator: 'and'
@@ -132,7 +132,7 @@ describe 'ProductProjectionService', ->
         searchKeywords: []
     _service.search()
     expect(@service._params).toEqual
-      encoded: ['where', 'expand', 'sort', 'filter', 'filter.query', 'filter.facets', 'facets']
+      encoded: ['where', 'expand', 'sort', 'staged', 'filter', 'filter.query', 'filter.facets', 'facets', 'searchKeywords']
       query:
         where: []
         operator: 'and'

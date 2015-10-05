@@ -237,9 +237,13 @@ class BaseService
     parsed = _.parseQuery(query, false)
     unless withEncodedParams
       # when we rebuild the query string, we need to encode following parameters
-      _.each @_params.encoded, (param) ->
+      _.each @_params.encoded, (param) =>
         if parsed[param]
           parsed[param] = _.map _.flatten([parsed[param]]), (p) -> encodeURIComponent(p)
+          if _.isArray @_params.query[param]
+            @_params.query[param].push = parsed[param]
+          else
+            @_params.query[param] = parsed[param]
     @_params.queryString = _.stringifyQuery(parsed)
     debug 'setting queryString: %s', query
     this
