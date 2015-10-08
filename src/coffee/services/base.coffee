@@ -40,6 +40,7 @@ class BaseService
     # Private: Container that holds request parameters such `id`, `query`, etc
     @_params =
       encoded: ['where', 'expand', 'sort']
+      plain: ['perPage', 'page']
       query:
         where: []
         operator: 'and'
@@ -239,11 +240,12 @@ class BaseService
       # when we rebuild the query string, we need to encode following parameters
       _.each @_params.encoded, (param) =>
         if parsed[param]
-          parsed[param] = _.map _.flatten([parsed[param]]), (p) -> encodeURIComponent(p)
-          if _.isArray @_params.query[param]
-            @_params.query[param].push = parsed[param]
-          else
+          if _.contains @_params.encoded, param
+            parsed[param] = _.map _.flatten([parsed[param]]), (p) -> encodeURIComponent(p)
             @_params.query[param] = parsed[param]
+      _.each @_params.plain, (param) =>
+        if parsed[param]
+          @_params.query[param] = parsed[param]
     @_params.queryString = _.stringifyQuery(parsed)
     debug 'setting queryString: %s', query
     this

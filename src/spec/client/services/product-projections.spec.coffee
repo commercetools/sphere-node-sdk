@@ -28,7 +28,8 @@ describe 'ProductProjectionService', ->
 
   it 'should reset default params', ->
     expect(@service._params).toEqual
-      encoded: ['where', 'expand', 'sort', 'staged', 'filter', 'filter.query', 'filter.facets', 'facets', 'searchKeywords']
+      encoded: ['where', 'expand', 'sort', 'filter', 'filter.query', 'filter.facets', 'facets', 'searchKeywords']
+      plain: ['perPage', 'page', 'staged']
       query:
         where: []
         operator: 'and'
@@ -113,7 +114,8 @@ describe 'ProductProjectionService', ->
       .facet('facet1:bar1')
       .facet('facet2:bar2')
     expect(@service._params).toEqual
-      encoded: ['where', 'expand', 'sort', 'staged', 'filter', 'filter.query', 'filter.facets', 'facets', 'searchKeywords']
+      encoded: ['where', 'expand', 'sort', 'filter', 'filter.query', 'filter.facets', 'facets', 'searchKeywords']
+      plain: ['perPage', 'page', 'staged']
       query:
         where: []
         operator: 'and'
@@ -132,7 +134,8 @@ describe 'ProductProjectionService', ->
         searchKeywords: []
     _service.search()
     expect(@service._params).toEqual
-      encoded: ['where', 'expand', 'sort', 'staged', 'filter', 'filter.query', 'filter.facets', 'facets', 'searchKeywords']
+      encoded: ['where', 'expand', 'sort', 'filter', 'filter.query', 'filter.facets', 'facets', 'searchKeywords']
+      plain: ['perPage', 'page', 'staged']
       query:
         where: []
         operator: 'and'
@@ -158,6 +161,25 @@ describe 'ProductProjectionService', ->
 
     @service.byQueryString('filter=variants.price.centAmount%3A100&filter=variants.attributes.foo%3Abar&staged=true&limit=100&offset=2', true)
     expect(@service._params.queryString).toEqual 'filter=variants.price.centAmount%3A100&filter=variants.attributes.foo%3Abar&staged=true&limit=100&offset=2'
+
+  it 'should analyze and store params from queryString', ->
+    @service.byQueryString('where=productType(id="123")&perPage=100&staged=true')
+    expect(@service._params).toEqual
+      encoded: ['where', 'expand', 'sort', 'filter', 'filter.query', 'filter.facets', 'facets', 'searchKeywords']
+      plain: ['perPage', 'page', 'staged']
+      query:
+        where: ['productType(id%3D%22123%22)']
+        operator: 'and'
+        sort: []
+        expand: []
+        filter: []
+        filterByQuery: []
+        filterByFacets: []
+        facet: []
+        searchKeywords: []
+        perPage: '100'
+        staged: 'true'
+      queryString : 'where=productType(id%3D%22123%22)&perPage=100&staged=true'
 
   describe ':: search', ->
 

@@ -28,7 +28,8 @@ class ProductProjectionService extends BaseService
       facet: []
       searchKeywords: []
 
-    @_params.encoded = @_params.encoded.concat(['staged', 'filter', 'filter.query', 'filter.facets', 'facets', 'searchKeywords'])
+    @_params.encoded = @_params.encoded.concat(['filter', 'filter.query', 'filter.facets', 'facets', 'searchKeywords'])
+    @_params.plain = @_params.plain.concat(['staged'])
 
   # Public: Define whether to query for staged or current product projection.
   #
