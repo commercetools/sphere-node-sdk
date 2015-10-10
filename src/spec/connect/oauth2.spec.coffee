@@ -7,7 +7,7 @@ describe 'OAuth2', ->
   it 'should initialize with default options', ->
     oa = new OAuth2 config: Config
     expect(oa).toBeDefined()
-    expect(oa._options.host).toBe 'auth.sphere.io'
+    expect(oa._options.baseUrl).toBe 'https://auth.sphere.io'
     expect(oa._options.accessTokenUrl).toBe '/oauth/token'
     expect(oa._options.timeout).toBe 20000
     expect(oa._options.rejectUnauthorized).toBe true
@@ -27,7 +27,7 @@ describe 'OAuth2', ->
     oa = new OAuth2
       config: Config
       host: 'example.com'
-    expect(oa._options.host).toBe 'example.com'
+    expect(oa._options.baseUrl).toBe 'https://example.com'
 
   it 'should pass \'accessTokenUrl\' option', ->
     oa = new OAuth2

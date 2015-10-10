@@ -34,15 +34,18 @@ class OAuth2
   constructor: (opts = {}) ->
     config = opts.config
     throw new Error('Missing credentials') unless config
-    throw new Error('Missing \'client_id\'') unless config.client_id
-    throw new Error('Missing \'client_secret\'') unless config.client_secret
+    throw new Error('Missing \'client_id\'') unless config.client_id or opts.access_token
+    throw new Error('Missing \'client_secret\'') unless config.client_secret or opts.access_token
     throw new Error('Missing \'project_key\'') unless config.project_key
+
+    host = opts.host or 'auth.sphere.io'
+    baseUrl = opts.baseUrl or "https://#{host}"
 
     rejectUnauthorized = if _.isUndefined(opts.rejectUnauthorized) then true else opts.rejectUnauthorized
     userAgent = if _.isUndefined(opts.user_agent) then 'sphere-node-connect' else opts.user_agent
     @_options =
       config: config
-      host: opts.host or 'auth.sphere.io'
+      baseUrl: baseUrl
       accessTokenUrl: opts.accessTokenUrl or '/oauth/token'
       timeout: opts.timeout or 20000
       rejectUnauthorized: rejectUnauthorized
@@ -61,7 +64,10 @@ class OAuth2
 
     payload = _.stringifyQuery(params)
     request_options =
-      uri: "https://#{@_options.config.client_id}:#{@_options.config.client_secret}@#{@_options.host}#{@_options.accessTokenUrl}"
+      uri: "#{@_options.baseUrl}#{@_options.accessTokenUrl}"
+      auth:
+        user: @_options.config.client_id
+        pass: @_options.config.client_secret
       json: true
       method: 'POST'
       body: payload

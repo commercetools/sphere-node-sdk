@@ -14,10 +14,12 @@ OAuth2 = require './oauth2'
 #       client_secret: "CLIENT_SECRET_HERE"
 #       project_key: "PROJECT_KEY_HERE"
 #     host: 'api.sphere.io' # optional
+#     baseUrl: 'https://api.sphere.io' # optional
 #     access_token: '' # optional (if not provided it will automatically retrieve an `access_token`)
 #     timeout: 20000 # optional
 #     rejectUnauthorized: true # optional
 #     oauth_host: 'auth.sphere.io' # optional (used when retrieving the `access_token` internally)
+#     oauth_baseUrl: 'https://auth.sphere.io' # optional (used when retrieving the `access_token` internally)
 #     user_agent: 'sphere-node-connect' # optional
 class Rest
 
@@ -35,25 +37,29 @@ class Rest
   constructor: (opts = {}) ->
     config = opts.config
     throw new Error('Missing credentials') unless config
-    throw new Error('Missing \'client_id\'') unless config.client_id
-    throw new Error('Missing \'client_secret\'') unless config.client_secret
+    throw new Error('Missing \'client_id\'') unless config.client_id or opts.access_token
+    throw new Error('Missing \'client_secret\'') unless config.client_secret or opts.access_token
     throw new Error('Missing \'project_key\'') unless config.project_key
+
+    host = opts.host or 'api.sphere.io'
+    baseUrl = opts.baseUrl or "https://#{host}"
 
     rejectUnauthorized = if _.isUndefined(opts.rejectUnauthorized) then true else opts.rejectUnauthorized
     userAgent = if _.isUndefined(opts.user_agent) then 'sphere-node-connect' else opts.user_agent
     @_options =
       config: config
-      host: opts.host or 'api.sphere.io'
+      baseUrl: baseUrl
       access_token: opts.access_token or undefined
       timeout: opts.timeout or 20000
       rejectUnauthorized: rejectUnauthorized
       headers:
         'User-Agent': userAgent
-    @_options.uri = "https://#{@_options.host}/#{@_options.config.project_key}"
+    @_options.uri = "#{@_options.baseUrl}/#{@_options.config.project_key}"
 
     oauth_options = _.deepClone(opts)
     _.extend oauth_options,
-      host: opts.oauth_host
+      host: opts.oauth_host,
+      baseUrl: opts.oauth_baseUrl
     @_oauth = new OAuth2 oauth_options
 
     if @_options.access_token
@@ -138,7 +144,7 @@ class Rest
           uri: "#{@_options.uri}#{params.resource}"
           json: true
           method: params.method
-          host: @_options.host
+          baseUrl: @_options.baseUrl
           headers: @_options.headers
           timeout: @_options.timeout
           rejectUnauthorized: @_options.rejectUnauthorized
