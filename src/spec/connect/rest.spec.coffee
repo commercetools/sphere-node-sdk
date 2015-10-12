@@ -9,7 +9,8 @@ describe 'Rest', ->
     rest = new Rest config: Config
     expect(rest).toBeDefined()
     expect(rest._oauth).toBeDefined()
-    expect(rest._options.baseUrl).toBe 'https://api.sphere.io'
+    expect(rest._options.host).toBe 'api.sphere.io'
+    expect(rest._options.protocol).toBe 'https'
     expect(rest._options.access_token).not.toBeDefined()
     expect(rest._options.uri).toBe "https://api.sphere.io/#{Config.project_key}"
     expect(rest._options.timeout).toBe 20000
@@ -31,7 +32,13 @@ describe 'Rest', ->
     rest = new Rest
       config: Config
       host: 'example.com'
-    expect(rest._options.baseUrl).toBe 'https://example.com'
+    expect(rest._options.host).toBe 'example.com'
+
+  it 'should pass \'protocol\' option', ->
+    rest = new Rest
+      config: Config
+      protocol: 'http'
+    expect(rest._options.protocol).toBe 'http'
 
   it 'should pass \'access_token\' option', ->
     rest = new Rest
@@ -55,7 +62,13 @@ describe 'Rest', ->
     rest = new Rest
       config: Config
       oauth_host: 'auth.escemo.com'
-    expect(rest._oauth._options.baseUrl).toBe 'https://auth.escemo.com'
+    expect(rest._oauth._options.host).toBe 'auth.escemo.com'
+
+  it 'should pass \'oauth_protocol\' option', ->
+    rest = new Rest
+      config: Config
+      oauth_protocol: 'http'
+    expect(rest._oauth._options.protocol).toBe 'http'
 
   it 'should pass \'user_agent\' option', ->
     rest = new Rest
@@ -85,7 +98,7 @@ describe 'Rest', ->
         uri: "https://api.sphere.io/#{Config.project_key}#{endpoint}"
         json: true
         method: method
-        baseUrl: 'https://api.sphere.io'
+        host: 'api.sphere.io'
         headers:
           'User-Agent': 'sphere-node-connect'
           'Authorization': 'Bearer foo'

@@ -14,12 +14,12 @@ OAuth2 = require './oauth2'
 #       client_secret: "CLIENT_SECRET_HERE"
 #       project_key: "PROJECT_KEY_HERE"
 #     host: 'api.sphere.io' # optional
-#     baseUrl: 'https://api.sphere.io' # optional
+#     protocol: 'https' # optional
 #     access_token: '' # optional (if not provided it will automatically retrieve an `access_token`)
 #     timeout: 20000 # optional
 #     rejectUnauthorized: true # optional
 #     oauth_host: 'auth.sphere.io' # optional (used when retrieving the `access_token` internally)
-#     oauth_baseUrl: 'https://auth.sphere.io' # optional (used when retrieving the `access_token` internally)
+#     oauth_protocol: 'https' # optional (used when retrieving the `access_token` internally)
 #     user_agent: 'sphere-node-connect' # optional
 class Rest
 
@@ -28,6 +28,7 @@ class Rest
   # options - An {Object} to configure the service
   #   :config - {Object} It contains the credentials `project_key`, `client_id`, `client_secret`
   #   :host - {String} The host (default `api.sphere.io`)
+  #   :protocol - {String} The protocol (default `https`)
   #   :user_agent - {String} The request `User-Agent` (default `sphere-node-connect`)
   #   :timeout - {Number} The request timeout (default `20000`)
   #   :rejectUnauthorized - {Boolean} Whether to reject clients with invalid certificates or not (default `true`)
@@ -42,24 +43,25 @@ class Rest
     throw new Error('Missing \'project_key\'') unless config.project_key
 
     host = opts.host or 'api.sphere.io'
-    baseUrl = opts.baseUrl or "https://#{host}"
+    protocol = opts.protocol or 'https'
 
     rejectUnauthorized = if _.isUndefined(opts.rejectUnauthorized) then true else opts.rejectUnauthorized
     userAgent = if _.isUndefined(opts.user_agent) then 'sphere-node-connect' else opts.user_agent
     @_options =
       config: config
-      baseUrl: baseUrl
+      host: host
+      protocol: protocol
       access_token: opts.access_token or undefined
       timeout: opts.timeout or 20000
       rejectUnauthorized: rejectUnauthorized
       headers:
         'User-Agent': userAgent
-    @_options.uri = "#{@_options.baseUrl}/#{@_options.config.project_key}"
+    @_options.uri = "#{@_options.protocol}://#{@_options.host}/#{@_options.config.project_key}"
 
     oauth_options = _.deepClone(opts)
     _.extend oauth_options,
       host: opts.oauth_host,
-      baseUrl: opts.oauth_baseUrl
+      protocol: opts.oauth_protocol
     @_oauth = new OAuth2 oauth_options
 
     if @_options.access_token
@@ -144,7 +146,7 @@ class Rest
           uri: "#{@_options.uri}#{params.resource}"
           json: true
           method: params.method
-          baseUrl: @_options.baseUrl
+          host: @_options.host
           headers: @_options.headers
           timeout: @_options.timeout
           rejectUnauthorized: @_options.rejectUnauthorized
