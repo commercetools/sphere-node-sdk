@@ -22,6 +22,7 @@ ReviewService            = require './services/reviews'
 ShippingMethodService    = require './services/shipping-methods'
 StateService             = require './services/states'
 TaxCategoryService       = require './services/tax-categories'
+TypeService              = require './services/types'
 ZoneService              = require './services/zones'
 
 ALL_SERVICES = [
@@ -46,6 +47,7 @@ ALL_SERVICES = [
   {key: 'shippingMethods',    name: ShippingMethodService},
   {key: 'states',             name: StateService},
   {key: 'taxCategories',      name: TaxCategoryService},
+  {key: 'types',              name: TypeService}
   {key: 'zones',              name: ZoneService}
 ]
 
@@ -207,6 +209,7 @@ class SphereClient
   # - `shippingMethods`
   # - `states`
   # - `taxCategories`
+  # - `types`
   # - `zones`
   #
   # options - An {Object} to configure the client
