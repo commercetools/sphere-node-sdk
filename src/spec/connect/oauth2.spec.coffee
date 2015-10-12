@@ -8,6 +8,7 @@ describe 'OAuth2', ->
     oa = new OAuth2 config: Config
     expect(oa).toBeDefined()
     expect(oa._options.host).toBe 'auth.sphere.io'
+    expect(oa._options.protocol).toBe 'https'
     expect(oa._options.accessTokenUrl).toBe '/oauth/token'
     expect(oa._options.timeout).toBe 20000
     expect(oa._options.rejectUnauthorized).toBe true
@@ -28,6 +29,12 @@ describe 'OAuth2', ->
       config: Config
       host: 'example.com'
     expect(oa._options.host).toBe 'example.com'
+
+  it "should pass 'protocol' option", ->
+    oa = new OAuth2
+      config: Config
+      protocol: 'http'
+    expect(oa._options.protocol).toBe 'http'
 
   it 'should pass \'accessTokenUrl\' option', ->
     oa = new OAuth2
