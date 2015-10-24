@@ -211,8 +211,8 @@ describe 'Integration Products', ->
     setTimeout =>
       @client.productProjections.text('sku', 'en').staged(true).perPage(80).search()
       .then (result) =>
-        expect(result.body.count).toBe 51
-        expect(result.body.results.length).toBe 51
+        expect(result.body.count).toBeGreaterThan 50
+        expect(result.body.results.length).toBeGreaterThan 50
 
         @client.productProjections.text(slugToLookFor, 'en').staged(true).search()
       .then (result) ->
