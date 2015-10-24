@@ -1,7 +1,7 @@
 import test from 'tape'
 import SphereClient from '../lib'
 
-const { errors, http } = SphereClient
+const { errors, features, http } = SphereClient
 
 test('Public exports', t => {
 
@@ -15,6 +15,7 @@ test('Public exports', t => {
     t.ok(errors)
     t.equal(typeof http, 'function')
     t.equal(http.name, 'http')
+    t.equal(Object.keys(features).length, 10)
     t.end()
   })
 })
