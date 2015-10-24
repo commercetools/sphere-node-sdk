@@ -30,6 +30,7 @@ describe 'SphereClient', ->
     expect(@client.customers).toBeDefined()
     expect(@client.customerGroups).toBeDefined()
     expect(@client.discountCodes).toBeDefined()
+    expect(@client.graphql).toBeDefined()
     expect(@client.inventoryEntries).toBeDefined()
     expect(@client.messages).toBeDefined()
     expect(@client.orders).toBeDefined()

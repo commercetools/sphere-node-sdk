@@ -9,6 +9,7 @@ CustomObjectService      = require './services/custom-objects'
 CustomerService          = require './services/customers'
 CustomerGroupService     = require './services/customer-groups'
 DiscountCodeService      = require './services/discount-codes'
+GraphQLService           = require './services/graphql'
 InventoryEntryService    = require './services/inventory-entries'
 MessageService           = require './services/messages'
 OrderService             = require './services/orders'
@@ -34,6 +35,7 @@ ALL_SERVICES = [
   {key: 'customers',          name: CustomerService},
   {key: 'customerGroups',     name: CustomerGroupService},
   {key: 'discountCodes',      name: DiscountCodeService},
+  {key: 'graphql',            name: GraphQLService},
   {key: 'inventoryEntries',   name: InventoryEntryService},
   {key: 'messages',           name: MessageService},
   {key: 'orders',             name: OrderService},
@@ -196,6 +198,7 @@ class SphereClient
   # - `customers`
   # - `customerGroups`
   # - `discountCodes`
+  # - `graphql`
   # - `inventoryEntries`
   # - `messages`
   # - `orders`
