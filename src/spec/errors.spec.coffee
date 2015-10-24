@@ -31,6 +31,15 @@ describe 'Errors', ->
     expect(e instanceof Error).toBe true
     expect(e instanceof Errors.SphereError).toBe true
 
+  it 'should create general GraphQLError', ->
+    e = new Errors.GraphQLError 'My bad', {statusCode: 400}
+
+    expect(e.message).toBe 'My bad'
+    expect(e.statusCode).toBe 400
+    expect(e.body).toEqual statusCode: 400
+    expect(e instanceof Error).toBe true
+    expect(e instanceof Errors.GraphQLError).toBe true
+
   _.each ERRORS, (error) ->
     it "should create #{error.name} error", ->
       expectedBody = # just to have an example of JSON response body

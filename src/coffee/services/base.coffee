@@ -3,7 +3,7 @@ _ = require 'underscore'
 _.mixin require('underscore-mixins')
 Promise = require 'bluebird'
 Utils = require '../utils'
-{HttpError, SphereHttpError} = require '../errors'
+{HttpError, GraphQLError, SphereHttpError} = require '../errors'
 
 # Private: RegExp to parse time period for last function.
 REGEX_LAST = /^(\d+)([s|m|h|d|w])$/
@@ -556,7 +556,14 @@ class BaseService
 
       # TODO: check other possible acceptable codes (304, ...)
       if 200 <= response.statusCode < 300
-        resolve _.extend responseJson,
+        # FIXME: find a better solution
+        if @constructor.name is 'GraphQLService' and not body.data
+          graphqlError = new GraphQLError 'GraphQL error', _.extend responseJson, body,
+            statusCode: 400
+            originalRequest: originalRequest
+          return reject graphqlError
+
+        return resolve _.extend responseJson,
           statusCode: response.statusCode
           body: body
       else if response.statusCode is 404
