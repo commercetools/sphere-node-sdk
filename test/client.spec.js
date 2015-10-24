@@ -101,16 +101,13 @@ test('SphereClient', t => {
     const serviceConfig = {
       type: 'my-new-service',
       endpoint: '/my-service-endpoint',
-      options: {
-        hasRead: true,
-        hasCreate: true,
-        hasUpdate: false,
-        hasDelete: true,
-        hasQuery: true,
-        hasQueryOne: true,
-        hasSearch: false,
-        hasProjection: false
-      }
+      features: [
+        'read',
+        'create',
+        'delete',
+        'query',
+        'queryOne'
+      ]
     }
     const headers = {
       'Content-Type': 'application/json',

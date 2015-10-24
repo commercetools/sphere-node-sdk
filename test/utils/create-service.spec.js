@@ -4,18 +4,18 @@ import createService from '../../lib/utils/create-service'
 const fakeService = {
   type: 'test',
   endpoint: '/test',
-  options: {
-    hasRead: true,
-    hasCreate: true,
-    hasUpdate: true,
-    hasDelete: true,
-    hasQuery: true,
-    hasQueryOne: true,
-    hasQueryExpand: true,
-    hasSearch: true,
-    hasProjection: true,
-    hasQueryString: true
-  }
+  features: [
+    'read',
+    'create',
+    'update',
+    'delete',
+    'query',
+    'queryOne',
+    'queryExpand',
+    'queryString',
+    'search',
+    'projection'
+  ]
 }
 
 test('Utils::createService', t => {
