@@ -5,11 +5,16 @@ import SphereClient from '../lib'
 
 const userAgent = `${version.name}-${version.version}`
 const SERVICES = [
+  // order matters!
   'categories',
+  'channels',
   'productProjections',
   'productProjectionsSearch',
   'products',
-  'productTypes'
+  'productTypes',
+
+  // keep as last!
+  'graphql'
 ]
 
 test('SphereClient', t => {

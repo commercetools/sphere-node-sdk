@@ -1,13 +1,16 @@
 import './client.spec'
 import './exports.spec'
 
+import './integration/client/graphql.spec'
 import './integration/client/products.spec'
 import './integration/auth.spec'
 import './integration/task-queue.spec'
 
+import './services/graphql.spec'
 import './services/product-projections.spec'
 
 import './utils/auth.spec'
+import './utils/build-absolute-url.spec'
 import './utils/build-query-string.spec'
 import './utils/classify.spec'
 import './utils/create-service.spec'
