@@ -12,6 +12,7 @@ const SERVICES = [
   'productProjectionsSearch',
   'products',
   'productTypes',
+  'taxCategories',
 
   // keep as last!
   'graphql'
