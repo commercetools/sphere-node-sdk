@@ -7,6 +7,7 @@ import * as queryPage from '../../lib/utils/query-page'
 import * as queryProjection from '../../lib/utils/query-projection'
 import * as querySearch from '../../lib/utils/query-search'
 import * as queryCustom from '../../lib/utils/query-custom'
+import * as features from '../../lib/utils/features'
 import { getDefaultQueryParams, getDefaultSearchParams }
   from '../../lib/utils/default-params'
 
@@ -15,19 +16,9 @@ const baseEndpoint = '/test-endpoint'
 
 test('Utils::verbs', t => {
 
-  let defaultServiceConfig, mockService, spy
+  let mockService, spy
 
   function setup () {
-    defaultServiceConfig = {
-      hasRead: false,
-      hasCreate: false,
-      hasUpdate: false,
-      hasDelete: false,
-      hasQuery: false,
-      hasQueryOne: false,
-      hasSearch: false,
-      hasProjection: false
-    },
     mockService = Object.assign({
       queue: {
         addTask: () => {}
@@ -42,7 +33,7 @@ test('Utils::verbs', t => {
         }
       },
       type: 'test-type',
-      serviceConfig: defaultServiceConfig,
+      features: [],
       params: getDefaultQueryParams(),
       baseEndpoint
     }, query, queryId, queryPage, queryCustom, verbs)
@@ -99,10 +90,7 @@ test('Utils::verbs', t => {
     setup()
 
     Object.assign(mockService, {
-      serviceConfig: Object.assign({}, defaultServiceConfig, {
-        hasQueryOne: true,
-        hasQuery: true
-      })
+      features: [ features.query, features.queryOne ]
     })
     const req = mockService.perPage(10).sort('createdAt', false)
     t.deepEqual(req.params, {
@@ -206,11 +194,7 @@ test('Utils::verbs', t => {
       setup()
 
       Object.assign(mockService, {
-        serviceConfig: Object.assign({}, defaultServiceConfig, {
-          hasQueryOne: true,
-          hasQuery: true,
-          hasProjection: true
-        })
+        features: [ features.query, features.queryOne, features.projection ]
       }, queryProjection)
 
       const req =
@@ -244,10 +228,7 @@ test('Utils::verbs', t => {
       setup()
 
       Object.assign(mockService, {
-        serviceConfig: Object.assign({}, defaultServiceConfig, {
-          hasProjection: true,
-          hasSearch: true
-        }),
+        features: [ features.projection, features.search ],
         params: getDefaultSearchParams()
       }, queryProjection, querySearch)
 

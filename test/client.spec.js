@@ -1,7 +1,7 @@
 import test from 'tape'
 import https from 'https'
 import * as version from '../version'
-import SphereClient from '../lib'
+import SphereClient, { features } from '../lib'
 
 const userAgent = `${version.name}-${version.version}`
 const SERVICES = [
@@ -108,11 +108,11 @@ test('SphereClient', t => {
       type: 'my-new-service',
       endpoint: '/my-service-endpoint',
       features: [
-        'read',
-        'create',
-        'delete',
-        'query',
-        'queryOne'
+        features.read,
+        features.create,
+        features.delete,
+        features.query,
+        features.queryOne
       ]
     }
     const headers = {

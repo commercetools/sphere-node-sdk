@@ -34,7 +34,7 @@ test('Integration - Client', t => {
 
   t.test('::graphql', t => {
 
-    t.test('should query channels', { timeout: 5000 }, t => {
+    t.test('should query channels', { timeout: 8000 }, t => {
       setup()
 
       const key1 = uniqueId('channel')
