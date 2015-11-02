@@ -1,23 +1,23 @@
 import test from 'tape'
-import ProductSync from '../../lib/sync/product-sync'
+import * as sync from '../../lib/sync'
 
 test.only('Sync::product', t => {
 
-  let sync
+  let productSync
   function setup () {
-    sync = new ProductSync()
+    productSync = sync.products()
   }
 
   t.test('should build `changeName` action', t => {
     setup()
 
-    sync.buildActions(
+    productSync.buildActions(
       { name: { en: 'Car' }, variants: [] },
       { name: { en: 'Auto' }, variants: [] }
     )
 
-    t.equal(sync.shouldUpdate(), true)
-    t.deepEqual(sync.getUpdateActions(), [
+    t.equal(productSync.shouldUpdate(), true)
+    t.deepEqual(productSync.getUpdateActions(), [
       { action: 'changeName', name: { en: 'Car' } }
     ])
     t.end()
@@ -26,7 +26,7 @@ test.only('Sync::product', t => {
   t.test('should build `add/remove Category` actions', t => {
     setup()
 
-    sync.buildActions(
+    productSync.buildActions(
       {
         categories: [
           { id: 'aebe844e-0616-420a-8397-a22c48d5e99f' },
@@ -42,8 +42,8 @@ test.only('Sync::product', t => {
       }
     )
 
-    // t.equal(sync.shouldUpdate(), true)
-    t.deepEqual(sync.getUpdateActions(), [
+    t.equal(productSync.shouldUpdate(), true)
+    t.deepEqual(productSync.getUpdateActions(), [
       {
         action: 'removeFromCategory',
         category: { id: '34cae6ad-5898-4f94-973b-ae9ceb7464ce' }
