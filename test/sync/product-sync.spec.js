@@ -1,7 +1,7 @@
 import test from 'tape'
 import * as sync from '../../lib/sync'
 
-test.only('Sync::product', t => {
+test('Sync::product', t => {
 
   let productSync
   function setup () {
