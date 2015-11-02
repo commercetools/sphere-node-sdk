@@ -32,7 +32,8 @@
     "babel-runtime": "~5.8.25",
     "clone": "~1.0.2",
     "error-class": "~1.1.1",
-    "isomorphic-fetch": "~2.2.0"
+    "isomorphic-fetch": "~2.2.0",
+    "jsondiffpatch": "~0.1.37"
   },
   "devDependencies": {
     "babel": "^5.8.23",
