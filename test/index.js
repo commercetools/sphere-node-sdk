@@ -28,3 +28,5 @@ import './utils/query.spec'
 import './utils/task-queue.spec'
 import './utils/verbs.spec'
 import './utils/with-helpers.spec'
+
+import './sync/product-sync.spec'
