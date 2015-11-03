@@ -1,23 +1,30 @@
 import test from 'tape'
-import * as sync from '../../lib/sync'
+import productsSyncFn, { actionGroups } from '../../lib/sync/products'
 
-test('Sync::product', t => {
+test.only('Sync::product', t => {
 
-  let productSync
+  let productsSync
   function setup () {
-    productSync = sync.products()
+    productsSync = productsSyncFn()
   }
+
+  t.test('should export action group list', t => {
+    t.deepEqual(actionGroups, [
+      'base', 'references', 'prices', 'attributes',
+      'images', 'variants', 'categories'
+    ])
+    t.end()
+  })
 
   t.test('should build `changeName` action', t => {
     setup()
 
-    productSync.buildActions(
+    const actions = productsSync.buildActions(
       { name: { en: 'Car' }, variants: [] },
       { name: { en: 'Auto' }, variants: [] }
     )
 
-    t.equal(productSync.shouldUpdate(), true)
-    t.deepEqual(productSync.getUpdateActions(), [
+    t.deepEqual(actions, [
       { action: 'changeName', name: { en: 'Car' } }
     ])
     t.end()
@@ -26,7 +33,7 @@ test('Sync::product', t => {
   t.test('should build `add/remove Category` actions', t => {
     setup()
 
-    productSync.buildActions(
+    const actions = productsSync.buildActions(
       {
         categories: [
           { id: 'aebe844e-0616-420a-8397-a22c48d5e99f' },
@@ -42,8 +49,7 @@ test('Sync::product', t => {
       }
     )
 
-    t.equal(productSync.shouldUpdate(), true)
-    t.deepEqual(productSync.getUpdateActions(), [
+    t.deepEqual(actions, [
       {
         action: 'removeFromCategory',
         category: { id: '34cae6ad-5898-4f94-973b-ae9ceb7464ce' }
