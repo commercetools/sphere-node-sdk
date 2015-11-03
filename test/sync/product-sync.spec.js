@@ -20,13 +20,81 @@ test.only('Sync::product', t => {
     setup()
 
     const actions = productsSync.buildActions(
-      { name: { en: 'Car' }, variants: [] },
-      { name: { en: 'Auto' }, variants: [] }
+      { name: { en: 'Sport car' } },
+      { name: { en: 'Car', de: 'Auto' } }
     )
 
     t.deepEqual(actions, [
-      { action: 'changeName', name: { en: 'Car' } }
+      { action: 'changeName', name: { en: 'Sport car' } }
     ])
+    t.end()
+  })
+
+  t.test('should build `setDescription` action', t => {
+    setup()
+
+    const actions = productsSync.buildActions(
+      { description: { en: 'A nice car', de: 'Ein schönes Auto' } },
+      { description: { it: 'Una bella macchina' } }
+    )
+
+    t.deepEqual(actions, [
+      {
+        action: 'setDescription',
+        description: { en: 'A nice car', de: 'Ein schönes Auto' }
+      }
+    ])
+    t.end()
+  })
+
+  t.test('should build `setSearchKeywords` action', t => {
+    setup()
+
+    /* eslint-disable max-len */
+    const actions = productsSync.buildActions(
+      {
+        searchKeywords: {
+          en: [
+            { text: 'Swiss Army Knife', suggestTokenizer: { type: 'whitespace' } }
+          ],
+          de: [
+            { text: 'Schweizer Messer', suggestTokenizer: { type: 'custom', inputs: [ 'schweizer messer', 'offiziersmesser', 'sackmesser', 'messer' ] } }
+          ],
+          it: [
+            { text: 'Coltello svizzero' }
+          ]
+        }
+      },
+      {
+        searchKeywords: {
+          en: [
+            { text: 'Multi tool' },
+            { text: 'Swiss Army Knife', suggestTokenizer: { type: 'whitespace' } }
+          ],
+          de: [
+            { text: 'Schweizer Messer', suggestTokenizer: { type: 'custom', inputs: [ 'schweizer messer', 'offiziersmesser', 'sackmesser' ] } }
+          ]
+        }
+      }
+    )
+
+    t.deepEqual(actions, [
+      {
+        action: 'setSearchKeywords',
+        searchKeywords: {
+          en: [
+            { text: 'Swiss Army Knife', suggestTokenizer: { type: 'whitespace' } }
+          ],
+          de: [
+            { text: 'Schweizer Messer', suggestTokenizer: { type: 'custom', inputs: [ 'schweizer messer', 'offiziersmesser', 'sackmesser', 'messer' ] } }
+          ],
+          it: [
+            { text: 'Coltello svizzero' }
+          ]
+        }
+      }
+    ])
+    /* eslint-enable max-len */
     t.end()
   })
 
