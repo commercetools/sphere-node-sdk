@@ -41,16 +41,41 @@ test('Sync::product', t => {
     t.end()
   })
 
+  t.test('should not build `changeName` action if field is null', t => {
+    setup()
+
+    t.deepEqual(productsSync.buildActions({ name: null }, {}), [])
+    t.deepEqual(productsSync.buildActions({}, { name: null }), [])
+    t.end()
+  })
+
   t.test('should build `changeSlug` action', t => {
     setup()
 
-    const before = { slug: { en: 'sport-car' } }
-    const now = { slug: { de: 'auto' } }
-    const actions = productsSync.buildActions(now, before)
-
-    t.deepEqual(actions, [
-      Object.assign({ action: 'changeSlug' }, now)
+    const before1 = { slug: { en: 'sport-car' } }
+    const now1 = { slug: { de: 'auto' } }
+    const actions1 = productsSync.buildActions(now1, before1)
+    t.deepEqual(actions1, [
+      Object.assign({ action: 'changeSlug' }, now1)
     ])
+
+    const before2 = {}
+    const now2 = { slug: { de: 'auto' } }
+    const actions2 = productsSync.buildActions(now2, before2)
+    t.deepEqual(actions2, [
+      Object.assign({ action: 'changeSlug' }, now2)
+    ])
+
+    const before3 = { slug: { de: 'auto' } }
+    const now3 = {}
+    const actions3 = productsSync.buildActions(now3, before3)
+    t.deepEqual(actions3, [])
+
+    const before4 = { slug: { de: 'auto' } }
+    const now4 = { slug: null }
+    const actions4 = productsSync.buildActions(now4, before4)
+    t.deepEqual(actions4, [{ action: 'changeSlug' }])
+
     t.end()
   })
 
