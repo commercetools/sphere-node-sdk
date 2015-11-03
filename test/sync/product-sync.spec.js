@@ -19,13 +19,25 @@ test.only('Sync::product', t => {
   t.test('should build `changeName` action', t => {
     setup()
 
-    const actions = productsSync.buildActions(
-      { name: { en: 'Sport car' } },
-      { name: { en: 'Car', de: 'Auto' } }
-    )
+    const before = { name: { en: 'Car', de: 'Auto' } }
+    const now = { name: { en: 'Sport car' } }
+    const actions = productsSync.buildActions(now, before)
 
     t.deepEqual(actions, [
-      { action: 'changeName', name: { en: 'Sport car' } }
+      Object.assign({ action: 'changeName' }, now)
+    ])
+    t.end()
+  })
+
+  t.test('should build `changeSlug` action', t => {
+    setup()
+
+    const before = { slug: { en: 'sport-car' } }
+    const now = { slug: { de: 'auto' } }
+    const actions = productsSync.buildActions(now, before)
+
+    t.deepEqual(actions, [
+      Object.assign({ action: 'changeSlug' }, now)
     ])
     t.end()
   })
@@ -33,16 +45,12 @@ test.only('Sync::product', t => {
   t.test('should build `setDescription` action', t => {
     setup()
 
-    const actions = productsSync.buildActions(
-      { description: { en: 'A nice car', de: 'Ein schönes Auto' } },
-      { description: { it: 'Una bella macchina' } }
-    )
+    const before = { description: { it: 'Una bella macchina' } }
+    const now = { description: { en: 'A nice car', de: 'Ein schönes Auto' } }
+    const actions = productsSync.buildActions(now, before)
 
     t.deepEqual(actions, [
-      {
-        action: 'setDescription',
-        description: { en: 'A nice car', de: 'Ein schönes Auto' }
-      }
+      Object.assign({ action: 'setDescription' }, now)
     ])
     t.end()
   })
@@ -51,71 +59,69 @@ test.only('Sync::product', t => {
     setup()
 
     /* eslint-disable max-len */
-    const actions = productsSync.buildActions(
-      {
-        searchKeywords: {
-          en: [
-            { text: 'Swiss Army Knife', suggestTokenizer: { type: 'whitespace' } }
-          ],
-          de: [
-            { text: 'Schweizer Messer', suggestTokenizer: { type: 'custom', inputs: [ 'schweizer messer', 'offiziersmesser', 'sackmesser', 'messer' ] } }
-          ],
-          it: [
-            { text: 'Coltello svizzero' }
-          ]
-        }
-      },
-      {
-        searchKeywords: {
-          en: [
-            { text: 'Multi tool' },
-            { text: 'Swiss Army Knife', suggestTokenizer: { type: 'whitespace' } }
-          ],
-          de: [
-            { text: 'Schweizer Messer', suggestTokenizer: { type: 'custom', inputs: [ 'schweizer messer', 'offiziersmesser', 'sackmesser' ] } }
-          ]
-        }
+    const before = {
+      searchKeywords: {
+        en: [
+          { text: 'Multi tool' },
+          { text: 'Swiss Army Knife', suggestTokenizer: { type: 'whitespace' } }
+        ],
+        de: [
+          { text: 'Schweizer Messer', suggestTokenizer: { type: 'custom', inputs: [ 'schweizer messer', 'offiziersmesser', 'sackmesser' ] } }
+        ]
       }
-    )
+    }
+    const now = {
+      searchKeywords: {
+        en: [
+          { text: 'Swiss Army Knife', suggestTokenizer: { type: 'whitespace' } }
+        ],
+        de: [
+          { text: 'Schweizer Messer', suggestTokenizer: { type: 'custom', inputs: [ 'schweizer messer', 'offiziersmesser', 'sackmesser', 'messer' ] } }
+        ],
+        it: [
+          { text: 'Coltello svizzero' }
+        ]
+      }
+    }
+    /* eslint-enable max-len */
+    const actions = productsSync.buildActions(now, before)
 
     t.deepEqual(actions, [
-      {
-        action: 'setSearchKeywords',
-        searchKeywords: {
-          en: [
-            { text: 'Swiss Army Knife', suggestTokenizer: { type: 'whitespace' } }
-          ],
-          de: [
-            { text: 'Schweizer Messer', suggestTokenizer: { type: 'custom', inputs: [ 'schweizer messer', 'offiziersmesser', 'sackmesser', 'messer' ] } }
-          ],
-          it: [
-            { text: 'Coltello svizzero' }
-          ]
-        }
-      }
+      Object.assign({ action: 'setSearchKeywords' }, now)
     ])
-    /* eslint-enable max-len */
+    t.end()
+  })
+
+  t.test('should build `setTaxCategory` action', t => {
+    setup()
+
+    const before = { taxCategory: { typeId: 'tax-category', id: '123' } }
+    const now = { taxCategory: { typeId: 'tax-category', id: '456' } }
+    const actions = productsSync.buildActions(now, before)
+
+    t.deepEqual(actions, [
+      Object.assign({ action: 'setTaxCategory' }, now)
+    ])
     t.end()
   })
 
   t.test('should build `add/remove Category` actions', t => {
     setup()
 
-    const actions = productsSync.buildActions(
-      {
-        categories: [
-          { id: 'aebe844e-0616-420a-8397-a22c48d5e99f' },
-          { id: '4f278964-48c0-4f2c-8b61-09310d1de60a' } ,
-          { id: 'cca7a250-d8cf-4b8a-9d47-60fcc093b86b' }
-        ]
-      },
-      {
-        categories: [
-          { id: 'aebe844e-0616-420a-8397-a22c48d5e99f' },
-          { id: '34cae6ad-5898-4f94-973b-ae9ceb7464ce' }
-        ]
-      }
-    )
+    const before = {
+      categories: [
+        { id: 'aebe844e-0616-420a-8397-a22c48d5e99f' },
+        { id: '34cae6ad-5898-4f94-973b-ae9ceb7464ce' }
+      ]
+    }
+    const now = {
+      categories: [
+        { id: 'aebe844e-0616-420a-8397-a22c48d5e99f' },
+        { id: '4f278964-48c0-4f2c-8b61-09310d1de60a' } ,
+        { id: 'cca7a250-d8cf-4b8a-9d47-60fcc093b86b' }
+      ]
+    }
+    const actions = productsSync.buildActions(now, before)
 
     t.deepEqual(actions, [
       {
