@@ -1,7 +1,7 @@
 import test from 'tape'
 import productsSyncFn, { actionGroups } from '../../lib/sync/products'
 
-test('Sync::product', t => {
+test.only('Sync::product', t => {
 
   let productsSync
   function setup () {
@@ -46,6 +46,20 @@ test('Sync::product', t => {
 
     t.deepEqual(productsSync.buildActions({ name: null }, {}), [])
     t.deepEqual(productsSync.buildActions({}, { name: null }), [])
+    t.end()
+  })
+
+  t.test('should not build actions if delta is null', t => {
+    setup()
+
+    const before = { name: { en: 'Car' }, slug: { en: 'car' } }
+    const now = { name: { en: 'Car' }, slug: { de: 'auto' } }
+    const actions = productsSync.buildActions(now, before)
+
+    t.deepEqual(actions, [
+      // only slug changed
+      { action: 'changeSlug', slug: now.slug }
+    ])
     t.end()
   })
 
