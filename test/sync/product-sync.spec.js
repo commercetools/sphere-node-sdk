@@ -1,7 +1,7 @@
 import test from 'tape'
 import productsSyncFn, { actionGroups } from '../../lib/sync/products'
 
-test.only('Sync::product', t => {
+test('Sync::product', t => {
 
   let productsSync
   function setup () {
