@@ -16,6 +16,18 @@ test('Sync::product', t => {
     t.end()
   })
 
+  t.test('should ensure given objects are not mutated', t => {
+    setup()
+
+    const before = { name: { en: 'Car', de: 'Auto' } }
+    const now = { name: { en: 'Sport car' } }
+    productsSync.buildActions(now, before)
+
+    t.deepEqual(before, { name: { en: 'Car', de: 'Auto' } })
+    t.deepEqual(now, { name: { en: 'Sport car' } })
+    t.end()
+  })
+
   t.test('should build `changeName` action', t => {
     setup()
 
@@ -89,6 +101,29 @@ test('Sync::product', t => {
     t.deepEqual(actions, [
       Object.assign({ action: 'setSearchKeywords' }, now)
     ])
+    t.end()
+  })
+
+  t.test('should build no actions if searchKeywords did not change', t => {
+    setup()
+
+    /* eslint-disable max-len */
+    const before = {
+      name: { en: 'Car', de: 'Auto' },
+      searchKeywords: {
+        en: [
+          { text: 'Multi tool' },
+          { text: 'Swiss Army Knife', suggestTokenizer: { type: 'whitespace' } }
+        ],
+        de: [
+          { text: 'Schweizer Messer', suggestTokenizer: { type: 'custom', inputs: [ 'schweizer messer', 'offiziersmesser', 'sackmesser' ] } }
+        ]
+      }
+    }
+    /* eslint-enable max-len */
+    const actions = productsSync.buildActions(before, before)
+
+    t.deepEqual(actions, [])
     t.end()
   })
 
