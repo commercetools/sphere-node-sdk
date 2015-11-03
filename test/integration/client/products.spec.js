@@ -2,6 +2,13 @@ import test from 'tape'
 import credentials from '../../../credentials'
 import SphereClient from '../../../lib'
 
+let count = 0
+function uniqueId (prefix) {
+  const id = `${prefix}${Date.now()}_${count}`
+  count++
+  return id
+}
+
 test('Integration - Client', t => {
 
   let client
@@ -68,6 +75,36 @@ test('Integration - Client', t => {
         })
         t.end()
       })
+      .catch(t.end)
+    })
+
+    t.test('should expand productType on creation', { timeout: 5000 }, t => {
+      setup()
+
+      client.productTypes.create({
+        name: uniqueId('shirts'), description: uniqueId('shirts')
+      })
+      .then(({ body }) => {
+        return client.products.expand('productType').create({
+          productType: {
+            typeId: 'product-type',
+            id: body.id
+          },
+          name: { en: uniqueId('shirt') },
+          slug: { en: uniqueId('shirt') }
+        })
+      })
+      .then(({ body }) => {
+        t.ok(body.productType.hasOwnProperty('obj'))
+        const productType = body.productType.obj
+
+        // Cleanup
+        return client.products.byId(body.id).delete(body.version)
+        .then(() => {
+          const { id, version } = productType
+          return client.productTypes.byId(id).delete(version)
+        })
+      }).then(() => t.end())
       .catch(t.end)
     })
 
