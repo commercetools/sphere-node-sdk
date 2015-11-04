@@ -5,9 +5,12 @@ test('Utils::authToken', t => {
 
   t.test('should build request to get auth token', t => {
     const authRequest = auth.buildRequest({
-      projectKey: 'foo',
-      clientId: '123',
-      clientSecret: 'secret'
+      credentials: {
+        projectKey: 'foo',
+        clientId: '123',
+        clientSecret: 'secret'
+      },
+      host: 'auth.sphere.io'
     })
     const expectedEndpoint = 'https://123:secret@auth.sphere.io/oauth/token'
     const expectedBody = 'grant_type=client_credentials' +

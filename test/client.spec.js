@@ -75,7 +75,12 @@ test('SphereClient', t => {
     })
     t.deepEqual(client.productProjections.options, {
       Promise: { foo: 'bar' },
-      auth: { accessToken: undefined, credentials, shouldRetrieveToken },
+      auth: {
+        accessToken: undefined,
+        credentials,
+        shouldRetrieveToken,
+        host: 'auth.sphere.io'
+      },
       request: {
         agent,
         headers,

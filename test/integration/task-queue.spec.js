@@ -16,7 +16,8 @@ test('Integration - TaskQueue token retrieval', t => {
           clientId: credentials.client_id,
           clientSecret: credentials.client_secret
         },
-        shouldRetrieveToken (cb) { cb(true) }
+        shouldRetrieveToken (cb) { cb(true) },
+        host: 'auth.sphere.io'
       },
       request: {
         headers: {

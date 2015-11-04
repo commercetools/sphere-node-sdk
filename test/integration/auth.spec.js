@@ -2,7 +2,14 @@ import test from 'tape'
 import credentials from '../../credentials'
 import * as auth from '../../lib/utils/auth'
 
-const authRequest = auth.buildRequest({})
+const authRequest = auth.buildRequest({
+  credentials: {
+    projectKey: credentials.project_key,
+    clientId: credentials.client_id,
+    clientSecret: credentials.client_secret
+  },
+  host: 'auth.sphere.io'
+})
 
 test('Integration - Auth', t => {
 
@@ -16,7 +23,8 @@ test('Integration - Auth', t => {
           projectKey: credentials.project_key,
           clientId: credentials.client_id,
           clientSecret: credentials.client_secret
-        }
+        },
+        host: 'auth.sphere.io'
       },
       request: {
         headers: {
