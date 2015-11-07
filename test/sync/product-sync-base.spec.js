@@ -1,7 +1,8 @@
 import test from 'tape'
+import clone from '../../lib/sync/utils/clone'
 import productsSyncFn, { actionGroups } from '../../lib/sync/products'
 
-test('Sync::product', t => {
+test('Sync::product::base', t => {
 
   let productsSync
   function setup () {
@@ -19,12 +20,28 @@ test('Sync::product', t => {
   t.test('should ensure given objects are not mutated', t => {
     setup()
 
-    const before = { name: { en: 'Car', de: 'Auto' } }
-    const now = { name: { en: 'Sport car' } }
+    const before = {
+      name: { en: 'Car', de: 'Auto' },
+      masterVariant: {
+        id: 1, sku: '001', attributes: [{ name: 'a1', value: 1 }] },
+      variants: [
+        { id: 2, sku: '002', attributes: [{ name: 'a2', value: 2 }] },
+        { id: 3, sku: '003', attributes: [{ name: 'a3', value: 3 }] }
+      ]
+    }
+    const now = {
+      name: { en: 'Sport car' },
+      masterVariant: {
+        id: 1, sku: '100', attributes: [{ name: 'a1', value: 100 }] },
+      variants: [
+        { id: 2, sku: '200', attributes: [{ name: 'a2', value: 200 }] },
+        { id: 3, sku: '300', attributes: [{ name: 'a3', value: 300 }] }
+      ]
+    }
     productsSync.buildActions(now, before)
 
-    t.deepEqual(before, { name: { en: 'Car', de: 'Auto' } })
-    t.deepEqual(now, { name: { en: 'Sport car' } })
+    t.deepEqual(before, clone(before))
+    t.deepEqual(now, clone(now))
     t.end()
   })
 
