@@ -527,6 +527,10 @@ actionsBaseList = ->
     {
       action: 'setMetaKeywords'
       key: 'metaKeywords'
+    },
+    {
+      action: 'setSearchKeywords'
+      key: 'searchKeywords'
     }
   ]
 

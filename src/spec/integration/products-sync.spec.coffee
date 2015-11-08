@@ -103,6 +103,10 @@ describe 'Integration Products Sync', ->
       description: {de: 'A foo product'}
       metaTitle: {de: 'The Foo'}
       metaDescription: {de: 'The Foo product'}
+      searchKeywords: {
+        en: [{text: 'new'}, {text: 'search'}, {text: 'keywords'}]
+        "fr-BE": [{text: 'bruxelles'}, {text:'liege'}, {text: 'brugge'}]
+      }
       masterVariant:
         id: 1
         sku: 'v0'
@@ -150,6 +154,8 @@ describe 'Integration Products Sync', ->
       expect(updated.masterVariant.prices[0].value.centAmount).toBe 1500
       expect(updated.masterVariant.prices[1].value.centAmount).toBe 1500
       expect(updated.masterVariant.prices[1].country).toBe 'IT'
+      expect(updated.searchKeywords.en[0].text).toBe 'new'
+      expect(updated.searchKeywords['fr-BE'][1].text).toBe 'liege'
       expect(updated.variants[0].sku).toBe 'v1'
       expect(updated.variants[0].prices[0].value.centAmount).toBe 2000
       expect(updated.variants[1].sku).toBe 'v2'
