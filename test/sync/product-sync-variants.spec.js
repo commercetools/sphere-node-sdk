@@ -182,7 +182,7 @@ test('Sync::product::variants', t => {
           { name: 'dog', value: { en: 'Dog', de: 'Hund', es: 'perro' } }, // ltext
           { name: 'num', value: 50 }, // number
           { name: 'count', value: { label: 'One', key: 'one' } }, // enum
-          { name: 'size', value: { label: { en: 'Size' }, key: 'medium' } }, // lenum
+          { name: 'size', value: { label: { en: 'Medium' }, key: 'medium' } }, // lenum
           { name: 'color', value: { label: { en: 'Color' }, key: 'red' } }, // lenum
           { name: 'cost', value: { centAmount: 990, currencyCode: 'EUR' } }, // money
           { name: 'reference', value: { typeId: 'product', id: '111' } }, // reference
@@ -202,9 +202,9 @@ test('Sync::product::variants', t => {
           { name: 'foo', value: 'qux' }, // text
           { name: 'dog', value: { en: 'Doggy', it: 'Cane', es: 'perro' } }, // ltext
           { name: 'num', value: 100 }, // number
-          { name: 'count', value: 'two' }, // enum
-          { name: 'size', value: 'small' }, // lenum
-          { name: 'color', value: 'blue' }, // lenum
+          { name: 'count', value: { label: 'Two', key: 'two' } }, // enum
+          { name: 'size', value: { label: { en: 'Small' }, key: 'small' } }, // lenum
+          { name: 'color', value: { label: { en: 'Blue' }, key: 'blue' } }, // lenum
           { name: 'cost', value: { centAmount: 550, currencyCode: 'EUR' } }, // money
           { name: 'reference', value: { typeId: 'category', id: '222' } }, // reference
           { name: 'welcome', value: ['hello'] }, // set text
