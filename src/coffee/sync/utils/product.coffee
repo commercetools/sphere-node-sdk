@@ -299,32 +299,33 @@ class ProductUtils extends BaseUtils
         _.each keys, (k) =>
           # we pass also the value of the correspondent key of the original object
           # in case we need to patch for long text diffs
-          console.log("got k " + k)
+          # console.log("got k " + k)
           diffed_value = obj[k]
           if _.isArray diffed_value
             value = @getDeltaValue(diffed_value, old_obj[key][k])
-            console.log("got delta value " + JSON.stringify(value))
-            updated[k] = value
+            # console.log("got delta value array " + JSON.stringify(value))
+            updated[k] = value unless _.find value, (val) ->
+              _.has(val, 'text') and val['text'] is ""   #remove empty text
           else if _.isObject(diffed_value)
             # ok this is not an array - likely the searchKeywords - removing the garbage
-            console.log "got diffed value " + JSON.stringify(diffed_value)
+            # console.log "got diffed value " + JSON.stringify(diffed_value)
             if _.has(diffed_value, '_t') and diffed_value['_t'] is 'a'
               diffed_keywords = []
               diffed_keys = _.keys diffed_value
               _.each diffed_keys, (v) ->
-                console.log "got v " + JSON.stringify(v)
-                console.log "got old_obj[key][k] " + JSON.stringify(old_obj[key][k])
+                # console.log "got v " + JSON.stringify(v)
+                # console.log "got old_obj[key][k] " + JSON.stringify(old_obj[key][k])
                 if REGEX_NUMBER.test(v)
-                  console.log("got delta value " + JSON.stringify(diffed_value[v]))
+                  # console.log("got delta value " + JSON.stringify(diffed_value[v]))
                   diffed_keywords.push(diffed_value[v])
               diffed_keywords = _.flatten(diffed_keywords)
-              if not _.isEqual(diffed_keywords, old_obj[key][k])
-                console.log("got diffed_keywords " + JSON.stringify(diffed_keywords))
-                updated[k] = diffed_keywords
+              # console.log("got diffed_keywords " + JSON.stringify(diffed_keywords))
+              updated[k] = diffed_keywords unless _.isEqual(diffed_keywords, old_obj[key][k])
           else
             # no idea what this is but lets just use it for updating
             updated[k] = diffed_value
-      console.log("updated " + JSON.stringify(updated))
+      # console.log("updated " + JSON.stringify(updated))
+
       if old_obj[key]
         # extend values of original object with possible new values of the diffed object
         # e.g.:
@@ -342,6 +343,9 @@ class ProductUtils extends BaseUtils
         action[key] = old
       else
         action[key] = undefined
+      if _.isEmpty(updated) and key is "searchKeywords"
+        action = undefined
+        console.log "no update of search keywords"
     action
 
   _buildChangePriceAction: (centAmountDiff, variant, index) ->
