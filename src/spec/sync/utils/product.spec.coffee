@@ -516,6 +516,9 @@ describe 'ProductUtils', ->
           en: 'foo'
         description:
           en: 'Sample'
+        searchKeywords:
+          en: [ {text: 'old'}, {text: 'keywords'} ]
+          de: [ {text: 'alte'}, {text: 'schlagwoerter'} ]
         masterVariant:
           id: 1
       NEW =
@@ -527,6 +530,9 @@ describe 'ProductUtils', ->
         description:
           en: 'Sample'
           it: 'Esempio'
+        searchKeywords:
+          en: [ {text: 'new'}, {text: 'keywords'} ]
+          it: [ {text: 'veccie'}, {text: 'parole'} ]
         masterVariant:
           id: 1
 
@@ -539,6 +545,10 @@ describe 'ProductUtils', ->
           en: ['foo', 'boo']
         description:
           it: ['Esempio']
+        searchKeywords:
+          en : 0 : [ { text : 'new' } ], 1 : [ { text : 'keywords' } ], _t : 'a', _0 : [ { text : 'old' }, 0, 0 ], _1 : [ { text : 'keywords' }, 0, 0 ]
+          de : [ [ { text : 'alte' }, { text : 'schlagwoerter' } ], 0, 0 ]
+          it: [ {text: 'veccie'}, {text: 'parole'} ]
       expect(delta).toEqual expected_delta
 
     it 'should diff missing attribute', ->
@@ -653,6 +663,8 @@ describe 'ProductUtils', ->
         description:
           en: 'Sample'
           it: 'Esempio'
+        searchKeywords:
+          en: [ {text: 'new'}, {text: 'keyword'} ]
         masterVariant:
           id: 1
 
@@ -662,6 +674,7 @@ describe 'ProductUtils', ->
         { action: 'changeName', name: {en: undefined, de: 'Boo'} }
         { action: 'changeSlug', slug: {en: 'boo'} }
         { action: 'setDescription', description: {en: 'Sample', it: 'Esempio'} }
+        { action: 'setSearchKeywords', searchKeywords: {en: [ {text: 'new'}, {text: 'keyword'} ]} }
       ]
       expect(update).toEqual expected_update
 
