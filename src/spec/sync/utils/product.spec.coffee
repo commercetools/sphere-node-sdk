@@ -506,7 +506,7 @@ describe 'ProductUtils', ->
           attributes: [foo: 'bar']
       expect(=> @utils.diff(OLD, NEW)).toThrow new Error 'A variant must either have an ID or an SKU.'
 
-    it 'should diff basic attributes (name, slug, description)', ->
+    it 'should diff basic attributes (name, slug, description, searchKeywords)', ->
       OLD =
         id: '123'
         name:
@@ -548,7 +548,7 @@ describe 'ProductUtils', ->
         searchKeywords:
           en : 0 : [ { text : 'new' } ], 1 : [ { text : 'keywords' } ], _t : 'a', _0 : [ { text : 'old' }, 0, 0 ], _1 : [ { text : 'keywords' }, 0, 0 ]
           de : [ [ { text : 'alte' }, { text : 'schlagwoerter' } ], 0, 0 ]
-          it: [ {text: 'veccie'}, {text: 'parole'} ]
+          it: [[ {text: 'veccie'}, {text: 'parole'} ]]
       expect(delta).toEqual expected_delta
 
     it 'should diff missing attribute', ->

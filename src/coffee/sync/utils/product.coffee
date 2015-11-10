@@ -334,7 +334,7 @@ class ProductUtils extends BaseUtils
         #   => old = {en: undefined, de: 'bar'}
         old = _.deepClone old_obj[key]
         _.extend old, updated
-        console.log("new updated " + JSON.stringify(updated))
+        # ßconsole.log("new updated " + JSON.stringify(updated))
       else
         old = updated
       action =
@@ -345,7 +345,7 @@ class ProductUtils extends BaseUtils
         action[key] = undefined
       if _.isEmpty(updated) and key is "searchKeywords"
         action = undefined
-        console.log "no update of search keywords"
+        # console.log "no update of search keywords"
     action
 
   _buildChangePriceAction: (centAmountDiff, variant, index) ->
