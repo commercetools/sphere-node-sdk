@@ -995,6 +995,12 @@ describe 'ProductUtils', ->
             {
               name: 'images',
               value: '//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-1.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-2.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-4.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-5.jpg'
+            },
+            {
+              name: 'localized_images',
+              value: {
+                en: '//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-1.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-2.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-4.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-5.jpg'
+              }
             }
           ]
           prices: []
@@ -1008,6 +1014,12 @@ describe 'ProductUtils', ->
             {
               name: 'images',
               value: 'http://images.luxodo.com/html/zoom/luxodo/p-HARJPUL101601-1/2000/2000/p-HARJPUL101601-1.jpg;http://images.luxodo.com/html/zoom/luxodo/p-HARJPUL101601-2/2000/2000/p-HARJPUL101601-2.jpg;http://images.luxodo.com/html/zoom/luxodo/p-HARJPUL101601-4/2000/2000/p-HARJPUL101601-4.jpg;http://images.luxodo.com/html/zoom/luxodo/p-HARJPUL101601-5/2000/2000/p-HARJPUL101601-5.jpg'
+            },
+            {
+              name: 'localized_images',
+              value: {
+                en: 'http://images.luxodo.com/html/zoom/luxodo/p-HARJPUL101601-1/2000/2000/p-HARJPUL101601-1.jpg;http://images.luxodo.com/html/zoom/luxodo/p-HARJPUL101601-2/2000/2000/p-HARJPUL101601-2.jpg;http://images.luxodo.com/html/zoom/luxodo/p-HARJPUL101601-4/2000/2000/p-HARJPUL101601-4.jpg;http://images.luxodo.com/html/zoom/luxodo/p-HARJPUL101601-5/2000/2000/p-HARJPUL101601-5.jpg'
+              }
             }
           ]
           prices: []
@@ -1018,7 +1030,8 @@ describe 'ProductUtils', ->
       update = @utils.actionsMapAttributes delta, originalProduct, newProduct
       expected_update =
         [
-          { action: 'setAttribute', variantId: 1, name: 'images', value: '//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-1.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-2.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-4.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-5.jpg' }
+          { action: 'setAttribute', variantId: 1, name: 'images', value: '//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-1.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-2.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-4.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-5.jpg' },
+          { action: 'setAttribute', variantId: 1, name: 'localized_images', value: { en: '//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-1.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-2.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-4.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-5.jpg' } }
         ]
       expect(update).toEqual expected_update
 
