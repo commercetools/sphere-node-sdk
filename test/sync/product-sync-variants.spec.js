@@ -2,7 +2,7 @@ import test from 'tape'
 import productsSyncFn from '../../lib/sync/products'
 
 /* eslint-disable max-len */
-test('Sync::product::variants', t => {
+test.only('Sync::product::variants', t => {
 
   let productsSync
   function setup () {
@@ -95,6 +95,41 @@ test('Sync::product::variants', t => {
       { action: 'setAttribute', variantId: 4, name: 'uid', value: undefined },
       { action: 'setAttribute', variantId: 4, name: 'length', value: undefined },
       { action: 'setAttribute', variantId: 4, name: 'bulkygoods', value: undefined }
+    ])
+    t.end()
+  })
+
+  t.test('should build SameForAll attribute actions', t => {
+    setup()
+
+    const before = {
+      id: '123',
+      masterVariant: {
+        id: 1, attributes: [
+          { name: 'color', value: 'red' }
+        ]
+      },
+      variants: []
+    }
+
+    const now = {
+      id: '123',
+      masterVariant: {
+        id: 1, attributes: [
+          { name: 'vendor', value: 'ferrari' },
+          { name: 'color', value: 'yellow' }
+        ]
+      },
+      variants: []
+    }
+
+    const actions = productsSync.buildActions(now, before, {
+      sameForAllAttributeNames: ['vendor']
+    })
+
+    t.deepEqual(actions, [
+      { action: 'setAttributeInAllVariants', name: 'vendor', value: 'ferrari' },
+      { action: 'setAttribute', variantId: 1, name: 'color', value: 'yellow' }
     ])
     t.end()
   })
