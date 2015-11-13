@@ -140,6 +140,7 @@ test('Sync::product::variants', t => {
     const newVariant = {
       sku: 'ccc',
       attributes: [{ name: 'color', value: 'red' }],
+      images: [{ url: 'http://foo.com', label: 'foo' }],
       prices: [{ value: { centAmount: 300, currencyCode: 'USD' } }]
     }
 
