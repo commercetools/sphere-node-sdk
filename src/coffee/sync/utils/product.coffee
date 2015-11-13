@@ -460,7 +460,7 @@ class ProductUtils extends BaseUtils
               attrib.name is attribute.name
             text = _.extend {}, attrib?.value
             _.each diffed_value, (localValue, lang) =>
-              text[lang] = @getDeltaValue(localValue)
+              text[lang] = @getDeltaValue(localValue, attrib.value[lang])
             action.value = text
     action
 
