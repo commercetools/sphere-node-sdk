@@ -8,6 +8,7 @@ const SERVICES = [
   // order matters!
   'categories',
   'channels',
+  'customerGroups',
   'productProjections',
   'productProjectionsSearch',
   'products',
