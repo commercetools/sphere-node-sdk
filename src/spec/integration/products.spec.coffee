@@ -171,7 +171,7 @@ describe 'Integration Products', ->
       ]
       .then -> done()
       .catch (error) -> done(_.prettify(error))
-    , 5000 # 5sec
+    , 20000 # 5sec
   , 30000 # 30sec
 
   it "should query using 'byQueryString'", (done) ->
@@ -199,7 +199,7 @@ describe 'Integration Products', ->
         expect(result.body.results[0].slug.en).toBe slugToLookFor
         done()
       .catch (error) -> done(_.prettify(error))
-    , 5000 # 5sec
+    , 20000 # 5sec
   , 20000 # 20sec
 
   it 'should uses search endpoint', (done) ->
@@ -220,7 +220,7 @@ describe 'Integration Products', ->
         expect(result.body.results[0].slug.en).toBe slugToLookFor
         done()
       .catch (error) -> done(_.prettify(error))
-    , 5000 # 5sec
+    , 20000 # 5sec
   , 20000 # 20sec
 
   it 'should search with full-text for special characters', (done) ->
@@ -239,5 +239,5 @@ describe 'Integration Products', ->
         expect(result.body.results[0].name.en).toBe specialChar
         done()
       .catch (error) -> done(_.prettify(error))
-    , 5000 # 5sec
+    , 20000 # 5sec
   , 20000 # 20sec
