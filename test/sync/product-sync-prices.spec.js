@@ -20,7 +20,7 @@ test('Sync::product::prices', t => {
       masterVariant: {
         id: 1,
         prices: [
-          { id: '111', value: { currencyCode: 'EUR', centAmount: 1000 }, country: 'DE', discounted }
+          { id: '111', value: { currencyCode: 'EUR', centAmount: 1000 }, discounted }
         ]
       },
       variants: [
@@ -83,7 +83,7 @@ test('Sync::product::prices', t => {
 
     const actions = productsSync.buildActions(now, before)
     t.deepEqual(actions, [
-      { action: 'changePrice', priceId: '111', price: { value: { currencyCode: 'EUR', centAmount: 2000 }, country: 'US' } },
+      { action: 'changePrice', priceId: '111', price: { id: '111', value: { currencyCode: 'EUR', centAmount: 2000 }, country: 'US' } },
       { action: 'removePrice', priceId: '222' },
       { action: 'addPrice', price: { value: { currencyCode: 'USD', centAmount: 5000 }, country: 'US', customerGroup: { typeId: 'customer-group', id: 'cg1' }, channel: { typeId: 'channel', id: 'ch1' }, validFrom } }
     ])
