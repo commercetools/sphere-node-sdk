@@ -31,4 +31,5 @@ import './utils/with-helpers.spec'
 
 import './sync/product-sync-base.spec'
 import './sync/product-sync-images.spec'
+import './sync/product-sync-prices.spec'
 import './sync/product-sync-variants.spec'
