@@ -2,7 +2,7 @@ import test from 'tape'
 import productsSyncFn from '../../lib/sync/products'
 
 /* eslint-disable max-len */
-test('Sync::product::prices', t => {
+test.only('Sync::product::prices', t => {
 
   let productsSync
   function setup () {
@@ -85,7 +85,7 @@ test('Sync::product::prices', t => {
     t.deepEqual(actions, [
       { action: 'changePrice', priceId: '111', price: { id: '111', value: { currencyCode: 'EUR', centAmount: 2000 }, country: 'US' } },
       { action: 'removePrice', priceId: '222' },
-      { action: 'addPrice', price: { value: { currencyCode: 'USD', centAmount: 5000 }, country: 'US', customerGroup: { typeId: 'customer-group', id: 'cg1' }, channel: { typeId: 'channel', id: 'ch1' }, validFrom } }
+      { action: 'addPrice', variantId: 3, price: { value: { currencyCode: 'USD', centAmount: 5000 }, country: 'US', customerGroup: { typeId: 'customer-group', id: 'cg1' }, channel: { typeId: 'channel', id: 'ch1' }, validFrom } }
     ])
     t.end()
   })
