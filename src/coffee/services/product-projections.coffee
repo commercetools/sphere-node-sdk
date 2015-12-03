@@ -21,6 +21,7 @@ class ProductProjectionService extends BaseService
   _setDefaults: ->
     super()
     _.extend @_params.query,
+      fuzzy: false
       staged: false
       filter: []
       filterByQuery: []
@@ -29,7 +30,7 @@ class ProductProjectionService extends BaseService
       searchKeywords: []
 
     @_params.encoded = @_params.encoded.concat(['filter', 'filter.query', 'filter.facets', 'facets', 'searchKeywords'])
-    @_params.plain = @_params.plain.concat(['staged'])
+    @_params.plain = @_params.plain.concat(['staged', 'fuzzy'])
 
   # Public: Define whether to query for staged or current product projection.
   #
@@ -44,6 +45,21 @@ class ProductProjectionService extends BaseService
   staged: (staged = true) ->
     @_params.query.staged = staged
     debug 'setting staged: %s', staged
+    this
+
+  # Public: Define whether to perform a fuzzy search or not.
+  #
+  # fuzzy - {Boolean} `true` to do a fuzzy search, `false` to do a more prcise search
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.productProjections
+  #   service.text('Sapphure', 'en').fuzzy(true).fetch() // will find product with SAPPHIRE as its name
+  fuzzy: (fuzzy = true) ->
+    @_params.query.fuzzy = fuzzy
+    debug 'setting fuzzy: %s', fuzzy
     this
 
   # Public: Define the text to analyze and ([full-text](http://dev.sphere.io/http-api-projects-products-search.html#search-text)) search.
@@ -207,7 +223,8 @@ class ProductProjectionService extends BaseService
   #
   # Returns the built query string
   _queryString: ->
-    {staged, text, filter, filterByQuery, filterByFacets, facet, searchKeywords} = _.defaults @_params.query,
+    {staged, fuzzy, text, filter, filterByQuery, filterByFacets, facet, searchKeywords} = _.defaults @_params.query,
+      fuzzy: false
       staged: false
       filter: []
       filterByQuery: []
@@ -217,6 +234,7 @@ class ProductProjectionService extends BaseService
 
     customQueryString = []
     customQueryString.push "staged=#{staged}" if staged
+    customQueryString.push "fuzzy=#{fuzzy}" if fuzzy
     customQueryString.push "text.#{text.lang}=#{text.value}" if text
 
     # filter param
