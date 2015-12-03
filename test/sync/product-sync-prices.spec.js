@@ -2,7 +2,7 @@ import test from 'tape'
 import productsSyncFn from '../../lib/sync/products'
 
 /* eslint-disable max-len */
-test.only('Sync::product::prices', t => {
+test('Sync::product::prices', t => {
 
   let productsSync
   function setup () {
