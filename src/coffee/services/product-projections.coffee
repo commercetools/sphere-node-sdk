@@ -56,7 +56,7 @@ class ProductProjectionService extends BaseService
   # Examples
   #
   #   service = client.productProjections
-  #   service.text('Sapphure', 'en').fuzzy(true).fetch() // will find product with SAPPHIRE as its name
+  #   service.text('Sapphure', 'en').fuzzy(true).search() // will find product with SAPPHIRE as its name
   fuzzy: (fuzzy = true) ->
     @_params.query.fuzzy = fuzzy
     debug 'setting fuzzy: %s', fuzzy
