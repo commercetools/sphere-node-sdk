@@ -15,7 +15,7 @@
     &raquo;
     <a href='..&#47;class_index.html' title='Index'>Index</a>
     &raquo;
-    <span class='title'>HttpError</span>
+    <span class='title'>TypeService</span>
     <nav>
       <ul>
         <li class='noframes'>
@@ -105,70 +105,67 @@
     <div id='content'>
       <h1>
         Class
-        HttpError
+        TypeService
       </h1>
       <table class='box'>
         <tr>
           <td>Defined in:</td>
-          <td>src&#47;coffee&#47;errors.coffee</td>
+          <td>src&#47;coffee&#47;services&#47;types.coffee</td>
         </tr>
         <tr>
           <td>Inherits:</td>
           <td>
-            Error
+            <a href='..&#47;classes/BaseService.html'>BaseService</a>
           </td>
         </tr>
       </table>
       <h2>Overview</h2>
       <div class='docstring'>
-  <p>A general <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Error'>Error</a> type, specific for HTTP errors</p>
-</div>
-<div class='tags'>
-</div>
-      <h2>Instance Method Summary</h2>
-      <ul class='summary'>
-  <li>
-    <span class='signature'>
-      <a href='#constructor-instance'>
-        ::<strong>constructor</strong>(message, body = {})
-      </a>
-    </span>
-    <span class='desc'>
-      <p>Create a new <code>HttpError</code></p>
-    </span>
-  </li>
-</ul>
-      <h2>Constructor Details</h2>
-      <div class='methods'>
-  <div class='method_details'>
-    <p class='signature' id='constructor-instance'>
-      ::<strong>constructor</strong>(message, body = {})
-      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.8.1
-/src&#47;coffee&#47;errors.coffee#L8'>Source</a>
-    </p>
-    <div class='docstring'>
-  <p>Create a new <code>HttpError</code></p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='type'>(String)</span>
-      <span class='name'>message</span>
-      &mdash;
-      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/String'>String</a> The error message</span>
-    </li>
-    <li>
-      <span class='type'>(Object)</span>
-      <span class='name'>body</span>
-      &mdash;
-      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object'>Object</a> A JSON object with optional information to pass to the error, like the error response body</span>
-    </li>
-  </ul>
-</div>
+  <p>Define a <code>TypeService</code> to interact with the HTTP <a href="http://dev.sphere.io/http-api-projects-types.html"><code>types</code></a> endpoint.</p><p><em>Types define custom fields that are used to enhance resources as you need.</em></p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>service = client.types
+service.byId(&#39;123&#39;).fetch()
+.then (result) -&gt;
+  service.byId(&#39;123&#39;).update
+    version: result.body.version
+    actions: [
+      {
+        action: &#39;changeName&#39;
+        name:
+          en: &#39;Foo&#39;
+      }
+    ] </code></pre>
   </div>
 </div>
+<div class='tags'>
+</div>
+      <h2>
+        <small>Inherited Method Summary</small>
+      </h2>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='..&#47;classes/BaseService.html'>BaseService</a>
+      </h3>
+      <p class='inherited'>
+                <a href='..&#47;classes/BaseService.html#constructor-instance'>.constructor</a>,
+                <a href='..&#47;classes/BaseService.html#byId-instance'>.byId</a>,
+                <a href='..&#47;classes/BaseService.html#where-instance'>.where</a>,
+                <a href='..&#47;classes/BaseService.html#whereOperator-instance'>.whereOperator</a>,
+                <a href='..&#47;classes/BaseService.html#last-instance'>.last</a>,
+                <a href='..&#47;classes/BaseService.html#sort-instance'>.sort</a>,
+                <a href='..&#47;classes/BaseService.html#page-instance'>.page</a>,
+                <a href='..&#47;classes/BaseService.html#perPage-instance'>.perPage</a>,
+                <a href='..&#47;classes/BaseService.html#all-instance'>.all</a>,
+                <a href='..&#47;classes/BaseService.html#expand-instance'>.expand</a>,
+                <a href='..&#47;classes/BaseService.html#byQueryString-instance'>.byQueryString</a>,
+                <a href='..&#47;classes/BaseService.html#fetch-instance'>.fetch</a>,
+                <a href='..&#47;classes/BaseService.html#process-instance'>.process</a>,
+                <a href='..&#47;classes/BaseService.html#save-instance'>.save</a>,
+                <a href='..&#47;classes/BaseService.html#create-instance'>.create</a>,
+                <a href='..&#47;classes/BaseService.html#update-instance'>.update</a>,
+        <a href='..&#47;classes/BaseService.html#delete-instance'>.delete</a>
+      </p>
     </div>
     <div id='footer'>
   &#10034;

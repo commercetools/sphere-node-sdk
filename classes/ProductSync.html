@@ -123,18 +123,19 @@
       <div class='docstring'>
   <p>Define a <code>ProductSync</code> to provide basic methods to sync SPHERE.IO products.</p><p>Action groups for products are:</p><ul>
 <li><code>base</code> (name, slug, description)</li>
-<li><code>references</code> (taxCategory, categories)</li>
+<li><code>references</code> (taxCategory)</li>
 <li><code>prices</code></li>
 <li><code>attributes</code></li>
 <li><code>images</code></li>
 <li><code>variants</code></li>
+<li><code>categories</code></li>
 </ul>
 
   <div class='examples'>
     <h3>Examples:</h3>
     <pre><code class='coffee'>{ProductSync} = require &#39;sphere-node-sdk&#39;
 sync = new ProductSync
-syncedActions = sync.buildActions(newCategory, existingCategory)
+syncedActions = sync.buildActions(newProduct, existingProduct)
 if syncedActions.shouldUpdate()
   client.products.byId(syncedActions.getUpdatedId())
   .update(syncedActions.getUpdatePayload())
@@ -180,8 +181,8 @@ else
     <p class='signature' id='constructor-instance'>
       ::<strong>constructor</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.4.0
-/src&#47;coffee&#47;sync&#47;product-sync.coffee#L27'>Source</a>
+&#47;blob&#47;v1.8.1
+/src&#47;coffee&#47;sync&#47;product-sync.coffee#L30'>Source</a>
     </p>
     <div class='docstring'>
   <p>Construct a <code>ProductSync</code> object.</p>

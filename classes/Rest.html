@@ -124,10 +124,12 @@
     client_secret: &quot;CLIENT_SECRET_HERE&quot;
     project_key: &quot;PROJECT_KEY_HERE&quot;
   host: &#39;api.sphere.io&#39; # optional
+  protocol: &#39;https&#39; # optional
   access_token: &#39;&#39; # optional (if not provided it will automatically retrieve an `access_token`)
   timeout: 20000 # optional
   rejectUnauthorized: true # optional
   oauth_host: &#39;auth.sphere.io&#39; # optional (used when retrieving the `access_token` internally)
+  oauth_protocol: &#39;https&#39; # optional (used when retrieving the `access_token` internally)
   user_agent: &#39;sphere-node-connect&#39; # optional </code></pre>
   </div>
 </div>
@@ -193,8 +195,8 @@ using a query with the <code>id</code> greater then the last one of the previous
     <p class='signature' id='constructor-instance'>
       ::<strong>constructor</strong>(opts = {})
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.4.0
-/src&#47;coffee&#47;connect&#47;rest.coffee#L34'>Source</a>
+&#47;blob&#47;v1.8.1
+/src&#47;coffee&#47;connect&#47;rest.coffee#L37'>Source</a>
     </p>
     <div class='docstring'>
   <p>Initialize the HTTP client</p>
@@ -220,6 +222,12 @@ using a query with the <code>id</code> greater then the last one of the previous
         <span class='name'>host</span>
         &mdash;
         <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/String'>String</a> The host (default <code>api.sphere.io</code>)</span>
+      </li>
+      <li>
+        <span class='type'>(String)</span>
+        <span class='name'>protocol</span>
+        &mdash;
+        <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/String'>String</a> The protocol (default <code>https</code>)</span>
       </li>
       <li>
         <span class='type'>(String)</span>
@@ -265,8 +273,8 @@ using a query with the <code>id</code> greater then the last one of the previous
     <p class='signature' id='DELETE-instance'>
       ::<strong>DELETE</strong>(resource, callback)
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.4.0
-/src&#47;coffee&#47;connect&#47;rest.coffee#L94'>Source</a>
+&#47;blob&#47;v1.8.1
+/src&#47;coffee&#47;connect&#47;rest.coffee#L102'>Source</a>
     </p>
     <div class='docstring'>
   <p>Send a <code>HTTP DELETE</code> request to an API endpoint</p>
@@ -293,8 +301,8 @@ using a query with the <code>id</code> greater then the last one of the previous
     <p class='signature' id='GET-instance'>
       ::<strong>GET</strong>(resource, callback)
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.4.0
-/src&#47;coffee&#47;connect&#47;rest.coffee#L68'>Source</a>
+&#47;blob&#47;v1.8.1
+/src&#47;coffee&#47;connect&#47;rest.coffee#L76'>Source</a>
     </p>
     <div class='docstring'>
   <p>Send a <code>HTTP GET</code> request to an API endpoint</p>
@@ -321,8 +329,8 @@ using a query with the <code>id</code> greater then the last one of the previous
     <p class='signature' id='PAGED-instance'>
       ::<strong>PAGED</strong>(resource, resolve)
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.4.0
-/src&#47;coffee&#47;connect&#47;rest.coffee#L170'>Source</a>
+&#47;blob&#47;v1.8.1
+/src&#47;coffee&#47;connect&#47;rest.coffee#L178'>Source</a>
     </p>
     <div class='docstring'>
   <p>Fetch all results of a Sphere resource query endpoint in batches of pages using a recursive function.</p><p>Note that traversing with pagination has been optimized. It now fetches pages sorted by <code>id</code> and iterates
@@ -365,8 +373,8 @@ using a query with the <code>id</code> greater then the last one of the previous
     <p class='signature' id='POST-instance'>
       ::<strong>POST</strong>(resource, payload, callback)
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.4.0
-/src&#47;coffee&#47;connect&#47;rest.coffee#L81'>Source</a>
+&#47;blob&#47;v1.8.1
+/src&#47;coffee&#47;connect&#47;rest.coffee#L89'>Source</a>
     </p>
     <div class='docstring'>
   <p>Send a <code>HTTP POST</code> request to an API endpoint</p>

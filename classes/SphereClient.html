@@ -232,14 +232,15 @@ cartService = client.carts
 <li><code>carts</code></li>
 <li><code>categories</code></li>
 <li><code>channels</code></li>
-<li><code>comments</code></li>
 <li><code>customObjects</code></li>
 <li><code>customers</code></li>
 <li><code>customerGroups</code></li>
 <li><code>discountCodes</code></li>
+<li><code>graphql</code></li>
 <li><code>inventoryEntries</code></li>
 <li><code>messages</code></li>
 <li><code>orders</code></li>
+<li><code>payments</code></li>
 <li><code>products</code></li>
 <li><code>productDiscounts</code></li>
 <li><code>productProjections</code></li>
@@ -249,6 +250,7 @@ cartService = client.carts
 <li><code>shippingMethods</code></li>
 <li><code>states</code></li>
 <li><code>taxCategories</code></li>
+<li><code>types</code></li>
 <li><code>zones</code></li>
 </ul>
 
@@ -271,8 +273,8 @@ cartService = client.carts
     <p class='signature' id='constructor-instance'>
       ::<strong>constructor</strong>(options = {})
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.4.0
-/src&#47;coffee&#47;client.coffee#L212'>Source</a>
+&#47;blob&#47;v1.8.1
+/src&#47;coffee&#47;client.coffee#L218'>Source</a>
     </p>
     <div class='docstring'>
   <p>Construct a <code>SphereClient</code> object.</p><p>When the client is instantiated it has all available instances of services
@@ -285,14 +287,15 @@ cartService = client.carts
 <li><code>carts</code></li>
 <li><code>categories</code></li>
 <li><code>channels</code></li>
-<li><code>comments</code></li>
 <li><code>customObjects</code></li>
 <li><code>customers</code></li>
 <li><code>customerGroups</code></li>
 <li><code>discountCodes</code></li>
+<li><code>graphql</code></li>
 <li><code>inventoryEntries</code></li>
 <li><code>messages</code></li>
 <li><code>orders</code></li>
+<li><code>payments</code></li>
 <li><code>products</code></li>
 <li><code>productDiscounts</code></li>
 <li><code>productProjections</code></li>
@@ -302,6 +305,7 @@ cartService = client.carts
 <li><code>shippingMethods</code></li>
 <li><code>states</code></li>
 <li><code>taxCategories</code></li>
+<li><code>types</code></li>
 <li><code>zones</code></li>
 </ul>
 
@@ -325,8 +329,8 @@ cartService = client.carts
     <p class='signature' id='setMaxParallel-instance'>
       ::<strong>setMaxParallel</strong>(maxParallel)
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.4.0
-/src&#47;coffee&#47;client.coffee#L233'>Source</a>
+&#47;blob&#47;v1.8.1
+/src&#47;coffee&#47;client.coffee#L239'>Source</a>
     </p>
     <div class='docstring'>
   <p>Define max parallel request to be sent on each request from the <a href='../classes/TaskQueue.html'>TaskQueue</a></p>
