@@ -29,7 +29,7 @@ test('Sync::product::images', t => {
           id: 3,
           images: [
             { url: '//example.com/image3.png', label: 'foo', dimensions: { x: 1024, y: 768 } },
-            { url: '//example.com/image4.png', label: 'foo', dimensions: { x: 1024, y: 768 } },
+            { url: '//example.com/image4.png', dimensions: { x: 1024, y: 768 } },
             { url: '//example.com/image5.png', label: 'foo', dimensions: { x: 1024, y: 768 } }
           ]
         },
@@ -64,8 +64,8 @@ test('Sync::product::images', t => {
           images: [
             // label changed
             { url: '//example.com/image3.png', label: 'CHANGED', dimensions: { x: 1024, y: 768 } },
-            // no changes
-            { url: '//example.com/image4.png', label: 'foo', dimensions: { x: 400, y: 300 } },
+            // label added
+            { url: '//example.com/image4.png', label: 'ADDED', dimensions: { x: 400, y: 300 } },
             // url changed (new image)
             { url: '//example.com/CHANGED.jpg', label: 'foo', dimensions: { x: 400, y: 300 } }
           ]
@@ -79,6 +79,7 @@ test('Sync::product::images', t => {
     t.deepEqual(actions, [
       { action: 'addExternalImage', variantId: 1, image: { url: 'http://cat.com', label: 'A cat' } },
       { action: 'changeImageLabel', variantId: 3, imageUrl: '//example.com/image3.png', label: 'CHANGED' },
+      { action: 'changeImageLabel', variantId: 3, imageUrl: '//example.com/image4.png', label: 'ADDED' },
       { action: 'removeImage', variantId: 3, imageUrl: '//example.com/image5.png' },
       { action: 'addExternalImage', variantId: 3, imageUrl: '//example.com/CHANGED.jpg' },
       { action: 'removeImage', variantId: 4, imageUrl: '//example.com/old.png' }
