@@ -97,6 +97,7 @@ class ProductUtils extends BaseUtils
           return
         action.categoryId = Object.keys(action.categoryOrderHints)[0]
         action.orderHint = action.categoryOrderHints[action.categoryId]
+        action = _.pick action, ['action', 'categoryId', 'orderHint']
       actions.push action if action
     actions
 
