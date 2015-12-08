@@ -8,9 +8,9 @@ before_script:
   - ./create_config.sh
 env:
   global:
-    - secure: d4woA9SqqJhEbjsSVZXPovrIhEsVkbrncyxyTfgeBSTMqgGSNyKuaHN2kNVy+3e7z9PDNBDIkq91emsPW+ShlmYxvv6pqEKRVPVauIuy6amTH3bMpPHIjlniTB1GfgiWNWNZiD+DOEIjLiMyt5e/QAQjoJMUFhIF5O9ke+qjC8M=
-    - secure: XrhwC5gdhj+4Ir8lobL2lQRobWeuFC3uKMdG5KPUbnyCDJz7laLsxMbLwsLp1H2w+YUBUkkb3W2xMa++SZaTQGiclOa9XqkhHaALDntSe1d6Qh3uMxX7IrbhQdmNhG45+MLbud8d3rTIunpU8Fy1qe4HiesBBxU43d0aCfneghM=
-    - secure: Zc9qVmVjdjYrVCpGbIQ75rAHfzKI0naL/ym2BzJ+u4UrlN6PJ91y69Q2dEO2yCkns4TpG0nog6RHpF89S5mdtV141d7Kb4yC5DCgwSJloYsIm6LEX+g117dc8s+ZcZ2uspdCFo2XKaQ2Gij/2vxuelDg32acxlTP5BFJX2WcQ2U=
+    - secure: OIyRQoO1/FTCvSkJHApMJbmY3bJsrlu83rOqG+rp6giAqu94xHvbZ0oQ/NEgQ4syP9/iYZCZo9XSnqN8CphQ85dw/2ngAr+jNYzbSPAXR0x1RtMZ5BxuowGA4zgphX8vLTPQWtXtUVOEzROS7Btk/uk9u8GrUt6vDNNku/ROMFk=
+    - secure: Q9YBYbmHmXRLJ3gBa0JbM/pRx/UbMLGc6XSO+LHsBoht568Tlp3HEdIiSX27oXGiUPgnlViFinAYpfCEN4f4oeaAIPS7ivz7kfDPOZ/f9If+3RNU//2LrO/2V1BTcuDH8gs9rFIdrtvoixulHRd45+FMjSzfJ4xF+4pF/1aaPHI=
+    - secure: XRIa+2NDZ2OfqsIPMzIrDCDGXm5YadG82PwgKm35b2/RWl6eRX02glq7nsYc2ttnWq2nc00fAMszLoTONA47xw4mHJu6fQO/0EUer8reUay4gSaiQsEM8vhRgKICxGz+F+MwdVvdm4vBgzwDHEu8Ei8HrdXo5tNMddYktAU8TSc=
 notifications:
   hipchat:
     rooms:
