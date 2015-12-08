@@ -736,6 +736,31 @@ describe 'ProductUtils', ->
       ]
       expect(update).toEqual expected_update
 
+    it 'should transform setCategoryOrderHint actions correctly', ->
+      OLD =
+        id: '123'
+        masterVariant:
+          id: 1
+        categoryOrderHints:
+          abc: 0.9
+      NEW =
+        id: '123'
+        masterVariant:
+          id: 1
+        categoryOrderHints:
+          abc: 0.3
+
+      delta = @utils.diff OLD, NEW
+      update = @utils.actionsMapBase(delta, OLD)
+      expected_update = [
+        {
+          action: 'setCategoryOrderHint'
+          categoryId: 'abc'
+          orderHint: 0.3
+        }
+      ]
+      expect(update).toEqual expected_update
+
   describe ':: actionsMapVariants', ->
 
     it 'should build variant actions', ->

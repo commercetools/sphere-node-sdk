@@ -54,6 +54,9 @@ describe 'BaseSync', ->
       update = @sync.buildActions(NEW_OBJ, OLD_OBJ).getUpdatePayload()
       expect(update).not.toBeDefined()
 
+    it 'should throw an error if no objects to compare were given', ->
+      expect(=> @sync.buildActions()).toThrow new Error 'Missing either new_obj or old_obj in order to build update actions'
+
   describe ':: filterActions', ->
 
     it 'should return reference to the object', ->
@@ -86,6 +89,9 @@ describe 'BaseSync', ->
 
   xdescribe ':: getUpdateId', ->
 
-  xdescribe ':: getUpdateActions', ->
+  describe ':: getUpdateActions', ->
+
+    it 'should return an empty array if there are no update actions', ->
+      expect(@sync.getUpdateActions()).toEqual []
 
   xdescribe ':: getUpdatePayload', ->
