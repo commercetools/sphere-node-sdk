@@ -299,8 +299,24 @@ class ProductUtils extends BaseUtils
         _.each keys, (k) =>
           # we pass also the value of the correspondent key of the original object
           # in case we need to patch for long text diffs
-          value = @getDeltaValue(obj[k], old_obj[key][k])
-          updated[k] = value
+          diffed_value = obj[k]
+          if _.isArray diffed_value
+            value = @getDeltaValue(diffed_value, old_obj[key][k])
+            updated[k] = value unless _.find value, (val) ->
+              _.has(val, 'text') and val['text'] is ""   #remove empty text
+          else if _.isObject(diffed_value)
+            # ok this is not an array - likely the searchKeywords - removing the garbage
+            if _.has(diffed_value, '_t') and diffed_value['_t'] is 'a'
+              diffed_keywords = []
+              diffed_keys = _.keys diffed_value
+              _.each diffed_keys, (v) ->
+                if REGEX_NUMBER.test(v)
+                  diffed_keywords.push(diffed_value[v])
+              diffed_keywords = _.flatten(diffed_keywords)
+              updated[k] = diffed_keywords unless _.isEqual(diffed_keywords, old_obj[key][k])
+          else
+            # no idea what this is but lets just use it for updating
+            updated[k] = diffed_value
 
       if old_obj[key]
         # extend values of original object with possible new values of the diffed object
@@ -318,6 +334,8 @@ class ProductUtils extends BaseUtils
         action[key] = old
       else
         action[key] = undefined
+      if _.isEmpty(updated) and key is "searchKeywords"
+        action = undefined
     action
 
   _buildChangePriceAction: (centAmountDiff, variant, index) ->
@@ -528,6 +546,10 @@ actionsBaseList = ->
     {
       action: 'setMetaKeywords'
       key: 'metaKeywords'
+    },
+    {
+      action: 'setSearchKeywords'
+      key: 'searchKeywords'
     }
   ]
 

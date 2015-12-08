@@ -40,6 +40,9 @@ OLD_PRODUCT =
       ]
     }
   ]
+  searchKeywords: {
+    de: [{text: 'altes'}, {text: 'zeug'}, {text: 'weg'}]
+  }
 
 NEW_PRODUCT =
   id: '123'
@@ -79,6 +82,10 @@ NEW_PRODUCT =
       ]
     }
   ]
+  searchKeywords: {
+    en: [{text: 'new'}, {text: 'search'}, {text: 'keywords'}]
+    "fr-BE": [{text: 'bruxelles'}, {text:'liege'}, {text: 'brugge'}]
+  }
 
 describe 'ProductSync', ->
 
@@ -101,6 +108,7 @@ describe 'ProductSync', ->
           { action: 'changeName', name: {en: 'Foo', de: undefined, it: 'Boo'} }
           { action: 'changeSlug', slug: {en: 'foo', it: 'boo'} }
           { action: 'setDescription', description: undefined }
+          { action: 'setSearchKeywords', searchKeywords: en: [{text: 'new'}, {text: 'search'}, {text: 'keywords'}], "fr-BE": [{text: 'bruxelles'}, {text:'liege'}, {text: 'brugge'}] }
         ]
         version: OLD_PRODUCT.version
       expect(update).toEqual expected_update
@@ -115,6 +123,7 @@ describe 'ProductSync', ->
           { action: 'changeName', name: {en: 'Foo', de: undefined, it: 'Boo'} }
           { action: 'changeSlug', slug: {en: 'foo', it: 'boo'} }
           { action: 'setDescription', description: undefined }
+          { action: 'setSearchKeywords', searchKeywords: en: [{text: 'new'}, {text: 'search'}, {text: 'keywords'}], "fr-BE": [{text: 'bruxelles'}, {text:'liege'}, {text: 'brugge'}]}
           { action: 'changePrice', variantId: 1, price: {value: {currencyCode: 'EUR', centAmount: 3800}} }
           { action: 'removePrice', variantId: 1, price: {value: {currencyCode: 'EUR', centAmount: 1100}, country: 'DE'} }
           { action: 'removePrice', variantId: 1, price: {value: {currencyCode: 'EUR', centAmount: 1200}, customerGroup: {id: '984a64de-24a4-42c0-868b-da7abfe1c5f6', typeId: 'customer-group'}} }

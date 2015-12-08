@@ -143,7 +143,7 @@ describe 'Integration Products', ->
       done()
     .catch (error) -> done(_.prettify(error))
   , 30000 # 30sec
-
+  
   # it 'should search for suggestions', (done) ->
   #   debug 'Creating products with search keywords'
   #   Promise.all _.map [1..5], => @client.products.save(newProductWithSearchKeywords(@productType))
