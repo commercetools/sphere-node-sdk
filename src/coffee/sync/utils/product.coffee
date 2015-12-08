@@ -92,7 +92,10 @@ class ProductUtils extends BaseUtils
     actions = []
     _.each actionsBaseList(), (item) =>
       action = @_buildBaseAttributesAction(item, diff, old_obj)
-      if action && action.action == "setCategoryOrderHint"
+      if action?.action is "setCategoryOrderHint"
+        # if the the category order hint was changed from {} to not existant
+        if action.categoryOrderHints is undefined
+          return
         action.categoryId = Object.keys(action.categoryOrderHints)[0]
         action.orderHint = action.categoryOrderHints[action.categoryId]
         action = _.pick action, ['action', 'categoryId', 'orderHint']
