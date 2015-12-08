@@ -38,15 +38,6 @@ describe 'Integration Products Sync', ->
     .then (result) =>
       expect(result.statusCode).toBe 201
       @productType = result.body
-      debug 'Creating a Category'
-      @client.categories.save(
-        name:
-          en: 'myFancyCategory'
-        slug:
-          en: _.uniqueId "c#{new Date().getTime()}_"
-      )
-    .then (result) =>
-      @testCategory = result.body
       done()
     .catch (error) -> done(_.prettify(error))
 
@@ -71,15 +62,10 @@ describe 'Integration Products Sync', ->
       debug "Deleting #{payload.body.total} product types"
       Promise.all _.map payload.body.results, (productType) =>
         @client.productTypes.byId(productType.id).delete(productType.version)
-    .then (results) =>
-      debug "Deleted #{results.length} product types"
-      debug 'Delete Category'
-      @client.categories.byId(@testCategory.id).delete(@testCategory.version)
     .then () ->
+      debug "Deleted #{results.length} product types"
       done()
     .catch (error) -> done(_.prettify(error.body))
-
-
   , 60000 # 1min
 
   it 'should create and sync product', (done) ->
@@ -115,14 +101,6 @@ describe 'Integration Products Sync', ->
       name: {de: pName}
       slug: {de: pSlug}
       description: {de: 'A foo product'}
-      categoryOrderHints:
-        "#{@testCategory.id}": '0.9'
-      categories:[
-        {
-          typeId: 'category',
-          id: @testCategory.id
-        }
-      ]
       metaTitle: {de: 'The Foo'}
       metaDescription: {de: 'The Foo product'}
       masterVariant:
@@ -151,19 +129,6 @@ describe 'Integration Products Sync', ->
     debug 'Create initial product to be synced'
     @client.products.create(OLD_PROD)
     .then (result) =>
-      debug 'assing product to test category'
-      @client.products.byId(result.body.id).update(
-        version: result.body.version
-        actions: [
-          {
-            action: 'addToCategory'
-            category:
-              typeId: "category",
-              id: @testCategory.id
-          }
-        ]
-      )
-    .then (result) =>
       debug 'Fetch projection of created product'
       @client.productProjections.byId(result.body.id).staged(true).fetch()
     .then (result) =>
@@ -175,13 +140,11 @@ describe 'Integration Products Sync', ->
     .then (result) =>
       debug 'Fetch projection of updated product'
       @client.productProjections.byId(result.body.id).staged(true).fetch()
-    .then (result) =>
+    .then (result) ->
       updated = result.body
       expect(updated.name).toEqual {de: pName}
       expect(updated.slug).toEqual {de: pSlug}
       expect(updated.description).toEqual {de: 'A foo product'}
-      expect(updated.categoryOrderHints).toEqual { "#{@testCategory.id}": '0.9' }
-      expect(updated.categories).toEqual [ { typeId: 'category', id: @testCategory.id } ]
       expect(updated.metaTitle).toEqual {de: 'The Foo'}
       expect(updated.metaDescription).toEqual {de: 'The Foo product'}
       expect(updated.masterVariant.prices[0].value.centAmount).toBe 1500
