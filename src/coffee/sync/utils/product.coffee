@@ -460,6 +460,7 @@ class ProductUtils extends BaseUtils
               attrib.name is attribute.name
             text = _.extend {}, attrib?.value
             _.each diffed_value, (localValue, lang) =>
+              # make sure to support long text diff patching
               text[lang] = @getDeltaValue(localValue, attrib.value[lang])
             action.value = text
     action

@@ -30,6 +30,7 @@ describe 'SphereClient', ->
     expect(@client.customers).toBeDefined()
     expect(@client.customerGroups).toBeDefined()
     expect(@client.discountCodes).toBeDefined()
+    expect(@client.graphql).toBeDefined()
     expect(@client.inventoryEntries).toBeDefined()
     expect(@client.messages).toBeDefined()
     expect(@client.orders).toBeDefined()
@@ -42,6 +43,7 @@ describe 'SphereClient', ->
     expect(@client.shippingMethods).toBeDefined()
     expect(@client.states).toBeDefined()
     expect(@client.taxCategories).toBeDefined()
+    expect(@client.types).toBeDefined()
     expect(@client.zones).toBeDefined()
 
   it 'should throw error if no credentials are given', ->
@@ -97,6 +99,7 @@ describe 'SphereClient', ->
     {name: 'shippingMethods', className: 'ShippingMethodService', blacklist: []}
     {name: 'states', className: 'StateService', blacklist: []}
     {name: 'taxCategories', className: 'TaxCategoryService', blacklist: []}
+    {name: 'types', className: 'TypeService', blacklist: []}
     {name: 'zones', className: 'ZoneService', blacklist: []}
   ], (serviceDef) ->
 

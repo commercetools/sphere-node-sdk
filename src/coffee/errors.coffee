@@ -24,6 +24,19 @@ class SphereError extends Error
     @code = @statusCode
     Error.captureStackTrace(@, SphereError)
 
+# Public: A general GraphQL {Error} type
+class GraphQLError extends Error
+
+  # Public: Create a new `GraphQLError`
+  #
+  # message - {String} The error message
+  # body - {Object} A JSON object with optional information to pass to the error, like the error response body
+  constructor: (@message, @body = {}) ->
+    @name = "GraphQLError"
+    @statusCode = @body.statusCode if @body.statusCode
+    @code = @statusCode
+    Error.captureStackTrace(@, GraphQLError)
+
 # Public: A specific {SphereError} type for `BadRequest` errors (HTTP 400)
 class BadRequest extends SphereError
 
@@ -105,6 +118,7 @@ class ServiceUnavailable extends SphereError
 module.exports =
   HttpError: HttpError
   SphereError: SphereError
+  GraphQLError: GraphQLError
   SphereHttpError:
     BadRequest: BadRequest
     Unauthorized: Unauthorized

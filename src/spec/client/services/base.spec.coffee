@@ -24,6 +24,7 @@ ReviewService            = require '../../../lib/services/reviews'
 ShippingMethodService    = require '../../../lib/services/shipping-methods'
 StateService             = require '../../../lib/services/states'
 TaxCategoryService       = require '../../../lib/services/tax-categories'
+TypeService              = require '../../../lib/services/types'
 ZoneService              = require '../../../lib/services/zones'
 
 describe 'Service', ->
@@ -53,6 +54,7 @@ describe 'Service', ->
     {name: 'ShippingMethodService', service: ShippingMethodService, path: '/shipping-methods', blacklist: ['delete']}
     {name: 'StateService', service: StateService, path: '/states', blacklist: []}
     {name: 'TaxCategoryService', service: TaxCategoryService, path: '/tax-categories', blacklist: []}
+    {name: 'TypeService', service: TypeService, path: '/types', blacklist: []}
     {name: 'ZoneService', service: ZoneService, path: '/zones', blacklist: []}
   ], (o) ->
 

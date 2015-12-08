@@ -9,6 +9,7 @@ CustomObjectService      = require './services/custom-objects'
 CustomerService          = require './services/customers'
 CustomerGroupService     = require './services/customer-groups'
 DiscountCodeService      = require './services/discount-codes'
+GraphQLService           = require './services/graphql'
 InventoryEntryService    = require './services/inventory-entries'
 MessageService           = require './services/messages'
 OrderService             = require './services/orders'
@@ -22,6 +23,7 @@ ReviewService            = require './services/reviews'
 ShippingMethodService    = require './services/shipping-methods'
 StateService             = require './services/states'
 TaxCategoryService       = require './services/tax-categories'
+TypeService              = require './services/types'
 ZoneService              = require './services/zones'
 
 ALL_SERVICES = [
@@ -33,6 +35,7 @@ ALL_SERVICES = [
   {key: 'customers',          name: CustomerService},
   {key: 'customerGroups',     name: CustomerGroupService},
   {key: 'discountCodes',      name: DiscountCodeService},
+  {key: 'graphql',            name: GraphQLService},
   {key: 'inventoryEntries',   name: InventoryEntryService},
   {key: 'messages',           name: MessageService},
   {key: 'orders',             name: OrderService},
@@ -46,6 +49,7 @@ ALL_SERVICES = [
   {key: 'shippingMethods',    name: ShippingMethodService},
   {key: 'states',             name: StateService},
   {key: 'taxCategories',      name: TaxCategoryService},
+  {key: 'types',              name: TypeService}
   {key: 'zones',              name: ZoneService}
 ]
 
@@ -194,6 +198,7 @@ class SphereClient
   # - `customers`
   # - `customerGroups`
   # - `discountCodes`
+  # - `graphql`
   # - `inventoryEntries`
   # - `messages`
   # - `orders`
@@ -207,6 +212,7 @@ class SphereClient
   # - `shippingMethods`
   # - `states`
   # - `taxCategories`
+  # - `types`
   # - `zones`
   #
   # options - An {Object} to configure the client

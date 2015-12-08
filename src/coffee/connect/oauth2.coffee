@@ -25,6 +25,7 @@ class OAuth2
   # options - An {Object} to configure the service
   #   :config - {Object} It contains the credentials `project_key`, `client_id`, `client_secret`
   #   :host - {String} The host (default `auth.sphere.io`)
+  #   :protocol - {String} The protocol (default `https`)
   #   :accessTokenUrl - {String} The url path to the token endpoint (default `/oauth/token`)
   #   :user_agent - {String} The request `User-Agent` (default `sphere-node-connect`)
   #   :timeout - {Number} The request timeout (default `20000`)
@@ -34,15 +35,19 @@ class OAuth2
   constructor: (opts = {}) ->
     config = opts.config
     throw new Error('Missing credentials') unless config
-    throw new Error('Missing \'client_id\'') unless config.client_id
-    throw new Error('Missing \'client_secret\'') unless config.client_secret
+    throw new Error('Missing \'client_id\'') unless config.client_id or opts.access_token
+    throw new Error('Missing \'client_secret\'') unless config.client_secret or opts.access_token
     throw new Error('Missing \'project_key\'') unless config.project_key
+
+    host = opts.host or 'auth.sphere.io'
+    protocol = opts.protocol or 'https'
 
     rejectUnauthorized = if _.isUndefined(opts.rejectUnauthorized) then true else opts.rejectUnauthorized
     userAgent = if _.isUndefined(opts.user_agent) then 'sphere-node-connect' else opts.user_agent
     @_options =
       config: config
-      host: opts.host or 'auth.sphere.io'
+      host: host
+      protocol: protocol
       accessTokenUrl: opts.accessTokenUrl or '/oauth/token'
       timeout: opts.timeout or 20000
       rejectUnauthorized: rejectUnauthorized
@@ -61,7 +66,10 @@ class OAuth2
 
     payload = _.stringifyQuery(params)
     request_options =
-      uri: "https://#{@_options.config.client_id}:#{@_options.config.client_secret}@#{@_options.host}#{@_options.accessTokenUrl}"
+      uri: "#{@_options.protocol}://#{@_options.host}#{@_options.accessTokenUrl}"
+      auth:
+        user: @_options.config.client_id
+        pass: @_options.config.client_secret
       json: true
       method: 'POST'
       body: payload
