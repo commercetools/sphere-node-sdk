@@ -62,7 +62,7 @@ describe 'Integration Products Sync', ->
       debug "Deleting #{payload.body.total} product types"
       Promise.all _.map payload.body.results, (productType) =>
         @client.productTypes.byId(productType.id).delete(productType.version)
-    .then (results) ->
+    .then () ->
       debug "Deleted #{results.length} product types"
       done()
     .catch (error) -> done(_.prettify(error.body))

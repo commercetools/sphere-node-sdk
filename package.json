@@ -14,12 +14,7 @@
   "bugs": {
     "url": "https://github.com/sphereio/sphere-node-sdk/issues"
   },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "https://github.com/sphereio/sphere-node-sdk/blob/master/LICENSE-MIT"
-    }
-  ],
+  "license": "MIT",
   "main": "./lib/main",
   "engines": {
     "node": ">= 0.10.0"
@@ -39,14 +34,15 @@
     "underscore-mixins": "^0.1.x"
   },
   "devDependencies": {
-    "bluebird": "2.9.x",
     "biscotto": "emmenko/biscotto#v2.4.0",
+    "bluebird": "2.9.x",
+    "coffeelint": "^1.14.1",
     "coveralls": "2.11.x",
     "express": "4.12.x",
     "gh-pages": "0.2.x",
     "grunt": "0.4.5",
     "grunt-bump": "0.0.13",
-    "grunt-coffeelint": "0.0.8",
+    "grunt-coffeelint": "0.0.13",
     "grunt-contrib-clean": "0.6.0",
     "grunt-contrib-coffee": "0.13.x",
     "grunt-contrib-concat": "0.5.0",

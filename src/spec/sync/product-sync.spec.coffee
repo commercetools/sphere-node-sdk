@@ -59,6 +59,8 @@ NEW_PRODUCT =
       {value: {currencyCode: 'EUR', centAmount: 3800}}, # change
       {value: {currencyCode: 'EUR', centAmount: 1100}, country: 'IT'} # change
     ]
+  categoryOrderHints:
+    myFancyCategoryId: 0.9
   variants: [
     {
       id: 2
@@ -107,6 +109,7 @@ describe 'ProductSync', ->
         actions: [
           { action: 'changeName', name: {en: 'Foo', de: undefined, it: 'Boo'} }
           { action: 'changeSlug', slug: {en: 'foo', it: 'boo'} }
+          { action: 'setCategoryOrderHint', categoryId : 'myFancyCategoryId', orderHint : 0.9 }
           { action: 'setDescription', description: undefined }
           { action: 'setSearchKeywords', searchKeywords: en: [{text: 'new'}, {text: 'search'}, {text: 'keywords'}], "fr-BE": [{text: 'bruxelles'}, {text:'liege'}, {text: 'brugge'}] }
         ]
@@ -122,6 +125,7 @@ describe 'ProductSync', ->
         actions: [
           { action: 'changeName', name: {en: 'Foo', de: undefined, it: 'Boo'} }
           { action: 'changeSlug', slug: {en: 'foo', it: 'boo'} }
+          { action: 'setCategoryOrderHint', categoryId : 'myFancyCategoryId', orderHint : 0.9 }
           { action: 'setDescription', description: undefined }
           { action: 'setSearchKeywords', searchKeywords: en: [{text: 'new'}, {text: 'search'}, {text: 'keywords'}], "fr-BE": [{text: 'bruxelles'}, {text:'liege'}, {text: 'brugge'}]}
           { action: 'changePrice', variantId: 1, price: {value: {currencyCode: 'EUR', centAmount: 3800}} }
