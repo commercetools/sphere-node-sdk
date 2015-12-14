@@ -22,21 +22,23 @@ test('Sync::product::images', t => {
         {
           id: 2,
           images: [{
-            url: '//example.com/image2.png', label: 'foo', dimensions: { x: 1024, y: 768 }
+            url: '//example.com/image2.png', label: 'foo', dimensions: { h: 1024, w: 768 }
           }]
         },
         {
           id: 3,
           images: [
-            { url: '//example.com/image3.png', label: 'foo', dimensions: { x: 1024, y: 768 } },
-            { url: '//example.com/image4.png', dimensions: { x: 1024, y: 768 } },
-            { url: '//example.com/image5.png', label: 'foo', dimensions: { x: 1024, y: 768 } }
+            { url: '//example.com/image3.png', label: 'foo', dimensions: { h: 1024, w: 768 } },
+            { url: '//example.com/image4.png', dimensions: { h: 1024, w: 768 } },
+            { url: '//example.com/image5.png', label: 'foo', dimensions: { h: 1024, w: 768 } }
           ]
         },
         {
           id: 4,
           images: [
-            { url: '//example.com/old.png', label: 'foo', dimensions: { x: 1024, y: 768 } }
+            // Order is important!
+            { url: '//example.com/old-remove.png', dimensions: { h: 400, w: 600 } },
+            { url: '//example.com/old-keep.png', dimensions: { h: 608, w: 1000 } }
           ]
         }
       ]
@@ -56,22 +58,27 @@ test('Sync::product::images', t => {
           id: 2,
           images: [
             // no changes
-            { url: '//example.com/image2.png', label: 'foo', dimensions: { x: 1024, y: 768 } }
+            { url: '//example.com/image2.png', label: 'foo', dimensions: { h: 1024, w: 768 } }
           ]
         },
         {
           id: 3,
           images: [
             // label changed
-            { url: '//example.com/image3.png', label: 'CHANGED', dimensions: { x: 1024, y: 768 } },
+            { url: '//example.com/image3.png', label: 'CHANGED', dimensions: { h: 1024, w: 768 } },
             // label added
-            { url: '//example.com/image4.png', label: 'ADDED', dimensions: { x: 400, y: 300 } },
+            { url: '//example.com/image4.png', label: 'ADDED', dimensions: { h: 400, w: 300 } },
             // url changed (new image)
-            { url: '//example.com/CHANGED.jpg', label: 'foo', dimensions: { x: 400, y: 300 } }
+            { url: '//example.com/CHANGED.jpg', label: 'foo', dimensions: { h: 400, w: 300 } }
           ]
         },
         // images removed
-        { id: 4, images: [] }
+        {
+          id: 4,
+          images: [
+            { url: '//example.com/old-keep.png', dimensions: { h: 608, w: 1000 } }
+          ]
+        }
       ]
     }
 
@@ -81,8 +88,8 @@ test('Sync::product::images', t => {
       { action: 'changeImageLabel', variantId: 3, imageUrl: '//example.com/image3.png', label: 'CHANGED' },
       { action: 'changeImageLabel', variantId: 3, imageUrl: '//example.com/image4.png', label: 'ADDED' },
       { action: 'removeImage', variantId: 3, imageUrl: '//example.com/image5.png' },
-      { action: 'addExternalImage', variantId: 3, imageUrl: '//example.com/CHANGED.jpg' },
-      { action: 'removeImage', variantId: 4, imageUrl: '//example.com/old.png' }
+      { action: 'addExternalImage', variantId: 3, image: { url: '//example.com/CHANGED.jpg', label: 'foo', dimensions: { h: 400, w: 300 } } },
+      { action: 'removeImage', variantId: 4, imageUrl: '//example.com/old-remove.png' }
     ])
     t.end()
   })
