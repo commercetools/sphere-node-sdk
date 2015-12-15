@@ -87,8 +87,8 @@ test('Sync::product::images', t => {
       { action: 'addExternalImage', variantId: 1, image: { url: 'http://cat.com', label: 'A cat' } },
       { action: 'changeImageLabel', variantId: 3, imageUrl: '//example.com/image3.png', label: 'CHANGED' },
       { action: 'changeImageLabel', variantId: 3, imageUrl: '//example.com/image4.png', label: 'ADDED' },
-      { action: 'removeImage', variantId: 3, imageUrl: '//example.com/image5.png' },
       { action: 'addExternalImage', variantId: 3, image: { url: '//example.com/CHANGED.jpg', label: 'foo', dimensions: { h: 400, w: 300 } } },
+      { action: 'removeImage', variantId: 3, imageUrl: '//example.com/image5.png' },
       { action: 'removeImage', variantId: 4, imageUrl: '//example.com/old-remove.png' }
     ])
     t.end()
