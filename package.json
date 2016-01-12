@@ -22,10 +22,10 @@
     "coverage": "npm run lint && ./scripts/version && NODE_ENV=test babel-node $(npm bin)/isparta cover test",
     "dist": "npm run clean && ./scripts/version && babel lib --out-dir dist",
     "lint": "eslint lib test",
-    "test": "./scripts/version && NODE_ENV=test babel-tape-runner test | tap-spec",
+    "test": "./scripts/version && NODE_ENV=test NODE_PATH=./lib babel-node test/index.js | tap-spec",
     "test:ci": "browserify -t babelify -t [ envify --NODE_ENV test ] test | tape-run -b firefox",
     "test:browser": "browserify -t babelify -t [ envify --NODE_ENV test ] test | tape-run -b chrome",
-    "test:watch": "npm run test -- --watch"
+    "test:watch": "watch 'npm test' lib test -d"
   },
   "dependencies": {
     "async": "~1.5.2",
@@ -43,7 +43,6 @@
     "babel-eslint": "^5.0.0-beta6",
     "babel-plugin-transform-runtime": "^6.4.0",
     "babel-preset-es2015": "^6.3.13",
-    "babel-tape-runner": "^2.0.0",
     "babelify": "^7.2.0",
     "browserify": "^13.0.0",
     "coveralls": "^2.11.6",
@@ -54,7 +53,8 @@
     "sinon": "^1.17.2",
     "tap-spec": "^4.1.1",
     "tape": "^4.4.0",
-    "tape-run": "^2.1.1"
+    "tape-run": "^2.1.1",
+    "watch": "^0.17.1"
   },
   "keywords": [
     "sphere",
