@@ -25,10 +25,10 @@ class ProductUtils extends BaseUtils
     # Otherwise let's use the provided id.
     # If there is no SKU and no ID present, throw an error
     patchVariantId = (variant, index) ->
-      if variant.id?
-        variant._MATCH_CRITERIA = "#{variant.id}"
       if variant.sku?
         variant._MATCH_CRITERIA = variant.sku
+      else if variant.id?
+        variant._MATCH_CRITERIA = "#{variant.id}"
       debug 'patched id (with criteria %s) for variant: %j', variant._MATCH_CRITERIA, variant
       if not variant._MATCH_CRITERIA?
         throw new Error 'A variant must either have an ID or an SKU.'
