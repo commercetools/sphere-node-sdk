@@ -319,4 +319,89 @@ class ProductProjectionService extends BaseService
   # Public Unsupported: Not supported by the API
   delete: ->
 
+    # Public: Process the resources for each `page` separately using the function `fn`.
+  # The function `fn` will then be called once per page and has to return a
+  # {Promise} that should be resolved when all elements of the page are processed.
+  #
+  # Batch processing allows to process a lot of resources in chunks.
+  # Using this approach you can balance between memory usage and parallelism.
+  #
+  # fn - {Function} The function called for each processing page (it must return a {Promise})
+  # options - {Object} To configure the processing
+  #         :accumulate - {Boolean} Whether the results should be accumulated or not (default true)
+  #
+  # Throws an {Error} if `fn` is not a {Function}
+  #
+  # Returns a {Promise}, fulfilled with an {Array} of the results of each resolved
+  # page from the `fn`, or rejected with an instance of an {HttpError} or {SphereError}
+  #
+  # Examples
+  #
+  #   # Define your custom function, which returns a promise
+  #   fn = (payload) ->
+  #     new Promise (resolve, reject) ->
+  #       # do something with the payload
+  #       if # something unexpected happens
+  #         reject 'BAD'
+  #       else # good case
+  #         resolve 'OK'
+  #   service = client.products
+  #   service.perPage(20).process(fn)
+  #   .then (result) ->
+  #     # here we get the total result, which is just an array of all pages accumulated
+  #     # eg: ['OK', 'OK', 'OK'] if you have 41 to 60 products - the function fn is called three times
+  #   .catch (error) ->
+  #     # eg: 'BAD'
+  process: (fn, options = {}) ->
+    console.log @_currentEndpoint
+    if @_currentEndpoint != '/product-projections/search'
+      return super(fn, options)
+    throw new Error 'Please provide a function to process the elements' unless _.isFunction fn
+
+    new Promise (resolve, reject) =>
+
+      options = _.defaults options,
+        accumulate: true # whether the results should be accumulated or not
+
+      endpoint = @_currentEndpoint
+      originalQuery = @_params.query
+
+      _processPage = (page, perPage, total, acc = []) =>
+        debug 'processing next page with params: %j',
+          page: page
+          perPage: perPage,
+          offset: (page - 1) * perPage
+          total: total
+        if total? and (page - 1) * perPage >= total
+          resolve acc
+        else
+          @_params.query = _.extend {}, originalQuery,
+            page: page
+            perPage: perPage
+          @sort 'createdAt' if _.isEmpty @_params.query.sort
+          queryString = @_queryString()
+
+          @_get("#{endpoint}?#{queryString}")
+          .then (payload) ->
+            fn(payload)
+            .then (result) ->
+              newTotal = payload.body.total
+              if not total or total is newTotal
+                nextPage = page + 1
+              else if total < newTotal
+                nextPage = page
+                debug 'Total is bigger then before, assuming something has been newly created. Processing the same page (%s).', nextPage
+              else
+                nextPage = page - 1
+                nextPage = 1 if nextPage < 1
+                debug 'Total is lesser then before, assuming something has been deleted. Reducing page to %s (min 1).', nextPage
+              accumulated = acc.concat(result) if options.accumulate
+              _processPage nextPage, perPage, newTotal, accumulated
+          .catch (error) ->
+            console.log JSON.stringify error, null, 2
+            reject error
+          .done()
+      _processPage(@_params.query.page or 1, @_params.query.perPage or 20)
+
+
 module.exports = ProductProjectionService
