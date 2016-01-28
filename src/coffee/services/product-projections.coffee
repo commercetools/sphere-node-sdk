@@ -1,6 +1,7 @@
 debug = require('debug')('sphere-client')
 _ = require 'underscore'
 BaseService = require './base'
+Promise = require 'bluebird'
 
 # Public: Define a `ProductProjectionService` to interact with the HTTP [`product-projections`](http://dev.sphere.io/http-api-projects-products.html) endpoint.
 # A [`ProductProjection`](http://dev.sphere.io/http-api-projects-products.html#product-projection) is a representation
@@ -353,7 +354,6 @@ class ProductProjectionService extends BaseService
   #   .catch (error) ->
   #     # eg: 'BAD'
   process: (fn, options = {}) ->
-    console.log @_currentEndpoint
     if @_currentEndpoint != '/product-projections/search'
       return super(fn, options)
     throw new Error 'Please provide a function to process the elements' unless _.isFunction fn
@@ -372,6 +372,7 @@ class ProductProjectionService extends BaseService
           perPage: perPage,
           offset: (page - 1) * perPage
           total: total
+
         if total? and (page - 1) * perPage >= total
           resolve acc
         else
@@ -398,7 +399,6 @@ class ProductProjectionService extends BaseService
               accumulated = acc.concat(result) if options.accumulate
               _processPage nextPage, perPage, newTotal, accumulated
           .catch (error) ->
-            console.log JSON.stringify error, null, 2
             reject error
           .done()
       _processPage(@_params.query.page or 1, @_params.query.perPage or 20)
