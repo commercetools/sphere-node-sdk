@@ -336,6 +336,10 @@ class BaseService
       originalQuery = @_params.query
       originalPredicate = @_params.query.where
 
+      if originalQuery.perPage is 0
+        debug 'using batch size of 20 since 0 wont return any results'
+        originalQuery.perPage = 20
+
       _processPage = (lastId, acc = []) =>
         debug 'processing next page with id: %s', lastId
 
