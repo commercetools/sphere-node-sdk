@@ -389,6 +389,24 @@ describe 'Service', ->
           expect(=> @service.process()).toThrow new Error 'Please provide a function to process the elements'
           expect(@restMock.GET).not.toHaveBeenCalled()
 
+        it 'should set the limit to 20 if it is 0', ->
+          spyOn(@restMock, 'GET')
+
+          @service._params.query.perPage = 0
+
+          fn = (payload) ->
+            Promise.resolve payload.body.results[0]
+
+          @service.process(fn)
+          .then () ->
+
+            actual = @service._params.query.limit
+            expected = 20
+
+            expect(actual).toEqual(expected)
+            done()
+          .catch (error) -> done(_.prettify(error))
+
         it 'should not accumulate results if explicitly set', (done) ->
           offset = -20
           count = 1
