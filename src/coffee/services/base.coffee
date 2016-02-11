@@ -529,7 +529,7 @@ class BaseService
   # body - {Object} A JSON object containing the HTTP API resource or error messages
   _wrapResponse: (resolve, reject, originalRequest, error, response, body) ->
     responseJson =
-      if @_stats.includeHeaders
+      if @_stats.includeHeaders and response
         http:
           request:
             method: response.request.method
