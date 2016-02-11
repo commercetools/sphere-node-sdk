@@ -123,7 +123,7 @@ class Rest
         @_oauth.getAccessToken (error, response, body) =>
           if error
             if retry is 10
-              callback(error, response, body)
+              return callback(error, response, body)
             else
               debug "Failed to retrieve access_token (error: %j), retrying...#{retry + 1}", error
               return _req(retry + 1)
