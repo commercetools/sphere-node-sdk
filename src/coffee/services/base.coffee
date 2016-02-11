@@ -541,9 +541,14 @@ class BaseService
             headers: response.headers
       else {}
 
-    originalRequest = _.extend originalRequest,
-      uri: @_rest._options.uri
-      timeout: @_rest._options.timeout
+    options = _.omit(@_rest._options, ['access_token'])
+    if options.config
+      options.config = _.omit(options.config, ['client_id', 'client_secret'])
+
+    originalRequest = _.extend(
+      originalRequest,
+      options
+    )
 
     if error
       if error instanceof Error
