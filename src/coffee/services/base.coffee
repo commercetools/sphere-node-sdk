@@ -541,6 +541,10 @@ class BaseService
             headers: response.headers
       else {}
 
+    originalRequest = _.extend originalRequest,
+      uri: @_rest._options.uri
+      timeout: @_rest._options.timeout
+
     if error
       if error instanceof Error
         errorMessage = error.message
