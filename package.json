@@ -30,7 +30,6 @@
   "dependencies": {
     "async": "~1.5.2",
     "babel-runtime": "^6.3.19",
-    "error-class": "~1.1.1",
     "isomorphic-fetch": "~2.2.0",
     "jsondiffpatch": "emmenko/jsondiffpatch#patch-webpack",
     "lodash.flatten": "^3.0.2",
