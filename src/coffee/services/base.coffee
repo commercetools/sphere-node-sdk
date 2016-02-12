@@ -541,6 +541,13 @@ class BaseService
             headers: response.headers
       else {}
 
+    options = _.omit(@_rest._options, ['access_token'])
+    if options.config
+      options.config = _.omit(options.config, ['client_id', 'client_secret'])
+
+    if options
+      originalRequest.options = options
+
     if error
       if error instanceof Error
         errorMessage = error.message

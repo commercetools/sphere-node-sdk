@@ -246,6 +246,7 @@ describe 'Service', ->
               statusCode: 400
               message: 'Oops, something went wrong'
               originalRequest:
+                options: {}
                 endpoint: o.path
                 payload:
                   foo: 'bar'
@@ -450,6 +451,7 @@ describe 'Service', ->
               statusCode: 404
               message: "Endpoint '/foo' not found."
               originalRequest:
+                options: {}
                 endpoint: o.path
             done()
 
@@ -467,6 +469,7 @@ describe 'Service', ->
               statusCode: 404
               message: "Endpoint '/foo' not found."
               originalRequest:
+                options: {}
                 endpoint: o.path
             done()
 
@@ -480,6 +483,7 @@ describe 'Service', ->
               statusCode: 500
               message: 'foo'
               originalRequest:
+                options: {}
                 endpoint: o.path
             done()
 
@@ -511,6 +515,7 @@ describe 'Service', ->
                 statusCode: 404
                 message: "Endpoint '/foo' not found."
                 originalRequest:
+                  options: {}
                   endpoint: "#{o.path}?limit=0&sort=id%20asc"
               done()
 
@@ -524,6 +529,7 @@ describe 'Service', ->
                 statusCode: 500
                 message: 'foo'
                 originalRequest:
+                  options: {}
                   endpoint: "#{o.path}?limit=0&sort=id%20asc"
               done()
 
@@ -562,6 +568,7 @@ describe 'Service', ->
                 statusCode: 404
                 message: "Endpoint '/foo' not found."
                 originalRequest:
+                  options: {}
                   endpoint: o.path
                   payload:
                     foo: 'bar'
@@ -582,6 +589,7 @@ describe 'Service', ->
                 statusCode: 500
                 message: 'foo'
                 originalRequest:
+                  options: {}
                   endpoint: o.path
                   payload:
                     foo: 'bar'
@@ -664,6 +672,7 @@ describe 'Service', ->
                 statusCode: 404
                 message: "Endpoint '/foo' not found."
                 originalRequest:
+                  options: {}
                   endpoint: "#{o.path}/123-abc?version=1"
               done()
 
@@ -677,5 +686,6 @@ describe 'Service', ->
                 statusCode: 500
                 message: 'foo'
                 originalRequest:
+                  options: {}
                   endpoint: "#{o.path}/123-abc?version=1"
               done()
