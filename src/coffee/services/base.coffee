@@ -545,10 +545,8 @@ class BaseService
     if options.config
       options.config = _.omit(options.config, ['client_id', 'client_secret'])
 
-    originalRequest = _.extend(
-      originalRequest,
-      { options }
-    )
+    if options
+      originalRequest.options = options
 
     if error
       if error instanceof Error
