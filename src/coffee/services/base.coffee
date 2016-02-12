@@ -547,7 +547,7 @@ class BaseService
 
     originalRequest = _.extend(
       originalRequest,
-      options
+      { options }
     )
 
     if error
