@@ -76,6 +76,7 @@ describe 'Service', ->
           _task: @task
           _stats:
             includeHeaders: false
+            secure: true
 
       afterEach ->
         @service = null
@@ -235,6 +236,80 @@ describe 'Service', ->
             expect(@service._params.query.expand).toEqual []
 
       if not _.contains(o.blacklist, 'save')
+
+        it 'should censor authorization headers in case of a timeout', (done) ->
+          spyOn(@service._rest, 'POST').andCallFake (endpoint, payload, callback) ->
+            callback new Error('timeout'), null, null
+          @service._rest._options =
+            headers:
+              Authorization: 'Bearer 9y1cbq8y34cnq9yap8enxrfgyqp934ncgp9'
+          @service._stats.secure = false
+          @service._stats.includeHeaders = true
+          @service.save({foo: 'bar'})
+          .then -> done('Should not happen')
+          .catch (error) ->
+            expect(error.body).toEqual
+              statusCode: 500
+              message: 'timeout'
+              originalRequest:
+                options:
+                  headers:
+                    Authorization: 'Bearer **********'
+                endpoint: o.path
+                payload:
+                  foo: 'bar'
+            done()
+          .done()
+
+        it 'should censor authorization headers', (done) ->
+          spyOn(@service._rest, 'POST').andCallFake (endpoint, payload, callback) ->
+            callback null, {
+              statusCode: 400,
+              req: {
+                _header: 'Authorization: Bearer 9y1cbq8y34cnq9yap8enxrfgyqp934ncgp9'
+              },
+              request: {
+                headers: {
+                  Authorization: 'Bearer 9y1cbq8y34cnq9yap8enxrfgyqp934ncgp9'
+                }
+              },
+              headers: {
+                Authorization: 'Bearer 9y1cbq8y34cnq9yap8enxrfgyqp934ncgp9'
+              }
+            }, {statusCode: 400, message: 'Oops, something went wrong'}
+          @service._rest._options =
+            headers:
+              Authorization: 'Bearer 9y1cbq8y34cnq9yap8enxrfgyqp934ncgp9'
+          @service._stats.secure = false
+          @service._stats.includeHeaders = true
+          @service.save({foo: 'bar'})
+          .then -> done('Should not happen')
+          .catch (error) ->
+            expect(error.name).toBe 'BadRequest'
+            expect(error.body).toEqual
+              http:
+                request:
+                  method: undefined
+                  httpVersion: undefined
+                  uri: undefined
+                  header: 'Authorization: Bearer **********'
+                  headers:
+                    Authorization: 'Bearer **********'
+                response:
+                  headers:
+                    Authorization: 'Bearer **********'
+              statusCode: 400
+              message: 'Oops, something went wrong'
+              originalRequest:
+                options:
+                  headers:
+                    Authorization: 'Bearer **********'
+                endpoint: o.path
+                payload:
+                  foo: 'bar'
+            done()
+          .done()
+
         it 'should pass original request to failed response', (done) ->
           spyOn(@service._rest, 'POST').andCallFake (endpoint, payload, callback) ->
             callback null, {statusCode: 400}, {statusCode: 400, message: 'Oops, something went wrong'}
