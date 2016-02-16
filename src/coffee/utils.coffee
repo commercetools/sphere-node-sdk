@@ -54,3 +54,21 @@ module.exports =
       when 'd' then amount * 1000 * 60 * 60 * 24
       when 'w' then amount * 1000 * 60 * 60 * 24 * 7
       else 0
+
+  ###*
+   * Returns the header string with censored Bearer key
+   * @param {String} header - the header string to censor
+   * @return {String} the censored header string
+  ###
+  _censorHeaderStr: (header) ->
+    header
+    .replace(/Bearer [\w-]*/, 'Bearer **********')
+
+  ###*
+   * Returns the header obj with censored Bearer key
+   * @param {Object} header - the header string to censor
+   * @return {Object} the censored header obj
+  ###
+  _censorHeaderObj: (header) ->
+    header.Authorization = "Bearer **********"
+    return header
