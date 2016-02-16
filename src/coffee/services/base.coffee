@@ -529,9 +529,11 @@ class BaseService
   # body - {Object} A JSON object containing the HTTP API resource or error messages
   _wrapResponse: (resolve, reject, originalRequest, error, response, body) ->
     if @_stats.maskSensitiveHeaderData is false and response
-      response.req._header = @_censorHeaderStr(response.req._header)
-      response.request.headers = @_censorHeaderObj(response.request.headers)
-      response.headers = @_censorHeaderObj(response.headers)
+      response.req._header = Utils._censorHeaderStr(response.req._header)
+      response.request.headers = Utils._censorHeaderObj(
+        response.request.headers
+      )
+      response.headers = Utils._censorHeaderObj(response.headers)
     responseJson =
       if @_stats.includeHeaders and response
         http:
@@ -550,7 +552,7 @@ class BaseService
       options.config = _.omit(options.config, ['client_id', 'client_secret'])
 
     if @_stats.maskSensitiveHeaderData is false
-      options.headers = @_censorHeaderObj(options.headers)
+      options.headers = Utils._censorHeaderObj(options.headers)
     originalRequest.options = options
 
     if error
@@ -608,14 +610,5 @@ class BaseService
           else new HttpError require('http').STATUS_CODES[response.statusCode], _.extend responseJson,
             statusCode: response.statusCode
             originalRequest: originalRequest
-
-
-  _censorHeaderStr: (header) ->
-    header
-    .replace(/Bearer [\w-]*/, 'Bearer **********')
-
-  _censorHeaderObj: (header) ->
-    header.Authorization = "Bearer **********"
-    return header
 
 module.exports = BaseService
