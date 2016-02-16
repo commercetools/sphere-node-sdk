@@ -134,7 +134,7 @@ ALL_SERVICES = [
 #
 # Current options are available:
 # - `includeHeaders` will include some HTTP header information in the response, wrapped in a JSON object called `http`
-# - `maskSensitiveHeaderData` if set to false, it will filter out all http authorization headers from the response
+# - `maskSensitiveHeaderData` If set to true, it will filter out all sensitive data like authorisation from response headers. By default it is set to false.
 #
 # Each response from the HTTP API contains a header `x-correlation-id`.
 # This unique value can be used to correlate events across different layers and also might help in case of failures.
@@ -233,7 +233,7 @@ class SphereClient
       _task: @_task
       _stats: _.defaults options.stats or {},
         includeHeaders: false
-        maskSensitiveHeaderData: true
+        maskSensitiveHeaderData: false
 
     # TODO: currently instances are bound to the client as properties (e.g.: client.products)
     # We may think to provide a better interface for that, so for now we keep it like this

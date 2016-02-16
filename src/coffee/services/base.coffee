@@ -528,7 +528,7 @@ class BaseService
   # response - {Object} An `http.IncomingMessage` object containing all kind of information about the request / response
   # body - {Object} A JSON object containing the HTTP API resource or error messages
   _wrapResponse: (resolve, reject, originalRequest, error, response, body) ->
-    if @_stats.maskSensitiveHeaderData is false and response
+    if @_stats.maskSensitiveHeaderData is true and response
       response.req._header = Utils._censorHeaderStr(response.req._header)
       response.request.headers = Utils._censorHeaderObj(
         response.request.headers
@@ -551,7 +551,7 @@ class BaseService
     if options.config
       options.config = _.omit(options.config, ['client_id', 'client_secret'])
 
-    if @_stats.maskSensitiveHeaderData is false
+    if @_stats.maskSensitiveHeaderData is true
       options.headers = Utils._censorHeaderObj(options.headers)
     originalRequest.options = options
 

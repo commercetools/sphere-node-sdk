@@ -76,7 +76,7 @@ describe 'Service', ->
           _task: @task
           _stats:
             includeHeaders: false
-            maskSensitiveHeaderData: true
+            maskSensitiveHeaderData: false
 
       afterEach ->
         @service = null
@@ -243,7 +243,7 @@ describe 'Service', ->
           @service._rest._options =
             headers:
               Authorization: 'Bearer 9y1cbq8y34cnq9yap8enxrfgyqp934ncgp9'
-          @service._stats.maskSensitiveHeaderData = false
+          @service._stats.maskSensitiveHeaderData = true
           @service._stats.includeHeaders = true
           @service.save({foo: 'bar'})
           .then -> done('Should not happen')
@@ -280,7 +280,7 @@ describe 'Service', ->
           @service._rest._options =
             headers:
               Authorization: 'Bearer 9y1cbq8y34cnq9yap8enxrfgyqp934ncgp9'
-          @service._stats.maskSensitiveHeaderData = false
+          @service._stats.maskSensitiveHeaderData = true
           @service._stats.includeHeaders = true
           @service.save({foo: 'bar'})
           .then -> done('Should not happen')
