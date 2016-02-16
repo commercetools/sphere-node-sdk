@@ -547,7 +547,7 @@ class BaseService
             headers: response.headers
       else {}
 
-    options = _.omit(@_rest._options, ['access_token'])
+    options = _.deepClone(_.omit(@_rest._options, ['access_token']))
     if options.config
       options.config = _.omit(options.config, ['client_id', 'client_secret'])
 
