@@ -38,6 +38,7 @@
     "bluebird": "2.9.x",
     "coffeelint": "^1.14.1",
     "coveralls": "2.11.x",
+    "cz-conventional-changelog": "1.1.5",
     "express": "4.12.x",
     "gh-pages": "0.2.x",
     "grunt": "0.4.5",
@@ -64,5 +65,10 @@
     "sync",
     "promise",
     "ecommerce"
-  ]
+  ],
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
 }
