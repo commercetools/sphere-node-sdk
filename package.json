@@ -20,6 +20,7 @@
     "node": ">= 0.10.0"
   },
   "scripts": {
+    "commit": "git-cz",
     "build": "grunt build",
     "test": "grunt coverage"
   },
@@ -37,10 +38,12 @@
     "biscotto": "emmenko/biscotto#v2.4.0",
     "bluebird": "2.9.x",
     "coffeelint": "^1.14.1",
+    "commitizen": "2.5.0",
     "coveralls": "2.11.x",
     "cz-conventional-changelog": "1.1.5",
     "express": "4.12.x",
     "gh-pages": "0.2.x",
+    "ghooks": "1.0.3",
     "grunt": "0.4.5",
     "grunt-bump": "0.0.13",
     "grunt-coffeelint": "0.0.13",
@@ -54,7 +57,8 @@
     "jasmine-node": "1.14.5",
     "sphere-coffeelint": "git://github.com/sphereio/sphere-coffeelint.git#master",
     "underscore": "1.8.x",
-    "underscore-mixins": "0.1.x"
+    "underscore-mixins": "0.1.x",
+    "validate-commit-msg": "2.0.0"
   },
   "keywords": [
     "sphere",
@@ -69,6 +73,9 @@
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
+    },
+    "ghooks": {
+      "commit-msg": "validate-commit-msg"
     }
   }
 }
