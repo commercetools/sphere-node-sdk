@@ -1,0 +1,6 @@
+- [ ] commit messages are commitizen-friendly
+- [ ] code is unit tested
+- [ ] code is integration tested
+- [ ] public code is documented
+- [ ] code is reviewed by at least one person
+- [ ] code satisfies linter rules
