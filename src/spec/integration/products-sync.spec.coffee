@@ -20,6 +20,14 @@ newProduct = (pType) ->
   productType:
     id: pType.id
     typeId: 'product-type'
+  masterVariant:
+    images: [
+      url: 'http://my.image.url'
+      dimensions:
+        w: 100
+        h: 100
+      label: 'label'
+    ]
 
 updateUnpublish = (version) ->
   version: version
@@ -67,6 +75,81 @@ describe 'Integration Products Sync', ->
       done()
     .catch (error) -> done(_.prettify(error.body))
   , 60000 # 1min
+
+  describe 'Image update actions', ->
+
+    beforeEach (done) ->
+      debug 'Creating a Product'
+      @client.products.save(newProduct(@productType))
+      .then (result) =>
+        expect(result.statusCode).toBe 201
+        @client.productProjections.byId(result.body.id).staged(true).fetch()
+      .then (result) =>
+        @testProduct = result.body
+        done()
+      .catch (error) ->
+        done(_.prettify(error))
+
+    afterEach (done) ->
+      @client.productProjections.byId(@testProduct.id).staged(true).fetch()
+      .then ({ body: updatedProduct }) =>
+        @client.products.byId(@testProduct.id).delete(updatedProduct.version)
+      .then () ->
+        done()
+      .catch (error) -> done(_.prettify(error))
+
+    it 'should update the label of an image', (done) ->
+
+      NEW_PROD = _.deepClone(@testProduct)
+      NEW_PROD.masterVariant.images[0].label = 'newLabel'
+      syncedActions = @sync.buildActions(NEW_PROD, @testProduct)
+      updatePayload = syncedActions.getUpdatePayload()
+
+      debug 'About to update product with synced actions'
+      @client.products.byId(syncedActions.getUpdateId()).update(updatePayload)
+      .then (result) =>
+        debug 'Fetch projection of updated product'
+        @client.productProjections.byId(@testProduct.id).staged(true).fetch()
+      .then ({ body: updatedProduct }) ->
+        actual = updatedProduct.masterVariant.images[0].label
+        expected = NEW_PROD.masterVariant.images[0].label
+
+        expect(actual).toEqual(expected)
+        done()
+      .catch (error) -> done(_.prettify(error))
+
+    it 'should update the url of an image', (done) ->
+
+      NEW_PROD = _.deepClone(@testProduct)
+      NEW_PROD.masterVariant.images[0].url = 'http://my.new.image.url'
+      syncedActions = @sync.buildActions(NEW_PROD, @testProduct)
+      updatePayload = syncedActions.getUpdatePayload()
+
+      debug 'About to update product with synced actions'
+      @client.products.byId(syncedActions.getUpdateId()).update(updatePayload)
+      .then (result) =>
+        debug 'Fetch projection of updated product'
+        @client.productProjections.byId(@testProduct.id).staged(true).fetch()
+      .then ({ body: updatedProduct }) ->
+        actual = updatedProduct.masterVariant.images[0].url
+        expected = NEW_PROD.masterVariant.images[0].url
+
+        expect(actual).toEqual(expected)
+        done()
+      .catch (error) -> done(_.prettify(error))
+
+    it 'should not update the dimensions of an image', ->
+
+      NEW_PROD = _.deepClone(@testProduct)
+      NEW_PROD.masterVariant.images[0].dimensions =
+        w: 200
+        h: 200
+      syncedActions = @sync.buildActions(NEW_PROD, @testProduct)
+      updatePayload = syncedActions.getUpdatePayload()
+
+      update = ->
+        @client.products.byId(syncedActions.getUpdateId()).update(updatePayload)
+      expect(update).toThrow()
 
   it 'should create and sync product', (done) ->
     pName = uniqueId('Foo')
