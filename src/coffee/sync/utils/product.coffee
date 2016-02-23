@@ -381,12 +381,35 @@ class ProductUtils extends BaseUtils
     _.each images, (image, key) =>
       delete image._MATCH_CRITERIA
       if REGEX_NUMBER.test key
-        unless _.isEmpty old_variant.images
-          action = @_buildRemoveImageAction old_variant, old_variant.images[key]
-          actions.push action if action
-        unless _.isEmpty new_variant.images
-          action = @_buildAddExternalImageAction old_variant, new_variant.images[key]
-          actions.push action if action
+
+        if _.isArray(image) and image.length
+          actions.push(@_buildAddExternalImageAction(
+            old_variant,
+            new_variant.images[key]
+          ))
+
+        else if _.isObject image
+
+          if _.has(image, 'url') and image.url.length == 2
+            actions.push(@_buildRemoveImageAction(
+              old_variant,
+              old_variant.images[key]
+            ))
+            actions.push(@_buildAddExternalImageAction(
+              old_variant,
+              new_variant.images[key]
+            ))
+
+          else if _.has(image, 'label') and
+          (image.label.length == 1 or image.label.length == 2)
+
+            actions.push(
+              action: 'changeImageLabel'
+              variantId: old_variant.id
+              imageUrl: old_variant.images[key].url
+              label: new_variant.images[key].label
+            )
+
       else if REGEX_UNDERSCORE_NUMBER.test key
         index = key.substring(1)
         unless _.isEmpty old_variant.images

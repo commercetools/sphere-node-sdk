@@ -388,9 +388,9 @@ OLD_IMAGE_PRODUCT =
     {
       id: 3
       images: [
-        { url: '//example.com/image.png', label: 'foo', dimensions: { x: 1024, y: 768 } }
-        { url: '//example.com/image.png', label: 'foo', dimensions: { x: 1024, y: 768 } }
-        { url: '//example.com/image.png', label: 'foo', dimensions: { x: 1024, y: 768 } }
+        { url: '//example.com/image1.png', label: 'foo', dimensions: { x: 1024, y: 768 } }
+        { url: '//example.com/image2.png', label: 'foo', dimensions: { x: 1024, y: 768 } }
+        { url: '//example.com/image3.png', label: 'foo', dimensions: { x: 1024, y: 768 } }
       ]
     },
     {
@@ -419,8 +419,8 @@ NEW_IMAGE_PRODUCT =
     {
       id: 3
       images: [
-        { url: '//example.com/image.png', label: 'CHANGED', dimensions: { x: 1024, y: 768 } }
-        { url: '//example.com/image.png', label: 'foo', dimensions: { x: 400, y: 300 } }
+        { url: '//example.com/image1.png', label: 'CHANGED', dimensions: { x: 1024, y: 768 } }
+        { url: '//example.com/image2.png', label: 'foo', dimensions: { x: 400, y: 300 } }
         { url: '//example.com/CHANGED.jpg', label: 'foo', dimensions: { x: 400, y: 300 } }
       ]
     },
@@ -1103,17 +1103,39 @@ describe 'ProductUtils', ->
     it 'should build actions for images', ->
       delta = @utils.diff OLD_IMAGE_PRODUCT, NEW_IMAGE_PRODUCT
       update = @utils.actionsMapImages delta, OLD_IMAGE_PRODUCT, NEW_IMAGE_PRODUCT
+      not_expected = [
+        # the first image of variant with id 3 changed the label
+        # which would normally result in a remove + add action
+        # which in return would result in the image being deleted from the CDN
+        # thus we expect for the actions to NOT contain a remove action for
+        # the first image of variant with id 3
+        { action: 'removeImage', variantId: 3, imageUrl: '//example.com/image1.png' }
+        { action: 'addExternalImage', variantId: 3, image: { url: '//example.com/image1.png', label: 'CHANGED', dimensions: { x: 1024, y: 768 } } }
+        # the second image of the variant with the id 3 changed the dimensions
+        # here we also want no changes to happen in order to prevent the
+        # image from being deleted form the CDN
+        { action: 'removeImage', variantId: 3, imageUrl: '//example.com/image2.png' }
+        { action: 'addExternalImage', variantId: 3, image: { url: '//example.com/image2.png', label: 'foo', dimensions: { x: 400, y: 300 } } }
+      ]
       expected_update = [
-        { action: 'removeImage', variantId: 3, imageUrl: '//example.com/image.png' }
-        { action: 'removeImage', variantId: 3, imageUrl: '//example.com/image.png' }
-        { action: 'removeImage', variantId: 3, imageUrl: '//example.com/image.png' }
+        # expect a change label action for the first image of variant 3
+        { action: 'changeImageLabel', variantId: 3, imageUrl: '//example.com/image1.png', label: 'CHANGED' }
+        # for the third image of the variant with the id 3 the image url changed
+        # which should result in a remove+add action
+        { action: 'removeImage', variantId: 3, imageUrl: '//example.com/image3.png' }
+        # for the image of variant 4 the same applies
+        # as for the third image of variant 3
         { action: 'removeImage', variantId: 4, imageUrl: '//example.com/old.png' }
-        { action: 'addExternalImage', variantId: 3, image: { url: '//example.com/image.png', label: 'CHANGED', dimensions: { x: 1024, y: 768 } } }
-        { action: 'addExternalImage', variantId: 3, image: { url: '//example.com/image.png', label: 'foo', dimensions: { x: 400, y: 300 } } }
         { action: 'addExternalImage', variantId: 3, image: { url: '//example.com/CHANGED.jpg', label: 'foo', dimensions: { x: 400, y: 300 } } }
         { action: 'addExternalImage', variantId: 5, image: { url: '//example.com/new.png', label: 'foo', dimensions: { x: 1024, y: 768 } } }
       ]
-      expect(update).toEqual expected_update
+      _.each(not_expected, (notExpectedAction) ->
+        expect(update).toNotContain notExpectedAction
+      )
+      _.each(expected_update, (expectedAction) ->
+        expect(update).toContain expectedAction
+      )
+
 
     it 'should not build actions if images are not set', ->
       oldProduct =
