@@ -15,7 +15,7 @@
   "license": "MIT",
   "main": "./dist",
   "engines": {
-    "node": ">= 0.10.0"
+    "node": ">=4.0"
   },
   "scripts": {
     "clean": "rimraf dist && mkdirp dist",
@@ -47,8 +47,8 @@
     "coveralls": "^2.11.6",
     "cross-env": "^1.0.7",
     "envify": "^3.4.0",
-    "eslint": "^1.10.3",
-    "eslint-config-commercetools": "^0.2.1",
+    "eslint": "^2.2.0",
+    "eslint-config-commercetools": "^1.0.3",
     "isparta": "^4.0.0",
     "mkdirp": "^0.5.1",
     "rimraf": "^2.3.4",
