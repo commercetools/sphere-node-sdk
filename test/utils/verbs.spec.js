@@ -234,6 +234,7 @@ test('Utils::verbs', t => {
 
       const req = mockService.staged(false)
         .text('Foo', 'en')
+        .fuzzy()
         .facet('variants.attributes.foo:"bar"')
         .filter('variants.sku:"foo123"')
         .filter('variants.attributes.color.key:"red"')
@@ -254,6 +255,7 @@ test('Utils::verbs', t => {
           ],
           filterByQuery: [],
           filterByFacets: [],
+          fuzzy: true,
           text: { lang: 'en', value: 'Foo' }
         }
       })

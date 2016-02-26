@@ -64,6 +64,7 @@ test('Utils::defaultParams', t => {
         filter: [],
         filterByQuery: [],
         filterByFacets: [],
+        fuzzy: false,
         text: null
       }
     })

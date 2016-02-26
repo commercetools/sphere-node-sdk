@@ -48,6 +48,7 @@ test('Utils::buildQueryString', t => {
           encodeURIComponent('variants.attributes.color.key:"red")'),
           encodeURIComponent('categories.id:"123"')
         ],
+        fuzzy: true,
         text: { lang: 'en', value: 'Foo' }
       }
     }
@@ -61,6 +62,7 @@ test('Utils::buildQueryString', t => {
       `sort=${encodeURIComponent('name.en desc')}&` +
       `sort=${encodeURIComponent('createdAt asc')}&` +
       `text.en=${encodeURIComponent('Foo')}&` +
+      'fuzzy=true&' +
       `facet=${encodeURIComponent('variants.attributes.foo:"bar")')}&` +
       `facet=${encodeURIComponent('variants.sku:"foo123"')}&` +
       `filter=${encodeURIComponent('variants.attributes.color.key:"red")')}&` +

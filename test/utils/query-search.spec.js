@@ -30,6 +30,14 @@ test('Utils::querySearch', t => {
     t.end()
   })
 
+  t.test('should set the fuzzy param', t => {
+    setup()
+
+    service.fuzzy()
+    t.equal(service.params.search.fuzzy, true)
+    t.end()
+  })
+
   t.test('should set the facet param', t => {
     setup()
 
