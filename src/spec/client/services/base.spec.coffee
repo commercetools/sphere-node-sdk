@@ -249,7 +249,6 @@ describe 'Service', ->
           .then -> done('Should not happen')
           .catch (error) ->
             expect(error.body).toEqual
-              statusCode: 500
               message: 'timeout'
               originalRequest:
                 options:
@@ -555,7 +554,6 @@ describe 'Service', ->
           .catch (error) ->
             expect(error.name).toBe 'HttpError'
             expect(error.body).toEqual
-              statusCode: 500
               message: 'foo'
               originalRequest:
                 options: {}
@@ -601,7 +599,6 @@ describe 'Service', ->
             .catch (error) ->
               expect(error.name).toBe 'HttpError'
               expect(error.body).toEqual
-                statusCode: 500
                 message: 'foo'
                 originalRequest:
                   options: {}
@@ -661,7 +658,6 @@ describe 'Service', ->
             .catch (error) ->
               expect(error.name).toBe 'HttpError'
               expect(error.body).toEqual
-                statusCode: 500
                 message: 'foo'
                 originalRequest:
                   options: {}
@@ -758,7 +754,6 @@ describe 'Service', ->
             .catch (error) ->
               expect(error.name).toBe 'HttpError'
               expect(error.body).toEqual
-                statusCode: 500
                 message: 'foo'
                 originalRequest:
                   options: {}
