@@ -561,7 +561,7 @@ class BaseService
       else
         errorMessage = error
       errorResp =
-        statusCode: response?.statusCode or 500
+        statusCode: response?.statusCode
         message: errorMessage
         originalRequest: originalRequest
       errorResp.body = body if body
