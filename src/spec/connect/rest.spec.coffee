@@ -256,6 +256,16 @@ describe 'Rest', ->
             withTotal: false
           done()
 
+      it 'should not overwrite duplicate url parameters', (done) ->
+        spyOn(@pagedRest, 'GET').andCallThrough()
+        @pagedRest.PAGED "/products?expand=foo&expand=bar", (e, r, b) =>
+          url = @pagedRest.GET.calls[0].args[0]
+          query = url.split('?')[1]
+          query = query.split('&')
+          expect(query[0]).toEqual('expand=foo')
+          expect(query[1]).toEqual('expand=bar')
+          done()
+
       it 'should correctly return error', (done) ->
         spyOn(@pagedRest, 'GET').andCallFake (endpoint, callback) ->
           callback('Oops', {statusCode: 500}, null)
