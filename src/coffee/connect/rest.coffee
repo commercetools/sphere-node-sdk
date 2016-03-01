@@ -181,7 +181,7 @@ class Rest
   PAGED: (resource, resolve) ->
     splitted = resource.split('?')
     endpoint = splitted[0]
-    query = _.parseQuery splitted[1]
+    query = _.parseQuery splitted[1], false
 
     throw new Error 'Query limit doesn\'t seem to be 0. This function queries all results, are you sure you want to use this?' if query.limit and query.limit isnt '0'
 
