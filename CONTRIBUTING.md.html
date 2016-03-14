@@ -115,13 +115,14 @@
       </nav>
       <div id='filecontents'>
         <h1 id="contributing">Contributing</h1>
-<h2 id="styleguide">Styleguide</h2><p>We &lt;3 CoffeeScript! So please have a look at this <a href="https://github.com/polarmobile/coffeescript-style-guide">referenced coffeescript</a> styleguide when doing changes to the code.
+<h2 id="committing">Committing</h2><p>In order to keep commit messages consistent and to be able to generate changelogs automatically we use <code>commitizen</code> with <code>cz-conventional-changelog</code>. You can read more about it <a href="https://commitizen.github.io/cz-cli/">here</a>. We encourage you to watch this <a href="https://egghead.io/lessons/javascript-how-to-write-a-javascript-library-committing-a-new-feature-with-commitizen">video tutorial</a> on how to commit a new feature with commitizen.<br>So like shown in the video above, to commit changes you simply enter <code>npm run commit</code> and follow the guide.</p><h2 id="styleguide">Styleguide</h2><p>We &lt;3 CoffeeScript! So please have a look at this <a href="https://github.com/polarmobile/coffeescript-style-guide">referenced coffeescript</a> styleguide when doing changes to the code.
 Regarding code style like indentation and whitespace, <strong>follow the conventions you see used in the source already</strong>.</p><h2 id="submitting-pull-requests">Submitting pull requests</h2>
 <ol>
 <li>Follow code styleguides</li>
 <li>Include thoughtfully-worded, well-structured <a href="http://jasmine.github.io/">Jasmine</a> specs</li>
 <li>Update the documentation to reflect any changes</li>
 <li>Push to your fork and submit a pull request</li>
+<li>commit messages are conventional-changelog conform</li>
 </ol>
 <h2 id="releasing">Releasing</h2><p>Releasing a new version is completely automated using the Grunt task <code>grunt release</code>.</p><pre><code class="lang-javascript">grunt release // patch release
 grunt release:minor // minor release

@@ -172,12 +172,14 @@ client.products.byId(productId).update(payload)
 </ul>
 <h3 id="statistics">Statistics</h3><p>Some statistics (more to come) are provided by passing some options when creating a new <code>SphereClient</code> instance.</p><p>Current options are available:</p><ul>
 <li><code>includeHeaders</code> will include some HTTP header information in the response, wrapped in a JSON object called <code>http</code></li>
+<li><code>maskSensitiveHeaderData</code> If set to true, it will filter out all sensitive data like authorisation from response headers. By default it is set to false.</li>
 </ul><p>Each response from the HTTP API contains a header <code>x-correlation-id</code>.
 This unique value can be used to correlate events across different layers and also might help in case of failures.
 Note: the SDK doesn&#39;t have any logic about that, thus it&#39;s up to applications to decide whether to log this header or not.</p><pre><code class="lang-coffeescript">client = new SphereClient
   config: # credentials
   stats:
     includeHeaders: true
+    maskSensitiveHeaderData: false
 client.products.fetch()
 .then (result) -&gt;
   # result.statusCode
@@ -199,6 +201,7 @@ client = new SphereClient
   task: {} # optional TaskQueue instance
   stats:
     includeHeaders: true
+    maskSensitiveHeaderData: false
 client.products
 .where(&#39;name(en=&quot;Foo&quot;)&#39;)
 .where(&#39;id=&quot;1234567890&quot;&#39;)
@@ -273,8 +276,8 @@ cartService = client.carts
     <p class='signature' id='constructor-instance'>
       ::<strong>constructor</strong>(options = {})
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.8.1
-/src&#47;coffee&#47;client.coffee#L218'>Source</a>
+&#47;blob&#47;v1.11.0
+/src&#47;coffee&#47;client.coffee#L221'>Source</a>
     </p>
     <div class='docstring'>
   <p>Construct a <code>SphereClient</code> object.</p><p>When the client is instantiated it has all available instances of services
@@ -329,8 +332,8 @@ cartService = client.carts
     <p class='signature' id='setMaxParallel-instance'>
       ::<strong>setMaxParallel</strong>(maxParallel)
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.8.1
-/src&#47;coffee&#47;client.coffee#L239'>Source</a>
+&#47;blob&#47;v1.11.0
+/src&#47;coffee&#47;client.coffee#L243'>Source</a>
     </p>
     <div class='docstring'>
   <p>Define max parallel request to be sent on each request from the <a href='../classes/TaskQueue.html'>TaskQueue</a></p>

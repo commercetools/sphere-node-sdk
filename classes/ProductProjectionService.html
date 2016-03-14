@@ -208,6 +208,16 @@ This behavior in combination with the <code>filter</code> scope enables multi-se
 Filter in this scope does influence facet counts. If facets are not used, this scope should be preferred over <code>filter</code>.</p>
     </span>
   </li>
+  <li>
+    <span class='signature'>
+      <a href='#fuzzy-instance'>
+        ::<strong>fuzzy</strong>(fuzzy = true)
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Define whether to perform a fuzzy search or not.</p>
+    </span>
+  </li>
   <li deprecated>
     <span class='signature'>
       <a href='#save-instance'>
@@ -313,8 +323,8 @@ Filter in this scope does influence facet counts. If facets are not used, this s
     <p class='signature' id='asSearch-instance'>
       ::<strong>asSearch</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.8.1
-/src&#47;coffee&#47;services&#47;product-projections.coffee#L260'>Source</a>
+&#47;blob&#47;v1.11.0
+/src&#47;coffee&#47;services&#47;product-projections.coffee#L278'>Source</a>
     </p>
     <div class='docstring'>
   <p>Define to use search instead of query endpoint. Compared to <a href='../classes/ProductProjectionService.html#search-instance'>::search</a> this allows for further chaining. For example to use <a href='../classes/BaseService.html#process-instance'>BaseService::process</a> to deal with product search results in batches.</p>
@@ -340,8 +350,8 @@ service
     <p class='signature' id='create-instance'>
       ::<strong>create</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.8.1
-/src&#47;coffee&#47;services&#47;product-projections.coffee#L289'>Source</a>
+&#47;blob&#47;v1.11.0
+/src&#47;coffee&#47;services&#47;product-projections.coffee#L307'>Source</a>
     </p>
     <div class='docstring'>
   <div class='note unsupported'>
@@ -356,8 +366,8 @@ service
     <p class='signature' id='delete-instance'>
       ::<strong>delete</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.8.1
-/src&#47;coffee&#47;services&#47;product-projections.coffee#L295'>Source</a>
+&#47;blob&#47;v1.11.0
+/src&#47;coffee&#47;services&#47;product-projections.coffee#L313'>Source</a>
     </p>
     <div class='docstring'>
   <div class='note unsupported'>
@@ -372,8 +382,8 @@ service
     <p class='signature' id='facet-instance'>
       ::<strong>facet</strong>(facet)
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.8.1
-/src&#47;coffee&#47;services&#47;product-projections.coffee#L173'>Source</a>
+&#47;blob&#47;v1.11.0
+/src&#47;coffee&#47;services&#47;product-projections.coffee#L189'>Source</a>
     </p>
     <div class='docstring'>
   <p>Define a <a href="http://dev.sphere.io/http-api-projects-products-search.html#search-facets">facet</a> used for calculating statistical counts for searched product projections.</p>
@@ -413,8 +423,8 @@ service
     <p class='signature' id='filter-instance'>
       ::<strong>filter</strong>(filter)
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.8.1
-/src&#47;coffee&#47;services&#47;product-projections.coffee#L90'>Source</a>
+&#47;blob&#47;v1.11.0
+/src&#47;coffee&#47;services&#47;product-projections.coffee#L106'>Source</a>
     </p>
     <div class='docstring'>
   <p>Define a <a href="http://dev.sphere.io/http-api-projects-products-search.html#search-filters">filter</a> used for filtering searched product projections.</p><p>The <code>filter</code> parameter applies a filter to the query results <em>after</em> facets have been calculated.
@@ -455,8 +465,8 @@ service
     <p class='signature' id='filterByFacets-instance'>
       ::<strong>filterByFacets</strong>(filter)
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.8.1
-/src&#47;coffee&#47;services&#47;product-projections.coffee#L147'>Source</a>
+&#47;blob&#47;v1.11.0
+/src&#47;coffee&#47;services&#47;product-projections.coffee#L163'>Source</a>
     </p>
     <div class='docstring'>
   <p>Define a <a href="http://dev.sphere.io/http-api-projects-products-search.html#search-filters">filter</a> used for filtering searched product projections.</p><p>The <code>filter.facets</code> parameter applies a filter to all facet calculations (but not query results),
@@ -497,8 +507,8 @@ service
     <p class='signature' id='filterByQuery-instance'>
       ::<strong>filterByQuery</strong>(filter)
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.8.1
-/src&#47;coffee&#47;services&#47;product-projections.coffee#L118'>Source</a>
+&#47;blob&#47;v1.11.0
+/src&#47;coffee&#47;services&#47;product-projections.coffee#L134'>Source</a>
     </p>
     <div class='docstring'>
   <p>Define a <a href="http://dev.sphere.io/http-api-projects-products-search.html#search-filters">filter</a> used for filtering searched product projections.</p><p>The <code>filter.query</code> parameter applies a filter to the query results <em>before</em> facets have been calculated.
@@ -535,11 +545,45 @@ service
 </div>
   </div>
   <div class='method_details'>
+    <p class='signature' id='fuzzy-instance'>
+      ::<strong>fuzzy</strong>(fuzzy = true)
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.11.0
+/src&#47;coffee&#47;services&#47;product-projections.coffee#L58'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Define whether to perform a fuzzy search or not.</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>service = client.productProjections
+service.text(&#39;Sapphure&#39;, &#39;en&#39;).fuzzy(true).search() &#47;&#47; will find product with SAPPHIRE as its name </code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='type'>(Boolean)</span>
+      <span class='name'>fuzzy</span>
+      &mdash;
+      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Boolean'>Boolean</a> <code>true</code> to do a fuzzy search, <code>false</code> to do a more prcise search</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      <span class='desc'> a chained instance of <code>this</code> class</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='save-instance'>
       ::<strong>save</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.8.1
-/src&#47;coffee&#47;services&#47;product-projections.coffee#L286'>Source</a>
+&#47;blob&#47;v1.11.0
+/src&#47;coffee&#47;services&#47;product-projections.coffee#L304'>Source</a>
     </p>
     <div class='docstring'>
   <div class='note unsupported'>
@@ -554,8 +598,8 @@ service
     <p class='signature' id='search-instance'>
       Promise ::<strong>search</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.8.1
-/src&#47;coffee&#47;services&#47;product-projections.coffee#L245'>Source</a>
+&#47;blob&#47;v1.11.0
+/src&#47;coffee&#47;services&#47;product-projections.coffee#L263'>Source</a>
     </p>
     <div class='docstring'>
   <p>Search <code>ProductProjections</code> with all the search parameters</p>
@@ -585,8 +629,8 @@ service
     <p class='signature' id='searchKeywords-instance'>
       ::<strong>searchKeywords</strong>(text, lang)
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.8.1
-/src&#47;coffee&#47;services&#47;product-projections.coffee#L196'>Source</a>
+&#47;blob&#47;v1.11.0
+/src&#47;coffee&#47;services&#47;product-projections.coffee#L212'>Source</a>
     </p>
     <div class='docstring'>
   <p>Define a <a href="http://dev.sphere.io/http-api-projects-products-search.html#suggest">Suggestion</a> used for matching tokens for product projections, via a suggest tokenizer. The suggestions can be used to implement a basic auto-complete functionality. The source of data for suggestions is the searchKeyword field in a product.</p>
@@ -634,8 +678,8 @@ service.searchKeywords(&#39;Swiss Army Knife&#39;, &#39;en&#39;).suggest() </cod
     <p class='signature' id='staged-instance'>
       ::<strong>staged</strong>(staged = true)
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.8.1
-/src&#47;coffee&#47;services&#47;product-projections.coffee#L42'>Source</a>
+&#47;blob&#47;v1.11.0
+/src&#47;coffee&#47;services&#47;product-projections.coffee#L43'>Source</a>
     </p>
     <div class='docstring'>
   <p>Define whether to query for staged or current product projection.</p>
@@ -668,8 +712,8 @@ service.byId(&#39;123&#39;).staged(false).fetch() </code></pre>
     <p class='signature' id='suggest-instance'>
       Promise ::<strong>suggest</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.8.1
-/src&#47;coffee&#47;services&#47;product-projections.coffee#L280'>Source</a>
+&#47;blob&#47;v1.11.0
+/src&#47;coffee&#47;services&#47;product-projections.coffee#L298'>Source</a>
     </p>
     <div class='docstring'>
   <p>Query suggestions based on search keywords (used e.g. for auto-complete functionality)</p>
@@ -695,8 +739,8 @@ service.searchKeywords(&#39;Swiss Army Knife&#39;, &#39;en&#39;).suggest() </cod
     <p class='signature' id='text-instance'>
       ::<strong>text</strong>(text, language)
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.8.1
-/src&#47;coffee&#47;services&#47;product-projections.coffee#L60'>Source</a>
+&#47;blob&#47;v1.11.0
+/src&#47;coffee&#47;services&#47;product-projections.coffee#L76'>Source</a>
     </p>
     <div class='docstring'>
   <p>Define the text to analyze and (<a href="http://dev.sphere.io/http-api-projects-products-search.html#search-text">full-text</a>) search.</p>
@@ -744,8 +788,8 @@ service.text(&#39;Red Shirt&#39;, &#39;en&#39;).search() </code></pre>
     <p class='signature' id='update-instance'>
       ::<strong>update</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
-&#47;blob&#47;v1.8.1
-/src&#47;coffee&#47;services&#47;product-projections.coffee#L292'>Source</a>
+&#47;blob&#47;v1.11.0
+/src&#47;coffee&#47;services&#47;product-projections.coffee#L310'>Source</a>
     </p>
     <div class='docstring'>
   <div class='note unsupported'>
