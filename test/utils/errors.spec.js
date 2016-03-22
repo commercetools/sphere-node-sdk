@@ -4,6 +4,7 @@ import * as errors from '../../lib/utils/errors'
 const errorsMap = [
   { type: 'BadRequest', statusCode: 400 },
   { type: 'Unauthorized', statusCode: 401 },
+  { type: 'Forbidden', statusCode: 403 },
   { type: 'NotFound', statusCode: 404 },
   { type: 'ConcurrentModification', statusCode: 409 },
   { type: 'InternalServerError', statusCode: 500 },
