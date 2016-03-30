@@ -51,7 +51,7 @@ describe 'Service', ->
     {name: 'ProductTypeService', service: ProductTypeService, path: '/product-types', blacklist: []}
     {name: 'ProjectService', service: ProjectService, path: '', blacklist: ['save', 'create', 'update', 'delete']}
     {name: 'ReviewService', service: ReviewService, path: '/reviews', blacklist: ['delete']}
-    {name: 'ShippingMethodService', service: ShippingMethodService, path: '/shipping-methods', blacklist: ['delete']}
+    {name: 'ShippingMethodService', service: ShippingMethodService, path: '/shipping-methods', blacklist: []}
     {name: 'StateService', service: StateService, path: '/states', blacklist: []}
     {name: 'TaxCategoryService', service: TaxCategoryService, path: '/tax-categories', blacklist: []}
     {name: 'TypeService', service: TypeService, path: '/types', blacklist: []}
