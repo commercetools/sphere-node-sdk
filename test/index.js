@@ -29,6 +29,9 @@ import './utils/task-queue.spec'
 import './utils/verbs.spec'
 import './utils/with-helpers.spec'
 
+
+import './sync/category-sync.spec'
+
 import './sync/product-sync-base.spec'
 import './sync/product-sync-images.spec'
 import './sync/product-sync-prices.spec'
