@@ -49,7 +49,7 @@ test('Sync::product::prices', t => {
         id: 1,
         prices: [
           // Changed
-          { id: '111', value: { currencyCode: 'EUR', centAmount: 2000 }, country: 'US' }
+          { id: '111', value: { currencyCode: 'EUR', centAmount: 2000 }, country: 'US', discounted }
         ]
       },
       variants: [
@@ -87,6 +87,11 @@ test('Sync::product::prices', t => {
       { action: 'removePrice', priceId: '222' },
       { action: 'addPrice', variantId: 3, price: { value: { currencyCode: 'USD', centAmount: 5000 }, country: 'US', customerGroup: { typeId: 'customer-group', id: 'cg1' }, channel: { typeId: 'channel', id: 'ch1' }, validFrom } }
     ])
+
+    t.ok('discounted' in before.masterVariant.prices[0],
+      'should not delete the discounted field from the original object')
+    t.ok('discounted' in now.masterVariant.prices[0],
+      'should not delete the discounted field from the original object')
     t.end()
   })
 
