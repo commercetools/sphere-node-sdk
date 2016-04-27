@@ -101,7 +101,7 @@ test('Integration - Client', t => {
         t.notOk(body.data)
         t.ok(body.errors)
         t.ok(body.errors[0].message.
-          includes('Cannot query field \'foo\' on \'Query\''))
+          includes('Cannot query field \'foo\' on type \'Query\''))
         t.end()
       })
       .catch(t.end)
