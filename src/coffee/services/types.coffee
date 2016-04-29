@@ -24,4 +24,6 @@ class TypeService extends BaseService
   # Internal: {String} The HTTP endpoint for `Types`
   @baseResourceEndpoint: '/types'
 
+  @supportsByKey: true
+
 module.exports = TypeService

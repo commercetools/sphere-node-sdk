@@ -22,6 +22,10 @@ class BaseService
   # constant
   @baseResourceEndpoint: ''
 
+  # Internal: Indicates whether the current service supports keys or not
+  # constant
+  @supportsByKey: false
+
   # Public: Construct a `*Service` object.
   #
   # options - An {Object} to configure the service
@@ -448,7 +452,11 @@ class BaseService
   #       }
   #     ]
   update: (body) ->
-    throw new Error "Missing resource id. You can set it by chaining '.byId(ID)'" unless @_params.id
+    if @constructor.supportsByKey is true
+      unless (@_params.key or @_params.id)
+        throw new Error "Missing resource id. You can set it by chaining '.byId(ID)' or '.byKey(KEY)'" unless @_params.key or @_params.id
+    else
+      throw new Error "Missing resource id. You can set it by chaining '.byId(ID)'" unless @_params.id
     unless body
       throw new Error "Body payload is required for updating a resource (endpoint: #{@_currentEndpoint})"
 

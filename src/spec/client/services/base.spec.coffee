@@ -33,7 +33,7 @@ describe 'Service', ->
   KEY = 'key-key-key'
 
   _.each [
-    {name: 'BaseService', service: BaseService, path: ''}
+    {name: 'BaseService', service: BaseService, path: '', blacklist: ['byKey']}
     {name: 'CartDiscountService', service: CartDiscountService, path: '/cart-discounts', blacklist: ['byKey']}
     {name: 'CartService', service: CartService, path: '/carts', blacklist: ['byKey']}
     {name: 'CategoryService', service: CategoryService, path: '/categories', blacklist: ['byKey']}
@@ -690,15 +690,29 @@ describe 'Service', ->
       if not _.contains(o.blacklist, 'update')
         describe ':: update', ->
 
-          it 'should send request for current endpoint', ->
+          it 'should send request for current endpoint with Id', ->
             spyOn(@restMock, 'POST')
             @service.byId(ID).update({foo: 'bar'})
             expect(@restMock.POST).toHaveBeenCalledWith "#{o.path}/#{ID}", {foo: 'bar'}, jasmine.any(Function)
 
-          it 'should throw error if id is missing', ->
-            spyOn(@restMock, 'POST')
-            expect(=> @service.update()).toThrow new Error "Missing resource id. You can set it by chaining '.byId(ID)'"
-            expect(@restMock.POST).not.toHaveBeenCalled()
+          if not _.contains(o.blacklist, 'byKey')
+
+            it 'should send request for current endpoint with Key', ->
+              spyOn(@restMock, 'POST')
+              @service.byKey(KEY).update({foo: 'bar'})
+              expect(@restMock.POST).toHaveBeenCalledWith "#{o.path}/key=#{KEY}", {foo: 'bar'}, jasmine.any(Function)
+
+            it 'should throw error if id and key is missing', ->
+              spyOn(@restMock, 'POST')
+              expect(=> @service.update()).toThrow new Error "Missing resource id. You can set it by chaining '.byId(ID)' or '.byKey(KEY)'"
+              expect(@restMock.POST).not.toHaveBeenCalled()
+
+          else
+
+            it 'should throw error if id is missing', ->
+              spyOn(@restMock, 'POST')
+              expect(=> @service.update()).toThrow new Error "Missing resource id. You can set it by chaining '.byId(ID)'"
+              expect(@restMock.POST).not.toHaveBeenCalled()
 
           it 'should throw error if payload is missing', ->
             spyOn(@restMock, 'POST')
