@@ -22,6 +22,9 @@ class OrderService extends BaseService
   # Internal: {String} The HTTP endpoint for `Orders`
   @baseResourceEndpoint: '/orders'
 
+  # Public Unsupported: Not supported by the API
+  byKey: -> # noop
+
   ###*
    * Creates directly an Order by importing it instead of creating it from a Cart.
    * @param {Object} body The payload as JSON object

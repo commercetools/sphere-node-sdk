@@ -22,6 +22,10 @@ class BaseService
   # constant
   @baseResourceEndpoint: ''
 
+  # Internal: Indicates whether the current service supports keys or not
+  # constant
+  @supportsByKey: false
+
   # Public: Construct a `*Service` object.
   #
   # options - An {Object} to configure the service
@@ -58,9 +62,33 @@ class BaseService
   #   service = client.products
   #   service.byId('123').fetch()
   byId: (id) ->
+    if @_params.key
+      throw new Error(
+        "You cannot fetch or update by Id and Key at the same time"
+      )
     @_currentEndpoint = "#{@constructor.baseResourceEndpoint}/#{id}"
     @_params.id = id
     debug 'setting endpoint id: %j', @_currentEndpoint
+    this
+
+  # Public: Build the endpoint path by appending the given key query
+  #
+  # key - {String} The resource specific key
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.productTypes
+  #   service.byKey('key').fetch()
+  byKey: (key) ->
+    if @_params.id
+      throw new Error(
+        "You cannot fetch or update by Id and Key at the same time"
+      )
+    @_currentEndpoint = "#{@constructor.baseResourceEndpoint}/key=#{key}"
+    @_params.key = key
+    debug 'setting endpoint key: %j', @_currentEndpoint
     this
 
   # Public: Define a URI encoded [Predicate](http://dev.sphere.io/http-api.html#predicates)
@@ -432,7 +460,11 @@ class BaseService
   #       }
   #     ]
   update: (body) ->
-    throw new Error "Missing resource id. You can set it by chaining '.byId(ID)'" unless @_params.id
+    if @constructor.supportsByKey is true
+      unless (@_params.key or @_params.id)
+        throw new Error "Missing resource id. You can set it by chaining '.byId(ID)' or '.byKey(KEY)'" unless @_params.key or @_params.id
+    else
+      throw new Error "Missing resource id. You can set it by chaining '.byId(ID)'" unless @_params.id
     unless body
       throw new Error "Body payload is required for updating a resource (endpoint: #{@_currentEndpoint})"
 

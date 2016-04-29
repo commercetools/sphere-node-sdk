@@ -23,4 +23,7 @@ class ZoneService extends BaseService
   # Internal: {String} The HTTP endpoint for `Zones`
   @baseResourceEndpoint: '/zones'
 
+  # Public Unsupported: Not supported by the API
+  byKey: -> # noop
+
 module.exports = ZoneService

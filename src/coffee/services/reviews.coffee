@@ -18,6 +18,9 @@ class ReviewService extends BaseService
   @baseResourceEndpoint: '/reviews'
 
   # Public Unsupported: Not supported by the API
+  byKey: -> # noop
+
+  # Public Unsupported: Not supported by the API
   delete: ->
 
 module.exports = ReviewService

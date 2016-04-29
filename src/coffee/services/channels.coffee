@@ -27,6 +27,9 @@ class ChannelService extends BaseService
   # Internal: {String} The HTTP endpoint for `Channels`
   @baseResourceEndpoint: '/channels'
 
+  # Public Unsupported: Not supported by the API
+  byKey: -> # noop
+
   # Public: Ensure a `channel` exists. It tries fetching one with given `key`, if not found
   # it will create one otherwise will update it. Given `roles` are also ensured to exist.
   #

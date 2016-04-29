@@ -24,4 +24,7 @@ class CustomerGroupService extends BaseService
   # Internal: {String} The HTTP endpoint for `CustomerGroups`
   @baseResourceEndpoint: '/customer-groups'
 
+  # Public Unsupported: Not supported by the API
+  byKey: -> # noop
+
 module.exports = CustomerGroupService

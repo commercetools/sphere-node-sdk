@@ -23,4 +23,6 @@ class ProductTypeService extends BaseService
   # Internal: {String} The HTTP endpoint for `ProductTypes`
   @baseResourceEndpoint: '/product-types'
 
+  @supportsByKey: true
+
 module.exports = ProductTypeService

@@ -26,4 +26,7 @@ class ProductService extends BaseService
   # Internal: {String} The HTTP endpoint for `Products`
   @baseResourceEndpoint: '/products'
 
+  # Public Unsupported: Not supported by the API
+  byKey: -> # noop
+
 module.exports = ProductService

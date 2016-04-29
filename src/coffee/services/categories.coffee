@@ -23,4 +23,7 @@ class CategoryService extends BaseService
   # Internal: {String} The HTTP endpoint for `Categories`
   @baseResourceEndpoint: '/categories'
 
+  # Public Unsupported: Not supported by the API
+  byKey: -> # noop
+
 module.exports = CategoryService

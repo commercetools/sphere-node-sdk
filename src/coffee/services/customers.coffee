@@ -23,6 +23,9 @@ class CustomerService extends BaseService
   # Internal: {String} The HTTP endpoint for `Customers`
   @baseResourceEndpoint: '/customers'
 
+  # Public Unsupported: Not supported by the API
+  byKey: -> # noop
+
   login: (body) ->
     unless body
       throw new Error 'Body payload is required for login the customer'
