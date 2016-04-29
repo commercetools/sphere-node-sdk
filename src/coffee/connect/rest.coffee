@@ -169,8 +169,6 @@ class Rest
 
   # Public: Fetch all results of a Sphere resource query endpoint in batches of pages using a recursive function.
   #
-  # Note that traversing with pagination has been optimized. It now fetches pages sorted by `id` and iterates
-  # using a query with the `id` greater then the last one of the previous page.
   #
   # resource - {String} The API resource endpoint, with query string parameters.
   # resolve - {Function} A function fulfilled with `error, response, body` arguments. Body is an {Object} of `PagedQueryResponse`.
@@ -200,8 +198,6 @@ class Rest
       debug 'PAGED where predicate: %j', wherePredicate
 
       queryParams = _.stringifyQuery(_.extend({}, params,
-        sort: encodeURIComponent('id asc')
-        limit: limit
         withTotal: false
       , wherePredicate))
 
