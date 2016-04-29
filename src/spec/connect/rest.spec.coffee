@@ -196,6 +196,13 @@ describe 'Rest', ->
 
     describe ':: PAGED', ->
 
+      idCounter = 0
+      uniqueId = (prefix) ->
+        id = ++idCounter + ''
+        if prefix then prefix + id else id
+      resetUniqueIdCounter = () ->
+        idCounter = 0
+
       beforeEach ->
         opts =
           config: Config
@@ -210,10 +217,13 @@ describe 'Rest', ->
             total: 1004
             count: if offset is 1000 then 4 else count
             offset: offset
-            results: _.map (if offset is 1000 then [1..4] else [1..50]), (i) -> {id: _.uniqueId("_#{i}"), value: 'foo'}
-        spyOn(@pagedRest._oauth, 'getAccessToken').andCallFake (callback) -> callback(null, null, {access_token: 'foo'})
+            results: _.map (if offset is 1000 then [1..4] else [1..50]), (i) ->
+              {id: uniqueId("_#{i}") , value: 'foo'}
+        spyOn(@pagedRest._oauth, 'getAccessToken')
+          .andCallFake (callback) -> callback(null, null, {access_token: 'foo'})
 
       afterEach ->
+        resetUniqueIdCounter()
         @pagedRest = null
 
       it 'should send PAGED request', (done) ->
@@ -232,6 +242,7 @@ describe 'Rest', ->
           where: encodeURIComponent('sku in ("123", "456")')
           expand: 'productType'
           staged: true
+          sort: encodeURIComponent('createdAt asc')
         @pagedRest.PAGED "/products?#{queryParams}", (e, r, b) =>
           expect(e).toBe null
           expect(r.statusCode).toBe 200
@@ -244,15 +255,15 @@ describe 'Rest', ->
             where: encodeURIComponent('sku in ("123", "456")')
             expand: 'productType'
             staged: true
+            sort: encodeURIComponent('createdAt asc')
             limit: 50
-            sort: encodeURIComponent('id asc')
             withTotal: false
           expect(@pagedRest._doRequest.calls[1].args[0].uri).toEqual "https://api.sphere.io/#{Config.project_key}/products?" + _.stringifyQuery
-            where: encodeURIComponent('sku in ("123", "456") and id > "_501054"')
+            where: encodeURIComponent('sku in ("123", "456") and id > "_5050"')
             expand: 'productType'
             staged: true
+            sort: encodeURIComponent('createdAt asc')
             limit: 50
-            sort: encodeURIComponent('id asc')
             withTotal: false
           done()
 
