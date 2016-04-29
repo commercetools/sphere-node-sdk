@@ -169,10 +169,9 @@ describe 'Service', ->
       it 'should throw if perPage < 0', ->
         expect(=> @service.perPage(-1)).toThrow new Error 'PerPage (limit) must be a number >= 0'
 
-      it 'should alias \'all\' for \'perPage(0)\'', ->
-        spyOn(@service, 'perPage')
-        @service.perPage(0)
-        expect(@service.perPage).toHaveBeenCalledWith 0
+      it 'should set flag for \'all\'', ->
+        @service.all()
+        expect(@service._fetchAll).toBe(true)
 
       it 'should build query string', ->
         queryString = @service
@@ -207,7 +206,7 @@ describe 'Service', ->
       it 'should not use PAGED request when queryString is set', ->
         spyOn(@restMock, 'PAGED')
         spyOn(@restMock, 'GET')
-        @service.byQueryString('limit=10').perPage(0).fetch()
+        @service.byQueryString('limit=10').all().fetch()
         expect(@restMock.PAGED).not.toHaveBeenCalled()
         expect(@restMock.GET).toHaveBeenCalledWith "#{o.path}?limit=10", jasmine.any(Function)
 
