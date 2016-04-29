@@ -107,6 +107,9 @@ describe 'Service', ->
         @service.byId(ID)
         expect(@service._currentEndpoint).toBe "#{o.path}/#{ID}"
 
+      it 'should throw if endpoint is already built with key', ->
+        expect(=> @service.byKey(KEY).byId(ID)).toThrow()
+
       _.each [
         ['byId', '1234567890']
         ['where', 'key = "foo"']
@@ -238,10 +241,12 @@ describe 'Service', ->
 
       if not _.contains(o.blacklist, 'byKey')
 
-
         it 'should build endpoint with key', ->
           @service.byKey(KEY)
           expect(@service._currentEndpoint).toBe "#{o.path}/key=#{KEY}"
+
+        it 'should throw if endpoint is already built with id', ->
+          expect(=> @service.byId(ID).byKey(KEY)).toThrow()
 
       if not _.contains(o.blacklist, 'save')
 

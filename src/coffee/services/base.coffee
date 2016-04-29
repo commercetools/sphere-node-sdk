@@ -62,6 +62,10 @@ class BaseService
   #   service = client.products
   #   service.byId('123').fetch()
   byId: (id) ->
+    if @_params.key
+      throw new Error(
+        "You cannot fetch or update by Id and Key at the same time"
+      )
     @_currentEndpoint = "#{@constructor.baseResourceEndpoint}/#{id}"
     @_params.id = id
     debug 'setting endpoint id: %j', @_currentEndpoint
@@ -78,6 +82,10 @@ class BaseService
   #   service = client.productTypes
   #   service.byKey('key').fetch()
   byKey: (key) ->
+    if @_params.id
+      throw new Error(
+        "You cannot fetch or update by Id and Key at the same time"
+      )
     @_currentEndpoint = "#{@constructor.baseResourceEndpoint}/key=#{key}"
     @_params.key = key
     debug 'setting endpoint key: %j', @_currentEndpoint
