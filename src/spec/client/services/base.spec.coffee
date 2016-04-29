@@ -171,7 +171,7 @@ describe 'Service', ->
 
       it 'should alias \'all\' for \'perPage(0)\'', ->
         spyOn(@service, 'perPage')
-        @service.all()
+        @service.perPage(0)
         expect(@service.perPage).toHaveBeenCalledWith 0
 
       it 'should build query string', ->
@@ -207,7 +207,7 @@ describe 'Service', ->
       it 'should not use PAGED request when queryString is set', ->
         spyOn(@restMock, 'PAGED')
         spyOn(@restMock, 'GET')
-        @service.byQueryString('limit=10').all().fetch()
+        @service.byQueryString('limit=10').perPage(0).fetch()
         expect(@restMock.PAGED).not.toHaveBeenCalled()
         expect(@restMock.GET).toHaveBeenCalledWith "#{o.path}?limit=10", jasmine.any(Function)
 
@@ -565,11 +565,25 @@ describe 'Service', ->
           @service.byId(ID).fetch()
           expect(@restMock.GET).toHaveBeenCalledWith "#{o.path}/#{ID}", jasmine.any(Function)
 
+        it 'should not do a paged request if perPage is 0', ->
+          spyOn(@restMock, 'PAGED')
+          spyOn(@restMock, 'GET')
+          @service.byId(ID).sort('createdAt', true).perPage(0).fetch()
+          expect(@restMock.PAGED).not.toHaveBeenCalled()
+          expect(@restMock.GET).toHaveBeenCalledWith "#{o.path}/#{ID}?limit=0&sort=createdAt%20asc", jasmine.any(Function)
+
+        it 'should do a paged request if all() was used before fetch', ->
+          spyOn(@restMock, 'PAGED')
+          spyOn(@restMock, 'GET')
+          @service.byId(ID).sort('createdAt', true).all().fetch()
+          expect(@restMock.PAGED).toHaveBeenCalledWith "#{o.path}/#{ID}?sort=createdAt%20asc", jasmine.any(Function)
+          expect(@restMock.GET).not.toHaveBeenCalled()
+
         describe ':: paged', ->
 
           it 'should resolve the promise on (paged) fetch', (done) ->
             spyOn(@restMock, 'PAGED').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: 1, results: [{foo: 'bar'}]})
-            @service.perPage(0).fetch()
+            @service.all().fetch()
             .then (result) ->
               expect(result.statusCode).toBe 200
               expect(result.body.total).toBe 1
@@ -580,7 +594,7 @@ describe 'Service', ->
 
           it 'should reject the promise on (paged) fetch (404)', (done) ->
             spyOn(@restMock, 'PAGED').andCallFake (endpoint, callback) -> callback(null, {statusCode: 404, request: {uri: {path: '/foo'}}}, null)
-            @service.perPage(0).fetch()
+            @service.all().fetch()
             .then (result) -> done('Should not happen')
             .catch (error) ->
               expect(error.name).toBe 'NotFound'
@@ -589,12 +603,12 @@ describe 'Service', ->
                 message: "Endpoint '/foo' not found."
                 originalRequest:
                   options: {}
-                  endpoint: "#{o.path}?limit=0&sort=id%20asc"
+                  endpoint: "#{o.path}?sort=id%20asc"
               done()
 
           it 'should reject the promise on (paged) fetch', (done) ->
             spyOn(@restMock, 'PAGED').andCallFake (endpoint, callback) -> callback('foo', null, null)
-            @service.perPage(0).fetch()
+            @service.all().fetch()
             .then (result) -> done('Should not happen')
             .catch (error) ->
               expect(error.name).toBe 'HttpError'
@@ -602,18 +616,18 @@ describe 'Service', ->
                 message: 'foo'
                 originalRequest:
                   options: {}
-                  endpoint: "#{o.path}?limit=0&sort=id%20asc"
+                  endpoint: "#{o.path}?sort=id%20asc"
               done()
 
           it 'should set default sorting if not provided (fetching all)', ->
             spyOn(@service, '_paged')
             @service.all().fetch()
-            expect(@service._paged).toHaveBeenCalledWith "#{o.path}?limit=0&sort=id%20asc"
+            expect(@service._paged).toHaveBeenCalledWith "#{o.path}?sort=id%20asc"
 
           it 'should not set default sorting if provided (fetching all)', ->
             spyOn(@service, '_paged')
             @service.all().sort('foo').fetch()
-            expect(@service._paged).toHaveBeenCalledWith "#{o.path}?limit=0&sort=foo%20asc"
+            expect(@service._paged).toHaveBeenCalledWith "#{o.path}?sort=foo%20asc"
 
       if not _.contains(o.blacklist, 'save')
         describe ':: save', ->

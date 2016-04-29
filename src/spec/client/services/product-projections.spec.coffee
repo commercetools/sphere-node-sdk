@@ -228,11 +228,11 @@ describe 'ProductProjectionService', ->
 
   describe ':: fetch', ->
 
-    it 'should fetch all with defaul sorting', (done) ->
+    it 'should fetch all with default sorting', (done) ->
       spyOn(@restMock, 'PAGED').andCallFake (endpoint, callback) -> callback(null, {statusCode: 200}, {total: 1, results: []})
       @service.where('foo=bar').staged(true).all().fetch()
       .then (result) =>
-        expect(@restMock.PAGED).toHaveBeenCalledWith "/product-projections?where=foo%3Dbar&limit=0&sort=id%20asc&staged=true", jasmine.any(Function)
+        expect(@restMock.PAGED).toHaveBeenCalledWith "/product-projections?where=foo%3Dbar&sort=id%20asc&staged=true", jasmine.any(Function)
         done()
       .catch (err) -> done(_.prettify err)
 
