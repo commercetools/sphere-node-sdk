@@ -85,7 +85,7 @@ describe 'Rest', ->
       @rest = new Rest opts
 
       spyOn(@rest, '_doRequest').andCallFake (options, callback) -> callback(null, null, {id: '123'})
-      spyOn(@rest._oauth, 'getAccessToken').andCallFake (callback) -> callback(null, null, {access_token: 'foo'})
+      spyOn(@rest._oauth, 'getAccessToken').andCallFake (callback) -> callback(null, {statusCode: 200}, {access_token: 'foo', expires_in: 2 * 24 * 60 * 60})
 
     afterEach ->
       @rest = null
@@ -122,6 +122,22 @@ describe 'Rest', ->
         rest._preRequest({}, (error, response, body) ->
           expect(body).toEqual({ error: 'invalid_client' })
           done()
+        )
+
+      it 'should request new token when it expires', (done) ->
+        rest = new Rest config: Config
+        spyOn(rest, '_doRequest').andCallFake (options, callback) -> callback(null, {statusCode: 200}, {id: '123'})
+        spyOn(rest._oauth, 'getAccessToken').andCallFake (callback) ->
+          authResponse = {access_token: 'foo', expires_in: 2 * 24 * 60 * 60}
+          callback(null, {statusCode: 200}, authResponse)
+
+        rest._preRequest({}, (error, response, body) ->
+          # this time we assume the token is expired
+          rest._tokenExpiration = 1
+          rest._preRequest({}, (error, response, body) ->
+            expect(rest._oauth.getAccessToken.calls.length).toBe(2)
+            done()
+          )
         )
 
       it 'should fail on error', (done) ->
