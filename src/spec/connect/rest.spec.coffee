@@ -3,13 +3,6 @@ _.mixin require('underscore-mixins')
 {Rest} = require '../../lib/main'
 Config = require('../../config').config
 
-idCounter = 0
-uniqueId = (prefix) ->
-  id = ++idCounter + ''
-  if prefix then prefix + id else id
-resetUniqueIdCounter = () ->
-  idCounter = 0
-
 describe 'Rest', ->
 
   it 'should initialize with default options', ->
@@ -202,6 +195,13 @@ describe 'Rest', ->
           expect(rest._doRequest).toHaveBeenCalledWith(expected_options, jasmine.any(Function))
 
     describe ':: PAGED', ->
+
+      idCounter = 0
+      uniqueId = (prefix) ->
+        id = ++idCounter + ''
+        if prefix then prefix + id else id
+      resetUniqueIdCounter = () ->
+        idCounter = 0
 
       beforeEach ->
         opts =
