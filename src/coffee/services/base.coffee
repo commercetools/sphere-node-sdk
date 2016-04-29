@@ -51,6 +51,8 @@ class BaseService
         sort: []
         expand: []
 
+    @_fetchAll = false
+
   # Public: Build the endpoint path by appending the given id
   #
   # id - {String} The resource specific id
@@ -221,7 +223,7 @@ class BaseService
     debug 'setting perPage: %s', perPage
     this
 
-  # Public: A convenient method to set {::perPage} to `0`, which will fetch all pages
+  # Public: A convenient method to fetch all pages
   # recursively in chunks and return them all together once completed.
   #
   # Returns a chained instance of `this` class
@@ -230,7 +232,9 @@ class BaseService
   #
   #   service = client.products
   #   service.all().fetch()
-  all: -> @perPage(0)
+  all: ->
+    @_fetchAll = true
+    this
 
   # Public: Define an [ExpansionPath](http://dev.sphere.io/http-api.html#reference-expansion)
   # used for expanding [Reference](http://dev.sphere.io/http-api-types.html#reference)s of a resource.
@@ -312,7 +316,7 @@ class BaseService
       endpoint += "?#{queryString}" if queryString
       endpoint
 
-    if not @_params.queryString and @_params.query.perPage is 0
+    if not @_params.queryString and @_fetchAll is true
       # we should provide a default sorting when fetching all results
       @sort 'id' if _.isEmpty @_params.query.sort
       @_paged(_getEndpoint())
