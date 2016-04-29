@@ -15,6 +15,9 @@ class ProjectService extends BaseService
   @baseResourceEndpoint: ''
 
   # Public Unsupported: Not supported by the API
+  byKey: -> # noop
+
+  # Public Unsupported: Not supported by the API
   save: ->
 
   # Public Unsupported: Not supported by the API

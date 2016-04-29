@@ -77,6 +77,9 @@ class GraphQLService extends BaseService
   byId: -> # noop
 
   # Public Unsupported: Not supported by the API
+  byKey: -> # noop
+
+  # Public Unsupported: Not supported by the API
   where: -> # noop
 
   # Public Unsupported: Not supported by the API

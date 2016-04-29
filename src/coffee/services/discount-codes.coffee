@@ -23,4 +23,7 @@ class DiscountCodeService extends BaseService
   # Internal: {String} The HTTP endpoint for `DiscountCodes`
   @baseResourceEndpoint: '/discount-codes'
 
+  # Public Unsupported: Not supported by the API
+  byKey: -> # noop
+
 module.exports = DiscountCodeService

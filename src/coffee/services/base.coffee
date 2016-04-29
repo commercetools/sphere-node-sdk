@@ -63,6 +63,22 @@ class BaseService
     debug 'setting endpoint id: %j', @_currentEndpoint
     this
 
+  # Public: Build the endpoint path by appending the given key query
+  #
+  # key - {String} The resource specific key
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.productTypes
+  #   service.byKey('key').fetch()
+  byKey: (key) ->
+    @_currentEndpoint = "#{@constructor.baseResourceEndpoint}/key=#{key}"
+    @_params.key = key
+    debug 'setting endpoint key: %j', @_currentEndpoint
+    this
+
   # Public: Define a URI encoded [Predicate](http://dev.sphere.io/http-api.html#predicates)
   # from the given string, used for quering and filtering a resource. Can be set multiple times.
   #

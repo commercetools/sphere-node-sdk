@@ -30,32 +30,33 @@ ZoneService              = require '../../../lib/services/zones'
 describe 'Service', ->
 
   ID = '1234-abcd-5678-efgh'
+  KEY = 'key-key-key'
 
   _.each [
     {name: 'BaseService', service: BaseService, path: ''}
-    {name: 'CartDiscountService', service: CartDiscountService, path: '/cart-discounts', blacklist: []}
-    {name: 'CartService', service: CartService, path: '/carts', blacklist: []}
-    {name: 'CategoryService', service: CategoryService, path: '/categories', blacklist: []}
-    {name: 'ChannelService', service: ChannelService, path: '/channels', blacklist: []}
-    {name: 'CustomObjectService', service: CustomObjectService, path: '/custom-objects', blacklist: []}
-    {name: 'CustomerService', service: CustomerService, path: '/customers', blacklist: []}
-    {name: 'CustomerGroupService', service: CustomerGroupService, path: '/customer-groups', blacklist: []}
-    {name: 'DiscountCodeService', service: DiscountCodeService, path: '/discount-codes', blacklist: []}
-    {name: 'InventoryEntryService', service: InventoryEntryService, path: '/inventory', blacklist: []}
-    {name: 'MessageService', service: MessageService, path: '/messages', blacklist: ['save', 'create', 'update', 'delete']}
-    {name: 'OrderService', service: OrderService, path: '/orders', blacklist: ['delete']}
-    {name: 'PaymentService', service: PaymentService, path: '/payments', blacklist: []}
-    {name: 'ProductService', service: ProductService, path: '/products', blacklist: []}
-    {name: 'ProductDiscountService', service: ProductDiscountService, path: '/product-discounts', blacklist: []}
-    {name: 'ProductProjectionService', service: ProductProjectionService, path: '/product-projections', blacklist: ['save', 'create', 'update', 'delete']}
+    {name: 'CartDiscountService', service: CartDiscountService, path: '/cart-discounts', blacklist: ['byKey']}
+    {name: 'CartService', service: CartService, path: '/carts', blacklist: ['byKey']}
+    {name: 'CategoryService', service: CategoryService, path: '/categories', blacklist: ['byKey']}
+    {name: 'ChannelService', service: ChannelService, path: '/channels', blacklist: ['byKey']}
+    {name: 'CustomObjectService', service: CustomObjectService, path: '/custom-objects', blacklist: ['byKey']}
+    {name: 'CustomerService', service: CustomerService, path: '/customers', blacklist: ['byKey']}
+    {name: 'CustomerGroupService', service: CustomerGroupService, path: '/customer-groups', blacklist: ['byKey']}
+    {name: 'DiscountCodeService', service: DiscountCodeService, path: '/discount-codes', blacklist: ['byKey']}
+    {name: 'InventoryEntryService', service: InventoryEntryService, path: '/inventory', blacklist: ['byKey']}
+    {name: 'MessageService', service: MessageService, path: '/messages', blacklist: ['byKey', 'save', 'create', 'update', 'delete']}
+    {name: 'OrderService', service: OrderService, path: '/orders', blacklist: ['byKey', 'delete']}
+    {name: 'PaymentService', service: PaymentService, path: '/payments', blacklist: ['byKey']}
+    {name: 'ProductService', service: ProductService, path: '/products', blacklist: ['byKey']}
+    {name: 'ProductDiscountService', service: ProductDiscountService, path: '/product-discounts', blacklist: ['byKey']}
+    {name: 'ProductProjectionService', service: ProductProjectionService, path: '/product-projections', blacklist: ['byKey', 'save', 'create', 'update', 'delete']}
     {name: 'ProductTypeService', service: ProductTypeService, path: '/product-types', blacklist: []}
-    {name: 'ProjectService', service: ProjectService, path: '', blacklist: ['save', 'create', 'update', 'delete']}
-    {name: 'ReviewService', service: ReviewService, path: '/reviews', blacklist: ['delete']}
-    {name: 'ShippingMethodService', service: ShippingMethodService, path: '/shipping-methods', blacklist: []}
-    {name: 'StateService', service: StateService, path: '/states', blacklist: []}
-    {name: 'TaxCategoryService', service: TaxCategoryService, path: '/tax-categories', blacklist: []}
+    {name: 'ProjectService', service: ProjectService, path: '', blacklist: ['byKey', 'save', 'create', 'update', 'delete']}
+    {name: 'ReviewService', service: ReviewService, path: '/reviews', blacklist: ['byKey', 'delete']}
+    {name: 'ShippingMethodService', service: ShippingMethodService, path: '/shipping-methods', blacklist: ['byKey']}
+    {name: 'StateService', service: StateService, path: '/states', blacklist: ['byKey']}
+    {name: 'TaxCategoryService', service: TaxCategoryService, path: '/tax-categories', blacklist: ['byKey']}
     {name: 'TypeService', service: TypeService, path: '/types', blacklist: []}
-    {name: 'ZoneService', service: ZoneService, path: '/zones', blacklist: []}
+    {name: 'ZoneService', service: ZoneService, path: '/zones', blacklist: ['byKey']}
   ], (o) ->
 
     describe ":: #{o.name}", ->
@@ -234,6 +235,13 @@ describe 'Service', ->
             expect(@service._params.query.operator).toBe 'and'
             expect(@service._params.query.sort).toEqual []
             expect(@service._params.query.expand).toEqual []
+
+      if not _.contains(o.blacklist, 'byKey')
+
+
+        it 'should build endpoint with key', ->
+          @service.byKey(KEY)
+          expect(@service._currentEndpoint).toBe "#{o.path}/key=#{KEY}"
 
       if not _.contains(o.blacklist, 'save')
 

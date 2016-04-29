@@ -17,6 +17,9 @@ class ProductProjectionService extends BaseService
   # Internal: {String} The HTTP endpoint for `ProductProjections`
   @baseResourceEndpoint: '/product-projections'
 
+  # Public Unsupported: Not supported by the API
+  byKey: -> # noop
+
   # Private: Reset default query/search params used to build request endpoints
   _setDefaults: ->
     super()

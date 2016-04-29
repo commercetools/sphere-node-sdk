@@ -20,4 +20,7 @@ class CustomObjectService extends BaseService
   # Internal: {String} The HTTP endpoint for `CustomObjects`
   @baseResourceEndpoint: '/custom-objects'
 
+  # Public Unsupported: Not supported by the API
+  byKey: -> # noop
+
 module.exports = CustomObjectService

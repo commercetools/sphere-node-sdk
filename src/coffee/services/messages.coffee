@@ -28,4 +28,7 @@ class MessageService extends BaseService
   # Public Unsupported: Not supported by the API
   delete: -> # noop
 
+  # Public Unsupported: Not supported by the API
+  byKey: -> # noop
+
 module.exports = MessageService

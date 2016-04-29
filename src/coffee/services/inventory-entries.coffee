@@ -22,4 +22,7 @@ class InventoryEntryService extends BaseService
   # Internal: {String} The HTTP endpoint for `InventoryEntries`
   @baseResourceEndpoint: '/inventory'
 
+  # Public Unsupported: Not supported by the API
+  byKey: -> # noop
+
 module.exports = InventoryEntryService

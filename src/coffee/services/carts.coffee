@@ -25,4 +25,7 @@ class CartService extends BaseService
   # Internal: {String} The HTTP endpoint for `Carts`
   @baseResourceEndpoint: '/carts'
 
+  # Public Unsupported: Not supported by the API
+  byKey: -> # noop
+
 module.exports = CartService

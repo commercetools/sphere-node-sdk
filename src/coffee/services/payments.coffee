@@ -24,4 +24,7 @@ class PaymentService extends BaseService
   # Internal: {String} The HTTP endpoint for `Payments`
   @baseResourceEndpoint: '/payments'
 
+  # Public Unsupported: Not supported by the API
+  byKey: -> # noop
+
 module.exports = PaymentService
