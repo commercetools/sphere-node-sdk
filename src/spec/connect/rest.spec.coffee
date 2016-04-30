@@ -133,7 +133,7 @@ describe 'Rest', ->
 
         rest._preRequest({}, (error, response, body) ->
           # this time we assume the token is expired
-          rest._tokenExpiration = 1
+          rest._expirationTime = 1
           rest._preRequest({}, (error, response, body) ->
             expect(rest._oauth.getAccessToken.calls.length).toBe(2)
             done()

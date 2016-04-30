@@ -120,11 +120,8 @@ class Rest
   _preRequest: (params, callback) ->
     _req = (retry) =>
       isTokenExpired = false
-      if @_tokenExpiration
-        expirationTime = Date.now() + (@_tokenExpiration * 1000) -
-          # Add a gap of 2 hours before expiration time.
-          (2 * 60 * 60 * 1000)
-        isTokenExpired = Date.now() > expirationTime
+      if @_expirationTime
+        isTokenExpired = Date.now() > @_expirationTime
 
       if not @_options.access_token or (@_options.access_token and isTokenExpired)
 
@@ -144,7 +141,9 @@ class Rest
               _req(retry + 1)
           else
             # save expiration date for token renewal
-            @_tokenExpiration = body.expires_in
+            @_expirationTime = Date.now() + (body.expires_in * 1000) -
+              # Add a gap of 2 hours before expiration time.
+              (2 * 60 * 60 * 1000)
             access_token = body.access_token
             @_options.access_token = access_token
             @_options.headers['Authorization'] = "Bearer #{@_options.access_token}"
