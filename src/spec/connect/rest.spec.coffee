@@ -128,12 +128,11 @@ describe 'Rest', ->
         rest = new Rest config: Config
         spyOn(rest, '_doRequest').andCallFake (options, callback) -> callback(null, {statusCode: 200}, {id: '123'})
         spyOn(rest._oauth, 'getAccessToken').andCallFake (callback) ->
-          authResponse = {access_token: 'foo', expires_in: 2 * 24 * 60 * 60}
+          expiresIn = if rest._oauth.getAccessToken.calls.length > 1 then (2 * 24 * 60 * 60) else 1
+          authResponse = {access_token: 'foo', expires_in: expiresIn}
           callback(null, {statusCode: 200}, authResponse)
 
         rest._preRequest({}, (error, response, body) ->
-          # this time we assume the token is expired
-          rest._expirationTime = 1
           rest._preRequest({}, (error, response, body) ->
             expect(rest._oauth.getAccessToken.calls.length).toBe(2)
             done()
