@@ -119,7 +119,12 @@ class Rest
   # Throws an {Error} if `access_token` could not be retrieved
   _preRequest: (params, callback) ->
     _req = (retry) =>
-      unless @_options.access_token
+      isTokenExpired = false
+      if @_expirationTime
+        isTokenExpired = Date.now() > @_expirationTime
+
+      if not @_options.access_token or (@_options.access_token and isTokenExpired)
+
         @_oauth.getAccessToken (error, response, body) =>
           if error
             if retry is 10
@@ -135,6 +140,10 @@ class Rest
               debug "Failed to retrieve access_token (statusCode: #{response.statusCode}), retrying...#{retry + 1}"
               _req(retry + 1)
           else
+            # save expiration date for token renewal
+            @_expirationTime = Date.now() + (body.expires_in * 1000) -
+              # Add a gap of 2 hours before expiration time.
+              (2 * 60 * 60 * 1000)
             access_token = body.access_token
             @_options.access_token = access_token
             @_options.headers['Authorization'] = "Bearer #{@_options.access_token}"
