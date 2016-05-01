@@ -164,8 +164,10 @@
       </a>
     </span>
     <span class='desc'>
-      <p>Fetch all results of a Sphere resource query endpoint in batches of pages using a recursive function.</p><p>Note that traversing with pagination has been optimized. It now fetches pages sorted by <code>id</code> and iterates
-using a query with the <code>id</code> greater then the last one of the previous page.</p>
+      <p>Fetch all results of a Sphere resource query endpoint in batches of pages using a recursive function.</p><p>resource - <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/String'>String</a> The API resource endpoint, with query string parameters.
+resolve - <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Function'>Function</a> A function fulfilled with <code>error, response, body</code> arguments. Body is an <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object'>Object</a> of <code>PagedQueryResponse</code>.
+notify - <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Function'>Function</a> A function fulfilled with <code>percentage, value</code> arguments. Value is an <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object'>Object</a> of the current body results.
+                    This function is called for each batch iteration, allowing you to track the progress.</p>
     </span>
   </li>
   <li>
@@ -330,34 +332,15 @@ using a query with the <code>id</code> greater then the last one of the previous
       ::<strong>PAGED</strong>(resource, resolve)
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.11.0
-/src&#47;coffee&#47;connect&#47;rest.coffee#L178'>Source</a>
+/src&#47;coffee&#47;connect&#47;rest.coffee#L184'>Source</a>
     </p>
     <div class='docstring'>
-  <p>Fetch all results of a Sphere resource query endpoint in batches of pages using a recursive function.</p><p>Note that traversing with pagination has been optimized. It now fetches pages sorted by <code>id</code> and iterates
-using a query with the <code>id</code> greater then the last one of the previous page.</p>
+  <p>Fetch all results of a Sphere resource query endpoint in batches of pages using a recursive function.</p><p>resource - <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/String'>String</a> The API resource endpoint, with query string parameters.
+resolve - <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Function'>Function</a> A function fulfilled with <code>error, response, body</code> arguments. Body is an <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object'>Object</a> of <code>PagedQueryResponse</code>.
+notify - <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Function'>Function</a> A function fulfilled with <code>percentage, value</code> arguments. Value is an <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object'>Object</a> of the current body results.
+                    This function is called for each batch iteration, allowing you to track the progress.</p>
 </div>
 <div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='type'>(String)</span>
-      <span class='name'>resource</span>
-      &mdash;
-      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/String'>String</a> The API resource endpoint, with query string parameters.</span>
-    </li>
-    <li>
-      <span class='type'>(Function)</span>
-      <span class='name'>resolve</span>
-      &mdash;
-      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Function'>Function</a> A function fulfilled with <code>error, response, body</code> arguments. Body is an <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object'>Object</a> of <code>PagedQueryResponse</code>.</span>
-    </li>
-    <li>
-      <span class='type'>(Function)</span>
-      <span class='name'>notify</span>
-      &mdash;
-      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Function'>Function</a> A function fulfilled with <code>percentage, value</code> arguments. Value is an <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object'>Object</a> of the current body results. This function is called for each batch iteration, allowing you to track the progress.</span>
-    </li>
-  </ul>
   <h3>Throws:</h3>
   <ul class='throw'>
     <li>

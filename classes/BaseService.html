@@ -176,7 +176,7 @@
       </a>
     </span>
     <span class='desc'>
-      <p>A convenient method to set <a href='../classes/BaseService.html#perPage-instance'>::perPage</a> to <code>0</code>, which will fetch all pages recursively in chunks and return them all together once completed.</p>
+      <p>A convenient method to fetch all pages recursively in chunks and return them all together once completed.</p>
     </span>
   </li>
   <li>
@@ -187,6 +187,16 @@
     </span>
     <span class='desc'>
       <p>Build the endpoint path by appending the given id</p>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#byKey-instance'>
+        ::<strong>byKey</strong>(key)
+      </a>
+    </span>
+    <span class='desc'>
+      <p>Build the endpoint path by appending the given key query</p>
     </span>
   </li>
   <li>
@@ -349,7 +359,7 @@ Using this approach you can balance between memory usage and parallelism.</p>
       ::<strong>constructor</strong>(options = {})
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.11.0
-/src&#47;coffee&#47;services&#47;base.coffee#L28'>Source</a>
+/src&#47;coffee&#47;services&#47;base.coffee#L30'>Source</a>
     </p>
     <div class='docstring'>
   <p>Construct a <code>*Service</code> object.</p>
@@ -394,10 +404,10 @@ Using this approach you can balance between memory usage and parallelism.</p>
       ::<strong>all</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.11.0
-/src&#47;coffee&#47;services&#47;base.coffee#L200'>Source</a>
+/src&#47;coffee&#47;services&#47;base.coffee#L228'>Source</a>
     </p>
     <div class='docstring'>
-  <p>A convenient method to set <a href='../classes/BaseService.html#perPage-instance'>::perPage</a> to <code>0</code>, which will fetch all pages recursively in chunks and return them all together once completed.</p>
+  <p>A convenient method to fetch all pages recursively in chunks and return them all together once completed.</p>
   <div class='examples'>
     <h3>Examples:</h3>
     <pre><code class='coffee'>service = client.products
@@ -419,7 +429,7 @@ service.all().fetch() </code></pre>
       ::<strong>byId</strong>(id)
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.11.0
-/src&#47;coffee&#47;services&#47;base.coffee#L57'>Source</a>
+/src&#47;coffee&#47;services&#47;base.coffee#L61'>Source</a>
     </p>
     <div class='docstring'>
   <p>Build the endpoint path by appending the given id</p>
@@ -449,11 +459,45 @@ service.byId(&#39;123&#39;).fetch() </code></pre>
 </div>
   </div>
   <div class='method_details'>
+    <p class='signature' id='byKey-instance'>
+      ::<strong>byKey</strong>(key)
+      <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
+&#47;blob&#47;v1.11.0
+/src&#47;coffee&#47;services&#47;base.coffee#L81'>Source</a>
+    </p>
+    <div class='docstring'>
+  <p>Build the endpoint path by appending the given key query</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <pre><code class='coffee'>service = client.productTypes
+service.byKey(&#39;key&#39;).fetch() </code></pre>
+  </div>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='type'>(String)</span>
+      <span class='name'>key</span>
+      &mdash;
+      <span class='desc'><a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/String'>String</a> The resource specific key</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      <span class='desc'> a chained instance of <code>this</code> class</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='byQueryString-instance'>
       ::<strong>byQueryString</strong>(query, withEncodedParams = false)
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.11.0
-/src&#47;coffee&#47;services&#47;base.coffee#L232'>Source</a>
+/src&#47;coffee&#47;services&#47;base.coffee#L262'>Source</a>
     </p>
     <div class='docstring'>
   <p>Allow to pass a literal query string</p>
@@ -494,7 +538,7 @@ service.byQueryString(&#39;where=slug(en = &quot;my-slug&quot;)&amp;limit=5&amp;
       ::<strong>create</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.11.0
-/src&#47;coffee&#47;services&#47;base.coffee#L403'>Source</a>
+/src&#47;coffee&#47;services&#47;base.coffee#L433'>Source</a>
     </p>
     <div class='docstring'>
   <p>Alias of <a href='../classes/BaseService.html#save-instance'>::save</a></p>
@@ -507,7 +551,7 @@ service.byQueryString(&#39;where=slug(en = &quot;my-slug&quot;)&amp;limit=5&amp;
       Promise ::<strong>delete</strong>(version)
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.11.0
-/src&#47;coffee&#47;services&#47;base.coffee#L447'>Source</a>
+/src&#47;coffee&#47;services&#47;base.coffee#L481'>Source</a>
     </p>
     <div class='docstring'>
   <p>Delete an existing resource defined by the <code>Service</code></p>
@@ -552,7 +596,7 @@ service.byId(&#39;123&#39;).delete(2) </code></pre>
       ::<strong>expand</strong>(expansionPath)
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.11.0
-/src&#47;coffee&#47;services&#47;base.coffee#L213'>Source</a>
+/src&#47;coffee&#47;services&#47;base.coffee#L243'>Source</a>
     </p>
     <div class='docstring'>
   <p>Define an <a href="http://dev.sphere.io/http-api.html#reference-expansion">ExpansionPath</a> used for expanding <a href="http://dev.sphere.io/http-api-types.html#reference">Reference</a>s of a resource.</p>
@@ -586,7 +630,7 @@ service.expand(&#39;productType&#39;).fetch() </code></pre>
       Promise ::<strong>fetch</strong>()
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.11.0
-/src&#47;coffee&#47;services&#47;base.coffee#L274'>Source</a>
+/src&#47;coffee&#47;services&#47;base.coffee#L304'>Source</a>
     </p>
     <div class='docstring'>
   <p>Fetch resource defined by the <code>Service</code> with all chained query parameters.</p>
@@ -614,7 +658,7 @@ service.where(&#39;name(en = &quot;Foo&quot;)&#39;).sort(&#39;createdAt desc&#39
       ::<strong>last</strong>(period)
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.11.0
-/src&#47;coffee&#47;services&#47;base.coffee#L121'>Source</a>
+/src&#47;coffee&#47;services&#47;base.coffee#L149'>Source</a>
     </p>
     <div class='docstring'>
   <p>This is a convenient method to query for the latest changes.</p><p>Please be aware that <code>last</code> is just another <code>where</code> clause and thus
@@ -685,7 +729,7 @@ service.last(&#39;10d&#39;).fetch() </code></pre>
       ::<strong>page</strong>(page)
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.11.0
-/src&#47;coffee&#47;services&#47;base.coffee#L167'>Source</a>
+/src&#47;coffee&#47;services&#47;base.coffee#L195'>Source</a>
     </p>
     <div class='docstring'>
   <p>Define the page number to be requested from the complete query result (used for pagination as <code>offset</code>)</p>
@@ -728,7 +772,7 @@ service.page(4).fetch() </code></pre>
       ::<strong>perPage</strong>(perPage)
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.11.0
-/src&#47;coffee&#47;services&#47;base.coffee#L185'>Source</a>
+/src&#47;coffee&#47;services&#47;base.coffee#L213'>Source</a>
     </p>
     <div class='docstring'>
   <p>Define the number of results to return from a query (used for pagination as <code>limit</code>)</p>
@@ -771,7 +815,7 @@ service.perPage(50).fetch() </code></pre>
       Promise ::<strong>process</strong>(fn, options = {})
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.11.0
-/src&#47;coffee&#47;services&#47;base.coffee#L320'>Source</a>
+/src&#47;coffee&#47;services&#47;base.coffee#L350'>Source</a>
     </p>
     <div class='docstring'>
   <p>Process the resources for each <code>page</code> separately using the function <code>fn</code>. The function <code>fn</code> will then be called once per page and has to return a <a href='../classes/Promise.html'>Promise</a> that should be resolved when all elements of the page are processed.</p><p>Batch processing allows to process a lot of resources in chunks.
@@ -845,7 +889,7 @@ page from the `fn`, or rejected with an instance of an <a href='../classes/HttpE
       Promise ::<strong>save</strong>(body)
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.11.0
-/src&#47;coffee&#47;services&#47;base.coffee#L394'>Source</a>
+/src&#47;coffee&#47;services&#47;base.coffee#L424'>Source</a>
     </p>
     <div class='docstring'>
   <p>Save a new resource defined by the <code>Service</code> by passing the payload <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object'>Object</a>.</p>
@@ -897,7 +941,7 @@ service.save
       ::<strong>sort</strong>(path, ascending = true)
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.11.0
-/src&#47;coffee&#47;services&#47;base.coffee#L149'>Source</a>
+/src&#47;coffee&#47;services&#47;base.coffee#L177'>Source</a>
     </p>
     <div class='docstring'>
   <p>Define how the query should be sorted. It is possible to add several sort criteria, thereby the order is relevant.</p>
@@ -949,7 +993,7 @@ service.sort(&#39;name.en&#39;, true).fetch() </code></pre>
       Promise ::<strong>update</strong>(body)
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.11.0
-/src&#47;coffee&#47;services&#47;base.coffee#L427'>Source</a>
+/src&#47;coffee&#47;services&#47;base.coffee#L457'>Source</a>
     </p>
     <div class='docstring'>
   <p>Update a resource defined by the <code>Service</code> by passing the payload <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object'>Object</a> with <a href="http://dev.sphere.io/http-api.html#partial-updates">UpdateAction</a>. The <code>id</code> of the resource must be provided with <a href='../classes/BaseService.html#byId-instance'>::byId</a>.</p>
@@ -1008,7 +1052,7 @@ service.byId(&#39;123&#39;).update
       ::<strong>where</strong>(predicate)
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.11.0
-/src&#47;coffee&#47;services&#47;base.coffee#L74'>Source</a>
+/src&#47;coffee&#47;services&#47;base.coffee#L102'>Source</a>
     </p>
     <div class='docstring'>
   <p>Define a URI encoded <a href="http://dev.sphere.io/http-api.html#predicates">Predicate</a> from the given string, used for quering and filtering a resource. Can be set multiple times.</p>
@@ -1042,7 +1086,7 @@ service.where(&#39;name(en = &quot;Foo&quot;)&#39;).fetch() </code></pre>
       ::<strong>whereOperator</strong>(operator = 'and')
       <a class='gh-link' href='https:&#47;&#47;github.com&#47;sphereio&#47;sphere-node-sdk
 &#47;blob&#47;v1.11.0
-/src&#47;coffee&#47;services&#47;base.coffee#L94'>Source</a>
+/src&#47;coffee&#47;services&#47;base.coffee#L122'>Source</a>
     </p>
     <div class='docstring'>
   <p>Define the logical operator to combine multiple <a href='../classes/BaseService.html#where-instance'>::where</a> query parameters.</p>
