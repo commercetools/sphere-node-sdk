@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>SPHERE.IO Node.js SDK</title>
+  <link rel='stylesheet' href='..&#47;assets/biscotto.css' type='text/css'>
+  <script src='..&#47;assets/biscotto.js'></script>
+  <script src='..&#47;assets/search_data.js'></script>
+</head>
+  <body>
+    <div id='base' data-path='..&#47;'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='..&#47;docs&#47;INDEX.md.html' title='Node.js SDK'>Node.js SDK</a>
+    &raquo;
+    <a href='..&#47;class_index.html' title='Index'>Index</a>
+    &raquo;
+    <span class='title'>docs&#47;MIGRATION-1.0.md</span>
+    <nav>
+      <ul>
+        <li class='noframes'>
+          (<a class='noframes' href='#'>no frames</a>)
+        </li>
+      </ul>
+    </nav>
+    <div id='search'>
+      <a id='class_list_link' href='..&#47;class_list.html'>Classes</a>
+      <a id='method_list_link' href='..&#47;method_list.html'>Methods</a>
+      <a id='extra_list_link' href='..&#47;extra_list.html'>Extras</a>
+    </div>
+  </div>
+  <iframe id='search_frame'></iframe>
+  <div id='fuzzySearch'>
+    <input type='text'>
+    <ol></ol>
+  </div>
+  <div id='help'>
+    <p>
+      Quickly fuzzy find classes, mixins, methods, file:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-T</span>
+        Open fuzzy finder dialog
+      </li>
+    </ul>
+    <p>
+      In frame mode you can toggle the list navigation frame on the left side:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-L</span>
+        Toggle list view
+      </li>
+    </ul>
+    <p>
+      You can focus a list in frame mode or toggle a tab in frameless mode:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-C</span>
+        Class list
+      </li>
+      <li>
+        <span>Ctrl-I</span>
+        Mixin list
+      </li>
+      <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+      <li>
+        <span>Ctrl-M</span>
+        Method list
+      </li>
+      <li>
+        <span>Ctrl-E</span>
+        Extras list
+      </li>
+    </ul>
+    <p>
+      You can focus and blur the search input:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-S</span>
+        Focus search input
+      </li>
+      <li>
+        <span>Esc</span>
+        Blur search input
+      </li>
+    </ul>
+    <p>
+      In frameless mode you can close the list tab:
+    </p>
+    <ul>
+      <li>
+        <span>Esc</span>
+        Close list tab
+      </li>
+    </ul>
+  </div>
+</div>
+    <div id='content'>
+      <nav class='toc'>
+        <p class='title'>
+          <a class='hide_toc' href='#'>
+            <strong>Table of Contents</strong>
+          </a>
+          <small>
+            (<a class='float_toc' href='#'>left</a>)
+          </small>
+        </p>
+      </nav>
+      <div id='filecontents'>
+        <h2 id="migration-from-0-8-to-1-0">MIGRATION from 0.8 to 1.0</h2>
+<blockquote><p>The repo has been renamed from <code>sphere-node-client</code> to <code>sphere-node-sdk</code> since it has become more of a toolkit</p></blockquote>
+<h2 id="summary-of-breaking-changes">Summary of breaking changes</h2>
+<ul>
+<li>renaming to <code>sphere-node-sdk</code></li>
+<li>aggregation of <code>sphere-node-sdk</code>, <code>sphere-node-connect</code>, <code>sphere-node-sync</code></li>
+<li>no more <code>bunyan</code> logger dependent, the application is free to choose</li>
+<li>use of <code>DEBUG</code> ENV variable for easier debugging</li>
+<li>switch from <code>Q</code> to <code>Bluebird</code> promises</li>
+<li>little changes of <code>sync</code> API</li>
+</ul>
+<h2 id="backwards-incompatible-changes">Backwards incompatible changes</h2><p>Here a short migration guide regarding backwards incompatible changes</p><h3 id="available-modules">Available modules</h3><p>Some applications have been using <code>sphere-node-sdk</code> in combination with <code>sphere-node-sync</code>, having some inconsistencies regarding dependency version of the former one.
+To make it simpler now the two modules are independent from each other and the recommended usage for both is:</p><ul>
+<li><code>sync</code> should be used just to build update actions given two objects</li>
+<li><code>client</code> should be used to talk to the API, using i.e. the actions generated from the <code>sync</code> to update a resource</li>
+</ul>
+<pre><code class="lang-coffeescript">{SphereClient, ProductSync} = require &#39;sphere-node-sdk&#39;
+client = new SphereClient {...}
+sync = new ProductSync # or one of the other *Sync objects
+
+synced = sync.buildActions(new_prod, old_prod)
+if synced.shouldUpdate()
+  client.products().byId(synced.getUpdateId()).update(synced.getUpdatePayload())
+  .then (result) -&gt; expect(result.statusCode).toBe 200
+  .fail (e) -&gt; logger.error e
+else
+  # do nothing
+</code></pre><p>In addition, the <code>sphere-node-connect</code> (the low-level API for talking to the SPHERE.IO HTTP API) is also included in the kit and not as a separate repository anymore.</p><h3 id="logging-debugging">Logging / debugging</h3><p>Logger has now been completely dropped, giving the application the liberty of using whatever type of logging.</p><p>So when you create a new instance of <code>SphereClient</code> or <code>ProductSync</code>, etc. you don&#39;t need to pass any logger configuration.</p><p>The module APIs will provide results or errors either via callbacks or promises (or by throwing an <code>Error</code>).</p><blockquote><p>For handling errors with promises please refer to <a href="https://github.com/petkaantonov/bluebird#error-handling">Bluebird documentation</a></p></blockquote><p>If you are developing and need to do some debugging you can simply provide a <code>DEBUG</code> ENV variable to get output in the console. See <a href="DEBUGGING.md">DEBUGGING</a>.</p><pre><code class="lang-bash">$ DEBUG=* node lib/run
+</code></pre>
+<h3 id="bluebird-promises">Bluebird promises</h3><p>The <code>Q</code> promises have been dropped in favor of the more <a href="https://github.com/petkaantonov/bluebird/blob/master/benchmark/stats/latest.md">performance</a> library <code>Bluebird</code>.</p><p>The Promise APIs is basically the same as for <code>Q</code>, just some methods are different like:</p><ul>
+<li><code>fail</code> -&gt; <code>catch</code></li>
+<li><code>allSettled</code> -&gt; <code>settle</code></li>
+</ul>
+<blockquote><p>The library offers way more utility functions though, so make sure to check the <a href="https://github.com/petkaantonov/bluebird/blob/master/API.md">API documentation</a> for building applications in a more functional way.</p></blockquote>
+<h3 id="sync-apis">Sync APIs</h3><p>Being now a pure utils library, the <code>Sync API</code> has been adjusted like following.
+Deprecated methods:</p><ul>
+<li><code>get</code></li>
+<li><code>update</code></li>
+</ul><p>New methods:</p><ul>
+<li><code>shouldUpdate</code></li>
+<li><code>getUpdateId</code></li>
+<li><code>getUpdateActions</code></li>
+<li><code>getUpdatePayload</code></li>
+</ul>
+
+      </div>
+    </div>
+    <div id='footer'>
+  &#10034;
+  Press Ctrl-h to see the keyboard shortcuts
+</div>
+  </body>
+</html>
