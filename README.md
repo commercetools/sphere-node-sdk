@@ -6,11 +6,11 @@
 
 [![NPM version](https://img.shields.io/npm/v/sphere-node-sdk.svg?style=flat)](https://www.npmjs.com/package/sphere-node-sdk) [![Build Status](https://img.shields.io/travis/sphereio/sphere-node-sdk/master.svg?style=flat)](https://travis-ci.org/sphereio/sphere-node-sdk) [![Coverage Status](https://img.shields.io/coveralls/sphereio/sphere-node-sdk/master.svg?style=flat)](https://coveralls.io/r/sphereio/sphere-node-sdk?branch=master) [![Dependency Status](https://img.shields.io/david/sphereio/sphere-node-sdk.svg?style=flat)](https://david-dm.org/sphereio/sphere-node-sdk)
 
-[SPHERE.IO](http://sphere.io/) is the first **Platform-as-a-Service** solution for eCommerce.
+[commercetools](https://commercetools.com/) is a cloud-based commerce platform.
 
-Officially supported Node.js SDK library for working with the SPHERE.IO HTTP API, with OAuth2 support.
+Officially supported Node.js SDK library for working with the commercetools<span>&trade;</span> platform HTTP API, with OAuth2 support.
 
-> Looking for the [`v2.0`](https://github.com/sphereio/sphere-node-sdk/tree/rewrite-2.0)?
+> We are working on a [`v2.0`](https://github.com/sphereio/sphere-node-sdk/tree/rewrite-2.0) version, [more info](docs/MIGRATION-2.0.md) coming soon.
 
 ## Getting Started
 Install the module with `npm install sphere-node-sdk`
@@ -24,7 +24,6 @@ The module exposes some libraries which can be either used alone or together
 - `Rest` - a low-level (callback-based) client to connect to the SPHERE.IO HTTP APIs
 - `*Sync` - a collection of utils to build update actions
 
-> This documentation is for `v1.x` and not valid for previous version - [0.8.x docs here](https://github.com/sphereio/sphere-node-sdk/blob/v0.8.1/README.md#table-of-contents).
 
 ## License
 Licensed under the [MIT license](LICENSE-MIT).
