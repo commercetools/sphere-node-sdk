@@ -97,14 +97,18 @@ test('Integration - Client', t => {
           }
         `
       })
-      .then(({ body }) => {
-        t.notOk(body.data)
-        t.ok(body.errors)
-        t.ok(body.errors[0].message.
-          includes('Cannot query field \'foo\' on type \'Query\''))
+      .then(() => {
+        t.end('It should have failed')
+      })
+      .catch(error => {
+        t.equal(error.code, 400)
+        t.notOk(error.body.data)
+        t.equal(error.body.errors.length, 1)
+        t.ok(error.message.includes(
+          'Cannot query field \'foo\' on type \'Query\''),
+          'should include error message')
         t.end()
       })
-      .catch(t.end)
     })
 
   })
