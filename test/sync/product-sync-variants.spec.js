@@ -268,4 +268,29 @@ test('Sync::product::variants', t => {
     ])
     t.end()
   })
+
+  t.test('should ignore set sku', t => {
+    setup()
+
+    // Case when sku is not set, and the new value is empty or null
+    const before = {
+      id: '123',
+      masterVariant: {
+        id: 1,
+      },
+      variants: [{ id: 2 }]
+    }
+
+    const now = {
+      id: '123',
+      masterVariant: {
+        id: 1, sku: ''
+      },
+      variants: [{ id: 2, sku: null }]
+    }
+
+    const actions = productsSync.buildActions(now, before)
+    t.deepEqual(actions, [], 'should not generate any action')
+    t.end()
+  })
 })
