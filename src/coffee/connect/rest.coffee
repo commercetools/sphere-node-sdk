@@ -42,7 +42,7 @@ class Rest
     throw new Error('Missing \'client_secret\'') unless config.client_secret or opts.access_token
     throw new Error('Missing \'project_key\'') unless config.project_key
 
-    host = opts.host or 'api.sphere.io'
+    host = opts.host or process.env.SPHERE_HOST or 'api.sphere.io'
     protocol = opts.protocol or 'https'
 
     rejectUnauthorized = if _.isUndefined(opts.rejectUnauthorized) then true else opts.rejectUnauthorized
