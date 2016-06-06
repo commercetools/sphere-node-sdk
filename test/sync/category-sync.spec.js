@@ -224,7 +224,10 @@ test('Sync::category', t => {
         fields: {
           customField1: true, // will change
           customField2: true, // will stay unchanged
-          customField3: false // will be removed
+          customField3: false, // will be removed
+          customField4: {
+            key: 'enum_value_old'
+          }
         }
       }
     }
@@ -237,7 +240,10 @@ test('Sync::category', t => {
         fields: {
           customField1: false,
           customField2: true,
-          customField4: true // was added
+          customField4: {
+            key: 'enum_value_new'
+          },
+          customField5: true // was added
         }
       }
     }
@@ -253,6 +259,12 @@ test('Sync::category', t => {
       }),
       Object.assign({ action: 'setCustomField' }, {
         name: 'customField4',
+        value: {
+          key: 'enum_value_new'
+        }
+      }),
+      Object.assign({ action: 'setCustomField' }, {
+        name: 'customField5',
         value: true
       })
     ]
