@@ -309,6 +309,74 @@ test('Sync::category', t => {
     t.end()
   })
 
+  t.test('should build `setCustomField` action with LocalizedEnum values',
+    t => {
+      setup()
+      const before = {
+        custom: {
+          type: {
+            typeId: 'type',
+            id: 'customType1'
+          },
+          fields: {
+            localizedEnumField1: {
+              "en": "lenum_en_1",
+              "de": "lenum_de_1" // will change
+            },
+            localizedEnumField2: { // will be removed
+              "en": "lenum_en_2",
+              "de": "lenum_de_2"
+            },
+          }
+        }
+      }
+
+      const now = {
+        custom: {
+          type: {
+            typeId: 'type',
+            id: 'customType1'
+          },
+          fields: {
+            localizedEnumField1: {
+              "en": "lenum_en_1",
+              "de": "lenum_de_2"
+            },
+            localizedEnumField3: { // was added
+              "en": "lenum_en_3",
+              "de": "lenum_de_3"
+            },
+          }
+        }
+      }
+      const actual = categorySync.buildActions(now, before)
+      const expected = [
+        {
+          action: 'setCustomField',
+          name: 'localizedEnumField1',
+          value: {
+            "en": "lenum_en_1",
+            "de": "lenum_de_2"
+          }
+        },
+        {
+          action: 'setCustomField',
+          name: 'localizedEnumField2',
+          value: undefined
+        },
+        {
+          action: 'setCustomField',
+          name: 'localizedEnumField3',
+          value: {
+            "en": "lenum_en_3",
+            "de": "lenum_de_3"
+          }
+        }
+      ]
+      t.deepEqual(actual, expected)
+      t.end()
+    })
+
   t.test('should build `setCustomField` action with Money values', t => {
     setup()
     const before = {
