@@ -308,4 +308,65 @@ test('Sync::category', t => {
     t.deepEqual(actual, expected)
     t.end()
   })
+
+  t.test('should build `setCustomField` action with Money values', t => {
+    setup()
+    const before = {
+      custom: {
+        type: {
+          typeId: 'type',
+          id: 'customType1'
+        },
+        fields: {
+          moneyField1: { // will change
+            centAmount: 123000,
+            currencyCode: 'EUR'
+          },
+          moneyField2: { // wil be removed
+            centAmount: 213000,
+            currencyCode: 'EUR'
+          }
+        }
+      }
+    }
+
+    const now = {
+      custom: {
+        type: {
+          typeId: 'type',
+          id: 'customType1'
+        },
+        fields: {
+          moneyField1: {
+            centAmount: 123000,
+            currencyCode: 'SEK'
+          },
+          moneyField3: {
+            centAmount: 213000,
+            currencyCode: 'USD'
+          }
+        }
+      }
+    }
+    const actual = categorySync.buildActions(now, before)
+    const expected = [
+      {
+        action: 'setCustomField',
+        name: 'moneyField1',
+        value: { centAmount: 123000, currencyCode: 'SEK' }
+      },
+      {
+        action: 'setCustomField',
+        name: 'moneyField2',
+        value: undefined
+      },
+      {
+        action: 'setCustomField',
+        name: 'moneyField3',
+        value: { centAmount: 213000, currencyCode: 'USD' }
+      }
+    ]
+    t.deepEqual(actual, expected)
+    t.end()
+  })
 })
