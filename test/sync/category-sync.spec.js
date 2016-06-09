@@ -224,10 +224,7 @@ test('Sync::category', t => {
         fields: {
           customField1: true, // will change
           customField2: true, // will stay unchanged
-          customField3: false, // will be removed
-          customField4: {
-            key: 'enum_value_old'
-          }
+          customField3: false // will be removed
         }
       }
     }
@@ -240,10 +237,7 @@ test('Sync::category', t => {
         fields: {
           customField1: false,
           customField2: true,
-          customField4: {
-            key: 'enum_value_new'
-          },
-          customField5: true // was added
+          customField4: true // was added
         }
       }
     }
@@ -259,14 +253,57 @@ test('Sync::category', t => {
       }),
       Object.assign({ action: 'setCustomField' }, {
         name: 'customField4',
-        value: {
-          key: 'enum_value_new'
-        }
-      }),
-      Object.assign({ action: 'setCustomField' }, {
-        name: 'customField5',
         value: true
       })
+    ]
+    t.deepEqual(actual, expected)
+    t.end()
+  })
+
+  t.test('should build `setCustomField` action with Enum values', t => {
+    setup()
+    const before = {
+      custom: {
+        type: {
+          typeId: 'type',
+          id: 'customType1'
+        },
+        fields: {
+          enumField1: 'old_enum_value_1', // will change
+          enumField2: 'enum_value_2', // will be removed
+        }
+      }
+    }
+
+    const now = {
+      custom: {
+        type: {
+          typeId: 'type',
+          id: 'customType1'
+        },
+        fields: {
+          enumField1: 'new_enum_value_1',
+          enumField3: 'enum_value_3'
+        }
+      }
+    }
+    const actual = categorySync.buildActions(now, before)
+    const expected = [
+      {
+        action: 'setCustomField',
+        name: 'enumField1',
+        value: 'new_enum_value_1'
+      },
+      {
+        action: 'setCustomField',
+        name: 'enumField2',
+        value: undefined
+      },
+      {
+        action: 'setCustomField',
+        name: 'enumField3',
+        value: 'enum_value_3'
+      }
     ]
     t.deepEqual(actual, expected)
     t.end()
