@@ -21,7 +21,7 @@
     "clean": "rimraf dist && mkdirp dist",
     "coverage": "npm run lint && ./scripts/credentials && cross-env NODE_ENV=test babel-node ./node_modules/isparta/bin/isparta cover test",
     "dist": "npm run clean && babel lib --out-dir dist",
-    "lint": "eslint --format=node_modules/eslint-formatter-pretty lib test",
+    "lint": "./scripts/lint lib test",
     "prepublish": "./scripts/version",
     "test": "./scripts/credentials && cross-env NODE_ENV=test NODE_PATH=./lib babel-node test/index.js | tap-spec",
     "test:ci": "browserify -t babelify -t [ envify --NODE_ENV test ] test | tap-closer | smokestack -b firefox | tap-spec",
@@ -48,6 +48,7 @@
     "browserify": "^13.0.0",
     "coveralls": "^2.11.9",
     "cross-env": "^1.0.7",
+    "cz-conventional-changelog": "^1.1.6",
     "envify": "^3.4.0",
     "eslint": "^2.11.1",
     "eslint-config-airbnb": "^9.0.1",
@@ -56,6 +57,7 @@
     "eslint-plugin-import": "^1.8.0",
     "eslint-plugin-jsx-a11y": "^1.2.0",
     "eslint-plugin-react": "^5.1.1",
+    "ghooks": "^1.2.0",
     "isparta": "^4.0.0",
     "mkdirp": "^0.5.1",
     "rimraf": "^2.5.2",
@@ -64,6 +66,7 @@
     "tap-closer": "^1.0.0",
     "tap-spec": "^4.1.1",
     "tape": "^4.5.1",
+    "validate-commit-msg": "^2.5.0",
     "watch": "^0.17.1"
   },
   "keywords": [
@@ -79,5 +82,14 @@
   ],
   "eslintConfig": {
     "extends": "commercetools"
+  },
+  "config": {
+    "ghooks": {
+      "commit-msg": "node_modules/.bin/validate-commit-msg",
+      "pre-commit": "./scripts/lint-staged-files"
+    },
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
