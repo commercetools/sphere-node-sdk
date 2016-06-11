@@ -2,7 +2,6 @@ import test from 'tape'
 import * as queryCustom from '../../lib/utils/query-custom'
 
 test('Utils::queryCustom', t => {
-
   let service
 
   function setup () {
@@ -22,8 +21,7 @@ test('Utils::queryCustom', t => {
     setup()
 
     t.throws(() => service.byQueryString(),
-      /Parameter `customQueryString` is missing/)
+      /Required argument for `byQueryString` is missing/)
     t.end()
   })
-
 })

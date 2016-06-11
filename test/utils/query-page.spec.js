@@ -3,7 +3,6 @@ import * as queryPage from '../../lib/utils/query-page'
 import { getDefaultQueryParams } from '../../lib/utils/default-params'
 
 test('Utils::queryPage', t => {
-
   let service
 
   function setup () {
@@ -15,7 +14,7 @@ test('Utils::queryPage', t => {
 
     service.sort('createdAt')
     t.deepEqual(service.params.pagination.sort, [
-      encodeURIComponent('createdAt asc')
+      encodeURIComponent('createdAt asc'),
     ])
     t.end()
   })
@@ -25,7 +24,7 @@ test('Utils::queryPage', t => {
 
     service.sort('createdAt', false)
     t.deepEqual(service.params.pagination.sort, [
-      encodeURIComponent('createdAt desc')
+      encodeURIComponent('createdAt desc'),
     ])
     t.end()
   })
@@ -33,7 +32,8 @@ test('Utils::queryPage', t => {
   t.test('should throw if sortPath is missing', t => {
     setup()
 
-    t.throws(() => service.sort(), /Parameter `sortPath` is missing/)
+    t.throws(() => service.sort(),
+      /Required argument for `sort` is missing/)
     t.end()
   })
 
@@ -48,7 +48,8 @@ test('Utils::queryPage', t => {
   t.test('should throw if page is missing', t => {
     setup()
 
-    t.throws(() => service.page(), /Parameter `page` is missing/)
+    t.throws(() => service.page(),
+      /Required argument for `page` is missing/)
     t.end()
   })
 
@@ -56,7 +57,7 @@ test('Utils::queryPage', t => {
     setup()
 
     t.throws(() => service.page(0),
-      /Parameter `page` must be a number >= 1/)
+      /Required argument for `page` must be a number >= 1/)
     t.end()
   })
 
@@ -71,7 +72,8 @@ test('Utils::queryPage', t => {
   t.test('should throw if perPage is missing', t => {
     setup()
 
-    t.throws(() => service.perPage(), /Parameter `perPage` is missing/)
+    t.throws(() => service.perPage(),
+      /Required argument for `perPage` is missing/)
     t.end()
   })
 
@@ -79,8 +81,7 @@ test('Utils::queryPage', t => {
     setup()
 
     t.throws(() => service.perPage(-1),
-      /Parameter `perPage` must be a number >= 0/)
+      /Required argument for `perPage` must be a number >= 0/)
     t.end()
   })
-
 })

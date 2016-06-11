@@ -3,15 +3,14 @@ import sinon from 'sinon'
 import taskQueueFn from '../../lib/utils/task-queue'
 
 test('Utils::taskQueue', t => {
-
   let options
 
   function setup () {
     options = {
-      Promise: Promise,
+      Promise: Promise, // eslint-disable-line object-shorthand
       request: {
-        maxParallel: 20
-      }
+        maxParallel: 20,
+      },
     }
   }
 
@@ -28,18 +27,16 @@ test('Utils::taskQueue', t => {
 
     const taskQueue = taskQueueFn(Object.assign({}, options, {
       auth: {
-        shouldRetrieveToken (cb) { cb(false) }
-      }
+        shouldRetrieveToken (cb) { cb(false) },
+      },
     }))
 
     const _queue = taskQueue.getQueue()
-    const spy = sinon.stub(_queue, 'push', payload => {
-      return payload.resolve('ok')
-    })
+    const spy = sinon.stub(_queue, 'push', payload => payload.resolve('ok'))
 
     const task = {
       method: 'GET',
-      url: 'https://api.sphere.io/foo'
+      url: 'https://api.sphere.io/foo',
     }
     const taskFn = taskQueue.addTask(task)
     taskFn.then(res => {
@@ -52,5 +49,4 @@ test('Utils::taskQueue', t => {
     })
     .catch(t.end)
   })
-
 })

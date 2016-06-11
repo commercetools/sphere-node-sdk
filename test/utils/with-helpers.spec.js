@@ -2,15 +2,14 @@ import test from 'tape'
 import * as withHelpers from '../../lib/utils/with-helpers'
 
 test('Utils::withHelpers', t => {
-
   let service
 
   function setup () {
     service = Object.assign({
       options: {
         auth: { credentials: {} },
-        request: { headers: { 'Content-Type': 'application/json' } }
-      }
+        request: { headers: { 'Content-Type': 'application/json' } },
+      },
     }, withHelpers)
   }
 
@@ -19,8 +18,8 @@ test('Utils::withHelpers', t => {
 
     service.withHeader('Authorization', 'supersecret')
     t.deepEqual(service.options.request.headers, {
-      'Authorization': 'supersecret',
-      'Content-Type': 'application/json'
+      Authorization: 'supersecret',
+      'Content-Type': 'application/json',
     })
     t.end()
   })
@@ -41,7 +40,7 @@ test('Utils::withHelpers', t => {
 
     service.withCredentials({ projectKey: 'foo' })
     t.deepEqual(service.options.auth.credentials, {
-      projectKey: 'foo'
+      projectKey: 'foo',
     })
     t.end()
   })
@@ -53,5 +52,4 @@ test('Utils::withHelpers', t => {
       /Credentials object is missing/)
     t.end()
   })
-
 })

@@ -3,7 +3,6 @@ import * as features from '../../lib/utils/features'
 import { setDefaultParams } from '../../lib/utils/default-params'
 
 test('Utils::defaultParams', t => {
-
   t.test('should set default params for a normal endpoint', t => {
     const serviceFeatures = [ features.query, features.queryOne ]
     const params = {}
@@ -14,19 +13,19 @@ test('Utils::defaultParams', t => {
       pagination: {
         page: null,
         perPage: null,
-        sort: []
+        sort: [],
       },
       query: {
         operator: 'and',
-        where: []
-      }
+        where: [],
+      },
     })
     t.end()
   })
 
   t.test('should set default params for product-projections', t => {
     const serviceFeatures = [
-      features.query, features.queryOne, features.projection
+      features.query, features.queryOne, features.projection,
     ]
     const params = {}
     setDefaultParams.call({ features: serviceFeatures, params })
@@ -37,12 +36,12 @@ test('Utils::defaultParams', t => {
       pagination: {
         page: null,
         perPage: null,
-        sort: []
+        sort: [],
       },
       query: {
         operator: 'and',
-        where: []
-      }
+        where: [],
+      },
     })
     t.end()
   })
@@ -57,7 +56,7 @@ test('Utils::defaultParams', t => {
       pagination: {
         page: null,
         perPage: null,
-        sort: []
+        sort: [],
       },
       search: {
         facet: [],
@@ -65,10 +64,9 @@ test('Utils::defaultParams', t => {
         filterByQuery: [],
         filterByFacets: [],
         fuzzy: false,
-        text: null
-      }
+        text: null,
+      },
     })
     t.end()
   })
-
 })

@@ -2,7 +2,6 @@ import test from 'tape'
 import buildQueryString from '../../lib/utils/build-query-string'
 
 test('Utils::buildQueryString', t => {
-
   t.test('should throw if no argument is passed', t => {
     t.throws(() => buildQueryString(),
       /Missing options object to build query string/)
@@ -13,7 +12,7 @@ test('Utils::buildQueryString', t => {
     const params = {
       expand: [
         encodeURIComponent('productType'),
-        encodeURIComponent('categories[*]')
+        encodeURIComponent('categories[*]'),
       ],
       staged: false,
       pagination: {
@@ -21,38 +20,38 @@ test('Utils::buildQueryString', t => {
         perPage: 10,
         sort: [
           encodeURIComponent('name.en desc'),
-          encodeURIComponent('createdAt asc')
-        ]
+          encodeURIComponent('createdAt asc'),
+        ],
       },
       query: {
         operator: 'or',
         where: [
           encodeURIComponent('name(en = "Foo")'),
-          encodeURIComponent('name(en = "Bar") and categories(id = "123")')
-        ]
+          encodeURIComponent('name(en = "Bar") and categories(id = "123")'),
+        ],
       },
       search: {
         facet: [
           encodeURIComponent('variants.attributes.foo:"bar")'),
-          encodeURIComponent('variants.sku:"foo123"')
+          encodeURIComponent('variants.sku:"foo123"'),
         ],
         filter: [
           encodeURIComponent('variants.attributes.color.key:"red")'),
-          encodeURIComponent('categories.id:"123"')
+          encodeURIComponent('categories.id:"123"'),
         ],
         filterByQuery: [
           encodeURIComponent('variants.attributes.color.key:"red")'),
-          encodeURIComponent('categories.id:"123"')
+          encodeURIComponent('categories.id:"123"'),
         ],
         filterByFacets: [
           encodeURIComponent('variants.attributes.color.key:"red")'),
-          encodeURIComponent('categories.id:"123"')
+          encodeURIComponent('categories.id:"123"'),
         ],
         fuzzy: true,
-        text: { lang: 'en', value: 'Foo' }
-      }
+        text: { lang: 'en', value: 'Foo' },
+      },
     }
-    /*eslint-disable max-len*/
+    /* eslint-disable max-len*/
     const expectedQueryString =
       'staged=false&' +
       'expand=productType&' +
@@ -71,7 +70,7 @@ test('Utils::buildQueryString', t => {
       `filter.query=${encodeURIComponent('categories.id:"123"')}&` +
       `filter.facets=${encodeURIComponent('variants.attributes.color.key:"red")')}&` +
       `filter.facets=${encodeURIComponent('categories.id:"123"')}`
-    /*eslint-enable max-len*/
+    /* eslint-enable max-len*/
 
     t.deepEqual(buildQueryString(params), expectedQueryString)
     t.end()

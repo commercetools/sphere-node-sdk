@@ -3,7 +3,6 @@ import * as query from '../../lib/utils/query'
 import { getDefaultQueryParams } from '../../lib/utils/default-params'
 
 test('Utils::query', t => {
-
   let service
 
   function setup () {
@@ -15,7 +14,7 @@ test('Utils::query', t => {
 
     service.where('name(en = "Foo Bar")')
     t.deepEqual(service.params.query.where, [
-      encodeURIComponent('name(en = "Foo Bar")')
+      encodeURIComponent('name(en = "Foo Bar")'),
     ])
     t.end()
   })
@@ -23,7 +22,8 @@ test('Utils::query', t => {
   t.test('should throw if predicate is missing', t => {
     setup()
 
-    t.throws(() => service.where(), /Parameter `predicate` is missing/)
+    t.throws(() => service.where(),
+      /Required argument for `where` is missing/)
     t.end()
   })
 
@@ -42,7 +42,7 @@ test('Utils::query', t => {
     setup()
 
     t.throws(() => service.whereOperator(),
-      /Parameter `operator` is missing/)
+      /Required argument for `whereOperator` is missing/)
     t.end()
   })
 
@@ -50,8 +50,7 @@ test('Utils::query', t => {
     setup()
 
     t.throws(() => service.whereOperator('foo'),
-      /Parameter `operator` is wrong, either `and` or `or`/)
+      /Required argument for `whereOperator` is invalid, allowed values are \[`and`, `or`\]/) // eslint-disable-line max-len
     t.end()
   })
-
 })

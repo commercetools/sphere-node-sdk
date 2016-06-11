@@ -6,34 +6,33 @@ const authRequest = auth.buildRequest({
   credentials: {
     projectKey: credentials.project_key,
     clientId: credentials.client_id,
-    clientSecret: credentials.client_secret
+    clientSecret: credentials.client_secret,
   },
-  host: 'auth.sphere.io'
+  host: 'auth.sphere.io',
 })
 
 test('Integration - Auth', t => {
-
   let options
 
   function setup () {
     options = {
-      Promise: Promise,
+      Promise: Promise, // eslint-disable-line object-shorthand
       auth: {
         credentials: {
           projectKey: credentials.project_key,
           clientId: credentials.client_id,
-          clientSecret: credentials.client_secret
+          clientSecret: credentials.client_secret,
         },
-        host: 'auth.sphere.io'
+        host: 'auth.sphere.io',
       },
       request: {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
           'Content-Length': Buffer.byteLength(authRequest.body),
-          'User-Agent': 'sphere-node-sdk'
+          'User-Agent': 'sphere-node-sdk',
         },
-        timeout: 20000
-      }
+        timeout: 20000,
+      },
     }
   }
 
@@ -48,5 +47,4 @@ test('Integration - Auth', t => {
     })
     .catch(t.end)
   })
-
 })

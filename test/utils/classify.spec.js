@@ -2,7 +2,6 @@ import test from 'tape'
 import classify from '../../lib/utils/classify'
 
 test('Utils::classify', t => {
-
   t.test('should freeze non-function property and make it non-enumerable',
     t => {
       const composed = classify(Object.assign({},
@@ -18,5 +17,4 @@ test('Utils::classify', t => {
       t.equal(Object.getOwnPropertyNames(composed).length, 4)
       t.end()
     })
-
 })

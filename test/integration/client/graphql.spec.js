@@ -10,7 +10,6 @@ function uniqueId (prefix) {
 }
 
 test('Integration - Client', t => {
-
   let client
 
   function setup () {
@@ -19,21 +18,20 @@ test('Integration - Client', t => {
         credentials: {
           projectKey: credentials.project_key,
           clientId: credentials.client_id,
-          clientSecret: credentials.client_secret
-        }
+          clientSecret: credentials.client_secret,
+        },
       },
       request: {
         headers: {
           'Content-Type': 'application/json',
-          'User-Agent': 'sphere-node-sdk'
+          'User-Agent': 'sphere-node-sdk',
         },
-        maxParallel: 2
-      }
+        maxParallel: 2,
+      },
     })
   }
 
   t.test('::graphql', t => {
-
     t.test('should query channels', { timeout: 8000 }, t => {
       setup()
 
@@ -42,7 +40,7 @@ test('Integration - Client', t => {
 
       Promise.all([
         client.channels.create({ key: key1 }),
-        client.channels.create({ key: key2 })
+        client.channels.create({ key: key2 }),
       ])
       .then(results => {
         const channel1 = results[0]
@@ -68,7 +66,7 @@ test('Integration - Client', t => {
             fragment ChannelKey on Channel {
               id, key
             }
-          `
+          `,
         })
         .then(result => {
           t.equal(result.statusCode, 200)
@@ -95,7 +93,7 @@ test('Integration - Client', t => {
           query Sphere {
             foo { bar }
           }
-        `
+        `,
       })
       .then(() => {
         t.end('It should have failed')
@@ -110,6 +108,5 @@ test('Integration - Client', t => {
         t.end()
       })
     })
-
   })
 })

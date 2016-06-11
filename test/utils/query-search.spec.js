@@ -3,7 +3,6 @@ import * as querySearch from '../../lib/utils/query-search'
 import { getDefaultSearchParams } from '../../lib/utils/default-params'
 
 test('Utils::querySearch', t => {
-
   let service
 
   function setup () {
@@ -16,7 +15,7 @@ test('Utils::querySearch', t => {
     service.text('Foo Bar', 'en')
     t.deepEqual(service.params.search.text, {
       lang: 'en',
-      value: encodeURIComponent('Foo Bar')
+      value: encodeURIComponent('Foo Bar'),
     })
     t.end()
   })
@@ -24,9 +23,10 @@ test('Utils::querySearch', t => {
   t.test('should throw if text params are missing', t => {
     setup()
 
-    t.throws(() => service.text(), /Parameter `text` is missing/)
+    t.throws(() => service.text(),
+      /Required arguments for `text` are missing/)
     t.throws(() => service.text('Foo Bar'),
-      /Parameter `lang` is missing/)
+      /Required arguments for `text` are missing/)
     t.end()
   })
 
@@ -43,7 +43,7 @@ test('Utils::querySearch', t => {
 
     service.facet('categories.id:"123"')
     t.deepEqual(service.params.search.facet, [
-      encodeURIComponent('categories.id:"123"')
+      encodeURIComponent('categories.id:"123"'),
     ])
     t.end()
   })
@@ -51,7 +51,8 @@ test('Utils::querySearch', t => {
   t.test('should throw if facet is missing', t => {
     setup()
 
-    t.throws(() => service.facet(), /Parameter `facet` is missing/)
+    t.throws(() => service.facet(),
+      /Required argument for `facet` is missing/)
     t.end()
   })
 
@@ -60,7 +61,7 @@ test('Utils::querySearch', t => {
 
     service.filter('categories.id:"123"')
     t.deepEqual(service.params.search.filter, [
-      encodeURIComponent('categories.id:"123"')
+      encodeURIComponent('categories.id:"123"'),
     ])
     t.end()
   })
@@ -68,7 +69,8 @@ test('Utils::querySearch', t => {
   t.test('should throw if filter is missing', t => {
     setup()
 
-    t.throws(() => service.filter(), /Parameter `filter` is missing/)
+    t.throws(() => service.filter(),
+      /Required argument for `filter` is missing/)
     t.end()
   })
 
@@ -77,7 +79,7 @@ test('Utils::querySearch', t => {
 
     service.filterByQuery('categories.id:"123"')
     t.deepEqual(service.params.search.filterByQuery, [
-      encodeURIComponent('categories.id:"123"')
+      encodeURIComponent('categories.id:"123"'),
     ])
     t.end()
   })
@@ -86,7 +88,7 @@ test('Utils::querySearch', t => {
     setup()
 
     t.throws(() => service.filterByQuery(),
-      /Parameter `filterByQuery` is missing/)
+      /Required argument for `filterByQuery` is missing/)
     t.end()
   })
 
@@ -95,7 +97,7 @@ test('Utils::querySearch', t => {
 
     service.filterByFacets('categories.id:"123"')
     t.deepEqual(service.params.search.filterByFacets, [
-      encodeURIComponent('categories.id:"123"')
+      encodeURIComponent('categories.id:"123"'),
     ])
     t.end()
   })
@@ -104,8 +106,7 @@ test('Utils::querySearch', t => {
     setup()
 
     t.throws(() => service.filterByFacets(),
-      /Parameter `filterByFacets` is missing/)
+      /Required argument for `filterByFacets` is missing/)
     t.end()
   })
-
 })

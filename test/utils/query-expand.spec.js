@@ -2,7 +2,6 @@ import test from 'tape'
 import * as queryExpand from '../../lib/utils/query-expand'
 
 test('Utils::queryExpand', t => {
-
   let service
 
   function setup () {
@@ -14,7 +13,7 @@ test('Utils::queryExpand', t => {
 
     service.expand('productType')
     t.deepEqual(service.params.expand, [
-      encodeURIComponent('productType')
+      encodeURIComponent('productType'),
     ])
     t.end()
   })
@@ -23,8 +22,7 @@ test('Utils::queryExpand', t => {
     setup()
 
     t.throws(() => service.expand(),
-      /Parameter `expansionPath` is missing/)
+      /Required argument for `expand` is missing/)
     t.end()
   })
-
 })

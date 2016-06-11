@@ -17,11 +17,10 @@ const SERVICES = [
   'taxCategories',
 
   // keep as last!
-  'graphql'
+  'graphql',
 ]
 
 test('SphereClient', t => {
-
   t.test('should initialize client (as class)', t => {
     const client = new SphereClient({})
     t.deepEqual(Object.keys(client), SERVICES)
@@ -49,7 +48,7 @@ test('SphereClient', t => {
       maxParallel: 20,
       protocol: 'https',
       timeout: 20000,
-      urlPrefix: undefined
+      urlPrefix: undefined,
     })
     t.end()
   })
@@ -58,7 +57,7 @@ test('SphereClient', t => {
     const agent = new https.Agent({})
     const headers = {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer qwertzuiopasdfghjkl'
+      Authorization: 'Bearer qwertzuiopasdfghjkl',
     }
     const timeout = 1000
     const urlPrefix = '/public'
@@ -66,14 +65,14 @@ test('SphereClient', t => {
     const credentials = {
       projectKey: 'foo',
       clientId: '123',
-      clientSecret: 'secret'
+      clientSecret: 'secret',
     }
     const shouldRetrieveToken = cb => cb(false)
 
     const client = SphereClient.create({
       Promise: { foo: 'bar' },
       auth: { credentials, shouldRetrieveToken },
-      request: { agent, headers, maxParallel, timeout, urlPrefix }
+      request: { agent, headers, maxParallel, timeout, urlPrefix },
     })
     t.deepEqual(client.productProjections.options, {
       Promise: { foo: 'bar' },
@@ -81,7 +80,7 @@ test('SphereClient', t => {
         accessToken: undefined,
         credentials,
         shouldRetrieveToken,
-        host: 'auth.sphere.io'
+        host: 'auth.sphere.io',
       },
       request: {
         agent,
@@ -90,9 +89,9 @@ test('SphereClient', t => {
         maxParallel,
         protocol: 'https',
         timeout,
-        urlPrefix
+        urlPrefix,
       },
-      httpMock: undefined
+      httpMock: undefined,
     })
     t.end()
   })
@@ -119,12 +118,12 @@ test('SphereClient', t => {
         features.create,
         features.delete,
         features.query,
-        features.queryOne
-      ]
+        features.queryOne,
+      ],
     }
     const headers = {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer qwertzuiopasdfghjkl'
+      Authorization: 'Bearer qwertzuiopasdfghjkl',
     }
     client.registerService('myNewService', serviceConfig, { headers })
 

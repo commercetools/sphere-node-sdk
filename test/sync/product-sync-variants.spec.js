@@ -3,7 +3,6 @@ import productsSyncFn from '../../lib/sync/products'
 
 /* eslint-disable max-len */
 test('Sync::product::variants', t => {
-
   let productsSync
   function setup () {
     productsSync = productsSyncFn()
@@ -20,8 +19,8 @@ test('Sync::product::variants', t => {
           { name: 'length', value: 160 },
           { name: 'wide', value: 85 },
           { name: 'bulkygoods', value: { label: 'Ja', key: 'YES' } },
-          { name: 'ean', value: '20063672' }
-        ]
+          { name: 'ean', value: '20063672' },
+        ],
       },
       variants: [
         {
@@ -30,18 +29,18 @@ test('Sync::product::variants', t => {
             { name: 'length', value: 160 },
             { name: 'wide', value: 85 },
             { name: 'bulkygoods', value: { label: 'Ja', key: 'YES' } },
-            { name: 'ean', value: '20063672' }
-          ]
+            { name: 'ean', value: '20063672' },
+          ],
         },
         { id: 3, attributes: [] },
         {
           id: 4, attributes: [
             { name: 'uid', value: '1234567' },
             { name: 'length', value: 123 },
-            { name: 'bulkygoods', value: { label: 'Si', key: 'SI' } }
-          ]
-        }
-      ]
+            { name: 'bulkygoods', value: { label: 'Si', key: 'SI' } },
+          ],
+        },
+      ],
     }
 
     const now = {
@@ -52,8 +51,8 @@ test('Sync::product::variants', t => {
           { name: 'length', value: 160 },
           { name: 'wide', value: 10 }, // changed
           { name: 'bulkygoods', value: 'NO' }, // changed
-          { name: 'ean', value: '20063672' }
-        ]
+          { name: 'ean', value: '20063672' },
+        ],
       },
       variants: [
         {
@@ -62,18 +61,18 @@ test('Sync::product::variants', t => {
             { name: 'length', value: 333 }, // changed
             { name: 'wide', value: 33 }, // changed
             { name: 'bulkygoods', value: 'YES' }, // changed
-            { name: 'ean', value: '20063672' }
-          ]
+            { name: 'ean', value: '20063672' },
+          ],
         },
         {
           id: 3, attributes: [ // new
             { name: 'uid', value: '00001' },
             { name: 'length', value: 500 },
-            { name: 'bulkygoods', value: 'SI' }
-          ]
+            { name: 'bulkygoods', value: 'SI' },
+          ],
         },
-        { id: 4, attributes: [] } // removed
-      ]
+        { id: 4, attributes: [] }, // removed
+      ],
     }
 
     const actions = productsSync.buildActions(now, before)
@@ -94,7 +93,7 @@ test('Sync::product::variants', t => {
 
       { action: 'setAttribute', variantId: 4, name: 'uid', value: undefined },
       { action: 'setAttribute', variantId: 4, name: 'length', value: undefined },
-      { action: 'setAttribute', variantId: 4, name: 'bulkygoods', value: undefined }
+      { action: 'setAttribute', variantId: 4, name: 'bulkygoods', value: undefined },
     ])
     t.end()
   })
@@ -106,10 +105,10 @@ test('Sync::product::variants', t => {
       id: '123',
       masterVariant: {
         id: 1, attributes: [
-          { name: 'color', value: 'red' }
-        ]
+          { name: 'color', value: 'red' },
+        ],
       },
-      variants: []
+      variants: [],
     }
 
     const now = {
@@ -117,19 +116,19 @@ test('Sync::product::variants', t => {
       masterVariant: {
         id: 1, attributes: [
           { name: 'vendor', value: 'ferrari' },
-          { name: 'color', value: 'yellow' }
-        ]
+          { name: 'color', value: 'yellow' },
+        ],
       },
-      variants: []
+      variants: [],
     }
 
     const actions = productsSync.buildActions(now, before, {
-      sameForAllAttributeNames: ['vendor']
+      sameForAllAttributeNames: ['vendor'],
     })
 
     t.deepEqual(actions, [
       { action: 'setAttributeInAllVariants', name: 'vendor', value: 'ferrari' },
-      { action: 'setAttribute', variantId: 1, name: 'color', value: 'yellow' }
+      { action: 'setAttribute', variantId: 1, name: 'color', value: 'yellow' },
     ])
     t.end()
   })
@@ -141,7 +140,7 @@ test('Sync::product::variants', t => {
       sku: 'ccc',
       attributes: [{ name: 'color', value: 'red' }],
       images: [{ url: 'http://foo.com', label: 'foo' }],
-      prices: [{ value: { centAmount: 300, currencyCode: 'USD' } }]
+      prices: [{ value: { centAmount: 300, currencyCode: 'USD' } }],
     }
 
     const before = { variants: [
@@ -149,14 +148,14 @@ test('Sync::product::variants', t => {
         id: 2,
         sku: 'aaa',
         attributes: [{ name: 'color', value: 'green' }],
-        prices: [{ value: { centAmount: 100, currencyCode: 'EUR' } }]
+        prices: [{ value: { centAmount: 100, currencyCode: 'EUR' } }],
       },
       {
         id: 3,
         sku: 'bbb',
         attributes: [{ name: 'color', value: 'yellow' }],
-        prices: [{ value: { centAmount: 200, currencyCode: 'GBP' } }]
-      }
+        prices: [{ value: { centAmount: 200, currencyCode: 'GBP' } }],
+      },
     ] }
     const now = { variants: before.variants.slice(0, 1).concat(newVariant) }
 
@@ -164,7 +163,7 @@ test('Sync::product::variants', t => {
 
     t.deepEqual(actions, [
       { action: 'removeVariant', id: 3 },
-      Object.assign({ action: 'addVariant' }, newVariant)
+      Object.assign({ action: 'addVariant' }, newVariant),
     ])
     t.end()
   })
@@ -175,24 +174,24 @@ test('Sync::product::variants', t => {
     const before = {
       id: '123',
       masterVariant: {
-        id: 1, sku: 'v1', attributes: [{ name: 'foo', value: 'bar' }]
+        id: 1, sku: 'v1', attributes: [{ name: 'foo', value: 'bar' }],
       },
       variants: [
         { id: 2, sku: 'v2', attributes: [{ name: 'foo', value: 'qux' }] },
-        { id: 3, sku: 'v3', attributes: [{ name: 'foo', value: 'baz' }] }
-      ]
+        { id: 3, sku: 'v3', attributes: [{ name: 'foo', value: 'baz' }] },
+      ],
     }
 
     const now = {
       id: '123',
       masterVariant: {
-        sku: 'v1', attributes: [{ name: 'foo', value: 'new value' }]
+        sku: 'v1', attributes: [{ name: 'foo', value: 'new value' }],
       },
       variants: [
         { id: 2, sku: 'v2', attributes: [{ name: 'foo', value: 'another value' }] },
         { id: 3, sku: 'v4', attributes: [{ name: 'foo', value: 'i dont care' }] },
-        { sku: 'v3', attributes: [{ name: 'foo', value: 'yet another' }] }
-      ]
+        { sku: 'v3', attributes: [{ name: 'foo', value: 'yet another' }] },
+      ],
     }
 
     const actions = productsSync.buildActions(now, before)
@@ -201,7 +200,7 @@ test('Sync::product::variants', t => {
       { action: 'setAttribute', variantId: 1, name: 'foo', value: 'new value' },
       { action: 'setAttribute', variantId: 2, name: 'foo', value: 'another value' },
       { action: 'setSKU', sku: 'v4', variantId: 3 },
-      { action: 'setAttribute', variantId: 3, name: 'foo', value: 'i dont care' }
+      { action: 'setAttribute', variantId: 3, name: 'foo', value: 'i dont care' },
     ])
     t.end()
   })
@@ -223,11 +222,11 @@ test('Sync::product::variants', t => {
           { name: 'cost', value: { centAmount: 990, currencyCode: 'EUR' } }, // money
           { name: 'reference', value: { typeId: 'product', id: '111' } }, // reference
           { name: 'welcome', value: [ 'hello', 'world' ] }, // set text
-          { name: 'welcome2', value: [ { en: 'hello', 'it': 'ciao' }, { en: 'world', 'it': 'mondo' } ] }, // set ltext
+          { name: 'welcome2', value: [ { en: 'hello', it: 'ciao' }, { en: 'world', it: 'mondo' } ] }, // set ltext
           { name: 'multicolor', value: [ 'red' ] }, // set enum
-          { name: 'multicolor2', value: [{ key: 'red', label: { en: 'red', it: 'rosso' } }] } // set lenum
-        ]
-      }
+          { name: 'multicolor2', value: [{ key: 'red', label: { en: 'red', it: 'rosso' } }] }, // set lenum
+        ],
+      },
     }
 
     const now = {
@@ -244,11 +243,11 @@ test('Sync::product::variants', t => {
           { name: 'cost', value: { centAmount: 550, currencyCode: 'EUR' } }, // money
           { name: 'reference', value: { typeId: 'category', id: '222' } }, // reference
           { name: 'welcome', value: ['hello'] }, // set text
-          { name: 'welcome2', value: [{ en: 'hello', 'it': 'ciao' }] }, // set ltext
+          { name: 'welcome2', value: [{ en: 'hello', it: 'ciao' }] }, // set ltext
           { name: 'multicolor', value: [ 'red', 'yellow' ] }, // set enum
-          { name: 'multicolor2', value: [ { key: 'red', label: { en: 'red', it: 'rosso' } }, { key: 'yellow', label: { en: 'yellow', it: 'giallo' } } ] } // set lenum
-        ]
-      }
+          { name: 'multicolor2', value: [ { key: 'red', label: { en: 'red', it: 'rosso' } }, { key: 'yellow', label: { en: 'yellow', it: 'giallo' } } ] }, // set lenum
+        ],
+      },
     }
 
     const actions = productsSync.buildActions(now, before)
@@ -262,9 +261,9 @@ test('Sync::product::variants', t => {
       { action: 'setAttribute', variantId: 1, name: 'cost', value: { centAmount: 550, currencyCode: 'EUR' } },
       { action: 'setAttribute', variantId: 1, name: 'reference', value: { typeId: 'category', id: '222' } },
       { action: 'setAttribute', variantId: 1, name: 'welcome', value: ['hello'] },
-      { action: 'setAttribute', variantId: 1, name: 'welcome2', value: [{ en: 'hello', 'it': 'ciao' }] },
+      { action: 'setAttribute', variantId: 1, name: 'welcome2', value: [{ en: 'hello', it: 'ciao' }] },
       { action: 'setAttribute', variantId: 1, name: 'multicolor', value: [ 'red', 'yellow' ] },
-      { action: 'setAttribute', variantId: 1, name: 'multicolor2', value: [ { key: 'red', label: { en: 'red', it: 'rosso' } }, { key: 'yellow', label: { en: 'yellow', it: 'giallo' } } ] } // set lenum
+      { action: 'setAttribute', variantId: 1, name: 'multicolor2', value: [ { key: 'red', label: { en: 'red', it: 'rosso' } }, { key: 'yellow', label: { en: 'yellow', it: 'giallo' } } ] }, // set lenum
     ])
     t.end()
   })
@@ -278,15 +277,15 @@ test('Sync::product::variants', t => {
       masterVariant: {
         id: 1,
       },
-      variants: [{ id: 2 }]
+      variants: [{ id: 2 }],
     }
 
     const now = {
       id: '123',
       masterVariant: {
-        id: 1, sku: ''
+        id: 1, sku: '',
       },
-      variants: [{ id: 2, sku: null }]
+      variants: [{ id: 2, sku: null }],
     }
 
     const actions = productsSync.buildActions(now, before)

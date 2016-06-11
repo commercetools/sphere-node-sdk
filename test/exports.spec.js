@@ -4,7 +4,6 @@ import SphereClient from '../lib'
 const { errors, features, http } = SphereClient
 
 test('Public exports', t => {
-
   t.test('should export SphereClient', t => {
     t.equal(typeof SphereClient, 'function')
     t.equal(SphereClient.name, 'SphereClient')

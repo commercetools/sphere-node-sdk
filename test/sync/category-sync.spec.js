@@ -2,7 +2,6 @@ import test from 'tape'
 import categorySyncFn, { actionGroups } from '../../lib/sync/categories'
 
 test('Sync::category', t => {
-
   let categorySync
   function setup () {
     categorySync = categorySyncFn()
@@ -10,7 +9,7 @@ test('Sync::category', t => {
 
   t.test('should export action group list', t => {
     t.deepEqual(actionGroups, [
-      'base', 'references', 'meta', 'custom'
+      'base', 'references', 'meta', 'custom',
     ])
     t.end()
   })
@@ -19,14 +18,14 @@ test('Sync::category', t => {
     setup()
 
     const before = {
-      name: { en: 'pants', de: 'Hosen' }
+      name: { en: 'pants', de: 'Hosen' },
     }
     const now = {
-      name: { en: 'shirts' }
+      name: { en: 'shirts' },
     }
     const actual = categorySync.buildActions(now, before)
     const expected = [
-      Object.assign({ action: 'changeName' }, now)
+      Object.assign({ action: 'changeName' }, now),
     ]
     t.deepEqual(actual, expected)
     t.end()
@@ -36,14 +35,14 @@ test('Sync::category', t => {
     setup()
 
     const before = {
-      slug: { en: 'skinny', de: 'eng' }
+      slug: { en: 'skinny', de: 'eng' },
     }
     const now = {
-      slug: { en: 'baggy' }
+      slug: { en: 'baggy' },
     }
     const actual = categorySync.buildActions(now, before)
     const expected = [
-      Object.assign({ action: 'changeSlug' }, now)
+      Object.assign({ action: 'changeSlug' }, now),
     ]
     t.deepEqual(actual, expected)
     t.end()
@@ -55,18 +54,18 @@ test('Sync::category', t => {
     const before = {
       parent: {
         typeId: 'category',
-        id: 'someCategoryId'
-      }
+        id: 'someCategoryId',
+      },
     }
     const now = {
       parent: {
         typeId: 'category',
-        id: 'someOtherCategoryId'
-      }
+        id: 'someOtherCategoryId',
+      },
     }
     const actual = categorySync.buildActions(now, before)
     const expected = [
-      Object.assign({ action: 'changeParent' }, now)
+      Object.assign({ action: 'changeParent' }, now),
     ]
     t.deepEqual(actual, expected)
     t.end()
@@ -76,14 +75,14 @@ test('Sync::category', t => {
     setup()
 
     const before = {
-      orderHint: '1'
+      orderHint: '1',
     }
     const now = {
-      orderHint: '2'
+      orderHint: '2',
     }
     const actual = categorySync.buildActions(now, before)
     const expected = [
-      Object.assign({ action: 'changeOrderHint' }, now)
+      Object.assign({ action: 'changeOrderHint' }, now),
     ]
     t.deepEqual(actual, expected)
     t.end()
@@ -94,18 +93,18 @@ test('Sync::category', t => {
     const before = {
       description: {
         en: 'a jeans that is very tight',
-        de: 'Eine Jeans-Hose, die sehr eng ist'
-      }
+        de: 'Eine Jeans-Hose, die sehr eng ist',
+      },
     }
     const now = {
       description: {
         en: 'a jeans that is very loose',
-        de: 'Eine Jeans-Hose, die sehr locker ist'
-      }
+        de: 'Eine Jeans-Hose, die sehr locker ist',
+      },
     }
     const actual = categorySync.buildActions(now, before)
     const expected = [
-      Object.assign({ action: 'setDescription' }, now)
+      Object.assign({ action: 'setDescription' }, now),
     ]
     t.deepEqual(actual, expected)
     t.end()
@@ -115,14 +114,14 @@ test('Sync::category', t => {
     setup()
 
     const before = {
-      externalId: 'externalId1'
+      externalId: 'externalId1',
     }
     const now = {
-      externalId: 'externalId2'
+      externalId: 'externalId2',
     }
     const actual = categorySync.buildActions(now, before)
     const expected = [
-      Object.assign({ action: 'setExternalId' }, now)
+      Object.assign({ action: 'setExternalId' }, now),
     ]
     t.deepEqual(actual, expected)
     t.end()
@@ -132,14 +131,14 @@ test('Sync::category', t => {
     setup()
 
     const before = {
-      metaTitle: { en: 'pants', de: 'Hosen' }
+      metaTitle: { en: 'pants', de: 'Hosen' },
     }
     const now = {
-      metaTitle: { en: 'shirts' }
+      metaTitle: { en: 'shirts' },
     }
     const actual = categorySync.buildActions(now, before)
     const expected = [
-      Object.assign({ action: 'setMetaTitle' }, now)
+      Object.assign({ action: 'setMetaTitle' }, now),
     ]
     t.deepEqual(actual, expected)
     t.end()
@@ -149,14 +148,14 @@ test('Sync::category', t => {
     setup()
 
     const before = {
-      metaDescription: { en: 'pants', de: 'Hosen' }
+      metaDescription: { en: 'pants', de: 'Hosen' },
     }
     const now = {
-      metaDescription: { en: 'shirts' }
+      metaDescription: { en: 'shirts' },
     }
     const actual = categorySync.buildActions(now, before)
     const expected = [
-      Object.assign({ action: 'setMetaDescription' }, now)
+      Object.assign({ action: 'setMetaDescription' }, now),
     ]
     t.deepEqual(actual, expected)
     t.end()
@@ -166,14 +165,14 @@ test('Sync::category', t => {
     setup()
 
     const before = {
-      metaKeywords: { en: 'pants', de: 'Hosen' }
+      metaKeywords: { en: 'pants', de: 'Hosen' },
     }
     const now = {
-      metaKeywords: { en: 'shirts' }
+      metaKeywords: { en: 'shirts' },
     }
     const actual = categorySync.buildActions(now, before)
     const expected = [
-      Object.assign({ action: 'setMetaKeywords' }, now)
+      Object.assign({ action: 'setMetaKeywords' }, now),
     ]
     t.deepEqual(actual, expected)
     t.end()
@@ -186,27 +185,27 @@ test('Sync::category', t => {
       custom: {
         type: {
           typeId: 'type',
-          id: 'customType1'
+          id: 'customType1',
         },
         fields: {
-          customField1: true
-        }
-      }
+          customField1: true,
+        },
+      },
     }
     const now = {
       custom: {
         type: {
           typeId: 'type',
-          id: 'customType2'
+          id: 'customType2',
         },
         fields: {
-          customField1: true
-        }
-      }
+          customField1: true,
+        },
+      },
     }
     const actual = categorySync.buildActions(now, before)
     const expected = [
-      Object.assign({ action: 'setCustomType' }, now.custom)
+      Object.assign({ action: 'setCustomType' }, now.custom),
     ]
     t.deepEqual(actual, expected)
     t.end()
@@ -219,42 +218,42 @@ test('Sync::category', t => {
       custom: {
         type: {
           typeId: 'type',
-          id: 'customType1'
+          id: 'customType1',
         },
         fields: {
           customField1: true, // will change
           customField2: true, // will stay unchanged
-          customField3: false // will be removed
-        }
-      }
+          customField3: false, // will be removed
+        },
+      },
     }
     const now = {
       custom: {
         type: {
           typeId: 'type',
-          id: 'customType1'
+          id: 'customType1',
         },
         fields: {
           customField1: false,
           customField2: true,
-          customField4: true // was added
-        }
-      }
+          customField4: true, // was added
+        },
+      },
     }
     const actual = categorySync.buildActions(now, before)
     const expected = [
       Object.assign({ action: 'setCustomField' }, {
         name: 'customField1',
-        value: false
+        value: false,
       }),
       Object.assign({ action: 'setCustomField' }, {
         name: 'customField3',
-        value: undefined
+        value: undefined,
       }),
       Object.assign({ action: 'setCustomField' }, {
         name: 'customField4',
-        value: true
-      })
+        value: true,
+      }),
     ]
     t.deepEqual(actual, expected)
     t.end()

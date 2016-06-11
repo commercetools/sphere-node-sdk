@@ -2,7 +2,6 @@ import test from 'tape'
 import SphereClient from '../../lib'
 
 test('SphereClient', t => {
-
   let client
 
   function setup () {
@@ -10,7 +9,6 @@ test('SphereClient', t => {
   }
 
   t.test('::product-projections', t => {
-
     t.test('should have read-only verbs', t => {
       setup()
 

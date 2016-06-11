@@ -3,7 +3,6 @@ import clone from '../../lib/sync/utils/clone'
 import productsSyncFn, { actionGroups } from '../../lib/sync/products'
 
 test('Sync::product::base', t => {
-
   let productsSync
   function setup () {
     productsSync = productsSyncFn()
@@ -12,7 +11,7 @@ test('Sync::product::base', t => {
   t.test('should export action group list', t => {
     t.deepEqual(actionGroups, [
       'base', 'references', 'prices', 'attributes',
-      'images', 'variants', 'categories'
+      'images', 'variants', 'categories',
     ])
     t.end()
   })
@@ -26,8 +25,8 @@ test('Sync::product::base', t => {
         id: 1, sku: '001', attributes: [{ name: 'a1', value: 1 }] },
       variants: [
         { id: 2, sku: '002', attributes: [{ name: 'a2', value: 2 }] },
-        { id: 3, sku: '003', attributes: [{ name: 'a3', value: 3 }] }
-      ]
+        { id: 3, sku: '003', attributes: [{ name: 'a3', value: 3 }] },
+      ],
     }
     const now = {
       name: { en: 'Sport car' },
@@ -35,8 +34,8 @@ test('Sync::product::base', t => {
         id: 1, sku: '100', attributes: [{ name: 'a1', value: 100 }] },
       variants: [
         { id: 2, sku: '200', attributes: [{ name: 'a2', value: 200 }] },
-        { id: 3, sku: '300', attributes: [{ name: 'a3', value: 300 }] }
-      ]
+        { id: 3, sku: '300', attributes: [{ name: 'a3', value: 300 }] },
+      ],
     }
     productsSync.buildActions(now, before)
 
@@ -53,7 +52,7 @@ test('Sync::product::base', t => {
     const actions = productsSync.buildActions(now, before)
 
     t.deepEqual(actions, [
-      Object.assign({ action: 'changeName' }, now)
+      Object.assign({ action: 'changeName' }, now),
     ])
     t.end()
   })
@@ -75,7 +74,7 @@ test('Sync::product::base', t => {
 
     t.deepEqual(actions, [
       // only slug changed
-      { action: 'changeSlug', slug: now.slug }
+      { action: 'changeSlug', slug: now.slug },
     ])
     t.end()
   })
@@ -87,14 +86,14 @@ test('Sync::product::base', t => {
     const now1 = { slug: { de: 'auto' } }
     const actions1 = productsSync.buildActions(now1, before1)
     t.deepEqual(actions1, [
-      Object.assign({ action: 'changeSlug' }, now1)
+      Object.assign({ action: 'changeSlug' }, now1),
     ])
 
     const before2 = {}
     const now2 = { slug: { de: 'auto' } }
     const actions2 = productsSync.buildActions(now2, before2)
     t.deepEqual(actions2, [
-      Object.assign({ action: 'changeSlug' }, now2)
+      Object.assign({ action: 'changeSlug' }, now2),
     ])
 
     const before3 = { slug: { de: 'auto' } }
@@ -118,7 +117,7 @@ test('Sync::product::base', t => {
     const actions = productsSync.buildActions(now, before)
 
     t.deepEqual(actions, [
-      Object.assign({ action: 'setDescription' }, now)
+      Object.assign({ action: 'setDescription' }, now),
     ])
     t.end()
   })
@@ -131,31 +130,31 @@ test('Sync::product::base', t => {
       searchKeywords: {
         en: [
           { text: 'Multi tool' },
-          { text: 'Swiss Army Knife', suggestTokenizer: { type: 'whitespace' } }
+          { text: 'Swiss Army Knife', suggestTokenizer: { type: 'whitespace' } },
         ],
         de: [
-          { text: 'Schweizer Messer', suggestTokenizer: { type: 'custom', inputs: [ 'schweizer messer', 'offiziersmesser', 'sackmesser' ] } }
-        ]
-      }
+          { text: 'Schweizer Messer', suggestTokenizer: { type: 'custom', inputs: [ 'schweizer messer', 'offiziersmesser', 'sackmesser' ] } },
+        ],
+      },
     }
     const now = {
       searchKeywords: {
         en: [
-          { text: 'Swiss Army Knife', suggestTokenizer: { type: 'whitespace' } }
+          { text: 'Swiss Army Knife', suggestTokenizer: { type: 'whitespace' } },
         ],
         de: [
-          { text: 'Schweizer Messer', suggestTokenizer: { type: 'custom', inputs: [ 'schweizer messer', 'offiziersmesser', 'sackmesser', 'messer' ] } }
+          { text: 'Schweizer Messer', suggestTokenizer: { type: 'custom', inputs: [ 'schweizer messer', 'offiziersmesser', 'sackmesser', 'messer' ] } },
         ],
         it: [
-          { text: 'Coltello svizzero' }
-        ]
-      }
+          { text: 'Coltello svizzero' },
+        ],
+      },
     }
     /* eslint-enable max-len */
     const actions = productsSync.buildActions(now, before)
 
     t.deepEqual(actions, [
-      Object.assign({ action: 'setSearchKeywords' }, now)
+      Object.assign({ action: 'setSearchKeywords' }, now),
     ])
     t.end()
   })
@@ -169,12 +168,12 @@ test('Sync::product::base', t => {
       searchKeywords: {
         en: [
           { text: 'Multi tool' },
-          { text: 'Swiss Army Knife', suggestTokenizer: { type: 'whitespace' } }
+          { text: 'Swiss Army Knife', suggestTokenizer: { type: 'whitespace' } },
         ],
         de: [
-          { text: 'Schweizer Messer', suggestTokenizer: { type: 'custom', inputs: [ 'schweizer messer', 'offiziersmesser', 'sackmesser' ] } }
-        ]
-      }
+          { text: 'Schweizer Messer', suggestTokenizer: { type: 'custom', inputs: [ 'schweizer messer', 'offiziersmesser', 'sackmesser' ] } },
+        ],
+      },
     }
     /* eslint-enable max-len */
     const actions = productsSync.buildActions(before, before)
@@ -191,7 +190,7 @@ test('Sync::product::base', t => {
     const actions = productsSync.buildActions(now, before)
 
     t.deepEqual(actions, [
-      Object.assign({ action: 'setTaxCategory' }, now)
+      Object.assign({ action: 'setTaxCategory' }, now),
     ])
     t.end()
   })
@@ -202,31 +201,31 @@ test('Sync::product::base', t => {
     const before = {
       categories: [
         { id: 'aebe844e-0616-420a-8397-a22c48d5e99f' },
-        { id: '34cae6ad-5898-4f94-973b-ae9ceb7464ce' }
-      ]
+        { id: '34cae6ad-5898-4f94-973b-ae9ceb7464ce' },
+      ],
     }
     const now = {
       categories: [
         { id: 'aebe844e-0616-420a-8397-a22c48d5e99f' },
-        { id: '4f278964-48c0-4f2c-8b61-09310d1de60a' } ,
-        { id: 'cca7a250-d8cf-4b8a-9d47-60fcc093b86b' }
-      ]
+        { id: '4f278964-48c0-4f2c-8b61-09310d1de60a' },
+        { id: 'cca7a250-d8cf-4b8a-9d47-60fcc093b86b' },
+      ],
     }
     const actions = productsSync.buildActions(now, before)
 
     t.deepEqual(actions, [
       {
         action: 'removeFromCategory',
-        category: { id: '34cae6ad-5898-4f94-973b-ae9ceb7464ce' }
+        category: { id: '34cae6ad-5898-4f94-973b-ae9ceb7464ce' },
       },
       {
         action: 'addToCategory',
-        category: { id: '4f278964-48c0-4f2c-8b61-09310d1de60a' }
+        category: { id: '4f278964-48c0-4f2c-8b61-09310d1de60a' },
       },
       {
         action: 'addToCategory',
-        category: { id: 'cca7a250-d8cf-4b8a-9d47-60fcc093b86b' }
-      }
+        category: { id: 'cca7a250-d8cf-4b8a-9d47-60fcc093b86b' },
+      },
     ])
     t.end()
   })

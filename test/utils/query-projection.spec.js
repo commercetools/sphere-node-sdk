@@ -2,7 +2,6 @@ import test from 'tape'
 import * as queryProjection from '../../lib/utils/query-projection'
 
 test('Utils::queryProjection', t => {
-
   let service
 
   function setup () {
@@ -22,5 +21,4 @@ test('Utils::queryProjection', t => {
     t.true(service.params.staged)
     t.end()
   })
-
 })

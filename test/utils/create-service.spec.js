@@ -14,12 +14,11 @@ const fakeService = {
     'queryExpand',
     'queryString',
     'search',
-    'projection'
-  ]
+    'projection',
+  ],
 }
 
 test('Utils::createService', t => {
-
   t.test('should create a fully service', t => {
     const service = createService(fakeService)({})
 

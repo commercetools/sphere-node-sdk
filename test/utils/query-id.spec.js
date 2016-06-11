@@ -2,7 +2,6 @@ import test from 'tape'
 import * as queryId from '../../lib/utils/query-id'
 
 test('Utils::queryId', t => {
-
   let service
 
   function setup () {
@@ -18,8 +17,8 @@ test('Utils::queryId', t => {
   })
 
   t.test('should throw if id is missing', t => {
-    t.throws(() => service.byId(), /Parameter `id` is missing/)
+    t.throws(() => service.byId(),
+      /Required argument for `byId` is missing/)
     t.end()
   })
-
 })

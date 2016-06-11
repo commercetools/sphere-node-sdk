@@ -4,29 +4,28 @@ import credentials from '../../credentials'
 import taskQueueFn from '../../lib/utils/task-queue'
 
 test('Integration - TaskQueue token retrieval', t => {
-
   let options
 
   function setup () {
     options = {
-      Promise: Promise,
+      Promise: Promise, // eslint-disable-line object-shorthand
       auth: {
         credentials: {
           projectKey: credentials.project_key,
           clientId: credentials.client_id,
-          clientSecret: credentials.client_secret
+          clientSecret: credentials.client_secret,
         },
         shouldRetrieveToken (cb) { cb(true) },
-        host: 'auth.sphere.io'
+        host: 'auth.sphere.io',
       },
       request: {
         headers: {
           'Content-Type': 'application/json',
-          'User-Agent': 'sphere-node-sdk'
+          'User-Agent': 'sphere-node-sdk',
         },
         maxParallel: 20,
-        timeout: 20000
-      }
+        timeout: 20000,
+      },
     }
   }
 
@@ -41,7 +40,7 @@ test('Integration - TaskQueue token retrieval', t => {
     const projectKey = options.auth.credentials.projectKey
     const task = taskQueue.addTask({
       method: 'GET',
-      url: `https://api.sphere.io/${projectKey}/product-projections`
+      url: `https://api.sphere.io/${projectKey}/product-projections`,
     })
 
     task.then(({ statusCode }) => {
@@ -62,9 +61,9 @@ test('Integration - TaskQueue token retrieval', t => {
         credentials: {
           projectKey: 'foo',
           clientId: '123',
-          clientSecret: 'secret'
-        }
-      })
+          clientSecret: 'secret',
+        },
+      }),
     }))
     const _queue = taskQueue.getQueue()
     const pauseSpy = sinon.spy(_queue, 'pause')
@@ -73,7 +72,7 @@ test('Integration - TaskQueue token retrieval', t => {
     const projectKey = options.auth.credentials.projectKey
     const task = taskQueue.addTask({
       method: 'GET',
-      url: `https://api.sphere.io/${projectKey}/product-projections`
+      url: `https://api.sphere.io/${projectKey}/product-projections`,
     })
     task.then(() => t.end('Should have failed'))
     .catch(e => {
@@ -86,12 +85,11 @@ test('Integration - TaskQueue token retrieval', t => {
       t.deepEqual(e.body.originalRequest, {
         url: 'https://123:secret@auth.sphere.io/oauth/token',
         method: 'POST',
-        body: 'grant_type=client_credentials&scope=manage_project:foo'
+        body: 'grant_type=client_credentials&scope=manage_project:foo',
       })
       t.ok(e.body.headers)
       t.end()
     })
     .catch(t.end)
   })
-
 })

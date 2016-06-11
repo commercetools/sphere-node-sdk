@@ -8,34 +8,36 @@ import * as queryProjection from '../../lib/utils/query-projection'
 import * as querySearch from '../../lib/utils/query-search'
 import * as queryCustom from '../../lib/utils/query-custom'
 import * as features from '../../lib/utils/features'
-import { getDefaultQueryParams, getDefaultSearchParams }
-  from '../../lib/utils/default-params'
+import {
+  getDefaultQueryParams,
+  getDefaultSearchParams,
+} from '../../lib/utils/default-params'
 
 const projectKey = 'test-project'
 const baseEndpoint = '/test-endpoint'
 
 test('Utils::verbs', t => {
-
-  let mockService, spy
+  let mockService
+  let spy
 
   function setup () {
     mockService = Object.assign({
       queue: {
-        addTask: () => {}
+        addTask: () => {},
       },
       options: {
         auth: {
-          credentials: { projectKey }
+          credentials: { projectKey },
         },
         request: {
           host: 'api.sphere.io',
-          protocol: 'https'
-        }
+          protocol: 'https',
+        },
       },
       type: 'test-type',
       features: [],
       params: getDefaultQueryParams(),
-      baseEndpoint
+      baseEndpoint,
     }, query, queryId, queryPage, queryCustom, verbs)
     spy = sinon.spy(mockService.queue, 'addTask')
   }
@@ -46,7 +48,7 @@ test('Utils::verbs', t => {
     mockService.fetch()
     t.deepEqual(spy.getCall(0).args[0], {
       method: 'GET',
-      url: `https://api.sphere.io/${projectKey}${baseEndpoint}`
+      url: `https://api.sphere.io/${projectKey}${baseEndpoint}`,
     })
     t.end()
   })
@@ -58,7 +60,7 @@ test('Utils::verbs', t => {
     mockService.fetch()
     t.deepEqual(spy.getCall(0).args[0], {
       method: 'GET',
-      url: `https://api.sphere.io/public/${projectKey}${baseEndpoint}`
+      url: `https://api.sphere.io/public/${projectKey}${baseEndpoint}`,
     })
     t.end()
   })
@@ -69,7 +71,7 @@ test('Utils::verbs', t => {
     mockService.perPage(10).fetch()
     t.deepEqual(spy.getCall(0).args[0], {
       method: 'GET',
-      url: `https://api.sphere.io/${projectKey}${baseEndpoint}?limit=10`
+      url: `https://api.sphere.io/${projectKey}${baseEndpoint}?limit=10`,
     })
     t.end()
   })
@@ -78,10 +80,16 @@ test('Utils::verbs', t => {
     setup()
 
     const encoded = encodeURIComponent('foo=bar&text="Hello world"')
-    mockService.perPage(10).where('one=two').byQueryString(encoded).fetch()
+
+    mockService
+    .perPage(10)
+    .where('one=two')
+    .byQueryString(encoded)
+    .fetch()
+
     t.deepEqual(spy.getCall(0).args[0], {
       method: 'GET',
-      url: `https://api.sphere.io/${projectKey}${baseEndpoint}?${encoded}`
+      url: `https://api.sphere.io/${projectKey}${baseEndpoint}?${encoded}`,
     })
     t.end()
   })
@@ -90,7 +98,7 @@ test('Utils::verbs', t => {
     setup()
 
     Object.assign(mockService, {
-      features: [ features.query, features.queryOne ]
+      features: [ features.query, features.queryOne ],
     })
     const req = mockService.perPage(10).sort('createdAt', false)
     t.deepEqual(req.params, {
@@ -99,13 +107,13 @@ test('Utils::verbs', t => {
       expand: [],
       query: {
         operator: 'and',
-        where: []
+        where: [],
       },
       pagination: {
         page: null,
         perPage: 10,
-        sort: [encodeURIComponent('createdAt desc')]
-      }
+        sort: [encodeURIComponent('createdAt desc')],
+      },
     })
 
     req.fetch()
@@ -120,7 +128,7 @@ test('Utils::verbs', t => {
     t.deepEqual(spy.getCall(0).args[0], {
       method: 'POST',
       url: `https://api.sphere.io/${projectKey}${baseEndpoint}`,
-      body: { foo: 'bar' }
+      body: { foo: 'bar' },
     })
     t.end()
   })
@@ -140,7 +148,7 @@ test('Utils::verbs', t => {
     t.deepEqual(spy.getCall(0).args[0], {
       method: 'POST',
       url: `https://api.sphere.io/${projectKey}${baseEndpoint}/123`,
-      body: { foo: 'bar' }
+      body: { foo: 'bar' },
     })
     t.end()
   })
@@ -167,7 +175,7 @@ test('Utils::verbs', t => {
     mockService.byId('123').delete(1)
     t.deepEqual(spy.getCall(0).args[0], {
       method: 'DELETE',
-      url: `https://api.sphere.io/${projectKey}${baseEndpoint}/123?version=1`
+      url: `https://api.sphere.io/${projectKey}${baseEndpoint}/123?version=1`,
     })
     t.end()
   })
@@ -189,12 +197,11 @@ test('Utils::verbs', t => {
   })
 
   t.test('product-projections', t => {
-
     t.test('should reset params after building the request promise', t => {
       setup()
 
       Object.assign(mockService, {
-        features: [ features.query, features.queryOne, features.projection ]
+        features: [ features.query, features.queryOne, features.projection ],
       }, queryProjection)
 
       const req =
@@ -206,13 +213,13 @@ test('Utils::verbs', t => {
         staged: false,
         query: {
           operator: 'and',
-          where: []
+          where: [],
         },
         pagination: {
           page: null,
           perPage: 10,
-          sort: [encodeURIComponent('createdAt desc')]
-        }
+          sort: [encodeURIComponent('createdAt desc')],
+        },
       })
 
       req.fetch()
@@ -223,13 +230,12 @@ test('Utils::verbs', t => {
   })
 
   t.test('product-projections-search', t => {
-
     t.test('should reset params after building the request promise', t => {
       setup()
 
       Object.assign(mockService, {
         features: [ features.projection, features.search ],
-        params: getDefaultSearchParams()
+        params: getDefaultSearchParams(),
       }, queryProjection, querySearch)
 
       const req = mockService.staged(false)
@@ -245,19 +251,19 @@ test('Utils::verbs', t => {
         pagination: {
           page: null,
           perPage: null,
-          sort: [encodeURIComponent('createdAt desc')]
+          sort: [encodeURIComponent('createdAt desc')],
         },
         search: {
           facet: [encodeURIComponent('variants.attributes.foo:"bar"')],
           filter: [
             encodeURIComponent('variants.sku:"foo123"'),
-            encodeURIComponent('variants.attributes.color.key:"red"')
+            encodeURIComponent('variants.attributes.color.key:"red"'),
           ],
           filterByQuery: [],
           filterByFacets: [],
           fuzzy: true,
-          text: { lang: 'en', value: 'Foo' }
-        }
+          text: { lang: 'en', value: 'Foo' },
+        },
       })
 
       req.fetch()
@@ -265,5 +271,4 @@ test('Utils::verbs', t => {
       t.end()
     })
   })
-
 })

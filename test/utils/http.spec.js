@@ -3,11 +3,10 @@ import sinon from 'sinon'
 import httpFn from '../../lib/utils/http'
 
 test('Utils::http', t => {
-
   t.test('should expose a function', t => {
     const http = httpFn({
       Promise: () => {},
-      request: {}
+      request: {},
     })
     t.equal(typeof http, 'function')
     t.end()
@@ -16,24 +15,24 @@ test('Utils::http', t => {
   t.test('should pass a httpMock for testing', t => {
     const spy = sinon.spy()
     const http = httpFn({
-      Promise: Promise,
+      Promise: Promise, // eslint-disable-line object-shorthand
       auth: {
         credentials: {},
-        shouldRetrieveToken: cb => { cb(true) }
+        shouldRetrieveToken: cb => { cb(true) },
       },
       request: {
         agent: null,
         headers: { 'User-Agent': 'sphere-node-sdk' },
         timeout: 20000,
-        urlPrefix: null
+        urlPrefix: null,
       },
-      httpMock: spy
+      httpMock: spy,
     })
 
     http('http://api.sphere.io/foo/bar', {
       method: 'POST',
       body: JSON.stringify({ foo: 'bar' }),
-      headers: { 'Authorization': 'supersecret' }
+      headers: { Authorization: 'supersecret' },
     })
 
     t.equal(spy.getCall(0).args[0], 'http://api.sphere.io/foo/bar')
@@ -42,11 +41,11 @@ test('Utils::http', t => {
       method: 'POST',
       body: JSON.stringify({ foo: 'bar' }),
       headers: {
-        'Authorization': 'supersecret',
+        Authorization: 'supersecret',
         'Content-Length': 13,
-        'User-Agent': 'sphere-node-sdk'
+        'User-Agent': 'sphere-node-sdk',
       },
-      timeout: 20000
+      timeout: 20000,
     })
     t.end()
   })

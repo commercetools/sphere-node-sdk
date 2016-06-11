@@ -10,7 +10,6 @@ function uniqueId (prefix) {
 }
 
 test('Integration - Client', t => {
-
   let client
 
   function setup () {
@@ -19,21 +18,20 @@ test('Integration - Client', t => {
         credentials: {
           projectKey: credentials.project_key,
           clientId: credentials.client_id,
-          clientSecret: credentials.client_secret
-        }
+          clientSecret: credentials.client_secret,
+        },
       },
       request: {
         headers: {
           'Content-Type': 'application/json',
-          'User-Agent': 'sphere-node-sdk'
+          'User-Agent': 'sphere-node-sdk',
         },
-        maxParallel: 2
-      }
+        maxParallel: 2,
+      },
     })
   }
 
   t.test('::productTypes', t => {
-
     t.test('should create, update and delete a product type',
       { timeout: 5000 }
     , t => {
@@ -41,11 +39,11 @@ test('Integration - Client', t => {
 
       client.productTypes.create({
         name: 'My product type',
-        description: 'My product type'
+        description: 'My product type',
       })
       .then(({ body }) => client.productTypes.byId(body.id).update({
         version: body.version,
-        actions: [{ action: 'changeName', name: 'Type foo' }]
+        actions: [{ action: 'changeName', name: 'Type foo' }],
       }))
       .then(({ body }) => client.productTypes.byId(body.id).fetch())
       .then(({ body }) => {
@@ -59,11 +57,9 @@ test('Integration - Client', t => {
       })
       .catch(t.end)
     })
-
   })
 
   t.test('::products', t => {
-
     t.test('should get some products', { timeout: 5000 }, t => {
       setup()
 
@@ -82,18 +78,18 @@ test('Integration - Client', t => {
       setup()
 
       client.productTypes.create({
-        name: uniqueId('shirts'), description: uniqueId('shirts')
+        name: uniqueId('shirts'), description: uniqueId('shirts'),
       })
-      .then(({ body }) => {
-        return client.products.expand('productType').create({
+      .then(({ body }) =>
+        client.products.expand('productType').create({
           productType: {
             typeId: 'product-type',
-            id: body.id
+            id: body.id,
           },
           name: { en: uniqueId('shirt') },
-          slug: { en: uniqueId('shirt') }
+          slug: { en: uniqueId('shirt') },
         })
-      })
+      )
       .then(({ body }) => {
         t.ok(body.productType.hasOwnProperty('obj'))
         const productType = body.productType.obj
@@ -104,9 +100,9 @@ test('Integration - Client', t => {
           const { id, version } = productType
           return client.productTypes.byId(id).delete(version)
         })
-      }).then(() => t.end())
+      })
+      .then(() => t.end())
       .catch(t.end)
     })
-
   })
 })
