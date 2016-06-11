@@ -66,6 +66,10 @@ test('Utils::queryPage', t => {
 
     service.perPage(40)
     t.equal(service.params.pagination.perPage, 40)
+
+    service.perPage(0)
+    t.equal(service.params.pagination.perPage, 0)
+
     t.end()
   })
 
