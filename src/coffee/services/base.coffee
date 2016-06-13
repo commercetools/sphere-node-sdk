@@ -631,8 +631,18 @@ class BaseService
         # we return a custom JSON error message
         reject new SphereHttpError.NotFound "Endpoint '#{endpoint}' not found.",
           _.extend responseJson,
-            statusCode: 404
+            statusCode: response.statusCode
             message: "Endpoint '#{endpoint}' not found."
+            originalRequest: originalRequest
+      else if response.statusCode is 405
+        endpoint = response.request.uri.path
+        # since the API doesn't return an error message for a unsupported method
+        # we return a custom JSON error message
+        errMsg = "The chosen HTTP method is not allowed for the endpoint '#{endpoint}'. This might be caused by a malformed request."
+        reject new SphereHttpError.MethodNotAllowed errMsg,
+          _.extend responseJson,
+            statusCode: response.statusCode
+            message: errMsg
             originalRequest: originalRequest
       else
         # a SphereError response e.g.: {statusCode: 400, message: 'Oops, something went wrong'}
