@@ -155,6 +155,21 @@ class ProductUtils extends BaseUtils
           action: 'setTaxCategory'
           taxCategory: new_obj.taxCategory
         actions.push action
+    if diff.state
+      if _.isArray diff.state.id
+        action =
+          action: 'transitionState'
+          state:
+            typeId: 'state'
+            id: @getDeltaValue diff.state.id
+        actions.push action
+      else
+        action =
+          action: 'transitionState'
+          state:
+            typeId: 'state'
+            id: new_obj.state.id
+        actions.push action
     actions
 
   # Private: map product categories

@@ -11,6 +11,9 @@ OLD_PRODUCT =
     en: 'sapphire1366126441922'
   description:
     en: 'Sample description'
+  state:
+    typeId: 'state'
+    id: 'old-state-id'
   masterVariant:
     id: 1
     prices: [
@@ -52,6 +55,9 @@ NEW_PRODUCT =
   slug:
     en: 'foo'
     it: 'boo'
+  state:
+    typeId: 'state'
+    id: 'new-state-id'
   masterVariant:
     id: 1
     prices: [
@@ -128,6 +134,7 @@ describe 'ProductSync', ->
           { action: 'setCategoryOrderHint', categoryId : 'myFancyCategoryId', orderHint : 0.9 }
           { action: 'setDescription', description: undefined }
           { action: 'setSearchKeywords', searchKeywords: en: [{text: 'new'}, {text: 'search'}, {text: 'keywords'}], "fr-BE": [{text: 'bruxelles'}, {text:'liege'}, {text: 'brugge'}]}
+          { action: 'transitionState', state: { typeId: 'state', id: 'new-state-id' } }
           { action: 'changePrice', variantId: 1, price: {value: {currencyCode: 'EUR', centAmount: 3800}} }
           { action: 'removePrice', variantId: 1, price: {value: {currencyCode: 'EUR', centAmount: 1100}, country: 'DE'} }
           { action: 'removePrice', variantId: 1, price: {value: {currencyCode: 'EUR', centAmount: 1200}, customerGroup: {id: '984a64de-24a4-42c0-868b-da7abfe1c5f6', typeId: 'customer-group'}} }

@@ -51,9 +51,11 @@ describe 'Integration Products Sync', ->
 
   afterEach (done) ->
     debug 'Unpublishing all products'
-    @client.products.sort('id').where('masterData(published = "true")').process (payload) =>
+    @client.products.sort('id').where('masterData(published = "true")')
+    .process (payload) =>
       Promise.all _.map payload.body.results, (product) =>
-        @client.products.byId(product.id).update(updateUnpublish(product.version))
+        @client.products.byId(product.id)
+          .update(updateUnpublish(product.version))
     .then (results) =>
       debug "Unpublished #{results.length} products"
       debug 'About to delete all products'
@@ -247,3 +249,129 @@ describe 'Integration Products Sync', ->
       done()
     .catch (error) -> done(_.prettify(error))
   , 10000 # 10sec
+
+  describe 'State update actions', ->
+
+    initialStateId = null
+    secondStateId = null
+    testProduct = null
+
+    cleanupState = (client) ->
+      # remove states if they exist
+      states = [
+        'SdkIntegrationTestInitialState',
+        'SdkIntegrationTestSecondState'
+      ]
+      Promise.all(states.map((state) ->
+        client.states
+          .where("key=\"#{state}\"")
+          .fetch()
+          .then(({ body: { results: [stateToDelete] } }) ->
+            if stateToDelete
+              client.states.byId(stateToDelete.id).delete(stateToDelete.version)
+          )
+      ))
+
+    cleanupProduct = (client) ->
+      if testProduct
+        return client.productProjections
+          .byId(testProduct.id)
+          .staged(true)
+          .fetch()
+          .then ({ body: updatedProduct }) ->
+            testProduct = null
+            client.products
+              .byId(updatedProduct.id)
+              .delete(updatedProduct.version)
+      Promise.resolve()
+
+    beforeEach (done) ->
+      cleanupProduct(@client)
+      .then => cleanupState(@client)
+      .then =>
+        # setup states
+        @client.states.create({
+          key: 'SdkIntegrationTestInitialState',
+          type: 'ProductState',
+        }).then(({ body: state }) ->
+          initialStateId = state.id
+        )
+      .then =>
+        @client.states.create({
+          key: 'SdkIntegrationTestSecondState',
+          type: 'ProductState',
+        }).then(({ body: state }) ->
+          secondStateId = state.id
+        )
+      .then =>
+        # setup product
+        @client.products.save(newProduct(@productType))
+        .then ({ body: { id } }) =>
+          @client.productProjections.byId(id).staged(true).fetch()
+        .then ({ body }) ->
+          testProduct = body
+      .then -> done()
+      .catch (error) ->
+        done(_.prettify(error))
+
+    afterEach (done) ->
+      cleanupProduct(@client)
+      .then => cleanupState(@client)
+      .then -> done()
+      .catch (error) -> done(_.prettify(error))
+
+    it 'should add a the initial state to a product', (done) ->
+      updatedTestProd = _.extend({}, testProduct, {
+        state: {
+          typeId: 'state',
+          id: initialStateId
+        }
+      })
+      diff = @sync.buildActions(updatedTestProd, testProduct)
+      expect(diff.shouldUpdate()).toEqual(true)
+      @client.products.byId(updatedTestProd.id).update(diff.getUpdatePayload())
+      .then(({ body: { state } }) ->
+        expect(state).toEqual({
+          typeId: 'state',
+          id: initialStateId
+        })
+        done()
+      )
+      .catch (error) -> done(_.prettify(error))
+    , 10000 # 10sec
+
+    it 'should transition the state', (done) ->
+      # set the initial state
+      @client.products.byId(testProduct.id).update({
+        actions: [{
+          action: 'transitionState',
+          state: { typeId: 'state', id: initialStateId }
+        }]
+        version: testProduct.version
+      })
+      .then =>
+        @client.productProjections.byId(testProduct.id).staged(true).fetch()
+      .then(({ body: prodWithInitialState }) =>
+        updatedTestProd = _.extend({}, prodWithInitialState, {
+          state: {
+            typeId: 'state',
+            id: secondStateId
+          }
+        })
+        diff = @sync.buildActions(updatedTestProd, prodWithInitialState)
+        expect(diff.shouldUpdate()).toEqual(true)
+        @client.products
+          .byId(updatedTestProd.id)
+          .update(diff.getUpdatePayload())
+      )
+      .then(({ body: { state } }) ->
+        expect(state).toEqual({
+          typeId: 'state',
+          id: secondStateId
+        })
+        done()
+      )
+      .catch (error) ->
+        done(_.prettify(error))
+        console.log(JSON.stringify(error, null, 2))
+    , 10000 # 10sec
