@@ -373,5 +373,4 @@ describe 'Integration Products Sync', ->
       )
       .catch (error) ->
         done(_.prettify(error))
-        console.log(JSON.stringify(error, null, 2))
     , 10000 # 10sec
