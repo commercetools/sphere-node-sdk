@@ -615,12 +615,6 @@ class BaseService
 
       # TODO: check other possible acceptable codes (304, ...)
       if 200 <= response.statusCode < 300
-        # FIXME: find a better solution
-        if @constructor.name is 'GraphQLService' and not body.data
-          graphqlError = new GraphQLError 'GraphQL error', _.extend responseJson, body,
-            statusCode: 400
-            originalRequest: originalRequest
-          return reject graphqlError
 
         return resolve _.extend responseJson,
           statusCode: response.statusCode
@@ -644,6 +638,12 @@ class BaseService
             statusCode: response.statusCode
             message: errMsg
             originalRequest: originalRequest
+      # FIXME: find a better solution
+      else if response.statusCode is 400 and @constructor.name is 'GraphQLService' and not body.data
+        graphqlError = new GraphQLError 'GraphQL error', _.extend responseJson, body,
+        statusCode: 400
+        originalRequest: originalRequest
+        return reject graphqlError
       else
         # a SphereError response e.g.: {statusCode: 400, message: 'Oops, something went wrong'}
         errorMessage = body.message or body.error_description or body.error or 'Undefined SPHERE.IO error message'
