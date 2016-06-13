@@ -492,6 +492,11 @@ class BaseService
     # TODO: describe which endpoints support this?
     unless version
       throw new Error "Version is required for deleting a resource (endpoint: #{@_currentEndpoint})"
+    if @constructor.supportsByKey is true
+      unless (@_params.key or @_params.id)
+        throw new Error "Missing resource id. You can set it by chaining '.byId(ID)' or '.byKey(KEY)'" unless @_params.key or @_params.id
+    else
+      throw new Error "Missing resource id. You can set it by chaining '.byId(ID)'" unless @_params.id
 
     endpoint = "#{@_currentEndpoint}?version=#{version}"
     @_delete(endpoint)
