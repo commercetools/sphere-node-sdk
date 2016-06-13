@@ -6,6 +6,7 @@ ERRORS = [
   {name: 'BadRequest', statusCode: 400}
   {name: 'Unauthorized', statusCode: 401}
   {name: 'NotFound', statusCode: 404}
+  {name: 'MethodNotAllowed', statusCode: 405}
   {name: 'ConcurrentModification', statusCode: 409}
   {name: 'InternalServerError', statusCode: 500}
   {name: 'ServiceUnavailable', statusCode: 503}
