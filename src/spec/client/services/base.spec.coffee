@@ -761,6 +761,25 @@ describe 'Service', ->
             expect(=> @service.delete()).toThrow new Error "Version is required for deleting a resource (endpoint: #{@service._currentEndpoint})"
             expect(@restMock.DELETE).not.toHaveBeenCalled()
 
+          if not _.contains(o.blacklist, 'byKey')
+
+            it 'should send request for current endpoint with Key', ->
+              spyOn(@restMock, 'DELETE')
+              @service.byKey(KEY).delete(1)
+              expect(@restMock.DELETE).toHaveBeenCalledWith "#{o.path}/key=#{KEY}?version=1", jasmine.any(Function)
+
+            it 'should throw error if id and key is missing', ->
+              spyOn(@restMock, 'DELETE')
+              expect(=> @service.delete(1)).toThrow new Error "Missing resource id. You can set it by chaining '.byId(ID)' or '.byKey(KEY)'"
+              expect(@restMock.DELETE).not.toHaveBeenCalled()
+
+          else
+
+            it 'should throw error if id is missing', ->
+              spyOn(@restMock, 'DELETE')
+              expect(=> @service.delete(1)).toThrow new Error "Missing resource id. You can set it by chaining '.byId(ID)'"
+              expect(@restMock.DELETE).not.toHaveBeenCalled()
+
           it 'should return promise on delete', ->
             promise = @service.byId('123-abc').delete(1)
             expect(promise.isPending()).toBe true
