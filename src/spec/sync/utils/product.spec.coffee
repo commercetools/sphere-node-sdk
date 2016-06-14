@@ -1309,51 +1309,96 @@ describe 'ProductUtils', ->
       expect(update[0]).toEqual {action: 'changePrice', variantId: 2, price: {value: {currencyCode: 'EUR', centAmount: 5}, customerGroup: {id: '987', typeId: 'customer-group'}}}
       expect(update[1]).toEqual {action: 'addPrice', variantId: 1, price: {value: {currencyCode: 'EUR', centAmount: 20}, country: 'DE'}}
 
-  describe ':: actionsMapReferences (tax-category)', ->
+  describe ':: actionsMapReferences', ->
 
-    beforeEach ->
-      @utils = new ProductUtils
-      @OLD_REFERENCE =
-        id: '123'
-        taxCategory:
-          typeId: 'tax-category'
-          id: 'tax-de'
-        masterVariant:
-          id: 1
+    describe ':: tax-category', ->
 
-      @NEW_REFERENCE =
-        id: '123'
-        taxCategory:
-          typeId: 'tax-category'
-          id: 'tax-us'
-        masterVariant:
-          id: 1
+      beforeEach ->
+        @utils = new ProductUtils
+        @OLD_REFERENCE =
+          id: '123'
+          taxCategory:
+            typeId: 'tax-category'
+            id: 'tax-de'
+          masterVariant:
+            id: 1
 
-    it 'should build action to change tax-category', ->
-      delta = @utils.diff @OLD_REFERENCE, @NEW_REFERENCE
-      update = @utils.actionsMapReferences delta, @OLD_REFERENCE, @NEW_REFERENCE
-      expected_update = [
-        { action: 'setTaxCategory', taxCategory: { typeId: 'tax-category', id: 'tax-us' } }
-      ]
-      expect(update).toEqual expected_update
+        @NEW_REFERENCE =
+          id: '123'
+          taxCategory:
+            typeId: 'tax-category'
+            id: 'tax-us'
+          masterVariant:
+            id: 1
 
-    it 'should build action to delete tax-category', ->
-      delete @NEW_REFERENCE.taxCategory
-      delta = @utils.diff @OLD_REFERENCE, @NEW_REFERENCE
-      update = @utils.actionsMapReferences delta, @OLD_REFERENCE, @NEW_REFERENCE
-      expected_update = [
-        { action: 'setTaxCategory' }
-      ]
-      expect(update).toEqual expected_update
+      it 'should build action to change tax-category', ->
+        delta = @utils.diff @OLD_REFERENCE, @NEW_REFERENCE
+        update = @utils.actionsMapReferences delta, @OLD_REFERENCE, @NEW_REFERENCE
+        expected_update = [
+          { action: 'setTaxCategory', taxCategory: { typeId: 'tax-category', id: 'tax-us' } }
+        ]
+        expect(update).toEqual expected_update
 
-    it 'should build action to add tax-category', ->
-      delete @OLD_REFERENCE.taxCategory
-      delta = @utils.diff @OLD_REFERENCE, @NEW_REFERENCE
-      update = @utils.actionsMapReferences delta, @OLD_REFERENCE, @NEW_REFERENCE
-      expected_update = [
-        { action: 'setTaxCategory', taxCategory: { typeId: 'tax-category', id: 'tax-us' } }
-      ]
-      expect(update).toEqual expected_update
+      it 'should build action to delete tax-category', ->
+        delete @NEW_REFERENCE.taxCategory
+        delta = @utils.diff @OLD_REFERENCE, @NEW_REFERENCE
+        update = @utils.actionsMapReferences delta, @OLD_REFERENCE, @NEW_REFERENCE
+        expected_update = [
+          { action: 'setTaxCategory' }
+        ]
+        expect(update).toEqual expected_update
+
+      it 'should build action to add tax-category', ->
+        delete @OLD_REFERENCE.taxCategory
+        delta = @utils.diff @OLD_REFERENCE, @NEW_REFERENCE
+        update = @utils.actionsMapReferences delta, @OLD_REFERENCE, @NEW_REFERENCE
+        expected_update = [
+          { action: 'setTaxCategory', taxCategory: { typeId: 'tax-category', id: 'tax-us' } }
+        ]
+        expect(update).toEqual expected_update
+
+    describe ':: state', ->
+
+      beforeEach ->
+        @utils = new ProductUtils
+        @OLD_REFERENCE =
+          id: '123'
+          state:
+            typeId: 'state'
+            id: 'old-state-id'
+          masterVariant:
+            id: 1
+
+        @NEW_REFERENCE =
+          id: '123'
+          state:
+            typeId: 'state'
+            id: 'new-state-id'
+          masterVariant:
+            id: 1
+
+      it 'should build a transitionState action for the initial state', ->
+        oldRef = _.extend({}, @OLD_REFERENCE, { state: null })
+        delta = @utils.diff oldRef, @NEW_REFERENCE
+        actual = @utils.actionsMapReferences(
+          delta, oldRef, @NEW_REFERENCE
+        )
+        expected = [{
+          action: 'transitionState',
+          state: { typeId: 'state', id: 'new-state-id' }
+        }]
+        expect(actual).toEqual(expected)
+
+      it 'should build a transitionState action for a state change', ->
+        delta = @utils.diff @OLD_REFERENCE, @NEW_REFERENCE
+        actual = @utils.actionsMapReferences(
+          delta, @OLD_REFERENCE, @NEW_REFERENCE
+        )
+        expected = [{
+          action: 'transitionState',
+          state: { typeId: 'state', id: 'new-state-id' }
+        }]
+        expect(actual).toEqual(expected)
 
   describe ':: actionsMapCategories (category)', ->
 

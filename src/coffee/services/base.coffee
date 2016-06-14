@@ -492,6 +492,11 @@ class BaseService
     # TODO: describe which endpoints support this?
     unless version
       throw new Error "Version is required for deleting a resource (endpoint: #{@_currentEndpoint})"
+    if @constructor.supportsByKey is true
+      unless (@_params.key or @_params.id)
+        throw new Error "Missing resource id. You can set it by chaining '.byId(ID)' or '.byKey(KEY)'" unless @_params.key or @_params.id
+    else
+      throw new Error "Missing resource id. You can set it by chaining '.byId(ID)'" unless @_params.id
 
     endpoint = "#{@_currentEndpoint}?version=#{version}"
     @_delete(endpoint)
@@ -610,12 +615,6 @@ class BaseService
 
       # TODO: check other possible acceptable codes (304, ...)
       if 200 <= response.statusCode < 300
-        # FIXME: find a better solution
-        if @constructor.name is 'GraphQLService' and not body.data
-          graphqlError = new GraphQLError 'GraphQL error', _.extend responseJson, body,
-            statusCode: 400
-            originalRequest: originalRequest
-          return reject graphqlError
 
         return resolve _.extend responseJson,
           statusCode: response.statusCode
@@ -626,9 +625,25 @@ class BaseService
         # we return a custom JSON error message
         reject new SphereHttpError.NotFound "Endpoint '#{endpoint}' not found.",
           _.extend responseJson,
-            statusCode: 404
+            statusCode: response.statusCode
             message: "Endpoint '#{endpoint}' not found."
             originalRequest: originalRequest
+      else if response.statusCode is 405
+        endpoint = response.request.uri.path
+        # since the API doesn't return an error message for a unsupported method
+        # we return a custom JSON error message
+        errMsg = "The chosen HTTP method is not allowed for the endpoint '#{endpoint}'. This might be caused by a malformed request."
+        reject new SphereHttpError.MethodNotAllowed errMsg,
+          _.extend responseJson,
+            statusCode: response.statusCode
+            message: errMsg
+            originalRequest: originalRequest
+      # FIXME: find a better solution
+      else if response.statusCode is 400 and @constructor.name is 'GraphQLService' and not body.data
+        graphqlError = new GraphQLError 'GraphQL error', _.extend responseJson, body,
+        statusCode: 400
+        originalRequest: originalRequest
+        return reject graphqlError
       else
         # a SphereError response e.g.: {statusCode: 400, message: 'Oops, something went wrong'}
         errorMessage = body.message or body.error_description or body.error or 'Undefined SPHERE.IO error message'

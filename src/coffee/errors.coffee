@@ -76,6 +76,19 @@ class NotFound extends SphereError
     @code = @statusCode
     Error.captureStackTrace(@, NotFound)
 
+# Public: A specific {SphereError} type for `MethodNotAllowed` errors (HTTP 405)
+class MethodNotAllowed extends SphereError
+
+  # Public: Create a new `MethodNotAllowed`
+  #
+  # message - {String} The error message
+  # body - {Object} A JSON object with optional information to pass to the error, like the error response body
+  constructor: (@message, @body = {}) ->
+    @name = "MethodNotAllowed"
+    @statusCode = 405
+    @code = @statusCode
+    Error.captureStackTrace(@, MethodNotAllowed)
+
 # Public: A specific {SphereError} type for `ConcurrentModification` errors (HTTP 409)
 class ConcurrentModification extends SphereError
 
@@ -123,6 +136,7 @@ module.exports =
     BadRequest: BadRequest
     Unauthorized: Unauthorized
     NotFound: NotFound
+    MethodNotAllowed: MethodNotAllowed
     ConcurrentModification: ConcurrentModification
     InternalServerError: InternalServerError
     ServiceUnavailable: ServiceUnavailable
