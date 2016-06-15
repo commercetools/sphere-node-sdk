@@ -246,6 +246,7 @@ test('Sync::product::variants', t => {
           { name: 'welcome2', value: [{ en: 'hello', it: 'ciao' }] }, // set ltext
           { name: 'multicolor', value: [ 'red', 'yellow' ] }, // set enum
           { name: 'multicolor2', value: [ { key: 'red', label: { en: 'red', it: 'rosso' } }, { key: 'yellow', label: { en: 'yellow', it: 'giallo' } } ] }, // set lenum
+          { name: 'listWithEmptyValues', value: [ '', '', null, { id: '123', typeId: 'products' }] }, // set reference
         ],
       },
     }
@@ -264,6 +265,7 @@ test('Sync::product::variants', t => {
       { action: 'setAttribute', variantId: 1, name: 'welcome2', value: [{ en: 'hello', it: 'ciao' }] },
       { action: 'setAttribute', variantId: 1, name: 'multicolor', value: [ 'red', 'yellow' ] },
       { action: 'setAttribute', variantId: 1, name: 'multicolor2', value: [ { key: 'red', label: { en: 'red', it: 'rosso' } }, { key: 'yellow', label: { en: 'yellow', it: 'giallo' } } ] }, // set lenum
+      { action: 'setAttribute', variantId: 1, name: 'listWithEmptyValues', value: [ '', '', null, { id: '123', typeId: 'products' }] }, // set reference
     ])
     t.end()
   })
