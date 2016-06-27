@@ -1389,6 +1389,26 @@ describe 'ProductUtils', ->
         }]
         expect(actual).toEqual(expected)
 
+      it 'should not build a transitionState action if no state is provided
+      even if the product already has a state', ->
+        # test with { state: null }
+        newRef = _.extend({}, @NEW_REFERENCE, { state: null })
+        delta = @utils.diff @OLD_REFERENCE, newRef
+        actual = @utils.actionsMapReferences(
+          delta, @OLD_REFERENCE, newRef
+        )
+        expected = []
+        expect(actual).toEqual(expected)
+
+        # test without state
+        delete newRef.state
+        delta = @utils.diff @OLD_REFERENCE, newRef
+        actual = @utils.actionsMapReferences(
+          delta, @OLD_REFERENCE, newRef
+        )
+        expected = []
+        expect(actual).toEqual(expected)
+
       it 'should build a transitionState action for a state change', ->
         delta = @utils.diff @OLD_REFERENCE, @NEW_REFERENCE
         actual = @utils.actionsMapReferences(

@@ -164,12 +164,19 @@ class ProductUtils extends BaseUtils
             id: @getDeltaValue diff.state.id
         actions.push action
       else
-        action =
-          action: 'transitionState'
-          state:
-            typeId: 'state'
-            id: new_obj.state.id
-        actions.push action
+        # check if there is a new state to transition to
+        # otherwise no transition action is generated
+        # since transitioning to an empty state is not allowed
+        # this adds incosistency to some degree because for all other actions
+        # passing null as the new value results in a remove action
+        # which does not exist for states
+        if !!new_obj.state
+          action =
+            action: 'transitionState'
+            state:
+              typeId: 'state'
+              id: new_obj.state.id
+          actions.push action
     actions
 
   # Private: map product categories
