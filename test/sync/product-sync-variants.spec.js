@@ -133,6 +133,62 @@ test('Sync::product::variants', t => {
     t.end()
   })
 
+  t.test(
+    'should build SameForAll attribute actions for a SET of object values',
+    t => {
+      setup()
+      const before = {
+        masterVariant: {
+          attributes: [
+            {
+              name: 'set-attribute-reference-type',
+              value: [
+                { id: '123', referenceTypeId: 'reference-example' },
+                { id: '234', referenceTypeId: 'reference-example' },
+              ],
+            },
+          ],
+        },
+      }
+
+      const now = {
+        masterVariant: {
+          attributes: [
+            {
+              name: 'set-attribute-reference-type',
+              value: [
+                { id: '444', referenceTypeId: 'reference-example' },
+                // Test setting null, to test and ensure that objectHash
+                // takes this type into account when calculating a correct
+                // hash for array diff with object values
+                // github.com/benjamine/jsondiffpatch/blob/master/docs/arrays.md
+                null,
+              ],
+            },
+          ],
+        },
+      }
+
+      const actions = productsSync.buildActions(now, before, {
+        sameForAllAttributeNames: ['set-attribute-reference-type'],
+      })
+
+      t.deepEqual(actions, [
+        {
+          action: 'setAttributeInAllVariants',
+          name: 'set-attribute-reference-type',
+          value: [
+            { id: '444', referenceTypeId: 'reference-example' },
+            // Since objectHash gives the diffpatcher an index,
+            // we expect a null to be given here
+            null,
+          ],
+        },
+      ], 'expect SameForAll attribute actions for a SET to be equal')
+
+      t.end()
+    })
+
   t.test('should build `addVariant` action', t => {
     setup()
 
