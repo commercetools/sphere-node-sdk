@@ -86,7 +86,7 @@ test('Utils::diffpatcher', t => {
         const updated = ['new', 'value']
         const diff = diffpatcher.diff(original, updated)
         const delta = diffpatcher.getDeltaValue(diff[0], original)
-        t.deepEqual(delta, ['new'])
+        t.deepEqual(delta, 'new')
         t.end()
       })
     t.end()
