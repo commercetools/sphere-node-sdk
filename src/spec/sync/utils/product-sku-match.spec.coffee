@@ -291,5 +291,5 @@ describe 'ProductUtils SKU based matching', ->
     ]
 
     compareAttributeActions @utils, delta, @existingProduct, @newProduct, [
-      { action: 'setSKU', variantId: 1, sku: 'v3' }
+      { action: 'setSku', variantId: 1, sku: 'v3' }
     ]
