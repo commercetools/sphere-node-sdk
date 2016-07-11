@@ -563,7 +563,7 @@ class ProductUtils extends BaseUtils
   _buildSkuActions: (variantDiff, old_variant) ->
     if _.has variantDiff, 'sku'
       action =
-        action: 'setSKU'
+        action: 'setSku'
         variantId: old_variant.id
         sku: @getDeltaValue(variantDiff.sku)
 
