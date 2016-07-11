@@ -255,7 +255,7 @@ test('Sync::product::variants', t => {
       { action: 'addVariant', sku: 'v3', attributes: [{ name: 'foo', value: 'yet another' }] },
       { action: 'setAttribute', variantId: 1, name: 'foo', value: 'new value' },
       { action: 'setAttribute', variantId: 2, name: 'foo', value: 'another value' },
-      { action: 'setSKU', sku: 'v4', variantId: 3 },
+      { action: 'setSku', sku: 'v4', variantId: 3 },
       { action: 'setAttribute', variantId: 3, name: 'foo', value: 'i dont care' },
     ])
     t.end()
