@@ -261,6 +261,30 @@ test('Sync::product::variants', t => {
     t.end()
   })
 
+  t.test('should handle unsetting the sku of a variant', t => {
+    setup()
+
+    const before = {
+      id: '123',
+      masterVariant: {
+        id: 1, sku: 'v1', attributes: [{ name: 'foo', value: 'bar' }],
+      },
+    }
+
+    const now = {
+      id: '123',
+      masterVariant: {
+        sku: '', attributes: [{ name: 'foo', value: 'bar' }],
+      },
+    }
+
+    const actions = productsSync.buildActions(now, before)
+    t.deepEqual(actions, [
+      { action: 'setSku', sku: '', variantId: 1 },
+    ])
+    t.end()
+  })
+
   t.test('should build attribute actions for all types', t => {
     setup()
 
@@ -334,6 +358,31 @@ test('Sync::product::variants', t => {
       id: '123',
       masterVariant: {
         id: 1,
+      },
+      variants: [{ id: 2 }],
+    }
+
+    const now = {
+      id: '123',
+      masterVariant: {
+        id: 1, sku: '',
+      },
+      variants: [{ id: 2, sku: null }],
+    }
+
+    const actions = productsSync.buildActions(now, before)
+    t.deepEqual(actions, [], 'should not generate any action')
+    t.end()
+  })
+
+  t.test('should ignore set sku if the sku was and still is empty', t => {
+    setup()
+
+    // Case when sku is not set, and the new value is empty or null
+    const before = {
+      id: '123',
+      masterVariant: {
+        id: 1, sku: '',
       },
       variants: [{ id: 2 }],
     }
