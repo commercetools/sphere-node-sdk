@@ -697,6 +697,14 @@ describe 'Service', ->
             @service.save({foo: 'bar'})
             expect(@restMock.POST).toHaveBeenCalledWith o.path, {foo: 'bar'}, jasmine.any(Function)
 
+          it 'should send request for base endpoint allowing expand param', ->
+            spyOn(@restMock, 'POST')
+            @service
+            .expand('foo.bar') # should use it
+            .page(1) # should discard
+            .save({foo: 'bar'})
+            expect(@restMock.POST).toHaveBeenCalledWith "#{o.path}?expand=foo.bar", {foo: 'bar'}, jasmine.any(Function)
+
       if not _.contains(o.blacklist, 'create')
         describe ':: create', ->
 
@@ -752,6 +760,15 @@ describe 'Service', ->
             expect(@restMock.POST.calls[2].args[1]).toEqual {foo: 'bar3'}
             expect(@restMock.POST.calls[3].args[0]).toEqual o.path
             expect(@restMock.POST.calls[3].args[1]).toEqual {foo: 'bar4'}
+
+          it 'should send request for base endpoint allowing expand param', ->
+            spyOn(@restMock, 'POST')
+            @service
+            .expand('foo.bar') # should use it
+            .page(1) # should discard
+            .byId(ID)
+            .update({foo: 'bar'})
+            expect(@restMock.POST).toHaveBeenCalledWith "#{o.path}/#{ID}?expand=foo.bar", {foo: 'bar'}, jasmine.any(Function)
 
       if not _.contains(o.blacklist, 'delete')
         describe ':: delete', ->
