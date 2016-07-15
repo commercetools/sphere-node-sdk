@@ -434,7 +434,11 @@ class BaseService
     unless body
       throw new Error "Body payload is required for creating a resource (endpoint: #{@constructor.baseResourceEndpoint})"
 
+    queryString = Utils.buildQueryString
+      expand: @_params.query.expand
     endpoint = @constructor.baseResourceEndpoint
+    endpoint += "?#{queryString}" if queryString
+
     @_save(endpoint, body)
 
   # Public: Alias of {::save}
@@ -472,7 +476,11 @@ class BaseService
     unless body
       throw new Error "Body payload is required for updating a resource (endpoint: #{@_currentEndpoint})"
 
+    queryString = Utils.buildQueryString
+      expand: @_params.query.expand
     endpoint = @_currentEndpoint
+    endpoint += "?#{queryString}" if queryString
+
     @_save(endpoint, body)
 
   # Public: Delete an existing resource defined by the `Service`

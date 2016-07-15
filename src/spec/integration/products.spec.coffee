@@ -143,7 +143,18 @@ describe 'Integration Products', ->
       done()
     .catch (error) -> done(_.prettify(error))
   , 30000 # 30sec
-  
+
+  it 'should use reference expansion when creating and updating a product', (done) ->
+    @client.products.expand('productType').create newProduct(@productType)
+    .then (result) =>
+      expect(result.body.productType.hasOwnProperty('obj')).toBe(true)
+      @client.products.expand('productType').byId(result.body.id).update updatePublish(result.body.version)
+    .then (result) ->
+      expect(result.body.productType.hasOwnProperty('obj')).toBe(true)
+      done()
+    .catch (error) -> done(_.prettify(error))
+  , 30000 # 30sec
+
   # it 'should search for suggestions', (done) ->
   #   debug 'Creating products with search keywords'
   #   Promise.all _.map [1..5], => @client.products.save(newProductWithSearchKeywords(@productType))
