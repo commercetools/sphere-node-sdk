@@ -280,7 +280,7 @@ test('Sync::product::variants', t => {
 
     const actions = productsSync.buildActions(now, before)
     t.deepEqual(actions, [
-      { action: 'setSku', sku: '', variantId: 1 },
+      { action: 'setSku', sku: null, variantId: 1 },
     ])
     t.end()
   })
