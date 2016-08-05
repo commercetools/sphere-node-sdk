@@ -1,6 +1,7 @@
 _ = require 'underscore'
 Rest = require './connect/rest'
 TaskQueue = require './task-queue'
+AuthenticationService    = require './services/authentication'
 CartDiscountService      = require './services/cart-discounts'
 CartService              = require './services/carts'
 CategoryService          = require './services/categories'
@@ -27,6 +28,7 @@ TypeService              = require './services/types'
 ZoneService              = require './services/zones'
 
 ALL_SERVICES = [
+  {key: 'authentication',     name: AuthenticationService},
   {key: 'cartDiscounts',      name: CartDiscountService},
   {key: 'carts',              name: CartService},
   {key: 'categories',         name: CategoryService},
