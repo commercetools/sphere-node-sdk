@@ -139,4 +139,28 @@ test('Sync::inventory', t => {
     t.deepEqual(actual, expected)
     t.end()
   })
+
+  t.test('should ignore expansion for existing `supplyChannel`', t => {
+    setup()
+
+    const before = {
+      supplyChannel: {
+        id: '1',
+        typeId: 'channel',
+        obj: {
+          id: '1',
+        },
+      },
+    }
+    const now = {
+      supplyChannel: {
+        id: '1',
+        typeId: 'channel',
+      },
+    }
+    const actual = inventorySync.buildActions(now, before)
+    const expected = []
+    t.deepEqual(actual, expected)
+    t.end()
+  })
 })
