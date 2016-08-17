@@ -15,6 +15,22 @@ See roadmap https://github.com/sphereio/sphere-node-sdk/issues/63
 _Will follow soon_
 
 
+### Installation
+
+To install the latest `alpha` version:
+
+```
+npm install --save sphere-node-sdk@">2.0.0-alpha"
+```
+
+This assumes you are using [npm](https://www.npmjs.com/) as your package manager.
+If you don't, you can [access these files on npmcdn](https://npmcdn.com/sphere-node-sdk/), download them, or point your package manager to them.
+
+Usually this library is consumed as a collection of [CommonJS](http://webpack.github.io/docs/commonjs.html) modules. These modules are what you get when you import `sphere-node-sdk` in a [Webpack](http://webpack.github.io), [Browserify](http://browserify.org/), or a Node environment.
+
+If you don't use a module bundler, it's also fine. The `sphere-node-sdk` npm package includes precompiled production and development [UMD](https://github.com/umdjs/umd) builds in the [`dist` folder](https://npmcdn.com/sphere-node-sdk/dist/). They can be used directly without a bundler and are thus compatible with many popular JavaScript module loaders and environments. For example, you can drop a UMD build as a [`<script>` tag](https://npmcdn.com/sphere-node-sdk/dist/sphere-node-sdk.js) on the page. The UMD builds make SphereClient available as a `window.SphereClient` global variable.
+
+
 ## License
 
 Licensed under the [MIT license](LICENSE-MIT).
