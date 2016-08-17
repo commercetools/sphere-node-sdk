@@ -1,5 +1,5 @@
 import test from 'tape'
-import classify from '../../lib/utils/classify'
+import classify from '../../src/utils/classify'
 
 test('Utils::classify', t => {
   t.test('should freeze non-function property and make it non-enumerable',

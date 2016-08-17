@@ -1,5 +1,5 @@
 import test from 'tape'
-import buildQueryString from '../../lib/utils/build-query-string'
+import buildQueryString from '../../src/utils/build-query-string'
 
 test('Utils::buildQueryString', t => {
   t.test('should throw if no argument is passed', t => {

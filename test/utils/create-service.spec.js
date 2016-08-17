@@ -1,5 +1,5 @@
 import test from 'tape'
-import createService from '../../lib/utils/create-service'
+import createService from '../../src/utils/create-service'
 
 const fakeService = {
   type: 'test',

@@ -1,6 +1,6 @@
 import test from 'tape'
 import credentials from '../../../credentials'
-import SphereClient from '../../../lib'
+import SphereClient from '../../../src'
 
 let count = 0
 function uniqueId (prefix) {

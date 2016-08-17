@@ -1,7 +1,7 @@
 import test from 'tape'
 import https from 'https'
 import * as version from '../version'
-import SphereClient from '../lib'
+import SphereClient from '../src'
 
 const { features } = SphereClient
 const userAgent = `${version.name}-${version.version}`

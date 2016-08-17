@@ -1,5 +1,5 @@
 import test from 'tape'
-import * as queryExpand from '../../lib/utils/query-expand'
+import * as queryExpand from '../../src/utils/query-expand'
 
 test('Utils::queryExpand', t => {
   let service

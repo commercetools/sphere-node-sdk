@@ -5,4 +5,5 @@ config.js
 credentials.js
 coverage
 dist
+lib
 version.js

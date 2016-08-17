@@ -1,6 +1,6 @@
 import test from 'tape'
-import * as querySearch from '../../lib/utils/query-search'
-import { getDefaultSearchParams } from '../../lib/utils/default-params'
+import * as querySearch from '../../src/utils/query-search'
+import { getDefaultSearchParams } from '../../src/utils/default-params'
 
 test('Utils::querySearch', t => {
   let service

@@ -1,5 +1,5 @@
 import test from 'tape'
-import * as auth from '../../lib/utils/auth'
+import * as auth from '../../src/utils/auth'
 
 test('Utils::authToken', t => {
   t.test('should build request to get auth token', t => {

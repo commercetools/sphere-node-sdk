@@ -1,5 +1,5 @@
 import test from 'tape'
-import * as queryProjection from '../../lib/utils/query-projection'
+import * as queryProjection from '../../src/utils/query-projection'
 
 test('Utils::queryProjection', t => {
   let service

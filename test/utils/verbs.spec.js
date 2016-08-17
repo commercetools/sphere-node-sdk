@@ -1,17 +1,17 @@
 import test from 'tape'
 import sinon from 'sinon'
-import * as verbs from '../../lib/utils/verbs'
-import * as query from '../../lib/utils/query'
-import * as queryId from '../../lib/utils/query-id'
-import * as queryPage from '../../lib/utils/query-page'
-import * as queryProjection from '../../lib/utils/query-projection'
-import * as querySearch from '../../lib/utils/query-search'
-import * as queryCustom from '../../lib/utils/query-custom'
-import * as features from '../../lib/utils/features'
+import * as verbs from '../../src/utils/verbs'
+import * as query from '../../src/utils/query'
+import * as queryId from '../../src/utils/query-id'
+import * as queryPage from '../../src/utils/query-page'
+import * as queryProjection from '../../src/utils/query-projection'
+import * as querySearch from '../../src/utils/query-search'
+import * as queryCustom from '../../src/utils/query-custom'
+import * as features from '../../src/utils/features'
 import {
   getDefaultQueryParams,
   getDefaultSearchParams,
-} from '../../lib/utils/default-params'
+} from '../../src/utils/default-params'
 
 const projectKey = 'test-project'
 const baseEndpoint = '/test-endpoint'

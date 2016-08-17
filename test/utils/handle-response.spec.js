@@ -1,7 +1,7 @@
 import test from 'tape'
 import sinon from 'sinon'
-import handleResponse, { errorsMap } from '../../lib/utils/handle-response'
-import * as errors from '../../lib/utils/errors'
+import handleResponse, { errorsMap } from '../../src/utils/handle-response'
+import * as errors from '../../src/utils/errors'
 
 test('Utils::handleResponse', t => {
   let mockUtils

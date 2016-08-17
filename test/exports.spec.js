@@ -1,7 +1,8 @@
 import test from 'tape'
-import SphereClient from '../lib'
+import SphereClient from '../src'
+import pkg from '../package.json'
 
-const { errors, features, http } = SphereClient
+const { errors, features, http, version } = SphereClient
 
 test('Public exports', t => {
   t.test('should export SphereClient', t => {
@@ -15,6 +16,7 @@ test('Public exports', t => {
     t.equal(typeof http, 'function')
     t.equal(http.name, 'http')
     t.equal(Object.keys(features).length, 10)
+    t.equal(version, pkg.version)
     t.end()
   })
 })

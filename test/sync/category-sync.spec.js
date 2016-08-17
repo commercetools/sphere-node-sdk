@@ -1,5 +1,5 @@
 import test from 'tape'
-import categorySyncFn, { actionGroups } from '../../lib/sync/categories'
+import categorySyncFn, { actionGroups } from '../../src/sync/categories'
 
 test('Sync::category', t => {
   let categorySync
