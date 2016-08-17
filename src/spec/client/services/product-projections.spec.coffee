@@ -255,9 +255,9 @@ describe 'ProductProjectionService', ->
       @service.where('foo=bar').whereOperator('or').staged(true).process(fn)
       .then (result) ->
         expect(_.size result).toBe 3
-        expect(result[0].endpoint).toMatch /\?sort=id%20asc&staged=true&withTotal=false&where=foo%3Dbar$/
-        expect(result[1].endpoint).toMatch /\?sort=id%20asc&staged=true&withTotal=false&where=foo%3Dbar%20and%20id%20%3E%20%22id_20%22$/
-        expect(result[2].endpoint).toMatch /\?sort=id%20asc&staged=true&withTotal=false&where=foo%3Dbar%20and%20id%20%3E%20%22id_20%22$/
+        expect(result[0].endpoint).toMatch /\?sort=id%20asc&where=foo%3Dbar&staged=true&withTotal=false$/
+        expect(result[1].endpoint).toMatch /\?sort=id%20asc&where=foo%3Dbar&staged=true&withTotal=false&where=id%20%3E%20%22id_20%22$/
+        expect(result[2].endpoint).toMatch /\?sort=id%20asc&where=foo%3Dbar&staged=true&withTotal=false&where=id%20%3E%20%22id_20%22$/
         done()
       .catch (err) -> done(_.prettify err)
 
@@ -282,8 +282,8 @@ describe 'ProductProjectionService', ->
       .process(fn)
       .then (result) ->
         expect(_.size result).toBe 3
-        expect(result[0].endpoint).toMatch /\?sort=name%20desc&staged=true&withTotal=false&where=foo%3Dbar%20or%20hello%3Dworld$/
-        expect(result[1].endpoint).toMatch /\?sort=name%20desc&staged=true&withTotal=false&where=foo%3Dbar%20or%20hello%3Dworld%20and%20id%20%3E%20%22id_20%22$/
-        expect(result[2].endpoint).toMatch /\?sort=name%20desc&staged=true&withTotal=false&where=foo%3Dbar%20or%20hello%3Dworld%20and%20id%20%3E%20%22id_20%22$/
+        expect(result[0].endpoint).toMatch /\?sort=id%20asc&where=foo%3Dbar%20or%20hello%3Dworld&sort=name%20desc&staged=true&withTotal=false$/
+        expect(result[1].endpoint).toMatch /\?sort=id%20asc&where=foo%3Dbar%20or%20hello%3Dworld&sort=name%20desc&staged=true&withTotal=false&where=id%20%3E%20%22id_20%22$/
+        expect(result[2].endpoint).toMatch /\?sort=id%20asc&where=foo%3Dbar%20or%20hello%3Dworld&sort=name%20desc&staged=true&withTotal=false&where=id%20%3E%20%22id_20%22$/
         done()
       .catch (err) -> done(_.prettify err)

@@ -375,22 +375,25 @@ class BaseService
       _processPage = (lastId, acc = []) =>
         debug 'processing next page with id: %s', lastId
 
-        @sort 'id' if _.isEmpty @_params.query.sort
-        @_params.query = _.extend({}, originalQuery, {where: []})
+        # set the query to the original query
+        # this is needed since the query is reset after each request
+        @_params.query = originalQuery
         queryString = @_queryString()
 
-        # manually build where predicate
-        wherePredicate = originalPredicate.join(
-          encodeURIComponent(" #{originalQuery.operator or 'and'} "))
         if lastId
-          lastIdPredicate = encodeURIComponent("id > \"#{lastId}\"")
-          wherePredicate =
-            if _.isEmpty(originalPredicate) then lastIdPredicate
-            else "#{wherePredicate}%20and%20#{lastIdPredicate}"
+          wherePredicate = encodeURIComponent("id > \"#{lastId}\"")
         debug 'process where predicate: %j', wherePredicate
-        enhancedQueryString = [queryString, "withTotal=false"].join('&')
-        if wherePredicate
-          enhancedQueryString = "#{enhancedQueryString}&where=#{wherePredicate}"
+        enhancedQueryString = [
+          "sort=#{encodeURIComponent("id asc")}",
+          queryString,
+          "withTotal=false"
+          # even if the enhanced query string already has a where query
+          # we can simply add another one, since the API combines
+          # "the individual predicates in a logical conjunction, just as if
+          # they had been specified in a single `where` query parameter and
+          # combined with `and`"
+          if wherePredicate then "where=#{wherePredicate}" else null,
+        ].filter((el) -> !!el).join('&')
         debug 'enhanced query: %s', enhancedQueryString
 
         @_get("#{endpoint}?#{enhancedQueryString}")

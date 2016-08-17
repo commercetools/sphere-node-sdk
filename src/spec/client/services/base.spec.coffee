@@ -407,9 +407,9 @@ describe 'Service', ->
           @service.page(3).perPage(count).process(fn)
           .then (result) ->
             expect(_.size result).toBe 3
-            expect(result[0].endpoint).toMatch /\?limit=20&offset=40&sort=id%20asc&withTotal=false$/
-            expect(result[1].endpoint).toMatch /\?limit=20&offset=40&sort=id%20asc&withTotal=false&where=id%20%3E%20%22id_20%22$/
-            expect(result[2].endpoint).toMatch /\?limit=20&offset=40&sort=id%20asc&withTotal=false&where=id%20%3E%20%22id_20%22$/
+            expect(result[0].endpoint).toMatch /\?sort=id%20asc&limit=20&offset=40&withTotal=false$/
+            expect(result[1].endpoint).toMatch /\?sort=id%20asc&limit=20&offset=40&withTotal=false&where=id%20%3E%20%22id_20%22$/
+            expect(result[2].endpoint).toMatch /\?sort=id%20asc&limit=20&offset=40&withTotal=false&where=id%20%3E%20%22id_20%22$/
             done()
           .catch (error) -> done(_.prettify(error))
 
@@ -429,9 +429,9 @@ describe 'Service', ->
           @service.page(3).perPage(count).sort('foo').process(fn)
           .then (result) ->
             expect(_.size result).toBe 3
-            expect(result[0].endpoint).toMatch /\?limit=20&offset=40&sort=foo%20asc&withTotal=false$/
-            expect(result[1].endpoint).toMatch /\?limit=20&offset=40&sort=foo%20asc&withTotal=false&where=id%20%3E%20%22id_20%22$/
-            expect(result[2].endpoint).toMatch /\?limit=20&offset=40&sort=foo%20asc&withTotal=false&where=id%20%3E%20%22id_20%22$/
+            expect(result[0].endpoint).toMatch /\?sort=id%20asc&limit=20&offset=40&sort=foo%20asc&withTotal=false$/
+            expect(result[1].endpoint).toMatch /\?sort=id%20asc&limit=20&offset=40&sort=foo%20asc&withTotal=false&where=id%20%3E%20%22id_20%22$/
+            expect(result[2].endpoint).toMatch /\?sort=id%20asc&limit=20&offset=40&sort=foo%20asc&withTotal=false&where=id%20%3E%20%22id_20%22$/
             done()
           .catch (error) -> done(_.prettify(error))
 
@@ -465,9 +465,9 @@ describe 'Service', ->
           .process(fn)
           .then (result) ->
             expect(_.size result).toBe 3
-            expect(result[0].endpoint).toMatch /\?sort=name%20desc&withTotal=false&where=foo%3Dbar%20or%20hello%3Dworld$/
-            expect(result[1].endpoint).toMatch /\?sort=name%20desc&withTotal=false&where=foo%3Dbar%20or%20hello%3Dworld%20and%20id%20%3E%20%22id_20%22$/
-            expect(result[2].endpoint).toMatch /\?sort=name%20desc&withTotal=false&where=foo%3Dbar%20or%20hello%3Dworld%20and%20id%20%3E%20%22id_20%22$/
+            expect(result[0].endpoint).toMatch /\?sort=id%20asc&where=foo%3Dbar%20or%20hello%3Dworld&sort=name%20desc&withTotal=false$/
+            expect(result[1].endpoint).toMatch /\?sort=id%20asc&where=foo%3Dbar%20or%20hello%3Dworld&sort=name%20desc&withTotal=false&where=id%20%3E%20%22id_20%22$/
+            expect(result[2].endpoint).toMatch /\?sort=id%20asc&where=foo%3Dbar%20or%20hello%3Dworld&sort=name%20desc&withTotal=false&where=id%20%3E%20%22id_20%22$/
             done()
           .catch (error) -> done(_.prettify(error))
 
