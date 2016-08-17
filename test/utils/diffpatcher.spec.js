@@ -1,5 +1,5 @@
 import test from 'tape'
-import * as diffpatcher from '../../lib/sync/utils/diffpatcher'
+import * as diffpatcher from '../../src/sync/utils/diffpatcher'
 
 test('Utils::diffpatcher', t => {
   t.test('::diff', t => {

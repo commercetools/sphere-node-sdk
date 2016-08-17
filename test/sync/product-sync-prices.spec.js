@@ -1,5 +1,5 @@
 import test from 'tape'
-import productsSyncFn from '../../lib/sync/products'
+import productsSyncFn from '../../src/sync/products'
 
 /* eslint-disable max-len */
 test('Sync::product::prices', t => {

@@ -1,5 +1,5 @@
 import test from 'tape'
-import buildAbsoluteUrl from '../../lib/utils/build-absolute-url'
+import buildAbsoluteUrl from '../../src/utils/build-absolute-url'
 
 test('Utils::buildAbsoluteUrl', t => {
   t.test('should build full URL', t => {

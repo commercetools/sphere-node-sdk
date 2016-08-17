@@ -1,6 +1,6 @@
 import test from 'tape'
-import * as query from '../../lib/utils/query'
-import { getDefaultQueryParams } from '../../lib/utils/default-params'
+import * as query from '../../src/utils/query'
+import { getDefaultQueryParams } from '../../src/utils/default-params'
 
 test('Utils::query', t => {
   let service

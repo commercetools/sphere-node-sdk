@@ -1,5 +1,5 @@
 import test from 'tape'
-import * as withHelpers from '../../lib/utils/with-helpers'
+import * as withHelpers from '../../src/utils/with-helpers'
 
 test('Utils::withHelpers', t => {
   let service

@@ -1,5 +1,5 @@
 import test from 'tape'
-import * as errors from '../../lib/utils/errors'
+import * as errors from '../../src/utils/errors'
 
 const errorsMap = [
   { type: 'BadRequest', statusCode: 400 },

@@ -1,5 +1,5 @@
 import test from 'tape'
-import * as queryId from '../../lib/utils/query-id'
+import * as queryId from '../../src/utils/query-id'
 
 test('Utils::queryId', t => {
   let service

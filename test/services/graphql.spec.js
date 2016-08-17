@@ -1,5 +1,5 @@
 import test from 'tape'
-import SphereClient from '../../lib'
+import SphereClient from '../../src'
 
 test('SphereClient', t => {
   let client

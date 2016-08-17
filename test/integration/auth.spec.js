@@ -1,6 +1,6 @@
 import test from 'tape'
 import credentials from '../../credentials'
-import * as auth from '../../lib/utils/auth'
+import * as auth from '../../src/utils/auth'
 
 const authRequest = auth.buildRequest({
   credentials: {

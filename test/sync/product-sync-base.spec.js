@@ -1,6 +1,6 @@
 import test from 'tape'
-import clone from '../../lib/sync/utils/clone'
-import productsSyncFn, { actionGroups } from '../../lib/sync/products'
+import clone from '../../src/sync/utils/clone'
+import productsSyncFn, { actionGroups } from '../../src/sync/products'
 
 test('Sync::product::base', t => {
   let productsSync

@@ -1,5 +1,5 @@
 import test from 'tape'
-import inventorySyncFn, { actionGroups } from '../../lib/sync/inventories'
+import inventorySyncFn, { actionGroups } from '../../src/sync/inventories'
 
 test('Sync::inventory', t => {
   let inventorySync

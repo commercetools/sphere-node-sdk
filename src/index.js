@@ -97,4 +97,7 @@ export default class SphereClient {
 SphereClient.create = (...args) => new SphereClient(...args)
 
 // Assign useful static properties to the default export
-classify(Object.assign(SphereClient, { errors, features, http }), true)
+classify(Object.assign(
+  SphereClient,
+  { errors, features, http, version: version.version }
+), true)

@@ -1,6 +1,6 @@
 import test from 'tape'
 import sinon from 'sinon'
-import taskQueueFn from '../../lib/utils/task-queue'
+import taskQueueFn from '../../src/utils/task-queue'
 
 test('Utils::taskQueue', t => {
   let options

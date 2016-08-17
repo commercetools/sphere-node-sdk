@@ -1,6 +1,6 @@
 import test from 'tape'
-import * as features from '../../lib/utils/features'
-import { setDefaultParams } from '../../lib/utils/default-params'
+import * as features from '../../src/utils/features'
+import { setDefaultParams } from '../../src/utils/default-params'
 
 test('Utils::defaultParams', t => {
   t.test('should set default params for a normal endpoint', t => {

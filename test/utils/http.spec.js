@@ -1,6 +1,6 @@
 import test from 'tape'
 import sinon from 'sinon'
-import httpFn from '../../lib/utils/http'
+import httpFn from '../../src/utils/http'
 
 test('Utils::http', t => {
   t.test('should expose a function', t => {

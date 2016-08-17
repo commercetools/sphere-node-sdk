@@ -1,5 +1,5 @@
 import test from 'tape'
-import * as queryCustom from '../../lib/utils/query-custom'
+import * as queryCustom from '../../src/utils/query-custom'
 
 test('Utils::queryCustom', t => {
   let service

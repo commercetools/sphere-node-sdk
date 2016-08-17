@@ -1,7 +1,7 @@
 import test from 'tape'
 import sinon from 'sinon'
 import credentials from '../../credentials'
-import taskQueueFn from '../../lib/utils/task-queue'
+import taskQueueFn from '../../src/utils/task-queue'
 
 test('Integration - TaskQueue token retrieval', t => {
   let options
