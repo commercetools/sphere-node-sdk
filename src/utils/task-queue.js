@@ -30,6 +30,18 @@ export default options => {
   const http = httpFn(options)
 
   /**
+   * Returns true if the stored access token is valid.
+   * Otherwise a new access token should be requested.
+   */
+  function hasValidAccessToken () {
+    if (!auth.accessToken) return false
+
+    const { accessTokenExpirationTime: expirationTime } = auth
+    if (expirationTime && Date.now() > expirationTime) return false
+    return true
+  }
+
+  /**
    * Execute the given task and call the `cb` when done.
    *
    * @param  {Object}   task - It contains `fn`, `resolve`, `reject` which are
@@ -53,7 +65,7 @@ export default options => {
   const queue = async.queue((task, cb) => {
     auth.shouldRetrieveToken(shouldRetrieve => {
       if (shouldRetrieve)
-        if (auth.accessToken) execTask(task, cb)
+        if (hasValidAccessToken()) execTask(task, cb)
         else {
           queue.pause()
 
@@ -61,6 +73,11 @@ export default options => {
           .then(({ body }) => {
             // TODO: use a setter
             options.auth.accessToken = body.access_token // eslint-disable-line
+            options.auth.accessTokenExpirationTime = Date.now() + // eslint-disable-line
+              (body.expires_in * 1000) -
+              // Add a gap of 2 hours before expiration time.
+              (2 * 60 * 60 * 1000)
+
             execTask(task, cb)
             queue.resume()
           })

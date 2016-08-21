@@ -78,6 +78,7 @@ test('SphereClient', t => {
       Promise: { foo: 'bar' },
       auth: {
         accessToken: undefined,
+        accessTokenExpirationTime: undefined,
         credentials,
         shouldRetrieveToken,
         host: 'auth.sphere.io',
