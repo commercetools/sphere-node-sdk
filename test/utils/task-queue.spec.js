@@ -61,15 +61,24 @@ test('Utils::taskQueue', t => {
 
     let apiCalls = 0
     const httpMock = (url, fetchOptions) => {
-      if (url === 'https://test_client:test_secret@auth.sphere.io/oauth/token') // eslint-disable-line
+      const { Authorization } = fetchOptions.headers
+
+      if (url === 'https://test_client:test_secret@auth.sphere.io/oauth/token') { // eslint-disable-line
+        // Ensure credentials are sent with url
+        // and not with Authorization header
+        if (Authorization) return fetchResponseMock(401, {
+          error: 'The client should not send the Authorization header.',
+        })
+
         return fetchResponseMock(200, {
           access_token: `token${apiCalls}`,
           expires_in: 2 * 60 * 60 - 1, // 1h59m59s
           scope: 'manage_project:test',
           token_type: 'Bearer',
         })
+      }
 
-      const { Authorization } = fetchOptions.headers
+
       const result = Authorization === `Bearer token${apiCalls}` ?
         fetchResponseMock(200, { foo: 'bar' }) :
         fetchResponseMock(401, { error: 'Invalid token' })

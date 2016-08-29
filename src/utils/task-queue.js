@@ -35,10 +35,8 @@ export default options => {
    */
   function hasValidAccessToken () {
     if (!auth.accessToken) return false
-
     const { accessTokenExpirationTime: expirationTime } = auth
-    if (expirationTime && Date.now() > expirationTime) return false
-    return true
+    return !(expirationTime && Date.now() > expirationTime)
   }
 
   /**
@@ -69,7 +67,12 @@ export default options => {
         else {
           queue.pause()
 
-          authUtils.getAccessToken(options)
+          authUtils.getAccessToken(Object.assign({}, options, {
+            auth: Object.assign({}, options.auth, {
+              accessToken: undefined,
+              accessTokenExpirationTime: undefined,
+            }),
+          }))
           .then(({ body }) => {
             // TODO: use a setter
             options.auth.accessToken = body.access_token // eslint-disable-line
