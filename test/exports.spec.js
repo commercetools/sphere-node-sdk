@@ -1,5 +1,9 @@
 import test from 'tape'
-import SphereClient from '../src'
+import SphereClient, {
+  createSyncCategories,
+  createSyncInventories,
+  createSyncProducts,
+} from '../src'
 import pkg from '../package.json'
 
 const { errors, features, http, version } = SphereClient
@@ -17,6 +21,13 @@ test('Public exports', t => {
     t.equal(http.name, 'http')
     t.equal(Object.keys(features).length, 10)
     t.equal(version, pkg.version)
+    t.end()
+  })
+
+  t.test('should export sync utils', t => {
+    t.equal(typeof createSyncCategories, 'function')
+    t.equal(typeof createSyncInventories, 'function')
+    t.equal(typeof createSyncProducts, 'function')
     t.end()
   })
 })
