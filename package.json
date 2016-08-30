@@ -17,7 +17,12 @@
   "files": [
     "dist",
     "lib",
-    "src"
+    "src",
+    "test",
+    "scripts",
+    "version.js",
+    "LICENSE.md",
+    ".nvmrc"
   ],
   "engines": {
     "node": ">=4.0"
