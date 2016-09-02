@@ -96,10 +96,19 @@ class ProductUtils extends BaseUtils
         # if the the category order hint was changed from {} to not existant
         if action.categoryOrderHints is undefined
           return
-        action.categoryId = Object.keys(action.categoryOrderHints)[0]
-        action.orderHint = action.categoryOrderHints[action.categoryId]
-        action = _.pick action, ['action', 'categoryId', 'orderHint']
-      actions.push action if action
+        orderHintActions = Object.keys(action.categoryOrderHints)
+          .map((categoryId) ->
+            orderHint = action.categoryOrderHints[categoryId]
+            unless _.isNumber(orderHint)
+              orderHint = undefined
+
+            action: 'setCategoryOrderHint'
+            categoryId: categoryId
+            orderHint: orderHint
+          )
+        actions = actions.concat(orderHintActions)
+      else
+        actions.push action if action
     actions
 
   # Private: map product variants
