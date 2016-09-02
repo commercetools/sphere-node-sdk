@@ -99,9 +99,13 @@ class ProductUtils extends BaseUtils
         orderHintActions = Object.keys(action.categoryOrderHints)
           .map((categoryId) ->
             orderHint = action.categoryOrderHints[categoryId]
-            unless _.isNumber(orderHint)
+            if orderHint is null or orderHint is undefined
               orderHint = undefined
-
+            else
+              # stringify the order hint so that javascript numbers also get
+              # accepted as values
+              # for empty string we assume that the orderHint should be unset
+              orderHint = "#{orderHint}" || undefined
             action: 'setCategoryOrderHint'
             categoryId: categoryId
             orderHint: orderHint

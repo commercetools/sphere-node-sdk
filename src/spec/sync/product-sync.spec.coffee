@@ -115,7 +115,7 @@ describe 'ProductSync', ->
         actions: [
           { action: 'changeName', name: {en: 'Foo', de: undefined, it: 'Boo'} }
           { action: 'changeSlug', slug: {en: 'foo', it: 'boo'} }
-          { action: 'setCategoryOrderHint', categoryId : 'myFancyCategoryId', orderHint : 0.9 }
+          { action: 'setCategoryOrderHint', categoryId : 'myFancyCategoryId', orderHint : '0.9' }
           { action: 'setDescription', description: undefined }
           { action: 'setSearchKeywords', searchKeywords: en: [{text: 'new'}, {text: 'search'}, {text: 'keywords'}], "fr-BE": [{text: 'bruxelles'}, {text:'liege'}, {text: 'brugge'}] }
         ]
@@ -131,7 +131,7 @@ describe 'ProductSync', ->
         actions: [
           { action: 'changeName', name: {en: 'Foo', de: undefined, it: 'Boo'} }
           { action: 'changeSlug', slug: {en: 'foo', it: 'boo'} }
-          { action: 'setCategoryOrderHint', categoryId : 'myFancyCategoryId', orderHint : 0.9 }
+          { action: 'setCategoryOrderHint', categoryId : 'myFancyCategoryId', orderHint : '0.9' }
           { action: 'setDescription', description: undefined }
           { action: 'setSearchKeywords', searchKeywords: en: [{text: 'new'}, {text: 'search'}, {text: 'keywords'}], "fr-BE": [{text: 'bruxelles'}, {text:'liege'}, {text: 'brugge'}]}
           { action: 'transitionState', state: { typeId: 'state', id: 'new-state-id' } }
