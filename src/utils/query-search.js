@@ -3,6 +3,14 @@
  * products search requests.
  * @module utils/querySearch
  */
+import {
+  SERVICE_PARAM_QUERY_SEARCH_FACET,
+  SERVICE_PARAM_QUERY_SEARCH_FILTER,
+  SERVICE_PARAM_QUERY_SEARCH_FILTER_BY_QUERY,
+  SERVICE_PARAM_QUERY_SEARCH_FILTER_BY_FACETS,
+  SERVICE_PARAM_QUERY_SEARCH_FUZZY,
+  SERVICE_PARAM_QUERY_SEARCH_TEXT,
+} from '../constants'
 
 /**
  * Set the given `text` param used for full-text search.
@@ -18,7 +26,13 @@ export function text (value, lang) {
   if (!value || !lang)
     throw new Error('Required arguments for `text` are missing')
 
-  this.params.search.text = { lang, value: encodeURIComponent(value) }
+  const searchText = { lang, value: encodeURIComponent(value) }
+
+  this.store.dispatch({
+    type: SERVICE_PARAM_QUERY_SEARCH_TEXT,
+    meta: { service: this.type },
+    payload: searchText,
+  })
   return this
 }
 
@@ -28,7 +42,10 @@ export function text (value, lang) {
  * @return {Object} The instance of the service, can be chained.
  */
 export function fuzzy () {
-  this.params.search.fuzzy = true
+  this.store.dispatch({
+    type: SERVICE_PARAM_QUERY_SEARCH_FUZZY,
+    meta: { service: this.type },
+  })
   return this
 }
 
@@ -45,7 +62,12 @@ export function facet (value) {
     throw new Error('Required argument for `facet` is missing')
 
   const encodedFacet = encodeURIComponent(value)
-  this.params.search.facet.push(encodedFacet)
+
+  this.store.dispatch({
+    type: SERVICE_PARAM_QUERY_SEARCH_FACET,
+    meta: { service: this.type },
+    payload: encodedFacet,
+  })
   return this
 }
 
@@ -62,7 +84,12 @@ export function filter (value) {
     throw new Error('Required argument for `filter` is missing')
 
   const encodedFilter = encodeURIComponent(value)
-  this.params.search.filter.push(encodedFilter)
+
+  this.store.dispatch({
+    type: SERVICE_PARAM_QUERY_SEARCH_FILTER,
+    meta: { service: this.type },
+    payload: encodedFilter,
+  })
   return this
 }
 
@@ -79,7 +106,12 @@ export function filterByQuery (value) {
     throw new Error('Required argument for `filterByQuery` is missing')
 
   const encodedFilter = encodeURIComponent(value)
-  this.params.search.filterByQuery.push(encodedFilter)
+
+  this.store.dispatch({
+    type: SERVICE_PARAM_QUERY_SEARCH_FILTER_BY_QUERY,
+    meta: { service: this.type },
+    payload: encodedFilter,
+  })
   return this
 }
 
@@ -96,6 +128,11 @@ export function filterByFacets (value) {
     throw new Error('Required argument for `filterByFacets` is missing')
 
   const encodedFilter = encodeURIComponent(value)
-  this.params.search.filterByFacets.push(encodedFilter)
+
+  this.store.dispatch({
+    type: SERVICE_PARAM_QUERY_SEARCH_FILTER_BY_FACETS,
+    meta: { service: this.type },
+    payload: encodedFilter,
+  })
   return this
 }

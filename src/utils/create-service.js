@@ -1,11 +1,23 @@
+// import {
+//   getDefaultQueryParams,
+//   getDefaultSearchParams,
+// } from './default-params'
 import {
-  getDefaultQueryParams,
-  getDefaultSearchParams,
-} from './default-params'
+  FEATURE_READ,
+  FEATURE_CREATE,
+  FEATURE_UPDATE,
+  FEATURE_DELETE,
+  FEATURE_QUERY,
+  FEATURE_QUERY_ONE,
+  FEATURE_QUERY_EXPAND,
+  FEATURE_QUERY_STRING,
+  FEATURE_SEARCH,
+  FEATURE_PROJECTION,
+  SERVICE_INIT,
+} from '../constants'
 import classify from './classify'
-import * as defaultFeatures from './features'
+import createHttpVerbs from './create-http-verbs'
 import * as withHelpers from './with-helpers'
-import * as verbs from './verbs'
 import * as query from './query'
 import * as queryId from './query-id'
 import * as queryExpand from './query-expand'
@@ -23,47 +35,58 @@ export default function createService (config) {
   if (!type || !endpoint || !(features && features.length > 0))
     throw new Error('Object `config` is missing required parameters.')
 
-  return deps => classify(
-    Object.assign({},
-      deps, withHelpers,
-      {
-        type, features, baseEndpoint: endpoint,
-        params: getDefaultQueryParams(),
-      },
-      features.reduce((acc, feature) => {
-        if (feature === defaultFeatures.query)
-          return Object.assign(acc, query, queryPage)
+  return (store, promiseLibrary) => {
+    store.dispatch({ type: SERVICE_INIT, payload: { type, endpoint } })
 
-        if (feature === defaultFeatures.queryOne)
-          return Object.assign(acc, queryId)
+    const verbs = createHttpVerbs(promiseLibrary)
 
-        if (feature === defaultFeatures.queryExpand)
-          return Object.assign(acc, queryExpand)
+    const serviceFeatures = features.reduce((acc, feature) => {
+      if (feature === FEATURE_QUERY)
+        return { ...acc, ...query, ...queryPage }
 
-        if (feature === defaultFeatures.queryString)
-          return Object.assign(acc, queryCustom)
+      if (feature === FEATURE_QUERY_ONE)
+        return { ...acc, ...queryId }
 
-        if (feature === defaultFeatures.search)
-          return Object.assign(acc, querySearch, queryPage, {
-            params: getDefaultSearchParams(),
-          })
+      if (feature === FEATURE_QUERY_EXPAND)
+        return { ...acc, queryExpand }
 
-        if (feature === defaultFeatures.projection)
-          return Object.assign(acc, queryProjection)
+      if (feature === FEATURE_QUERY_STRING)
+        return { ...acc, queryCustom }
 
-        if (feature === defaultFeatures.read)
-          return Object.assign(acc, { fetch: verbs.fetch })
+      if (feature === FEATURE_SEARCH)
+        return {
+          ...acc,
+          ...querySearch,
+          ...queryPage,
+          // params: getDefaultSearchParams(),
+        }
 
-        if (feature === defaultFeatures.create)
-          return Object.assign(acc, { create: verbs.create })
+      if (feature === FEATURE_PROJECTION)
+        return { ...acc, queryProjection }
 
-        if (feature === defaultFeatures.update)
-          return Object.assign(acc, { update: verbs.update })
+      if (feature === FEATURE_READ)
+        return { ...acc, fetch: verbs.fetch }
 
-        if (feature === defaultFeatures.delete)
-          return Object.assign(acc, { delete: verbs.delete })
+      if (feature === FEATURE_CREATE)
+        return { ...acc, create: verbs.create }
 
-        return acc
-      }, {})
-    ))
+      if (feature === FEATURE_UPDATE)
+        return { ...acc, update: verbs.update }
+
+      if (feature === FEATURE_DELETE)
+        return { ...acc, delete: verbs.delete }
+
+      return acc
+    }, {})
+
+    return classify({
+      type,
+      features,
+      // TODO: might want to inject the store into the utils
+      // functions instead of making it public.
+      store,
+      ...withHelpers,
+      ...serviceFeatures,
+    })
+  }
 }

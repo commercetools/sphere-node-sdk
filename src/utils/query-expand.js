@@ -2,6 +2,7 @@
  * Utils `query-expand` module.
  * @module utils/queryExpand
  */
+import { SERVICE_PARAM_QUERY_EXPAND } from '../constants'
 
 /**
  * Set the
@@ -19,8 +20,13 @@ export function expand (value) {
     throw new Error('Required argument for `expand` is missing')
 
   const encodedPath = encodeURIComponent(value)
-  // Note: this goes to base `params`, not `params.query`
-  // to be compatible with search.
-  this.params.expand.push(encodedPath)
+  // // Note: this goes to base `params`, not `params.query`
+  // // to be compatible with search.
+  // this.params.expand.push(encodedPath)
+  this.store.dispatch({
+    type: SERVICE_PARAM_QUERY_EXPAND,
+    meta: { service: this.type },
+    payload: encodedPath,
+  })
   return this
 }

@@ -2,6 +2,10 @@
  * Utils `query` module. It contains methods to work with query requests.
  * @module utils/query
  */
+import {
+  SERVICE_PARAM_QUERY_WHERE,
+  SERVICE_PARAM_QUERY_WHERE_OPERATOR,
+} from '../constants'
 
 /**
  * Set the given `predicate` to the internal state of the service instance.
@@ -16,7 +20,12 @@ export function where (predicate) {
     throw new Error('Required argument for `where` is missing')
 
   const encodedPredicate = encodeURIComponent(predicate)
-  this.params.query.where.push(encodedPredicate)
+  // this.params.query.where.push(encodedPredicate)
+  this.store.dispatch({
+    type: SERVICE_PARAM_QUERY_WHERE,
+    meta: { service: this.type },
+    payload: encodedPredicate,
+  })
   return this
 }
 
@@ -35,6 +44,11 @@ export function whereOperator (operator) {
     throw new Error('Required argument for `whereOperator` is invalid, ' +
       'allowed values are [`and`, `or`]')
 
-  this.params.query.operator = operator
+  // this.params.query.operator = operator
+  this.store.dispatch({
+    type: SERVICE_PARAM_QUERY_WHERE_OPERATOR,
+    meta: { service: this.type },
+    payload: operator,
+  })
   return this
 }
