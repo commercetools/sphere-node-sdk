@@ -36,7 +36,11 @@ export default function createService (config) {
     throw new Error('Object `config` is missing required parameters.')
 
   return (store, promiseLibrary) => {
-    store.dispatch({ type: SERVICE_INIT, payload: { type, endpoint } })
+    store.dispatch({
+      type: SERVICE_INIT,
+      payload: endpoint,
+      meta: { service: type },
+    })
 
     const verbs = createHttpVerbs(promiseLibrary)
 

@@ -33,7 +33,7 @@ export default function createHttpVerbs (promiseLibrary) {
       const { type, store } = this
       const { service: { [type]: serviceState } } = store.getState()
 
-      store.dispatch({ type: SERVICE_PARAMS_RESET, payload: type })
+      store.dispatch({ type: SERVICE_PARAMS_RESET, meta: { service: type } })
       return new Promise((resolve, reject) => {
         try {
           store.dispatch({
