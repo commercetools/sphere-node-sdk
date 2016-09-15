@@ -1,17 +1,20 @@
+/* @flow */
+import type {
+  Middleware,
+} from 'redux'
 import * as errors from '../utils/errors'
 import { TASK_ERROR } from '../constants'
 
-export const errorsMap = {
-  400: errors.BadRequest,
-  401: errors.Unauthorized,
-  403: errors.Forbidden,
-  409: errors.ConcurrentModification,
-  500: errors.InternalServerError,
-  503: errors.ServiceUnavailable,
-}
+export const errorsMap = new Map([
+  [ 400, errors.BadRequest ],
+  [ 401, errors.Unauthorized ],
+  [ 403, errors.Forbidden ],
+  [ 409, errors.ConcurrentModification ],
+  [ 500, errors.InternalServerError ],
+  [ 503, errors.ServiceUnavailable ],
+])
 
-
-export default function createErrorMiddleware (/* options = {} */) {
+export default function createErrorMiddleware (/* options */): Middleware {
   return (/* middlewareAPI */) => next => action => {
     if (action.type === TASK_ERROR) {
       const {
@@ -38,10 +41,8 @@ export default function createErrorMiddleware (/* options = {} */) {
         statusCode, originalRequest, headers,
       })
 
-      if (errorsMap[errorBody.statusCode])
-        reject(new errorsMap[errorBody.statusCode](errorMessage, errorBody))
-
-      reject(new errors.HttpError(errorMessage, errorBody))
+      const ErrorType = errorsMap.get(errorBody.statusCode) || errors.HttpError
+      reject(new ErrorType(errorMessage, errorBody))
 
       return null
     }
@@ -51,7 +52,7 @@ export default function createErrorMiddleware (/* options = {} */) {
 }
 
 
-function gerErrorMessage (body) {
+function gerErrorMessage (body: Object): string {
   let message = body.message || body.error_description || body.error
   if (!message)
     if (body.hasOwnProperty('data') && body.hasOwnProperty('errors') &&

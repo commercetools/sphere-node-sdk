@@ -1,10 +1,16 @@
 /* global fetch */
+/* @flow */
+import type {
+  Middleware,
+  MiddlewareAPI,
+} from 'redux'
 import 'isomorphic-fetch'
 import processResponse from '../utils/process-response'
 import { TASK, TASK_ERROR, REQUEST_TOKEN } from '../constants'
 
+// TODO: define authMiddleware type with options
 
-export default function createAuthMiddleware (options = {}) {
+export default function createAuthMiddleware (options: Object): Middleware {
   const {
     clientId,
     clientSecret,
@@ -14,14 +20,14 @@ export default function createAuthMiddleware (options = {}) {
     headers,
     timeout = 20000,
     httpMock,
-  } = options
+  } = options || {}
 
   const http = httpMock || fetch
   const httpOptions = {
     clientId, clientSecret, host, protocol, headers, agent, timeout,
   }
 
-  return function authMiddleware ({ dispatch, getState }) {
+  return function authMiddleware ({ dispatch, getState }: MiddlewareAPI) {
     const pendingTasks = []
     let isGettingToken = false
 
@@ -109,7 +115,7 @@ export default function createAuthMiddleware (options = {}) {
 }
 
 
-function buildRequestUrl (httpOptions) {
+function buildRequestUrl (httpOptions: Object): string {
   const { protocol, host, clientId, clientSecret } = httpOptions
   const authHost = `${protocol}://${clientId}:${clientSecret}@${host}`
   return `${authHost}/oauth/token`

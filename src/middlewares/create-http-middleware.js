@@ -1,4 +1,12 @@
 /* global fetch */
+/* @flow */
+import type {
+  Middleware,
+  MiddlewareAPI,
+} from 'redux'
+import type {
+  Action,
+} from '../types'
 import 'isomorphic-fetch'
 import buildAbsoluteUrl from '../utils/build-absolute-url'
 import buildQueryString from '../utils/build-query-string'
@@ -35,7 +43,10 @@ Example of action handled by this middleware:
   payload: { foo: 'bar' },
 }
  */
-export default function createHttpMiddleware (options = {}) {
+
+// TODO: define httpMiddleware type with options
+
+export default function createHttpMiddleware (options: Object): Middleware {
   const {
     host = 'api.sphere.io',
     protocol = 'https',
@@ -45,7 +56,7 @@ export default function createHttpMiddleware (options = {}) {
     timeout = 20000,
     urlPrefix,
     httpMock,
-  } = options
+  } = options || {}
 
   const http = httpMock || fetch
   const httpOptions = {
@@ -53,7 +64,7 @@ export default function createHttpMiddleware (options = {}) {
     formatAuthorizationHeader, agent, timeout,
   }
 
-  return function httpMiddleware ({ getState }) {
+  return function httpMiddleware ({ getState }: MiddlewareAPI) {
     return next => action => {
       // This is the only action type that should be handled here.
       if (action.type === TASK) {
@@ -100,9 +111,10 @@ export default function createHttpMiddleware (options = {}) {
             action.meta.promise.resolve(result)
           },
           error => {
-            const errorWithRequest = Object.assign({}, error, {
-              originalRequest: Object.assign({ url }, requestOptions),
-            })
+            const errorWithRequest = {
+              ...error,
+              originalRequest: { url, ...requestOptions },
+            }
             // Error handling is done in another middleware
             next({
               type: TASK_ERROR,
@@ -119,7 +131,11 @@ export default function createHttpMiddleware (options = {}) {
 }
 
 
-function buildRequestUrl (httpOptions, action, getState) {
+function buildRequestUrl (
+  httpOptions: Object,
+  action: Action,
+  getState: () => Object,
+): Object {
   const { meta: { source, serviceState } } = action
   const { request: { projectKey } } = getState()
   const { endpoint, id, ...params } = serviceState
@@ -154,13 +170,17 @@ function buildRequestUrl (httpOptions, action, getState) {
   })
 }
 
-function buildRequestHeaders (httpOptions, action, getState) {
+function buildRequestHeaders (
+  httpOptions: Object,
+  action: Action,
+  getState: () => Object,
+): Object {
   const { headers, formatAuthorizationHeader } = httpOptions
   const { meta: { source }, payload: body } = action
   const { request: { token } } = getState()
   const baseHeaders = { Accept: 'application/json' }
 
-  let httpHeaders = Object.assign({}, baseHeaders, headers)
+  let httpHeaders = { ...baseHeaders, ...headers }
   let requestBody
 
   if (
@@ -170,26 +190,27 @@ function buildRequestHeaders (httpOptions, action, getState) {
   ) {
     requestBody = typeof body === 'string'
       ? body : JSON.stringify(body)
-    httpHeaders = Object.assign({}, httpHeaders, {
+    httpHeaders = {
+      ...httpHeaders,
       'Content-Type': 'application/json',
       'Content-Length': Buffer.byteLength(requestBody),
-    })
+    }
   }
 
   if (token)
-    httpHeaders = Object.assign({},
-      httpHeaders,
-      formatAuthorizationHeader(token)
-    )
+    httpHeaders = {
+      ...httpHeaders,
+      ...formatAuthorizationHeader(token),
+    }
 
   return httpHeaders
 }
 
-function withQueryParams (url, params) {
+function withQueryParams (url: string, params?: string): string {
   if (!params) return url
   return `${url}?${params}`
 }
 
-function defaultAuthHeader (token) {
+function defaultAuthHeader (token: string): Object {
   return { Authorization: `Bearer ${token}` }
 }

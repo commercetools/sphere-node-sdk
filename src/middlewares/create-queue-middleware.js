@@ -1,17 +1,25 @@
+/* @flow */
+import type {
+  Middleware,
+  Dispatch,
+} from 'redux'
 import { TASK } from '../constants'
 
 // Note: this middleware should go before any other middleware that handle
 // the `TASK` action.
-export default function createQueueMiddleware (options = {}) {
+
+// TODO: define queueMiddleware type with options
+
+export default function createQueueMiddleware (options: Object): Middleware {
   const {
     maxConcurrency = 20,
-  } = options
+  } = options || {}
 
   return function queueMiddleware (/* middlewareAPI */) {
     const queue = []
     let runningCount = 0
 
-    function dequeue (next) {
+    function dequeue (next: Dispatch): any {
       runningCount--
 
       if (queue.length && runningCount <= maxConcurrency) {
