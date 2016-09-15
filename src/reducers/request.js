@@ -22,8 +22,8 @@ const actionHandlers: ActionHandlers<RequestState, Action> = {
     action: Action
   ): RequestState => ({
     ...state,
-    token: action.payload['access_token'],
-    expiresIn: action.payload['expires_in'],
+    token: action.payload.token,
+    expiresIn: action.payload.expiresIn,
   }),
   [REQUEST_PROJECT_KEY]: (
     state: RequestState,

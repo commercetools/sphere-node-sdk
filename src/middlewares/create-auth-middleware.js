@@ -80,7 +80,13 @@ export default function createAuthMiddleware (options = {}) {
             // Will dispatch an action to put the token into state.
             // Additionally, all pending tasks will be dispatched as
             // well and handled at the beginning of this middleware.
-            dispatch({ type: REQUEST_TOKEN, payload: result.body })
+            dispatch({
+              type: REQUEST_TOKEN,
+              payload: {
+                token: result.body['access_token'],
+                expiresIn: result.body['expires_in'],
+              },
+            })
           },
           error => {
             const errorWithRequest = {
