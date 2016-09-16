@@ -755,13 +755,14 @@ describe 'ProductUtils', ->
         masterVariant:
           id: 1
         categoryOrderHints:
-          abc: 0.9
+          abc: '0.9'
       NEW =
         id: '123'
         masterVariant:
           id: 1
         categoryOrderHints:
-          abc: 0.3
+          abc: '0.3'
+          anotherCategoryId: '0.1'
 
       delta = @utils.diff OLD, NEW
       update = @utils.actionsMapBase(delta, OLD)
@@ -769,7 +770,50 @@ describe 'ProductUtils', ->
         {
           action: 'setCategoryOrderHint'
           categoryId: 'abc'
-          orderHint: 0.3
+          orderHint: '0.3'
+        }, {
+          action: 'setCategoryOrderHint'
+          categoryId: 'anotherCategoryId'
+          orderHint: '0.1'
+        },
+      ]
+      expect(update).toEqual expected_update
+
+    it 'should generate a setCategoryOrderHint action to unset order hints', ->
+      OLD =
+        id: '123'
+        masterVariant:
+          id: 1
+        categoryOrderHints:
+          abc: '0.9'
+          anotherCategoryId: '0.5'
+          categoryId: '0.5'
+      NEW =
+        id: '123'
+        masterVariant:
+          id: 1
+        categoryOrderHints:
+          abc: null
+          anotherCategoryId: '0'
+          categoryId: ''
+
+      delta = @utils.diff OLD, NEW
+      update = @utils.actionsMapBase(delta, OLD)
+      expected_update = [
+        {
+          action: 'setCategoryOrderHint'
+          categoryId: 'abc',
+          orderHint: undefined,
+        },
+        {
+          action: 'setCategoryOrderHint'
+          categoryId: 'anotherCategoryId',
+          orderHint: '0',
+        }
+        {
+          action: 'setCategoryOrderHint'
+          categoryId: 'categoryId',
+          orderHint: undefined,
         }
       ]
       expect(update).toEqual expected_update
