@@ -19,12 +19,19 @@ export default function createQueueMiddleware (options: Object): Middleware {
     const queue = []
     let runningCount = 0
 
-    function dequeue (next: Dispatch): any {
+    // This function is called when a previous task has been resolved. If there
+    // are any other pending tasks, dispatch them and check for other pending
+    // tasks after those have been resolved.
+    // Note: it's necessary that middlewares after the queue middleware
+    // return a promise, so that it's clear when to dequeue new pending tasks.
+    function dequeue (next: Dispatch) {
       runningCount--
 
       if (queue.length && runningCount <= maxConcurrency) {
         const nextAction = queue.shift()
         runningCount++
+        // TODO: not sure this is the best way of doing this.
+        // It seems very fragile.
         return next(nextAction).then(() => dequeue(next))
       }
 
