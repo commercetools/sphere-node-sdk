@@ -8,7 +8,7 @@ import SphereClient, {
   createLoggerMiddleware,
 } from '../../src'
 
-test.only('Middlewares', t => {
+test('Middlewares', (t) => {
   const options = {
     projectKey: credentials.project_key,
     middlewares: [
@@ -41,12 +41,12 @@ test.only('Middlewares', t => {
     // client.getService('categories').perPage(0).fetch(),
     // client.getService('product-types').perPage(0).fetch(),
   ])
-  .then(result => {
+  .then((result) => {
     console.log('result', result)
     t.end()
   })
-  .catch(e => {
-    console.log('error', e)
+  .catch((error) => {
+    console.log('error', error)
     t.end()
   })
 })

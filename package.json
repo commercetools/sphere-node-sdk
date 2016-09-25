@@ -135,6 +135,11 @@
       "flowtype/valid-syntax": 1
     },
     "settings": {
+      "import/resolver": {
+        "node": {
+          "paths": ["src/"]
+        }
+      },
       "flowtype": {
         "onlyFilesWithFlowAnnotation": true
       }

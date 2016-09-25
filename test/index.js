@@ -1,7 +1,9 @@
-import './middlewares/index.spec'
+import './client.spec'
+import './exports.spec'
 
-// import './client.spec'
-// import './exports.spec'
+import './integration/middlewares-playground.spec'
+
+import './utils/init-store.spec'
 
 // import './integration/client/graphql.spec'
 // import './integration/client/products.spec'

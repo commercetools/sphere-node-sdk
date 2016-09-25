@@ -1,7 +1,6 @@
 // if (!global._babelPolyfill)
 //   require('babel-polyfill') // eslint-disable-line global-require
 
-import { createStore, compose, applyMiddleware } from 'redux'
 import * as version from '../version'
 import services from './services'
 import * as constants from './constants'
@@ -9,55 +8,9 @@ import * as errors from './utils/errors'
 import classify from './utils/classify'
 import createService from './utils/create-service'
 import createGraphQLService from './utils/create-graphql-service'
-
-// Middlewares
-import reducers from './reducers'
-// import createAuthMiddleware from './middlewares/create-auth'
-// import createHttpMiddleware from './middlewares/create-http'
-// import createQueueMiddleware from './middlewares/create-queue'
-// import createLoggerMiddleware from './middlewares/create-logger'
-// import createErrorMiddleware from './middlewares/create-error'
+import initStore from './utils/init-store'
 
 // const userAgent = `${version.name}-${version.version}`
-
-/**
- * Initialize the client `store` with the related middlewares.
- * This should be invoked once per client instance.
- *
- * TODO: allow to inject custom middlewares.
- *
- * @param  {Object} options - the options passed to the client
- * to setup the store and the middlewares.
- * @return {Object} The redux store.
- */
-function initStore (options) {
-  const {
-    projectKey,
-    oauth = {
-      token: undefined,
-      expiresIn: undefined,
-    },
-    // TODO: document the contract of the middlewares:
-    // - the order is important
-    // - what are the action types important for the middlewares
-    // - when to use `next` and `dispatch`
-    middlewares = [],
-  } = options
-
-  if (!middlewares.length)
-    // TODO: link to middlewares documentation
-    throw new Error('No middlewares found.')
-
-  const initialState = {
-    request: { projectKey, ...oauth },
-  }
-
-  const finalCreateStore = compose(
-    applyMiddleware(...middlewares)
-  )(createStore)
-
-  return finalCreateStore(reducers, initialState)
-}
 
 /**
  * A `SphereClient` class that exposes `services` specific for each
@@ -97,11 +50,16 @@ function initStore (options) {
  */
 export default class SphereClient {
   constructor (options) {
+    // TODO: make it a global?
     const { promiseLibrary = Promise } = options
+
+    // Initialize redux store.
     const store = initStore(options)
 
+    // Initialize object map that holds all the services.
     const serviceStore = {}
 
+    // Initialize each service and add it to the map.
     Object.keys(services).forEach((key) => {
       const service = createService(services[key])
       serviceStore[key] = service(store, promiseLibrary)
@@ -113,26 +71,39 @@ export default class SphereClient {
 
     // Expose only the following public API.
     return Object.assign(this, {
+
+      // Get a service by it's name / key.
       getService (name) {
-        const service = serviceStore[name]
-        if (!service)
-          throw new Error(`Wrong service name '${name}', available ` +
-            `services are '[${Object.keys(serviceStore).join(', ')}]'`)
-        return service
+        if (!(name in serviceStore))
+          throw new Error(
+            `Wrong service name '${name}', available ` +
+            `services are '[${Object.keys(serviceStore).join(', ')}]'`
+          )
+        return serviceStore[name]
       },
 
+      // Register a new service based on the given configuration.
+      // Throws if a service with the same name already exists.
       registerService (name, config) {
         if (name in serviceStore)
-          throw new Error(`The service with name '${name}' already exist. ` +
+          throw new Error(
+            `The service with name '${name}' already exist. ` +
             'Current available services are ' +
-            `'[${Object.keys(serviceStore).join(', ')}]'`)
+            `'[${Object.keys(serviceStore).join(', ')}]'`
+          )
         const service = createService(config)
         serviceStore[name] = service(store, promiseLibrary)
+        return serviceStore[name]
       },
+
+      listServices () {
+        return Object.keys(serviceStore)
+      },
+
+      // TODO: expose other useful methods
     })
   }
 }
-
 
 // Assign static factory function
 SphereClient.create = (...args) => new SphereClient(...args)
@@ -140,7 +111,11 @@ SphereClient.create = (...args) => new SphereClient(...args)
 // Assign useful static properties to the default export
 classify(Object.assign(
   SphereClient,
-  { errors, constants, version: version.version }
+  {
+    errors,
+    constants,
+    version: version.version,
+  }
 ), true)
 
 /* eslint-disable max-len */
@@ -155,3 +130,5 @@ export { default as createHttpMiddleware } from './middlewares/create-http-middl
 export { default as createQueueMiddleware } from './middlewares/create-queue-middleware'
 export { default as createLoggerMiddleware } from './middlewares/create-logger-middleware'
 export { default as createErrorMiddleware } from './middlewares/create-error-middleware'
+
+// TODO: expose a default middlewares preset
