@@ -25,11 +25,11 @@ export default function createQueueMiddleware (options: Object): Middleware {
     // Note: it's necessary that middlewares after the queue middleware
     // return a promise, so that it's clear when to dequeue new pending tasks.
     function dequeue (next: Dispatch) {
-      runningCount--
+      runningCount += 1
 
       if (queue.length && runningCount <= maxConcurrency) {
         const nextAction = queue.shift()
-        runningCount++
+        runningCount += 1
         // TODO: not sure this is the best way of doing this.
         // It seems very fragile.
         return next(nextAction).then(() => dequeue(next))
@@ -38,14 +38,14 @@ export default function createQueueMiddleware (options: Object): Middleware {
       return null
     }
 
-    return next => action => {
+    return next => (action) => {
       if (action.type === TASK) {
         queue.push(action)
 
         // If possible, run the tasks straight away.
         if (runningCount <= maxConcurrency) {
           const nextAction = queue.shift()
-          runningCount++
+          runningCount += 1
 
           return next(nextAction).then(() => dequeue(next))
         }

@@ -1,7 +1,4 @@
-/**
- * Utils `query` module. It contains methods to work with query requests.
- * @module utils/query
- */
+/* eslint-disable import/prefer-default-export */
 import {
   SERVICE_PARAM_QUERY_WHERE,
   SERVICE_PARAM_QUERY_WHERE_OPERATOR,

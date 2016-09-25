@@ -1,7 +1,4 @@
-/**
- * Utils `query-expand` module.
- * @module utils/queryExpand
- */
+/* eslint-disable import/prefer-default-export */
 import { SERVICE_PARAM_QUERY_EXPAND } from '../constants'
 
 /**

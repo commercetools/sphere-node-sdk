@@ -25,7 +25,7 @@ export const errorsMap = new Map([
 
 export default function createErrorMiddleware (/* options */): Middleware {
   return function errorMiddleware (/* middlewareAPI */) {
-    return next => action => {
+    return next => (action) => {
       if (action.type === TASK_ERROR) {
         const {
           meta: { promise: { reject } },
@@ -36,14 +36,18 @@ export default function createErrorMiddleware (/* options */): Middleware {
           const errorMessage = `Endpoint ${originalRequest.url} not found.`
           reject(new NotFound(errorMessage, {
             message: errorMessage,
-            statusCode, originalRequest, headers,
+            statusCode,
+            originalRequest,
+            headers,
           }))
         }
 
         if (typeof body === 'string')
           reject(new HttpError('Unexpected non-JSON error response.', {
             raw: body,
-            statusCode, originalRequest, headers,
+            statusCode,
+            originalRequest,
+            headers,
           }))
 
         const errorMessage = gerErrorMessage(body)
@@ -66,8 +70,11 @@ export default function createErrorMiddleware (/* options */): Middleware {
 function gerErrorMessage (body: Object): string {
   let message = body.message || body.error_description || body.error
   if (!message)
-    if (body.hasOwnProperty('data') && body.hasOwnProperty('errors') &&
-      body.data === null)
+    if (
+      {}.hasOwnProperty.call(body, 'data') &&
+      {}.hasOwnProperty.call(body, 'errors') &&
+      body.data === null
+    )
       message = body.errors.length ? body.errors[0].message : 'GraphQL error'
     else
       message = 'Undefined API error message'

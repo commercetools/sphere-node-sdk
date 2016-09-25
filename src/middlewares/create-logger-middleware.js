@@ -6,7 +6,7 @@ import type {
 
 export default function createLoggerMiddleware (/* options */): Middleware {
   return function loggerMiddleware (/* middlewareAPI */) {
-    return next => action => {
+    return next => (action) => {
       if (
         action.type !== 'SERVICE_INIT'
       )

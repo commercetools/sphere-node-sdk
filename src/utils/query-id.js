@@ -1,7 +1,4 @@
-/**
- * Utils `query-id` module.
- * @module utils/queryId
- */
+/* eslint-disable import/prefer-default-export */
 import { SERVICE_PARAM_ID } from '../constants'
 
 /**

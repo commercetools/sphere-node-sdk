@@ -1,8 +1,4 @@
-/**
- * Utils `query-search` module. It contains methods to work with
- * products search requests.
- * @module utils/querySearch
- */
+/* eslint-disable import/prefer-default-export */
 import {
   SERVICE_PARAM_QUERY_SEARCH_FACET,
   SERVICE_PARAM_QUERY_SEARCH_FILTER,

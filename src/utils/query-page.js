@@ -1,7 +1,3 @@
-/**
- * Utils `query-page` module. It contains methods to work with paginations.
- * @module utils/queryPage
- */
 import {
   SERVICE_PARAM_QUERY_PAGE,
   SERVICE_PARAM_QUERY_PER_PAGE,

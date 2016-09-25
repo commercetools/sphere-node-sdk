@@ -1,7 +1,4 @@
-/**
- * Utils `query-custom` module.
- * @module utils/queryCustom
- */
+/* eslint-disable import/prefer-default-export */
 import { SERVICE_PARAM_QUERY_CUSTOM } from '../constants'
 
 /**

@@ -31,7 +31,7 @@ export default function createAuthMiddleware (options: Object): Middleware {
     const pendingTasks = []
     let isGettingToken = false
 
-    return next => action => {
+    return next => (action) => {
       const { request: { token } } = getState()
       // TODO: validate expiration date
 
@@ -76,12 +76,13 @@ export default function createAuthMiddleware (options: Object): Middleware {
           method: 'POST',
           body: requestBody,
           headers: requestHeaders,
-          agent, timeout,
+          agent,
+          timeout,
         }
 
         return http(url, requestOptions).then(processResponse)
         .then(
-          result => {
+          (result) => {
             isGettingToken = false
             // Will dispatch an action to put the token into state.
             // Additionally, all pending tasks will be dispatched as
@@ -94,7 +95,7 @@ export default function createAuthMiddleware (options: Object): Middleware {
               },
             })
           },
-          error => {
+          (error) => {
             const errorWithRequest = {
               ...error,
               originalRequest: { url, ...requestOptions },

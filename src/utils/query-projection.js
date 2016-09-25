@@ -1,8 +1,4 @@
-/**
- * Utils `query-projection` module. It contains methods to work with
- * (product) projections.
- * @module utils/queryProjection
- */
+/* eslint-disable import/prefer-default-export */
 import { SERVICE_PARAM_QUERY_STAGED } from '../constants'
 
 /**

@@ -1,7 +1,3 @@
-/**
- * Utils `verbs` module.
- * @module utils/verbs
- */
 import {
   TASK,
   HTTP_FETCH,

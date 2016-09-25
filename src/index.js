@@ -102,7 +102,7 @@ export default class SphereClient {
 
     const serviceStore = {}
 
-    Object.keys(services).forEach(key => {
+    Object.keys(services).forEach((key) => {
       const service = createService(services[key])
       serviceStore[key] = service(store, promiseLibrary)
     })

@@ -1,7 +1,4 @@
-/**
- * Utils `with-helpers` module.
- * @module utils/withHelpers
- */
+/* eslint-disable import/prefer-default-export */
 import {
   REQUEST_TOKEN,
   REQUEST_PROJECT_KEY,

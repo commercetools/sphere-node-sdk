@@ -1,5 +1,6 @@
 /* global fetch */
 /* @flow */
+import 'isomorphic-fetch'
 import type {
   Middleware,
   MiddlewareAPI,
@@ -7,7 +8,6 @@ import type {
 import type {
   Action,
 } from '../types'
-import 'isomorphic-fetch'
 import buildAbsoluteUrl from '../utils/build-absolute-url'
 import buildQueryString from '../utils/build-query-string'
 import processResponse from '../utils/process-response'
@@ -60,12 +60,17 @@ export default function createHttpMiddleware (options: Object): Middleware {
 
   const http = httpMock || fetch
   const httpOptions = {
-    urlPrefix, host, protocol, headers,
-    formatAuthorizationHeader, agent, timeout,
+    agent,
+    formatAuthorizationHeader,
+    headers,
+    host,
+    protocol,
+    timeout,
+    urlPrefix,
   }
 
   return function httpMiddleware ({ getState }: MiddlewareAPI) {
-    return next => action => {
+    return next => (action) => {
       // This is the only action type that should be handled here.
       if (action.type === TASK) {
         // TODO: better action shape validation
@@ -93,13 +98,14 @@ export default function createHttpMiddleware (options: Object): Middleware {
           method: methodsMap[source],
           body: requestBody,
           headers: requestHeaders,
-          agent, timeout,
+          agent,
+          timeout,
         }
 
         return http(url, requestOptions)
         .then(processResponse)
         .then(
-          result => {
+          (result) => {
             // This is not really necessary as the promise will be resolved
             // at this point. It might be useful to other middlewares down
             // the line though.
@@ -110,7 +116,7 @@ export default function createHttpMiddleware (options: Object): Middleware {
             })
             action.meta.promise.resolve(result)
           },
-          error => {
+          (error) => {
             const errorWithRequest = {
               ...error,
               originalRequest: { url, ...requestOptions },

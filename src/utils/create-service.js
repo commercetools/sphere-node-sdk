@@ -1,7 +1,3 @@
-// import {
-//   getDefaultQueryParams,
-//   getDefaultSearchParams,
-// } from './default-params'
 import {
   FEATURE_READ,
   FEATURE_CREATE,

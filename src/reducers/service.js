@@ -174,6 +174,7 @@ const actionHandlers: ActionHandlers<AllServicesState, ServiceAction> = {
     })
   ),
   [SERVICE_PARAM_QUERY_SEARCH_FUZZY]: forService(
+    // eslint-disable-next-line arrow-parens
     (state: ServiceState): ServiceState => ({
       ...state,
       search: { ...state.search, fuzzy: true },
