@@ -1,6 +1,3 @@
-// if (!global._babelPolyfill)
-//   require('babel-polyfill') // eslint-disable-line global-require
-
 import * as version from '../version'
 import services from './services'
 import * as constants from './constants'
@@ -61,13 +58,11 @@ export default class SphereClient {
 
     // Initialize each service and add it to the map.
     Object.keys(services).forEach((key) => {
-      const service = createService(services[key])
-      serviceStore[key] = service(store, promiseLibrary)
+      serviceStore[key] = createService(services[key], store, promiseLibrary)
     })
 
     // The GraphQL service is a bit special, initialize is separately.
-    const graphqlService = createGraphQLService()
-    serviceStore['graphql'] = graphqlService(store, promiseLibrary)
+    serviceStore['graphql'] = createGraphQLService(store, promiseLibrary)
 
     // Expose only the following public API.
     return Object.assign(this, {
@@ -91,8 +86,7 @@ export default class SphereClient {
             'Current available services are ' +
             `'[${Object.keys(serviceStore).join(', ')}]'`
           )
-        const service = createService(config)
-        serviceStore[name] = service(store, promiseLibrary)
+        serviceStore[name] = createService(config, store, promiseLibrary)
         return serviceStore[name]
       },
 

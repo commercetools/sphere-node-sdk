@@ -22,71 +22,74 @@ import * as queryProjection from './query-projection'
 import * as querySearch from './query-search'
 import * as queryCustom from './query-custom'
 
-export default function createService (config) {
+export default function createService (config, store, promiseLibrary) {
+  // Validation
   if (!config)
     throw new Error('Cannot create a service without a `config`.')
 
   const { type, endpoint, features } = config
 
-  if (!type || !endpoint || !(features && features.length > 0))
+  if (!type || !endpoint || !features)
     throw new Error('Object `config` is missing required parameters.')
 
-  return (store, promiseLibrary) => {
-    store.dispatch({
-      type: SERVICE_INIT,
-      payload: endpoint,
-      meta: { service: type },
-    })
+  if (!features.length)
+    throw new Error('There should be at least 1 feature listed.')
 
-    const verbs = createHttpVerbs(promiseLibrary)
+  // Initialize service state
+  store.dispatch({
+    type: SERVICE_INIT,
+    payload: endpoint,
+    meta: { service: type },
+  })
 
-    const serviceFeatures = features.reduce((acc, feature) => {
-      if (feature === FEATURE_QUERY)
-        return { ...acc, ...query, ...queryPage }
+  // Decorate service
+  const verbs = createHttpVerbs(promiseLibrary)
+  const serviceFeatures = features.reduce((acc, feature) => {
+    if (feature === FEATURE_QUERY)
+      return { ...acc, ...query, ...queryPage }
 
-      if (feature === FEATURE_QUERY_ONE)
-        return { ...acc, ...queryId }
+    if (feature === FEATURE_QUERY_ONE)
+      return { ...acc, ...queryId }
 
-      if (feature === FEATURE_QUERY_EXPAND)
-        return { ...acc, queryExpand }
+    if (feature === FEATURE_QUERY_EXPAND)
+      return { ...acc, ...queryExpand }
 
-      if (feature === FEATURE_QUERY_STRING)
-        return { ...acc, queryCustom }
+    if (feature === FEATURE_QUERY_STRING)
+      return { ...acc, ...queryCustom }
 
-      if (feature === FEATURE_SEARCH)
-        return {
-          ...acc,
-          ...querySearch,
-          ...queryPage,
-          // params: getDefaultSearchParams(),
-        }
+    if (feature === FEATURE_SEARCH)
+      return {
+        ...acc,
+        ...querySearch,
+        ...queryPage,
+        // params: getDefaultSearchParams(),
+      }
 
-      if (feature === FEATURE_PROJECTION)
-        return { ...acc, queryProjection }
+    if (feature === FEATURE_PROJECTION)
+      return { ...acc, ...queryProjection }
 
-      if (feature === FEATURE_READ)
-        return { ...acc, fetch: verbs.fetch }
+    if (feature === FEATURE_READ)
+      return { ...acc, fetch: verbs.fetch }
 
-      if (feature === FEATURE_CREATE)
-        return { ...acc, create: verbs.create }
+    if (feature === FEATURE_CREATE)
+      return { ...acc, create: verbs.create }
 
-      if (feature === FEATURE_UPDATE)
-        return { ...acc, update: verbs.update }
+    if (feature === FEATURE_UPDATE)
+      return { ...acc, update: verbs.update }
 
-      if (feature === FEATURE_DELETE)
-        return { ...acc, delete: verbs.delete }
+    if (feature === FEATURE_DELETE)
+      return { ...acc, delete: verbs.delete }
 
-      return acc
-    }, {})
+    return acc
+  }, {})
 
-    return classify({
-      type,
-      features,
-      // TODO: might want to inject the store into the utils
-      // functions instead of making it public.
-      store,
-      ...withHelpers,
-      ...serviceFeatures,
-    })
-  }
+  return classify({
+    type,
+    features,
+    // TODO: might want to inject the store into the utils
+    // functions instead of making it public.
+    store,
+    ...withHelpers,
+    ...serviceFeatures,
+  })
 }

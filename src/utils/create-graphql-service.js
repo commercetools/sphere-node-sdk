@@ -8,42 +8,40 @@ import {
 const type = 'graphql'
 const endpoint = '/graphql'
 
-export default function createGraphQLService () {
-  return (store, promiseLibrary) => {
-    const Promise = promiseLibrary
+export default function createGraphQLService (store, promiseLibrary) {
+  const Promise = promiseLibrary
 
-    const serviceFeatures = {
-      query (body) {
-        if (!body)
-          throw new Error('Body payload is required for querying ' +
-            'GraphQL resources.')
+  const serviceFeatures = {
+    query (body) {
+      if (!body)
+        throw new Error('Body payload is required for querying ' +
+          'GraphQL resources.')
 
-        return new Promise((resolve, reject) => {
-          try {
-            store.dispatch({
-              type: TASK,
-              meta: {
-                source: HTTP_GRAPHQL_QUERY,
-                promise: { resolve, reject },
-                service: type,
-                serviceState: {
-                  endpoint,
-                },
+      return new Promise((resolve, reject) => {
+        try {
+          store.dispatch({
+            type: TASK,
+            meta: {
+              source: HTTP_GRAPHQL_QUERY,
+              promise: { resolve, reject },
+              service: type,
+              serviceState: {
+                endpoint,
               },
-              payload: body,
-            })
-          } catch (error) {
-            reject(error)
-          }
-        })
-      },
-    }
-
-    return classify({
-      type,
-      store,
-      ...withHelpers,
-      ...serviceFeatures,
-    })
+            },
+            payload: body,
+          })
+        } catch (error) {
+          reject(error)
+        }
+      })
+    },
   }
+
+  return classify({
+    type,
+    store,
+    ...withHelpers,
+    ...serviceFeatures,
+  })
 }

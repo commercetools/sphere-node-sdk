@@ -8,7 +8,14 @@
  * @return {String}
  */
 export default function buildAbsoluteUrl (options) {
-  const { projectKey, endpoint, urlPrefix, host, protocol } = options
+  const {
+    endpoint,
+    host,
+    projectKey,
+    protocol,
+    urlPrefix,
+  } = options
+
   let url = endpoint
 
   if (projectKey)
