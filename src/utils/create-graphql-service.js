@@ -8,16 +8,14 @@ import {
 const type = 'graphql'
 const endpoint = '/graphql'
 
-export default function createGraphQLService (store, promiseLibrary) {
-  const Promise = promiseLibrary
-
+export default function createGraphQLService (store, PromiseLibrary = Promise) {
   const serviceFeatures = {
     query (body) {
       if (!body)
         throw new Error('Body payload is required for querying ' +
           'GraphQL resources.')
 
-      return new Promise((resolve, reject) => {
+      return new PromiseLibrary((resolve, reject) => {
         try {
           store.dispatch({
             type: TASK,

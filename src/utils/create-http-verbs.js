@@ -7,8 +7,7 @@ import {
   SERVICE_PARAMS_RESET,
 } from '../constants'
 
-export default function createHttpVerbs (promiseLibrary) {
-  const Promise = promiseLibrary
+export default function createHttpVerbs (PromiseLibrary = Promise) {
   return {
     /**
      * Fetch a resource defined by the `service` with all related
@@ -29,18 +28,16 @@ export default function createHttpVerbs (promiseLibrary) {
       const { type, store } = this
       const { service: { [type]: serviceState } } = store.getState()
 
-      store.dispatch({ type: SERVICE_PARAMS_RESET, meta: { service: type } })
-      return new Promise((resolve, reject) => {
+      store.dispatch(serviceParamsResetAction(type))
+
+      return new PromiseLibrary((resolve, reject) => {
         try {
-          store.dispatch({
-            type: TASK,
-            meta: {
-              source: HTTP_FETCH,
-              promise: { resolve, reject },
-              service: type,
-              serviceState,
-            },
-          })
+          store.dispatch(taskAction({
+            source: HTTP_FETCH,
+            promise: { resolve, reject },
+            type,
+            serviceState,
+          }))
         } catch (error) {
           reject(error)
         }
@@ -75,19 +72,17 @@ export default function createHttpVerbs (promiseLibrary) {
       const { type, store } = this
       const { service: { [type]: serviceState } } = store.getState()
 
-      store.dispatch({ type: SERVICE_PARAMS_RESET, payload: type })
-      return new Promise((resolve, reject) => {
+      store.dispatch(serviceParamsResetAction(type))
+
+      return new PromiseLibrary((resolve, reject) => {
         try {
-          store.dispatch({
-            type: TASK,
-            meta: {
-              source: HTTP_CREATE,
-              promise: { resolve, reject },
-              service: type,
-              serviceState,
-            },
+          store.dispatch(taskAction({
+            source: HTTP_CREATE,
+            promise: { resolve, reject },
+            type,
+            serviceState,
             payload: body,
-          })
+          }))
         } catch (error) {
           reject(error)
         }
@@ -126,19 +121,17 @@ export default function createHttpVerbs (promiseLibrary) {
           'resource. You can set it by chaining ' +
           '`.byId(<id>).update({})`')
 
-      store.dispatch({ type: SERVICE_PARAMS_RESET, payload: type })
-      return new Promise((resolve, reject) => {
+      store.dispatch(serviceParamsResetAction(type))
+
+      return new PromiseLibrary((resolve, reject) => {
         try {
-          store.dispatch({
-            type: TASK,
-            meta: {
-              source: HTTP_UPDATE,
-              promise: { resolve, reject },
-              service: type,
-              serviceState,
-            },
+          store.dispatch(taskAction({
+            source: HTTP_UPDATE,
+            promise: { resolve, reject },
+            type,
+            serviceState,
             payload: body,
-          })
+          }))
         } catch (error) {
           reject(error)
         }
@@ -173,23 +166,43 @@ export default function createHttpVerbs (promiseLibrary) {
           'resource. You can set it by chaining ' +
           '`.byId(<id>).delete(<version>)`')
 
-      store.dispatch({ type: SERVICE_PARAMS_RESET, payload: type })
-      return new Promise((resolve, reject) => {
+      store.dispatch(serviceParamsResetAction(type))
+
+      return new PromiseLibrary((resolve, reject) => {
         try {
-          store.dispatch({
-            type: TASK,
-            meta: {
-              source: HTTP_DELETE,
-              promise: { resolve, reject },
-              service: type,
-              serviceState,
-            },
+          store.dispatch(taskAction({
+            source: HTTP_DELETE,
+            promise: { resolve, reject },
+            type,
+            serviceState,
             payload: version,
-          })
+          }))
         } catch (error) {
           reject(error)
         }
       })
     },
   }
+}
+
+function serviceParamsResetAction (type) {
+  return { type: SERVICE_PARAMS_RESET, meta: { service: type } }
+}
+
+function taskAction ({
+  source,
+  promise,
+  type,
+  serviceState,
+  payload,
+}) {
+  return Object.assign({
+    type: TASK,
+    meta: {
+      source,
+      promise,
+      service: type,
+      serviceState,
+    },
+  }, payload ? { payload } : null)
 }

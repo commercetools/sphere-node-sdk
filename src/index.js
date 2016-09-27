@@ -48,7 +48,7 @@ import initStore from './utils/init-store'
 export default class SphereClient {
   constructor (options) {
     // TODO: make it a global?
-    const { promiseLibrary = Promise } = options
+    const { PromiseLibrary = Promise } = options
 
     // Initialize redux store.
     const store = initStore(options)
@@ -58,11 +58,11 @@ export default class SphereClient {
 
     // Initialize each service and add it to the map.
     Object.keys(services).forEach((key) => {
-      serviceStore[key] = createService(services[key], store, promiseLibrary)
+      serviceStore[key] = createService(services[key], store, PromiseLibrary)
     })
 
     // The GraphQL service is a bit special, initialize is separately.
-    serviceStore['graphql'] = createGraphQLService(store, promiseLibrary)
+    serviceStore['graphql'] = createGraphQLService(store, PromiseLibrary)
 
     // Expose only the following public API.
     return Object.assign(this, {
@@ -86,7 +86,7 @@ export default class SphereClient {
             'Current available services are ' +
             `'[${Object.keys(serviceStore).join(', ')}]'`
           )
-        serviceStore[name] = createService(config, store, promiseLibrary)
+        serviceStore[name] = createService(config, store, PromiseLibrary)
         return serviceStore[name]
       },
 

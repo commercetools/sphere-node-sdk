@@ -7,6 +7,8 @@ import './utils/build-absolute-url.spec'
 import './utils/build-query-string.spec'
 import './utils/classify.spec'
 import './utils/create-service.spec'
+import './utils/create-graphql-service.spec'
+import './utils/create-http-verbs.spec'
 import './utils/init-store.spec'
 
 // import './integration/client/graphql.spec'
