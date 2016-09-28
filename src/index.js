@@ -105,5 +105,6 @@ classify(Object.assign(
 
 // Export sync utils
 export { default as createSyncCategories } from './sync/categories'
+export { default as createSyncCustomers } from './sync/customers'
 export { default as createSyncInventories } from './sync/inventories'
 export { default as createSyncProducts } from './sync/products'

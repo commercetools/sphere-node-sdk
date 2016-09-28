@@ -32,6 +32,7 @@ import './utils/with-helpers.spec'
 
 
 import './sync/category-sync.spec'
+import './sync/customer-sync.spec'
 import './sync/inventory-sync.spec'
 import './sync/product-sync-base.spec'
 import './sync/product-sync-images.spec'
