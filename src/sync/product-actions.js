@@ -2,22 +2,30 @@
 import forEach from 'lodash.foreach'
 import unique from 'lodash.uniq'
 import * as diffpatcher from './utils/diffpatcher'
-import { buildBaseAttributesAction } from './utils/common-actions'
+import {
+  buildBaseAttributesActions,
+  buildReferenceActions,
+} from './utils/common-actions'
 
 const REGEX_NUMBER = new RegExp(/^\d+$/)
 const REGEX_UNDERSCORE_NUMBER = new RegExp(/^_\d+$/)
 
-function actionsBaseList () {
-  return [
-    { action: 'changeName', key: 'name' },
-    { action: 'changeSlug', key: 'slug' },
-    { action: 'setDescription', key: 'description' },
-    { action: 'setMetaTitle', key: 'metaTitle' },
-    { action: 'setMetaDescription', key: 'metaDescription' },
-    { action: 'setMetaKeywords', key: 'metaKeywords' },
-    { action: 'setSearchKeywords', key: 'searchKeywords' },
-  ]
-}
+export const baseActionsList = [
+  { action: 'changeName', key: 'name' },
+  { action: 'changeSlug', key: 'slug' },
+  { action: 'setDescription', key: 'description' },
+  { action: 'setSearchKeywords', key: 'searchKeywords' },
+]
+
+export const metaActionsList = [
+  { action: 'setMetaTitle', key: 'metaTitle' },
+  { action: 'setMetaDescription', key: 'metaDescription' },
+  { action: 'setMetaKeywords', key: 'metaKeywords' },
+]
+
+export const referenceActionsList = [
+  { action: 'setTaxCategory', key: 'taxCategory' },
+]
 
 
 /**
@@ -25,16 +33,21 @@ function actionsBaseList () {
  */
 
 export function actionsMapBase (diff, oldObj, newObj) {
-  const actions = []
-
-  forEach(actionsBaseList(), item => {
-    const action = buildBaseAttributesAction(
-      item, diff, oldObj, newObj, diffpatcher.patch
-    )
-    if (action) actions.push(action)
+  return buildBaseAttributesActions({
+    actions: baseActionsList,
+    diff,
+    oldObj,
+    newObj,
   })
+}
 
-  return actions
+export function actionsMapMeta (diff, oldObj, newObj) {
+  return buildBaseAttributesActions({
+    actions: metaActionsList,
+    diff,
+    oldObj,
+    newObj,
+  })
 }
 
 export function actionsMapVariants (diff, oldObj, newObj) {
@@ -61,15 +74,12 @@ export function actionsMapVariants (diff, oldObj, newObj) {
 }
 
 export function actionsMapReferences (diff, oldObj, newObj) {
-  const actions = []
-  if (!diff.taxCategory) return actions
-
-  actions.push({
-    action: 'setTaxCategory',
-    taxCategory: Array.isArray(diff.taxCategory) ?
-      diffpatcher.getDeltaValue(diff.taxCategory) : newObj.taxCategory,
+  return buildReferenceActions({
+    actions: referenceActionsList,
+    diff,
+    oldObj,
+    newObj,
   })
-  return actions
 }
 
 export function actionsMapCategories (diff) {
@@ -78,7 +88,7 @@ export function actionsMapCategories (diff) {
 
   const addToCategoryActions = []
   const removeFromCategoryActions = []
-  forEach(diff.categories, category => {
+  forEach(diff.categories, (category) => {
     if (Array.isArray(category)) {
       const action = { category: category[0] }
 
@@ -193,7 +203,7 @@ export function actionsMapPrices (diff, oldObj, newObj) {
 
 
 function _buildSkuActions (variantDiff, oldVariant) {
-  if (variantDiff.hasOwnProperty('sku')) {
+  if ({}.hasOwnProperty.call(variantDiff, 'sku')) {
     const newValue = diffpatcher.getDeltaValue(variantDiff.sku)
     if (!newValue && !oldVariant.sku) return null
 
@@ -235,9 +245,15 @@ function _buildVariantAttributesActions (
           return
 
         const { id } = oldVariant
-        const deltaValue = diffpatcher.getDeltaValue(value) ||
+
+        let deltaValue = diffpatcher.getDeltaValue(value)
+        if (!deltaValue)
           // unset attribute if
-          value[0] && value[0].name ? { name: value[0].name } : undefined
+          if (value[0] && value[0].name)
+            deltaValue = { name: value[0].name }
+          else
+            deltaValue = undefined
+
         const setAction =
           _buildNewSetAttributeAction(id, deltaValue, sameForAllAttributeNames)
 
@@ -266,7 +282,7 @@ function _buildNewSetAttributeAction (id, el, sameForAllAttributeNames) {
     value: el.value,
   }
 
-  if (Boolean(~sameForAllAttributeNames.indexOf(attributeName))) {
+  if (sameForAllAttributeNames.indexOf(attributeName) !== -1) {
     Object.assign(action, { action: 'setAttributeInAllVariants' })
     delete action.variantId
   }
@@ -284,7 +300,7 @@ function _buildSetAttributeAction (diffedValue, oldVariant, attribute,
     name: attribute.name,
   }
 
-  if (Boolean(~sameForAllAttributeNames.indexOf(attribute.name))) {
+  if (sameForAllAttributeNames.indexOf(attribute.name) !== -1) {
     Object.assign(action, { action: 'setAttributeInAllVariants' })
     delete action.variantId
   }
@@ -320,7 +336,10 @@ function _buildSetAttributeAction (diffedValue, oldVariant, attribute,
 
     else if (typeof diffedValue === 'object')
 
-      if (diffedValue.hasOwnProperty('_t') && diffedValue['_t'] === 'a') {
+      if (
+        {}.hasOwnProperty.call(diffedValue, '_t') &&
+        diffedValue['_t'] === 'a'
+      ) {
         // set-typed attribute
         Object.assign(action, { value: attribute.value })
       } else {
@@ -354,7 +373,7 @@ function _buildVariantImagesAction (diffedImages, oldVariant, newVariant) {
 
       else if (typeof image === 'object')
 
-        if (image.hasOwnProperty('url') && image.url.length === 2) {
+        if ({}.hasOwnProperty.call(image, 'url') && image.url.length === 2) {
           // There is a new image, remove the old one first.
           actions.push({
             action: 'removeImage',
@@ -366,7 +385,7 @@ function _buildVariantImagesAction (diffedImages, oldVariant, newVariant) {
             variantId: oldVariant.id,
             image: newVariant.images[key],
           })
-        } else if (image.hasOwnProperty('label') &&
+        } else if ({}.hasOwnProperty.call(image, 'label') &&
           (image.label.length === 1 || image.label.length === 2))
           actions.push({
             action: 'changeImageLabel',
@@ -398,7 +417,7 @@ function _buildVariantPricesAction (diffedPrices, oldVariant, newVariant) {
     if (REGEX_NUMBER.test(key)) {
       if (Array.isArray(price) && price.length) {
         // Remove read-only fields
-        const patchedPrice = price.map(p => {
+        const patchedPrice = price.map((p) => {
           const shallowClone = Object.assign({}, p)
           delete shallowClone.discounted
           return shallowClone

@@ -1,7 +1,7 @@
 import flatten from 'lodash.flatten'
 import createBuildActions from './utils/create-build-actions'
 import createMapActionGroup from './utils/create-map-action-group'
-import * as customerActions from './customers-actions'
+import * as customerActions from './customer-actions'
 import * as diffpatcher from './utils/diffpatcher'
 
 export const actionGroups = [

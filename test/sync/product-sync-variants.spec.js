@@ -2,19 +2,20 @@ import test from 'tape'
 import productsSyncFn from '../../src/sync/products'
 
 /* eslint-disable max-len */
-test('Sync::product::variants', t => {
+test('Sync::product::variants', (t) => {
   let productsSync
   function setup () {
     productsSync = productsSyncFn()
   }
 
-  t.test('should build attribute actions', t => {
+  t.test('should build attribute actions', (t) => {
     setup()
 
     const before = {
       id: '123',
       masterVariant: {
-        id: 1, attributes: [
+        id: 1,
+        attributes: [
           { name: 'uid', value: '20063672' },
           { name: 'length', value: 160 },
           { name: 'wide', value: 85 },
@@ -24,7 +25,8 @@ test('Sync::product::variants', t => {
       },
       variants: [
         {
-          id: 2, attributes: [
+          id: 2,
+          attributes: [
             { name: 'uid', value: '20063672' },
             { name: 'length', value: 160 },
             { name: 'wide', value: 85 },
@@ -34,7 +36,8 @@ test('Sync::product::variants', t => {
         },
         { id: 3, attributes: [] },
         {
-          id: 4, attributes: [
+          id: 4,
+          attributes: [
             { name: 'uid', value: '1234567' },
             { name: 'length', value: 123 },
             { name: 'bulkygoods', value: { label: 'Si', key: 'SI' } },
@@ -46,7 +49,8 @@ test('Sync::product::variants', t => {
     const now = {
       id: '123',
       masterVariant: {
-        id: 1, attributes: [
+        id: 1,
+        attributes: [
           { name: 'uid', value: '20063675' }, // changed
           { name: 'length', value: 160 },
           { name: 'wide', value: 10 }, // changed
@@ -56,7 +60,8 @@ test('Sync::product::variants', t => {
       },
       variants: [
         {
-          id: 2, attributes: [
+          id: 2,
+          attributes: [
             { name: 'uid', value: '20055572' }, // changed
             { name: 'length', value: 333 }, // changed
             { name: 'wide', value: 33 }, // changed
@@ -65,7 +70,8 @@ test('Sync::product::variants', t => {
           ],
         },
         {
-          id: 3, attributes: [ // new
+          id: 3,
+          attributes: [ // new
             { name: 'uid', value: '00001' },
             { name: 'length', value: 500 },
             { name: 'bulkygoods', value: 'SI' },
@@ -98,13 +104,14 @@ test('Sync::product::variants', t => {
     t.end()
   })
 
-  t.test('should build SameForAll attribute actions', t => {
+  t.test('should build SameForAll attribute actions', (t) => {
     setup()
 
     const before = {
       id: '123',
       masterVariant: {
-        id: 1, attributes: [
+        id: 1,
+        attributes: [
           { name: 'color', value: 'red' },
         ],
       },
@@ -114,7 +121,8 @@ test('Sync::product::variants', t => {
     const now = {
       id: '123',
       masterVariant: {
-        id: 1, attributes: [
+        id: 1,
+        attributes: [
           { name: 'vendor', value: 'ferrari' },
           { name: 'color', value: 'yellow' },
         ],
@@ -135,7 +143,7 @@ test('Sync::product::variants', t => {
 
   t.test(
     'should build SameForAll attribute actions for a SET of object values',
-    t => {
+    (t) => {
       setup()
       const before = {
         masterVariant: {
@@ -189,7 +197,7 @@ test('Sync::product::variants', t => {
       t.end()
     })
 
-  t.test('should build `addVariant` action', t => {
+  t.test('should build `addVariant` action', (t) => {
     setup()
 
     const newVariant = {
@@ -224,7 +232,7 @@ test('Sync::product::variants', t => {
     t.end()
   })
 
-  t.test('should handle mapping actions for new variants without ids', t => {
+  t.test('should handle mapping actions for new variants without ids', (t) => {
     setup()
 
     const before = {
@@ -261,7 +269,7 @@ test('Sync::product::variants', t => {
     t.end()
   })
 
-  t.test('should handle unsetting the sku of a variant', t => {
+  t.test('should handle unsetting the sku of a variant', (t) => {
     setup()
 
     const before = {
@@ -285,7 +293,7 @@ test('Sync::product::variants', t => {
     t.end()
   })
 
-  t.test('should build attribute actions for all types', t => {
+  t.test('should build attribute actions for all types', (t) => {
     setup()
 
     const before = {
@@ -350,7 +358,7 @@ test('Sync::product::variants', t => {
     t.end()
   })
 
-  t.test('should ignore set sku', t => {
+  t.test('should ignore set sku', (t) => {
     setup()
 
     // Case when sku is not set, and the new value is empty or null
@@ -375,7 +383,7 @@ test('Sync::product::variants', t => {
     t.end()
   })
 
-  t.test('should ignore set sku if the sku was and still is empty', t => {
+  t.test('should ignore set sku if the sku was and still is empty', (t) => {
     setup()
 
     // Case when sku is not set, and the new value is empty or null
