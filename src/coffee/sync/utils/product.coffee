@@ -68,7 +68,9 @@ class ProductUtils extends BaseUtils
 
     patch = (obj, arrayIndexFieldName) ->
       debug 'patching product: %j', obj
-      _.each allVariants(obj), (variant, index) ->
+      _allVariants = allVariants(obj)
+      _.each _allVariants, (variant, index) ->
+        return variant unless variant?
         patchPrices variant
         patchEnums variant
         patchSetLText variant
@@ -79,7 +81,6 @@ class ProductUtils extends BaseUtils
 
     patch old_obj, '_EXISTING_ARRAY_INDEX'
     patch new_obj, '_NEW_ARRAY_INDEX'
-
     super old_obj, new_obj
 
   # Private: map base product actions
@@ -624,6 +625,6 @@ actionsBaseList = ->
 
 allVariants = (product) ->
   {masterVariant, variants} = _.defaults product,
-    masterVariant: {}
+    masterVariant: undefined
     variants: []
   [masterVariant].concat variants
