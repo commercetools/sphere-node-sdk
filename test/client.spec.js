@@ -1,144 +1,148 @@
 import test from 'tape'
-import https from 'https'
-import * as version from '../version'
 import SphereClient from '../src'
 
-const { features } = SphereClient
-const userAgent = `${version.name}-${version.version}`
-const SERVICES = [
+const {
+  FEATURE_READ,
+  FEATURE_CREATE,
+  FEATURE_DELETE,
+  FEATURE_QUERY,
+  FEATURE_QUERY_ONE,
+
+  SERVICE_INIT,
+} = SphereClient.constants
+
+const registeredServices = [
   // order matters!
   'categories',
   'channels',
-  'customerGroups',
-  'productProjections',
-  'productProjectionsSearch',
+  'customer-groups',
+  'product-projections',
+  'product-projections-search',
+  'product-types',
   'products',
-  'productTypes',
-  'taxCategories',
+  'tax-categories',
 
   // keep as last!
   'graphql',
 ]
 
-test('SphereClient', t => {
-  t.test('should initialize client (as class)', t => {
-    const client = new SphereClient({})
-    t.deepEqual(Object.keys(client), SERVICES)
+const fakeMiddleware = () => next => action => next(action)
+
+function getTestOptions (options) {
+  return {
+    promiseLibrary: Promise,
+    projectKey: 'test',
+    oauth: {
+      token: undefined,
+      expiresIn: undefined,
+    },
+    middlewares: [
+      fakeMiddleware,
+    ],
+
+    ...options,
+  }
+}
+
+test('SphereClient', (t) => {
+  t.test('should initialize client', (t) => {
+    const clientOptions = getTestOptions()
+
+    t.comment('as Class')
+    const clientAsClass = new SphereClient(clientOptions)
+    t.deepEqual(Object.keys(clientAsClass),
+      [
+        'getService',
+        'registerService',
+        'listServices',
+      ],
+      'expose only getters / setters as client API'
+    )
+
+    t.comment('as factory function')
+    const clientAsFactory = new SphereClient(clientOptions)
+    t.deepEqual(Object.keys(clientAsFactory),
+      [
+        'getService',
+        'registerService',
+        'listServices',
+      ],
+      'expose only getters / setters as client API'
+    )
+
     t.end()
   })
 
-  t.test('should initialize client (as factory)', t => {
-    const client = SphereClient.create({})
-    t.deepEqual(Object.keys(client), SERVICES)
-    t.end()
-  })
-
-  t.test('should initialize with default options', t => {
-    const client = SphereClient.create({})
-    const { options, queue } = client.productProjections
-    t.equal(typeof queue, 'object')
-    t.equal(typeof options.Promise, 'function')
-    t.false(options.auth.accessToken)
-    t.deepEqual(options.auth.credentials, {})
-    t.equal(typeof options.auth.shouldRetrieveToken, 'function')
-    t.deepEqual(options.request, {
-      agent: undefined,
-      headers: { 'User-Agent': userAgent },
-      host: 'api.sphere.io',
-      maxParallel: 20,
-      protocol: 'https',
-      timeout: 20000,
-      urlPrefix: undefined,
-    })
-    t.end()
-  })
-
-  t.test('should initialize with custom options', t => {
-    const agent = new https.Agent({})
-    const headers = {
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer qwertzuiopasdfghjkl',
-    }
-    const timeout = 1000
-    const urlPrefix = '/public'
-    const maxParallel = 10
-    const credentials = {
-      projectKey: 'foo',
-      clientId: '123',
-      clientSecret: 'secret',
-    }
-    const shouldRetrieveToken = cb => cb(false)
-
-    const client = SphereClient.create({
-      Promise: { foo: 'bar' },
-      auth: { credentials, shouldRetrieveToken },
-      request: { agent, headers, maxParallel, timeout, urlPrefix },
-    })
-    t.deepEqual(client.productProjections.options, {
-      Promise: { foo: 'bar' },
-      auth: {
-        accessToken: undefined,
-        credentials,
-        shouldRetrieveToken,
-        host: 'auth.sphere.io',
+  t.test('should throw if no middleware is defined', (t) => {
+    t.throws(
+      () => {
+        SphereClient.create({})
       },
-      request: {
-        agent,
-        headers,
-        host: 'api.sphere.io',
-        maxParallel,
-        protocol: 'https',
-        timeout,
-        urlPrefix,
-      },
-      httpMock: undefined,
+      /No middlewares found/,
+      'throw if no middleware is found'
+    )
+    t.end()
+  })
+
+  t.test('should get services', (t) => {
+    const clientOptions = getTestOptions()
+    const client = SphereClient.create(clientOptions)
+
+    t.deepEqual(client.listServices(), registeredServices,
+      'list all registered services')
+
+    registeredServices.forEach((serviceName) => {
+      const service = client.getService(serviceName)
+      t.ok(service)
     })
+
     t.end()
   })
 
-  t.test('should ensure service instance is not shared', t => {
-    const client1 = SphereClient.create({})
-    const productProjectionsService1 = client1.productProjections
-    t.equal(productProjectionsService1.byId('123').params.id, '123')
+  t.test('should register a new service', (t) => {
+    const actionsLog = []
+    const debugMiddleware = () => next => (action) => {
+      // Ignore default registered services
+      if (
+        action.type === SERVICE_INIT &&
+        !registeredServices.includes(action.meta.service)
+      )
+        actionsLog.push(action)
+      return next(action)
+    }
 
-    const client2 = SphereClient.create({})
-    const productProjectionsService2 = client2.productProjections
-    t.true(productProjectionsService2)
-    t.notEqual(productProjectionsService2.params.id, '123')
-    t.end()
-  })
-
-  t.test('should register a new service', t => {
-    const client = SphereClient.create({})
+    const clientOptions = getTestOptions({
+      middlewares: [debugMiddleware],
+    })
+    const client = SphereClient.create(clientOptions)
     const serviceConfig = {
       type: 'my-new-service',
       endpoint: '/my-service-endpoint',
       features: [
-        features.read,
-        features.create,
-        features.delete,
-        features.query,
-        features.queryOne,
+        FEATURE_READ,
+        FEATURE_CREATE,
+        FEATURE_DELETE,
+        FEATURE_QUERY,
+        FEATURE_QUERY_ONE,
       ],
     }
-    const headers = {
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer qwertzuiopasdfghjkl',
-    }
-    client.registerService('myNewService', serviceConfig, { headers })
 
-    t.true(client.myNewService)
-    t.equal(client.myNewService.baseEndpoint, '/my-service-endpoint')
-    t.false(client.myNewService.update)
-    t.false(client.myNewService.staged)
-    t.end()
-  })
+    const myNewService =
+      client.registerService('my-new-service', serviceConfig)
 
-  t.test('should replace http client', t => {
-    const client = SphereClient.create({})
-    client.replaceHttpClient('foo')
+    t.equal(typeof myNewService, 'object',
+      'return the service after registering it')
 
-    t.equal(client.products.options.httpMock, 'foo')
+    t.equal(actionsLog.length, 1, 'dispatch 1 init action')
+    t.deepEqual(actionsLog[0],
+      {
+        type: SERVICE_INIT,
+        payload: '/my-service-endpoint',
+        meta: { service: 'my-new-service' },
+      },
+      'dispatch init action'
+    )
+
     t.end()
   })
 })

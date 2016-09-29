@@ -1,7 +1,8 @@
-/**
- * Utils `with-helpers` module.
- * @module utils/withHelpers
- */
+/* eslint-disable import/prefer-default-export */
+import {
+  REQUEST_TOKEN,
+  REQUEST_PROJECT_KEY,
+} from '../constants'
 
 /**
  * Allow to override `auth` credentials. Useful for example for
@@ -11,11 +12,14 @@
  * @throws If `credentials` is missing.
  * @return {Object} The instance of the service, can be chained.
  */
-export function withCredentials (credentials) {
-  if (!credentials || typeof credentials !== 'object')
-    throw new Error('Credentials object is missing.')
+export function withProject (projectKey) {
+  if (!projectKey)
+    throw new Error('Project key is missing.')
 
-  Object.assign(this.options.auth.credentials, credentials)
+  this.store.dispatch({
+    type: REQUEST_PROJECT_KEY,
+    payload: projectKey,
+  })
   return this
 }
 
@@ -27,10 +31,13 @@ export function withCredentials (credentials) {
  * @throws If `key` or `value` are missing.
  * @return {Object} The instance of the service, can be chained.
  */
-export function withHeader (key, value) {
-  if (arguments.length !== 2) // eslint-disable-line prefer-rest-params
-    throw new Error('Missing required header arguments.')
+export function withToken (token, expiresIn) {
+  if (!token)
+    throw new Error('Token is missing.')
 
-  Object.assign(this.options.request.headers, { [key]: value })
+  this.store.dispatch({
+    type: REQUEST_TOKEN,
+    payload: { token, expiresIn },
+  })
   return this
 }

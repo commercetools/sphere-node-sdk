@@ -1,7 +1,5 @@
-/**
- * Utils `query-id` module.
- * @module utils/queryId
- */
+/* eslint-disable import/prefer-default-export */
+import { SERVICE_PARAM_ID } from '../constants'
 
 /**
  * Set the given `id` to the internal state of the service instance.
@@ -14,6 +12,11 @@ export function byId (id) {
   if (!id)
     throw new Error('Required argument for `byId` is missing')
 
-  this.params.id = id
+  // this.params.id = id
+  this.store.dispatch({
+    type: SERVICE_PARAM_ID,
+    meta: { service: this.type },
+    payload: id,
+  })
   return this
 }

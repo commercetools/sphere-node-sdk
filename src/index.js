@@ -1,60 +1,13 @@
-if (!global._babelPolyfill)
-  require('babel-polyfill') // eslint-disable-line global-require
-
 import * as version from '../version'
 import services from './services'
+import * as constants from './constants'
 import * as errors from './utils/errors'
-import * as features from './utils/features'
-import http from './utils/http'
 import classify from './utils/classify'
 import createService from './utils/create-service'
 import createGraphQLService from './utils/create-graphql-service'
-import taskQueueFn from './utils/task-queue'
+import initStore from './utils/init-store'
 
-const userAgent = `${version.name}-${version.version}`
-
-/**
- * Set default options for initializing `SphereClient`.
- *
- * @param  {Object} options
- * @return {Object}
- */
-function defaultOptions (options = {}) {
-  const auth = options.auth || {}
-  const request = options.request || {}
-
-  return {
-    // Set promise polyfill for old versions of Node.
-    // E.g.: `options.Promise = require('bluebird')`
-    Promise: options.Promise || Promise,
-    auth: {
-      accessToken: auth.accessToken,
-      credentials: auth.credentials || {},
-      shouldRetrieveToken: auth.shouldRetrieveToken || (cb => { cb(true) }),
-      host: auth.host || 'auth.sphere.io',
-    },
-    request: {
-      agent: request.agent,
-      headers: request.headers || { 'User-Agent': userAgent },
-      host: request.host || 'api.sphere.io',
-      maxParallel: request.maxParallel || 20,
-      protocol: request.protocol || 'https',
-      timeout: request.timeout || 20000,
-      urlPrefix: request.urlPrefix,
-    },
-    // TODO: find a better solution?
-    httpMock: options.httpMock,
-  }
-}
-
-function initService (name, service, options = {}) {
-  const serviceOptions = defaultOptions(options)
-
-  this[name] = service({
-    queue: taskQueueFn(serviceOptions),
-    options: serviceOptions,
-  })
-}
+// const userAgent = `${version.name}-${version.version}`
 
 /**
  * A `SphereClient` class that exposes `services` specific for each
@@ -68,27 +21,80 @@ function initService (name, service, options = {}) {
  * const client = new SphereClient({...})
  * ```
  *
- * TODO: list available options
+ * Available options are:
+ * ```js
+ * const options = {
+ *   // Pass a custom promise library (e.g. 'bluebird).
+ *   // Default is the native `Promise`.
+ *   promiseLibrary: Object || Promise,
+ *
+ *   // The given project key (can be also injected from the service).
+ *   projectKey: String,
+ *
+ *   // Can be used to initialize the client with an existing token.
+ *   oauth: {
+ *     token: String,
+ *     expiresIn: Number,
+ *   },
+ *
+ *   middlewares: [
+ *     createAuthMiddleware({...}),
+ *     createHttpMiddleware({...}),
+ *     createErrorMiddleware({...}),
+ *   ],
+ * }
+ * ````
  */
 export default class SphereClient {
-  constructor (...args) {
-    Object.keys(services).forEach(key => {
-      const service = createService(services[key])
-      initService.call(this, key, service, ...args)
+  constructor (options) {
+    // TODO: make it a global?
+    const { PromiseLibrary = Promise } = options
+
+    // Initialize redux store.
+    const store = initStore(options)
+
+    // Initialize object map that holds all the services.
+    const serviceStore = {}
+
+    // Initialize each service and add it to the map.
+    Object.keys(services).forEach((key) => {
+      serviceStore[key] = createService(services[key], store, PromiseLibrary)
     })
-    const graphqlService = createGraphQLService()
-    initService.call(this, 'graphql', graphqlService, ...args)
-  }
 
-  registerService (name, config, options) {
-    // TODO: validate service name
-    const service = createService(config)
-    initService.call(this, name, service, options)
-  }
+    // The GraphQL service is a bit special, initialize is separately.
+    serviceStore['graphql'] = createGraphQLService(store, PromiseLibrary)
 
-  replaceHttpClient (httpClient) {
-    Object.keys(this).forEach(key => {
-      this[key].options.httpMock = httpClient
+    // Expose only the following public API.
+    return Object.assign(this, {
+
+      // Get a service by it's name / key.
+      getService (name) {
+        if (!(name in serviceStore))
+          throw new Error(
+            `Wrong service name '${name}', available ` +
+            `services are '[${Object.keys(serviceStore).join(', ')}]'`
+          )
+        return serviceStore[name]
+      },
+
+      // Register a new service based on the given configuration.
+      // Throws if a service with the same name already exists.
+      registerService (name, config) {
+        if (name in serviceStore)
+          throw new Error(
+            `The service with name '${name}' already exist. ` +
+            'Current available services are ' +
+            `'[${Object.keys(serviceStore).join(', ')}]'`
+          )
+        serviceStore[name] = createService(config, store, PromiseLibrary)
+        return serviceStore[name]
+      },
+
+      listServices () {
+        return Object.keys(serviceStore)
+      },
+
+      // TODO: expose other useful methods
     })
   }
 }
@@ -99,12 +105,25 @@ SphereClient.create = (...args) => new SphereClient(...args)
 // Assign useful static properties to the default export
 classify(Object.assign(
   SphereClient,
-  { errors, features, http, version: version.version }
+  {
+    errors,
+    constants,
+    version: version.version,
+  }
 ), true)
 
-
+/* eslint-disable max-len */
 // Export sync utils
 export { default as createSyncCategories } from './sync/categories'
 export { default as createSyncCustomers } from './sync/customers'
 export { default as createSyncInventories } from './sync/inventories'
 export { default as createSyncProducts } from './sync/products'
+
+// Export middleware utils
+export { default as createAuthMiddleware } from './middlewares/create-auth-middleware'
+export { default as createHttpMiddleware } from './middlewares/create-http-middleware'
+export { default as createQueueMiddleware } from './middlewares/create-queue-middleware'
+export { default as createLoggerMiddleware } from './middlewares/create-logger-middleware'
+export { default as createErrorMiddleware } from './middlewares/create-error-middleware'
+
+// TODO: expose a default middlewares preset

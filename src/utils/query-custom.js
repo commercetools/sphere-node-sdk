@@ -1,7 +1,5 @@
-/**
- * Utils `query-custom` module.
- * @module utils/queryCustom
- */
+/* eslint-disable import/prefer-default-export */
+import { SERVICE_PARAM_QUERY_CUSTOM } from '../constants'
 
 /**
  * Set a given custom query string. This takes precedence
@@ -15,6 +13,11 @@ export function byQueryString (value) {
   if (!value)
     throw new Error('Required argument for `byQueryString` is missing')
 
-  this.params.customQuery = value
+  // this.params.customQuery = value
+  this.store.dispatch({
+    type: SERVICE_PARAM_QUERY_CUSTOM,
+    meta: { service: this.type },
+    payload: value,
+  })
   return this
 }

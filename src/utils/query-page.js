@@ -1,7 +1,8 @@
-/**
- * Utils `query-page` module. It contains methods to work with paginations.
- * @module utils/queryPage
- */
+import {
+  SERVICE_PARAM_QUERY_PAGE,
+  SERVICE_PARAM_QUERY_PER_PAGE,
+  SERVICE_PARAM_QUERY_SORT,
+} from '../constants'
 
 /**
  * Set the sort expression for the query, if the related endpoint supports it.
@@ -22,7 +23,13 @@ export function sort (sortPath, ascending = true) {
 
   const direction = ascending ? 'asc' : 'desc'
   const encodedSort = encodeURIComponent(`${sortPath} ${direction}`)
-  this.params.pagination.sort.push(encodedSort)
+
+  // this.params.pagination.sort.push(encodedSort)
+  this.store.dispatch({
+    type: SERVICE_PARAM_QUERY_SORT,
+    meta: { service: this.type },
+    payload: encodedSort,
+  })
   return this
 }
 
@@ -42,7 +49,12 @@ export function page (value) {
     (typeof value === 'number' && value < 1))
     throw new Error('Required argument for `page` must be a number >= 1')
 
-  this.params.pagination.page = value
+  // this.params.pagination.page = value
+  this.store.dispatch({
+    type: SERVICE_PARAM_QUERY_PAGE,
+    meta: { service: this.type },
+    payload: value,
+  })
   return this
 }
 
@@ -63,6 +75,11 @@ export function perPage (value) {
     (typeof value === 'number' && value < 0))
     throw new Error('Required argument for `perPage` must be a number >= 0')
 
-  this.params.pagination.perPage = value
+  // this.params.pagination.perPage = value
+  this.store.dispatch({
+    type: SERVICE_PARAM_QUERY_PER_PAGE,
+    meta: { service: this.type },
+    payload: value,
+  })
   return this
 }

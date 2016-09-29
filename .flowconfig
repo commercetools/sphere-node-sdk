@@ -1,0 +1,10 @@
+[ignore]
+<PROJECT_ROOT>/node_modules/ghooks/node_modules/findup/test/fixture/.*
+<PROJECT_ROOT>/node_modules/validate-commit-msg/node_modules/findup/test/fixture/.*
+
+[include]
+
+[libs]
+flow-typed/npm/
+
+[options]

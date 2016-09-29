@@ -1,11 +1,19 @@
 import {
-  getDefaultQueryParams,
-  getDefaultSearchParams,
-} from './default-params'
+  FEATURE_READ,
+  FEATURE_CREATE,
+  FEATURE_UPDATE,
+  FEATURE_DELETE,
+  FEATURE_QUERY,
+  FEATURE_QUERY_ONE,
+  FEATURE_QUERY_EXPAND,
+  FEATURE_QUERY_STRING,
+  FEATURE_SEARCH,
+  FEATURE_PROJECTION,
+  SERVICE_INIT,
+} from '../constants'
 import classify from './classify'
-import * as defaultFeatures from './features'
+import createHttpVerbs from './create-http-verbs'
 import * as withHelpers from './with-helpers'
-import * as verbs from './verbs'
 import * as query from './query'
 import * as queryId from './query-id'
 import * as queryExpand from './query-expand'
@@ -14,56 +22,74 @@ import * as queryProjection from './query-projection'
 import * as querySearch from './query-search'
 import * as queryCustom from './query-custom'
 
-export default function createService (config) {
+export default function createService (config, store, promiseLibrary) {
+  // Validation
   if (!config)
     throw new Error('Cannot create a service without a `config`.')
 
   const { type, endpoint, features } = config
 
-  if (!type || !endpoint || !(features && features.length > 0))
+  if (!type || !endpoint || !features)
     throw new Error('Object `config` is missing required parameters.')
 
-  return deps => classify(
-    Object.assign({},
-      deps, withHelpers,
-      {
-        type, features, baseEndpoint: endpoint,
-        params: getDefaultQueryParams(),
-      },
-      features.reduce((acc, feature) => {
-        if (feature === defaultFeatures.query)
-          return Object.assign(acc, query, queryPage)
+  if (!features.length)
+    throw new Error('There should be at least 1 feature listed.')
 
-        if (feature === defaultFeatures.queryOne)
-          return Object.assign(acc, queryId)
+  // Initialize service state
+  store.dispatch({
+    type: SERVICE_INIT,
+    payload: endpoint,
+    meta: { service: type },
+  })
 
-        if (feature === defaultFeatures.queryExpand)
-          return Object.assign(acc, queryExpand)
+  // Decorate service
+  const verbs = createHttpVerbs(promiseLibrary)
+  const serviceFeatures = features.reduce((acc, feature) => {
+    if (feature === FEATURE_QUERY)
+      return { ...acc, ...query, ...queryPage }
 
-        if (feature === defaultFeatures.queryString)
-          return Object.assign(acc, queryCustom)
+    if (feature === FEATURE_QUERY_ONE)
+      return { ...acc, ...queryId }
 
-        if (feature === defaultFeatures.search)
-          return Object.assign(acc, querySearch, queryPage, {
-            params: getDefaultSearchParams(),
-          })
+    if (feature === FEATURE_QUERY_EXPAND)
+      return { ...acc, ...queryExpand }
 
-        if (feature === defaultFeatures.projection)
-          return Object.assign(acc, queryProjection)
+    if (feature === FEATURE_QUERY_STRING)
+      return { ...acc, ...queryCustom }
 
-        if (feature === defaultFeatures.read)
-          return Object.assign(acc, { fetch: verbs.fetch })
+    if (feature === FEATURE_SEARCH)
+      return {
+        ...acc,
+        ...querySearch,
+        ...queryPage,
+        // params: getDefaultSearchParams(),
+      }
 
-        if (feature === defaultFeatures.create)
-          return Object.assign(acc, { create: verbs.create })
+    if (feature === FEATURE_PROJECTION)
+      return { ...acc, ...queryProjection }
 
-        if (feature === defaultFeatures.update)
-          return Object.assign(acc, { update: verbs.update })
+    if (feature === FEATURE_READ)
+      return { ...acc, fetch: verbs.fetch }
 
-        if (feature === defaultFeatures.delete)
-          return Object.assign(acc, { delete: verbs.delete })
+    if (feature === FEATURE_CREATE)
+      return { ...acc, create: verbs.create }
 
-        return acc
-      }, {})
-    ))
+    if (feature === FEATURE_UPDATE)
+      return { ...acc, update: verbs.update }
+
+    if (feature === FEATURE_DELETE)
+      return { ...acc, delete: verbs.delete }
+
+    return acc
+  }, {})
+
+  return classify({
+    type,
+    features,
+    // TODO: might want to inject the store into the utils
+    // functions instead of making it public.
+    store,
+    ...withHelpers,
+    ...serviceFeatures,
+  })
 }
