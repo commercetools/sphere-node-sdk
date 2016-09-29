@@ -1,184 +1,59 @@
 import test from 'tape'
 import categorySyncFn, { actionGroups } from '../../src/sync/categories'
+import {
+  baseActionsList,
+  metaActionsList,
+  referenceActionsList,
+} from '../../src/sync/category-actions'
 
-test('Sync::category', t => {
+test('Sync::category', (t) => {
   let categorySync
   function setup () {
     categorySync = categorySyncFn()
   }
 
-  t.test('should export action group list', t => {
+  t.test('should export action group list', (t) => {
     t.deepEqual(actionGroups, [
       'base', 'references', 'meta', 'custom',
     ])
     t.end()
   })
 
-  t.test('should build `changeName` action', t => {
-    setup()
+  t.test('should define action lists', (t) => {
+    t.deepEqual(
+      baseActionsList,
+      [
+        { action: 'changeName', key: 'name' },
+        { action: 'changeSlug', key: 'slug' },
+        { action: 'setDescription', key: 'description' },
+        { action: 'changeOrderHint', key: 'orderHint' },
+        { action: 'setExternalId', key: 'externalId' },
+      ],
+      'correctly define base actions list'
+    )
 
-    const before = {
-      name: { en: 'pants', de: 'Hosen' },
-    }
-    const now = {
-      name: { en: 'shirts' },
-    }
-    const actual = categorySync.buildActions(now, before)
-    const expected = [
-      Object.assign({ action: 'changeName' }, now),
-    ]
-    t.deepEqual(actual, expected)
+    t.deepEqual(
+      metaActionsList,
+      [
+        { action: 'setMetaTitle', key: 'metaTitle' },
+        { action: 'setMetaKeywords', key: 'metaKeywords' },
+        { action: 'setMetaDescription', key: 'metaDescription' },
+      ],
+      'correctly define meta actions list'
+    )
+
+    t.deepEqual(
+      referenceActionsList,
+      [
+        { action: 'changeParent', key: 'parent' },
+      ],
+      'correctly define reference actions list'
+    )
+
     t.end()
   })
 
-  t.test('should build `changeSlug` action', t => {
-    setup()
-
-    const before = {
-      slug: { en: 'skinny', de: 'eng' },
-    }
-    const now = {
-      slug: { en: 'baggy' },
-    }
-    const actual = categorySync.buildActions(now, before)
-    const expected = [
-      Object.assign({ action: 'changeSlug' }, now),
-    ]
-    t.deepEqual(actual, expected)
-    t.end()
-  })
-
-  t.test('should build `changeParent` action', t => {
-    setup()
-
-    const before = {
-      parent: {
-        typeId: 'category',
-        id: 'someCategoryId',
-      },
-    }
-    const now = {
-      parent: {
-        typeId: 'category',
-        id: 'someOtherCategoryId',
-      },
-    }
-    const actual = categorySync.buildActions(now, before)
-    const expected = [
-      Object.assign({ action: 'changeParent' }, now),
-    ]
-    t.deepEqual(actual, expected)
-    t.end()
-  })
-
-  t.test('should build `changeOrderHint` action', t => {
-    setup()
-
-    const before = {
-      orderHint: '1',
-    }
-    const now = {
-      orderHint: '2',
-    }
-    const actual = categorySync.buildActions(now, before)
-    const expected = [
-      Object.assign({ action: 'changeOrderHint' }, now),
-    ]
-    t.deepEqual(actual, expected)
-    t.end()
-  })
-  t.test('should build `setDescription` action', t => {
-    setup()
-
-    const before = {
-      description: {
-        en: 'a jeans that is very tight',
-        de: 'Eine Jeans-Hose, die sehr eng ist',
-      },
-    }
-    const now = {
-      description: {
-        en: 'a jeans that is very loose',
-        de: 'Eine Jeans-Hose, die sehr locker ist',
-      },
-    }
-    const actual = categorySync.buildActions(now, before)
-    const expected = [
-      Object.assign({ action: 'setDescription' }, now),
-    ]
-    t.deepEqual(actual, expected)
-    t.end()
-  })
-
-  t.test('should build `setExternalId` action', t => {
-    setup()
-
-    const before = {
-      externalId: 'externalId1',
-    }
-    const now = {
-      externalId: 'externalId2',
-    }
-    const actual = categorySync.buildActions(now, before)
-    const expected = [
-      Object.assign({ action: 'setExternalId' }, now),
-    ]
-    t.deepEqual(actual, expected)
-    t.end()
-  })
-
-  t.test('should build `setMetaTitle` action', t => {
-    setup()
-
-    const before = {
-      metaTitle: { en: 'pants', de: 'Hosen' },
-    }
-    const now = {
-      metaTitle: { en: 'shirts' },
-    }
-    const actual = categorySync.buildActions(now, before)
-    const expected = [
-      Object.assign({ action: 'setMetaTitle' }, now),
-    ]
-    t.deepEqual(actual, expected)
-    t.end()
-  })
-
-  t.test('should build `setMetaDescription` action', t => {
-    setup()
-
-    const before = {
-      metaDescription: { en: 'pants', de: 'Hosen' },
-    }
-    const now = {
-      metaDescription: { en: 'shirts' },
-    }
-    const actual = categorySync.buildActions(now, before)
-    const expected = [
-      Object.assign({ action: 'setMetaDescription' }, now),
-    ]
-    t.deepEqual(actual, expected)
-    t.end()
-  })
-
-  t.test('should build `setMetaKeywords` action', t => {
-    setup()
-
-    const before = {
-      metaKeywords: { en: 'pants', de: 'Hosen' },
-    }
-    const now = {
-      metaKeywords: { en: 'shirts' },
-    }
-    const actual = categorySync.buildActions(now, before)
-    const expected = [
-      Object.assign({ action: 'setMetaKeywords' }, now),
-    ]
-    t.deepEqual(actual, expected)
-    t.end()
-  })
-
-  t.test('should build `setCustomType` action', t => {
+  t.test('should build `setCustomType` action', (t) => {
     setup()
 
     const before = {
@@ -208,10 +83,11 @@ test('Sync::category', t => {
       Object.assign({ action: 'setCustomType' }, now.custom),
     ]
     t.deepEqual(actual, expected)
+
     t.end()
   })
 
-  t.test('should build `setCustomField` action', t => {
+  t.test('should build `setCustomField` action', (t) => {
     setup()
 
     const before = {
@@ -242,20 +118,24 @@ test('Sync::category', t => {
     }
     const actual = categorySync.buildActions(now, before)
     const expected = [
-      Object.assign({ action: 'setCustomField' }, {
+      {
+        action: 'setCustomField',
         name: 'customField1',
         value: false,
-      }),
-      Object.assign({ action: 'setCustomField' }, {
+      },
+      {
+        action: 'setCustomField',
         name: 'customField3',
         value: undefined,
-      }),
-      Object.assign({ action: 'setCustomField' }, {
+      },
+      {
+        action: 'setCustomField',
         name: 'customField4',
         value: true,
-      }),
+      },
     ]
     t.deepEqual(actual, expected)
+
     t.end()
   })
 })

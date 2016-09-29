@@ -1,22 +1,66 @@
 import test from 'tape'
 import clone from '../../src/sync/utils/clone'
 import productsSyncFn, { actionGroups } from '../../src/sync/products'
+import {
+  baseActionsList,
+  metaActionsList,
+  referenceActionsList,
+} from '../../src/sync/product-actions'
 
-test('Sync::product::base', t => {
+test('Sync::product::base', (t) => {
   let productsSync
   function setup () {
     productsSync = productsSyncFn()
   }
 
-  t.test('should export action group list', t => {
+  t.test('should export action group list', (t) => {
     t.deepEqual(actionGroups, [
-      'base', 'references', 'prices', 'attributes',
-      'images', 'variants', 'categories',
+      'base',
+      'meta',
+      'references',
+      'prices',
+      'attributes',
+      'images',
+      'variants',
+      'categories',
     ])
     t.end()
   })
 
-  t.test('should ensure given objects are not mutated', t => {
+  t.test('should define action lists', (t) => {
+    t.deepEqual(
+      baseActionsList,
+      [
+        { action: 'changeName', key: 'name' },
+        { action: 'changeSlug', key: 'slug' },
+        { action: 'setDescription', key: 'description' },
+        { action: 'setSearchKeywords', key: 'searchKeywords' },
+      ],
+      'correctly define base actions list'
+    )
+
+    t.deepEqual(
+      metaActionsList,
+      [
+        { action: 'setMetaTitle', key: 'metaTitle' },
+        { action: 'setMetaDescription', key: 'metaDescription' },
+        { action: 'setMetaKeywords', key: 'metaKeywords' },
+      ],
+      'correctly define base actions list'
+    )
+
+    t.deepEqual(
+      referenceActionsList,
+      [
+        { action: 'setTaxCategory', key: 'taxCategory' },
+      ],
+      'correctly define reference actions list'
+    )
+
+    t.end()
+  })
+
+  t.test('should ensure given objects are not mutated', (t) => {
     setup()
 
     const before = {
@@ -41,10 +85,11 @@ test('Sync::product::base', t => {
 
     t.deepEqual(before, clone(before))
     t.deepEqual(now, clone(now))
+
     t.end()
   })
 
-  t.test('should build `changeName` action', t => {
+  t.test('should build `changeName` action', (t) => {
     setup()
 
     const before = { name: { en: 'Car', de: 'Auto' } }
@@ -54,75 +99,11 @@ test('Sync::product::base', t => {
     t.deepEqual(actions, [
       Object.assign({ action: 'changeName' }, now),
     ])
-    t.end()
-  })
-
-  t.test('should not build `changeName` action if field is null', t => {
-    setup()
-
-    t.deepEqual(productsSync.buildActions({ name: null }, {}), [])
-    t.deepEqual(productsSync.buildActions({}, { name: null }), [])
-    t.end()
-  })
-
-  t.test('should not build actions if delta is null', t => {
-    setup()
-
-    const before = { name: { en: 'Car' }, slug: { en: 'car' } }
-    const now = { name: { en: 'Car' }, slug: { de: 'auto' } }
-    const actions = productsSync.buildActions(now, before)
-
-    t.deepEqual(actions, [
-      // only slug changed
-      { action: 'changeSlug', slug: now.slug },
-    ])
-    t.end()
-  })
-
-  t.test('should build `changeSlug` action', t => {
-    setup()
-
-    const before1 = { slug: { en: 'sport-car' } }
-    const now1 = { slug: { de: 'auto' } }
-    const actions1 = productsSync.buildActions(now1, before1)
-    t.deepEqual(actions1, [
-      Object.assign({ action: 'changeSlug' }, now1),
-    ])
-
-    const before2 = {}
-    const now2 = { slug: { de: 'auto' } }
-    const actions2 = productsSync.buildActions(now2, before2)
-    t.deepEqual(actions2, [
-      Object.assign({ action: 'changeSlug' }, now2),
-    ])
-
-    const before3 = { slug: { de: 'auto' } }
-    const now3 = {}
-    const actions3 = productsSync.buildActions(now3, before3)
-    t.deepEqual(actions3, [])
-
-    const before4 = { slug: { de: 'auto' } }
-    const now4 = { slug: null }
-    const actions4 = productsSync.buildActions(now4, before4)
-    t.deepEqual(actions4, [{ action: 'changeSlug' }])
 
     t.end()
   })
 
-  t.test('should build `setDescription` action', t => {
-    setup()
-
-    const before = { description: { it: 'Una bella macchina' } }
-    const now = { description: { en: 'A nice car', de: 'Ein schönes Auto' } }
-    const actions = productsSync.buildActions(now, before)
-
-    t.deepEqual(actions, [
-      Object.assign({ action: 'setDescription' }, now),
-    ])
-    t.end()
-  })
-
-  t.test('should build `setSearchKeywords` action', t => {
+  t.test('should build `setSearchKeywords` action', (t) => {
     setup()
 
     /* eslint-disable max-len */
@@ -156,10 +137,11 @@ test('Sync::product::base', t => {
     t.deepEqual(actions, [
       Object.assign({ action: 'setSearchKeywords' }, now),
     ])
+
     t.end()
   })
 
-  t.test('should build no actions if searchKeywords did not change', t => {
+  t.test('should build no actions if searchKeywords did not change', (t) => {
     setup()
 
     /* eslint-disable max-len */
@@ -177,25 +159,12 @@ test('Sync::product::base', t => {
     }
     /* eslint-enable max-len */
     const actions = productsSync.buildActions(before, before)
-
     t.deepEqual(actions, [])
+
     t.end()
   })
 
-  t.test('should build `setTaxCategory` action', t => {
-    setup()
-
-    const before = { taxCategory: { typeId: 'tax-category', id: '123' } }
-    const now = { taxCategory: { typeId: 'tax-category', id: '456' } }
-    const actions = productsSync.buildActions(now, before)
-
-    t.deepEqual(actions, [
-      Object.assign({ action: 'setTaxCategory' }, now),
-    ])
-    t.end()
-  })
-
-  t.test('should build `add/remove Category` actions', t => {
+  t.test('should build `add/remove Category` actions', (t) => {
     setup()
 
     const before = {

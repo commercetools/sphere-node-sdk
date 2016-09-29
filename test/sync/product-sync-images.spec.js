@@ -2,13 +2,13 @@ import test from 'tape'
 import productsSyncFn from '../../src/sync/products'
 
 /* eslint-disable max-len */
-test('Sync::product::images', t => {
+test('Sync::product::images', (t) => {
   let productsSync
   function setup () {
     productsSync = productsSyncFn()
   }
 
-  t.test('should build actions for images', t => {
+  t.test('should build actions for images', (t) => {
     setup()
 
     const before = {
@@ -93,7 +93,7 @@ test('Sync::product::images', t => {
     t.end()
   })
 
-  t.test('should not build actions if images are not set', t => {
+  t.test('should not build actions if images are not set', (t) => {
     setup()
 
     const before = {

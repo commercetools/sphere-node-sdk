@@ -28,7 +28,7 @@ function createCategoryMapActions (mapActionGroup) {
   }
 }
 
-export default config => {
+export default (config) => {
   // config contains information about which action groups
   // are white/black listed
 

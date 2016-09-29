@@ -2,13 +2,13 @@ import test from 'tape'
 import productsSyncFn from '../../src/sync/products'
 
 /* eslint-disable max-len */
-test('Sync::product::prices', t => {
+test('Sync::product::prices', (t) => {
   let productsSync
   function setup () {
     productsSync = productsSyncFn()
   }
 
-  t.test('should build actions for prices', t => {
+  t.test('should build actions for prices', (t) => {
     setup()
 
     const validFrom = new Date().toISOString()
@@ -94,7 +94,7 @@ test('Sync::product::prices', t => {
     t.end()
   })
 
-  t.test('should not build actions if prices are not set', t => {
+  t.test('should not build actions if prices are not set', (t) => {
     setup()
 
     const before = {

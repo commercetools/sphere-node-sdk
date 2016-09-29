@@ -5,8 +5,14 @@ import * as productActions from './product-actions'
 import * as diffpatcher from './utils/diffpatcher'
 
 const actionGroups = [
-  'base', 'references', 'prices', 'attributes',
-  'images', 'variants', 'categories',
+  'base',
+  'meta',
+  'references',
+  'prices',
+  'attributes',
+  'images',
+  'variants',
+  'categories',
 ]
 
 function createProductMapActions (mapActionGroup) {
@@ -16,6 +22,9 @@ function createProductMapActions (mapActionGroup) {
 
     allActions.push(mapActionGroup('base', () =>
       productActions.actionsMapBase(diff, oldObj, newObj)))
+
+    allActions.push(mapActionGroup('meta', () =>
+      productActions.actionsMapMeta(diff, oldObj, newObj)))
 
     allActions.push(mapActionGroup('references', () =>
       productActions.actionsMapReferences(diff, oldObj, newObj)))
@@ -40,7 +49,7 @@ function createProductMapActions (mapActionGroup) {
   }
 }
 
-export default config => {
+export default (config) => {
   const mapActionGroup = createMapActionGroup(config)
   const doMapActions = createProductMapActions(mapActionGroup)
   const buildActions = createBuildActions(diffpatcher.diff, doMapActions)
