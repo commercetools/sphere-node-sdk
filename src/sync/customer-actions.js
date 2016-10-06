@@ -2,11 +2,11 @@ import {
   buildBaseAttributesActions,
   buildReferenceActions,
 } from './utils/common-actions'
-import createBuildNestedObjectActions, {
-  CREATE_ACTIONS,
+import createBuildArrayActions, {
+  ADD_ACTIONS,
   REMOVE_ACTIONS,
   CHANGE_ACTIONS,
-} from './utils/create-build-nested-object-actions'
+} from './utils/create-build-array-actions'
 
 export const baseActionsList = [
   { action: 'changeEmail', key: 'email' },
@@ -48,32 +48,20 @@ export function actionsMapReferences (diff, oldObj, newObj) {
 }
 
 export function actionsMapAddresses (diff, oldObj, newObj) {
-  function addAddressActionBuilder (oldArray, newArray, index) {
-    return {
+  const handler = createBuildArrayActions('addresses', {
+    [ADD_ACTIONS]: (oldArray, newArray, index) => ({
       action: 'addAddress',
       address: newArray[index],
-    }
-  }
-
-  function removeAddressActionBuilder (oldArray, newArray, index) {
-    return {
+    }),
+    [REMOVE_ACTIONS]: (oldArray, newArray, index) => ({
       action: 'removeAddress',
       addressId: oldArray[index].id,
-    }
-  }
-
-  function changeAddressActionBuilder (oldArray, newArray, index) {
-    return {
+    }),
+    [CHANGE_ACTIONS]: (oldArray, newArray, index) => ({
       action: 'changeAddress',
       addressId: oldArray[index].id,
       address: newArray[index],
-    }
-  }
-
-  const handler = createBuildNestedObjectActions('addresses', {
-    [CREATE_ACTIONS]: addAddressActionBuilder,
-    [REMOVE_ACTIONS]: removeAddressActionBuilder,
-    [CHANGE_ACTIONS]: changeAddressActionBuilder,
+    }),
   })
 
   return handler(diff, oldObj, newObj)

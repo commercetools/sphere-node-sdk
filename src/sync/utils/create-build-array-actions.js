@@ -1,7 +1,7 @@
 const REGEX_NUMBER = new RegExp(/^\d+$/)
 const REGEX_UNDERSCORE_NUMBER = new RegExp(/^_\d+$/)
 
-export const CREATE_ACTIONS = 'create'
+export const ADD_ACTIONS = 'create'
 export const REMOVE_ACTIONS = 'remove'
 export const CHANGE_ACTIONS = 'change'
 
@@ -10,12 +10,12 @@ export const CHANGE_ACTIONS = 'change'
  * @param  {string} key    key of the attribute containing the array of
  *   nested objects
  * @param  {object} config configuration object that can contain the keys
- *   [CREATE_ACTIONS, REMOVE_ACTIONS, CHANGE_ACTIONS, REORDER_ACTIONS], each of
+ *   [ADD_ACTIONS, REMOVE_ACTIONS, CHANGE_ACTIONS, REORDER_ACTIONS], each of
  *   which is a function. The function should accept the old + new objects and
  *   return an action object.
  * @return {Array}        The generated array of actions
  */
-export default function createBuildNestedObjectActions (key, config) {
+export default function createBuildArrayActions (key, config) {
   return function buildNestedObjectActions (diff, oldObj, newObj) {
     const addActions = []
     const removeActions = []
@@ -24,9 +24,9 @@ export default function createBuildNestedObjectActions (key, config) {
     if (diff[key]) {
       const nestedObjects = diff[key]
       Object.keys(nestedObjects).forEach((index) => {
-        if (config[CREATE_ACTIONS] && isCreateAction(nestedObjects, index))
+        if (config[ADD_ACTIONS] && isCreateAction(nestedObjects, index))
           addActions.push(
-            config[CREATE_ACTIONS](oldObj[key], newObj[key], index)
+            config[ADD_ACTIONS](oldObj[key], newObj[key], index)
           )
         else if (config[CHANGE_ACTIONS] && isChangeAction(nestedObjects, index))
           changeActions.push(

@@ -6,10 +6,10 @@ import {
   buildBaseAttributesActions,
   buildReferenceActions,
 } from './utils/common-actions'
-import createBuildNestedObjectActions, {
-  CREATE_ACTIONS,
+import createBuildArrayActions, {
+  ADD_ACTIONS,
   REMOVE_ACTIONS,
-} from './utils/create-build-nested-object-actions'
+} from './utils/create-build-array-actions'
 
 const REGEX_NUMBER = new RegExp(/^\d+$/)
 const REGEX_UNDERSCORE_NUMBER = new RegExp(/^_\d+$/)
@@ -55,20 +55,16 @@ export function actionsMapMeta (diff, oldObj, newObj) {
 }
 
 export function actionsMapVariants (diff, oldObj, newObj) {
-  function addVariantActionBuilder (oldArray, newArray, index) {
-    return Object.assign(newArray[index], { action: 'addVariant' })
-  }
-
-  function removeVariantActionBuilder (oldArray, newArray, index) {
-    return {
+  const handler = createBuildArrayActions('variants', {
+    [ADD_ACTIONS]: (oldArray, newArray, index) =>
+      Object.assign(
+        newArray[index],
+        { action: 'addVariant' }
+      ),
+    [REMOVE_ACTIONS]: (oldArray, newArray, index) => ({
       action: 'removeVariant',
       id: oldArray[index].id,
-    }
-  }
-
-  const handler = createBuildNestedObjectActions('variants', {
-    [CREATE_ACTIONS]: addVariantActionBuilder,
-    [REMOVE_ACTIONS]: removeVariantActionBuilder,
+    }),
   })
 
   return handler(diff, oldObj, newObj)
