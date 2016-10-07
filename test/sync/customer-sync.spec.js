@@ -5,7 +5,7 @@ import {
   referenceActionsList,
 } from '../../src/sync/customer-actions'
 
-test('Sync::customer', (t) => {
+test.only('Sync::customer', (t) => {
   let customerSync
   function setup () {
     customerSync = customerSyncFn()
