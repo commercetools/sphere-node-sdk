@@ -8,7 +8,7 @@ import createBuildArrayActions, {
 } from '../../../src/sync/utils/create-build-array-actions'
 
 const testObjKey = 'someNestedObjects'
-const getTestObj = (objects) => ({ [testObjKey]: objects || [] })
+const getTestObj = (list) => ({ [testObjKey]: list || [] })
 
 test('Sync::utils::createBuildArrayActions', (t) => {
   t.test('returns function', (t) => {
@@ -22,7 +22,7 @@ test('Sync::utils::createBuildArrayActions', (t) => {
 
   t.test('correctly detects add actions', (t) => {
     const before = getTestObj()
-    const now = getTestObj([ { object: 'a new object' } ])
+    const now = getTestObj([ { name: 'a new object' } ])
     const addActionSpy = spy()
 
     const handler = createBuildArrayActions(testObjKey, {
@@ -32,7 +32,7 @@ test('Sync::utils::createBuildArrayActions', (t) => {
     handler(diff(before, now), before, now)
 
     const calledWithCorrectArguments = addActionSpy
-      .calledWithExactly([], [ { object: 'a new object' } ], '0')
+      .calledWithExactly([], [ { name: 'a new object' } ], '0')
 
     t.true(
       calledWithCorrectArguments,
@@ -42,8 +42,8 @@ test('Sync::utils::createBuildArrayActions', (t) => {
   })
 
   t.test('correctly detects change actions', (t) => {
-    const before = getTestObj([ { object: 'a new object' } ])
-    const now = getTestObj([ { object: 'a changed object' } ])
+    const before = getTestObj([ { name: 'a new object' } ])
+    const now = getTestObj([ { name: 'a changed object' } ])
     const changeActionSpy = spy()
 
     const handler = createBuildArrayActions(testObjKey, {
@@ -53,8 +53,8 @@ test('Sync::utils::createBuildArrayActions', (t) => {
     handler(diff(before, now), before, now)
 
     const calledWithCorrectArguments = changeActionSpy.calledWithExactly(
-      [ { object: 'a new object' } ],
-      [ { object: 'a changed object' } ],
+      [ { name: 'a new object' } ],
+      [ { name: 'a changed object' } ],
       '0'
     )
 
@@ -66,7 +66,7 @@ test('Sync::utils::createBuildArrayActions', (t) => {
   })
 
   t.test('correctly detects remove actions', (t) => {
-    const before = getTestObj([ { object: 'an object' } ])
+    const before = getTestObj([ { name: 'an object' } ])
     const now = getTestObj()
     const removeActionSpy = spy()
 
@@ -77,7 +77,7 @@ test('Sync::utils::createBuildArrayActions', (t) => {
     handler(diff(before, now), before, now)
 
     const calledWithCorrectArguments = removeActionSpy
-      .calledWithExactly([ { object: 'an object' } ], [], '0')
+      .calledWithExactly([ { name: 'an object' } ], [], '0')
 
     t.true(
       calledWithCorrectArguments,

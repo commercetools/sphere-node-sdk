@@ -153,6 +153,12 @@ test('Sync::customer', (t) => {
           streetName: 'address 2 street',
           postalCode: 'postal code 2',
         },
+        {
+          id: 'addressId4',
+          title: 'mr',
+          streetName: 'address 4 street',
+          postalCode: 'postal code 4',
+        },
       ],
     }
     const now = {
@@ -164,6 +170,12 @@ test('Sync::customer', (t) => {
           postalCode: 'postal code 1',
         },
         // REMOVED ADDRESS 2
+        { // UNCHANGED ADDRESS 4
+          id: 'addressId4',
+          title: 'mr',
+          streetName: 'address 4 street',
+          postalCode: 'postal code 4',
+        },
         { // ADD NEW ADDRESS
           id: 'addressId3',
           title: 'mr',
@@ -186,7 +198,7 @@ test('Sync::customer', (t) => {
       },
       { // CREATE ACTIONS LAST
         action: 'addAddress',
-        address: now.addresses[1],
+        address: now.addresses[2],
       },
     ]
 
