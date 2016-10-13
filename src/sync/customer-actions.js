@@ -49,18 +49,18 @@ export function actionsMapReferences (diff, oldObj, newObj) {
 
 export function actionsMapAddresses (diff, oldObj, newObj) {
   const handler = createBuildArrayActions('addresses', {
-    [ADD_ACTIONS]: (oldArray, newArray, index) => ({
+    [ADD_ACTIONS]: (newObject) => ({
       action: 'addAddress',
-      address: newArray[index],
+      address: newObject,
     }),
-    [REMOVE_ACTIONS]: (oldArray, newArray, index) => ({
+    [REMOVE_ACTIONS]: (objectToRemove) => ({
       action: 'removeAddress',
-      addressId: oldArray[index].id,
+      addressId: objectToRemove.id,
     }),
-    [CHANGE_ACTIONS]: (oldArray, newArray, index) => ({
+    [CHANGE_ACTIONS]: (oldObject, updatedObject) => ({
       action: 'changeAddress',
-      addressId: oldArray[index].id,
-      address: newArray[index],
+      addressId: oldObject.id,
+      address: updatedObject,
     }),
   })
 

@@ -32,7 +32,7 @@ test('Sync::utils::createBuildArrayActions', (t) => {
     handler(diff(before, now), before, now)
 
     const calledWithCorrectArguments = addActionSpy
-      .calledWithExactly([], [ { name: 'a new object' } ], '0')
+      .calledWithExactly({ name: 'a new object' })
 
     t.true(
       calledWithCorrectArguments,
@@ -53,9 +53,8 @@ test('Sync::utils::createBuildArrayActions', (t) => {
     handler(diff(before, now), before, now)
 
     const calledWithCorrectArguments = changeActionSpy.calledWithExactly(
-      [ { name: 'a new object' } ],
-      [ { name: 'a changed object' } ],
-      '0'
+      { name: 'a new object' },
+      { name: 'a changed object' }
     )
 
     t.true(
@@ -77,7 +76,7 @@ test('Sync::utils::createBuildArrayActions', (t) => {
     handler(diff(before, now), before, now)
 
     const calledWithCorrectArguments = removeActionSpy
-      .calledWithExactly([ { name: 'an object' } ], [], '0')
+      .calledWithExactly({ name: 'an object' })
 
     t.true(
       calledWithCorrectArguments,

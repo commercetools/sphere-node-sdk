@@ -26,11 +26,13 @@ export default function createBuildArrayActions (key, config) {
       Object.keys(arrayDelta).forEach((index) => {
         if (config[ADD_ACTIONS] && isCreateAction(arrayDelta, index))
           addActions.push(
-            config[ADD_ACTIONS](oldObj[key], newObj[key], index)
+            // When adding a new element you don't need the oldObj
+            config[ADD_ACTIONS](newObj[key][index])
           )
         else if (config[CHANGE_ACTIONS] && isChangeAction(arrayDelta, index))
           changeActions.push(
-            config[CHANGE_ACTIONS](oldObj[key], newObj[key], index)
+            // When changing an existing element you need both old + new
+            config[CHANGE_ACTIONS](oldObj[key][index], newObj[key][index])
           )
         else if (
           config[REMOVE_ACTIONS] &&
@@ -38,7 +40,8 @@ export default function createBuildArrayActions (key, config) {
         ) {
           const realIndex = index.replace('_', '')
           removeActions.push(
-            config[REMOVE_ACTIONS](oldObj[key], newObj[key], realIndex)
+            // When removing an existing element you don't need the newObj
+            config[REMOVE_ACTIONS](oldObj[key][realIndex])
           )
         }
       })
