@@ -19,6 +19,16 @@ export const baseActionsList = [
   { action: 'setCompanyName', key: 'companyName' },
   { action: 'setDateOfBirth', key: 'dateOfBirth' },
   { action: 'setVatId', key: 'vatId' },
+  {
+    action: 'setDefaultBillingAddress',
+    key: 'defaultBillingAddressId',
+    actionKey: 'addressId',
+  },
+  {
+    action: 'setDefaultShippingAddress',
+    key: 'defaultShippingAddressId',
+    actionKey: 'addressId',
+  },
 ]
 
 export const referenceActionsList = [
