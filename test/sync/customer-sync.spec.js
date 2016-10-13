@@ -63,4 +63,146 @@ test('Sync::customer', (t) => {
 
     t.end()
   })
+
+  t.test('should build `addAddress` action', (t) => {
+    setup()
+
+    const before = { addresses: [] }
+    const now = {
+      addresses: [
+        { streetName: 'some name', streetNumber: '5' },
+      ],
+    }
+
+    const actual = customerSync.buildActions(now, before)
+    const expected = [{ action: 'addAddress', address: now.addresses[0] }]
+    t.deepEqual(actual, expected, 'should create `addAddress` action')
+    t.end()
+  })
+
+  t.test('should build `changeAddress` action', (t) => {
+    setup()
+
+    const before = {
+      addresses: [
+        {
+          id: 'somelongidgoeshere199191',
+          streetName: 'some name',
+          streetNumber: '5',
+        },
+      ],
+    }
+    const now = {
+      addresses: [
+        {
+          id: 'somelongidgoeshere199191',
+          streetName: 'some different name',
+          streetNumber: '5',
+        },
+      ],
+    }
+
+    const actual = customerSync.buildActions(now, before)
+    const expected = [
+      {
+        action: 'changeAddress',
+        addressId: before.addresses[0].id,
+        address: now.addresses[0],
+      },
+    ]
+
+    t.deepEqual(actual, expected, 'should create `changeAddress` action')
+    t.end()
+  })
+
+  t.test('should build `removeAddress` action', (t) => {
+    setup()
+
+    const before = {
+      addresses: [
+        { id: 'somelongidgoeshere199191' },
+      ],
+    }
+    const now = { addresses: [] }
+
+    const actual = customerSync.buildActions(now, before)
+    const expected = [
+      {
+        action: 'removeAddress',
+        addressId: before.addresses[0].id,
+      },
+    ]
+    t.deepEqual(actual, expected, 'should create `removeAddress` action')
+    t.end()
+  })
+
+  t.test('should build complex mixed actions', (t) => {
+    setup()
+
+    const before = {
+      addresses: [
+        {
+          id: 'addressId1',
+          title: 'mr',
+          streetName: 'address 1 street',
+          postalCode: 'postal code 1',
+        },
+        {
+          id: 'addressId2',
+          title: 'mr',
+          streetName: 'address 2 street',
+          postalCode: 'postal code 2',
+        },
+        {
+          id: 'addressId4',
+          title: 'mr',
+          streetName: 'address 4 street',
+          postalCode: 'postal code 4',
+        },
+      ],
+    }
+    const now = {
+      addresses: [
+        {
+          id: 'addressId1',
+          title: 'mr',
+          streetName: 'address 1 street changed', // CHANGED
+          postalCode: 'postal code 1',
+        },
+        // REMOVED ADDRESS 2
+        { // UNCHANGED ADDRESS 4
+          id: 'addressId4',
+          title: 'mr',
+          streetName: 'address 4 street',
+          postalCode: 'postal code 4',
+        },
+        { // ADD NEW ADDRESS
+          id: 'addressId3',
+          title: 'mr',
+          streetName: 'address 3 street',
+          postalCode: 'postal code 3',
+        },
+      ],
+    }
+
+    const actual = customerSync.buildActions(now, before)
+    const expected = [
+      { // CHANGE ACTIONS FIRST
+        action: 'changeAddress',
+        addressId: 'addressId1',
+        address: now.addresses[0],
+      },
+      { // REMOVE ACTIONS NEXT
+        action: 'removeAddress',
+        addressId: 'addressId2',
+      },
+      { // CREATE ACTIONS LAST
+        action: 'addAddress',
+        address: now.addresses[2],
+      },
+    ]
+
+    t.deepEqual(actual, expected, 'should build multiple actions')
+    t.end()
+  })
 })

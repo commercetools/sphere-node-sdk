@@ -6,6 +6,10 @@ import {
   buildBaseAttributesActions,
   buildReferenceActions,
 } from './utils/common-actions'
+import createBuildArrayActions, {
+  ADD_ACTIONS,
+  REMOVE_ACTIONS,
+} from './utils/create-build-array-actions'
 
 const REGEX_NUMBER = new RegExp(/^\d+$/)
 const REGEX_UNDERSCORE_NUMBER = new RegExp(/^_\d+$/)
@@ -51,26 +55,19 @@ export function actionsMapMeta (diff, oldObj, newObj) {
 }
 
 export function actionsMapVariants (diff, oldObj, newObj) {
-  const actions = []
-  if (!diff.variants) return actions
-
-  const addVariantActions = []
-  const removeVariantActions = []
-  forEach(diff.variants, (variant, index) => {
-    if (REGEX_NUMBER.test(index) && Array.isArray(variant)) {
-      const newVariant = newObj.variants[index]
-      const action = Object.assign({ action: 'addVariant' }, newVariant)
-      addVariantActions.push(action)
-    } else if (REGEX_UNDERSCORE_NUMBER.test(index) && Array.isArray(variant))
-      // If array move do nothing, otherwise remove the variant
-      if (!(variant.length === 3 && variant[2] === 3))
-        removeVariantActions.push({
-          action: 'removeVariant', id: variant[0].id,
-        })
+  const handler = createBuildArrayActions('variants', {
+    [ADD_ACTIONS]: (newObject) =>
+      Object.assign(
+        newObject,
+        { action: 'addVariant' }
+      ),
+    [REMOVE_ACTIONS]: (objectToRemove) => ({
+      action: 'removeVariant',
+      id: objectToRemove.id,
+    }),
   })
 
-  // Make sure `removeVariant` actions come first
-  return removeVariantActions.concat(addVariantActions)
+  return handler(diff, oldObj, newObj)
 }
 
 export function actionsMapReferences (diff, oldObj, newObj) {
