@@ -113,9 +113,20 @@ test('Sync::product::variants', (t) => {
         id: 1,
         attributes: [
           { name: 'color', value: 'red' },
+          { name: 'size', value: 'M' },
+          { name: 'weigth', value: '1' },
         ],
       },
-      variants: [],
+      variants: [
+        {
+          id: 2,
+          attributes: [
+            { name: 'color', value: 'red' },
+            { name: 'size', value: 'M' },
+            { name: 'weigth', value: '2' },
+          ],
+        },
+      ],
     }
 
     const now = {
@@ -123,20 +134,43 @@ test('Sync::product::variants', (t) => {
       masterVariant: {
         id: 1,
         attributes: [
+          // new
           { name: 'vendor', value: 'ferrari' },
+          // changed
           { name: 'color', value: 'yellow' },
+          // removed
+          { name: 'size', value: undefined },
+          // normal attribute
+          { name: 'weigth', value: '3' },
         ],
       },
-      variants: [],
+      variants: [
+        {
+          id: 2,
+          attributes: [
+            // new
+            { name: 'vendor', value: 'ferrari' },
+            // changed
+            { name: 'color', value: 'yellow' },
+            // removed
+            { name: 'size', value: undefined },
+            // normal attribute
+            { name: 'weigth', value: '4' },
+          ],
+        },
+      ],
     }
 
     const actions = productsSync.buildActions(now, before, {
-      sameForAllAttributeNames: ['vendor'],
+      sameForAllAttributeNames: ['vendor', 'color', 'size'],
     })
 
     t.deepEqual(actions, [
       { action: 'setAttributeInAllVariants', name: 'vendor', value: 'ferrari' },
-      { action: 'setAttribute', variantId: 1, name: 'color', value: 'yellow' },
+      { action: 'setAttributeInAllVariants', name: 'color', value: 'yellow' },
+      { action: 'setAttributeInAllVariants', name: 'size', value: undefined },
+      { action: 'setAttribute', variantId: 1, name: 'weigth', value: '3' },
+      { action: 'setAttribute', variantId: 2, name: 'weigth', value: '4' },
     ])
     t.end()
   })

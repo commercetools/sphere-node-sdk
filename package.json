@@ -48,7 +48,7 @@
     "jsondiffpatch": "emmenko/jsondiffpatch#patch-webpack",
     "lodash.flatten": "^4.2.0",
     "lodash.foreach": "^4.2.0",
-    "lodash.uniq": "^4.2.1",
+    "lodash.uniqwith": "^4.5.0",
     "loose-envify": "^1.1.0"
   },
   "devDependencies": {
