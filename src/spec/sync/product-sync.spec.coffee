@@ -129,6 +129,9 @@ describe 'ProductSync', ->
       update = @sync.buildActions(NEW_PRODUCT, OLD_PRODUCT).getUpdatePayload()
       expected_update =
         actions: [
+          { action: 'removeVariant', id: 4 }
+          { action: 'addVariant', sku: 'new', attributes: [ { name: 'what', value: 'no ID' } ] }
+          { action: 'addVariant', attributes: [ { name: 'what', value: 'no SKU' } ] }
           { action: 'changeName', name: {en: 'Foo', de: undefined, it: 'Boo'} }
           { action: 'changeSlug', slug: {en: 'foo', it: 'boo'} }
           { action: 'setCategoryOrderHint', categoryId : 'myFancyCategoryId', orderHint : '0.9' }
@@ -150,9 +153,6 @@ describe 'ProductSync', ->
           { action: 'addPrice', variantId: 77, price: { value: { currencyCode: 'EUR', centAmount: 4790 }, country: 'AT', customerGroup: { id: 'special-price-id', typeId: 'customer-group' } } }
           { action: 'addPrice', variantId: 77, price: { value: { currencyCode: 'EUR', centAmount: 6559 }, country: 'FR' } }
           { action: 'addPrice', variantId: 77, price: { value: { currencyCode: 'EUR', centAmount: 13118 }, country: 'BE' } }
-          { action: 'removeVariant', id: 4 }
-          { action: 'addVariant', sku: 'new', attributes: [ { name: 'what', value: 'no ID' } ] }
-          { action: 'addVariant', attributes: [ { name: 'what', value: 'no SKU' } ] }
         ]
         version: OLD_PRODUCT.version
       expect(update).toEqual expected_update
@@ -183,10 +183,10 @@ describe 'ProductSync', ->
       update = @sync.buildActions(newProduct, oldProduct).getUpdatePayload()
       expected_update =
         actions: [
+          { action: 'addVariant', sku: 'v4', attributes: [{ name: 'foo', value: 'i dont care' }] }
           { action: 'setAttribute', variantId: 1, name: 'foo', value: 'new value' }
           { action: 'setAttribute', variantId: 2, name: 'foo', value: 'another value' }
           { action: 'setAttribute', variantId: 3, name: 'foo', value: 'yet another' }
-          { action: 'addVariant', sku: 'v4', attributes: [{ name: 'foo', value: 'i dont care' }] }
         ]
         version: oldProduct.version
       expect(update).toEqual expected_update
