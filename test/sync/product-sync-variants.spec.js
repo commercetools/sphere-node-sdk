@@ -269,6 +269,45 @@ test('Sync::product::variants', (t) => {
     t.end()
   })
 
+  t.test('should handle mapping actions for new variants without masterVariant',
+  (t) => {
+    const before = {
+      id: '123',
+      version: 1,
+      masterVariant: {
+        id: 1,
+        sku: 'v1',
+        attributes: [{ name: 'foo', value: 'bar' }],
+      },
+      variants: [
+        { id: 2, sku: 'v2', attributes: [{ name: 'foo', value: 'qux' }] },
+        { id: 3, sku: 'v3', attributes: [{ name: 'foo', value: 'baz' }] },
+      ],
+    }
+
+    const now = {
+      id: '123',
+      // <-- no masterVariant
+      variants: [
+        // changed
+        { id: 2, sku: 'v2', attributes: [{ name: 'foo', value: 'another value' }] },
+        // changed
+        { id: 3, sku: 'v3', attributes: [{ name: 'foo', value: 'i dont care' }] },
+        // new
+        { sku: 'v4', attributes: [{ name: 'foo', value: 'yet another' }] },
+      ],
+    }
+
+    const actions = productsSync.buildActions(now, before)
+
+    t.deepEqual(actions, [
+      { action: 'addVariant', sku: 'v4', attributes: [{ name: 'foo', value: 'yet another' }] },
+      { action: 'setAttribute', variantId: 2, name: 'foo', value: 'another value' },
+      { action: 'setAttribute', variantId: 3, name: 'foo', value: 'i dont care' },
+    ])
+    t.end()
+  })
+
   t.test('should handle unsetting the sku of a variant', (t) => {
     setup()
 
