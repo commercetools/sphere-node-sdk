@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import forEach from 'lodash.foreach'
-import unique from 'lodash.uniq'
+import uniqWith from 'lodash.uniqwith'
 import * as diffpatcher from './utils/diffpatcher'
 import {
   buildBaseAttributesActions,
@@ -152,9 +152,13 @@ export function actionsMapAttributes (
       }
     })
 
-  // Ensure we have each action only once per product.
-  // Use string representation of object to allow `===` on array objects
-  return unique(actions, action => JSON.stringify(action))
+  // Ensure that an action is unique.
+  // This is especially necessary for SFA attributes.
+  return uniqWith(actions, (a, b) =>
+    a.action === b.action &&
+    a.name === b.name &&
+    a.variantId === b.variantId
+  )
 }
 
 export function actionsMapImages (diff, oldObj, newObj) {
