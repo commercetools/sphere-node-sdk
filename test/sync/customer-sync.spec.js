@@ -32,6 +32,16 @@ test('Sync::customer', (t) => {
         { action: 'setCompanyName', key: 'companyName' },
         { action: 'setDateOfBirth', key: 'dateOfBirth' },
         { action: 'setVatId', key: 'vatId' },
+        {
+          action: 'setDefaultBillingAddress',
+          key: 'defaultBillingAddressId',
+          actionKey: 'addressId',
+        },
+        {
+          action: 'setDefaultShippingAddress',
+          key: 'defaultShippingAddressId',
+          actionKey: 'addressId',
+        },
       ],
       'correctly define base actions list'
     )
@@ -61,6 +71,58 @@ test('Sync::customer', (t) => {
     const expected = [{ action: 'changeEmail', email: now.email }]
     t.deepEqual(actual, expected)
 
+    t.end()
+  })
+
+  t.test('should build `setDefaultBillingAddress` action', (t) => {
+    setup()
+
+    const before = {
+      defaultBillingAddressId: 'abc123',
+    }
+    const now = {
+      defaultBillingAddressId: 'def456',
+    }
+
+    const actual = customerSync.buildActions(now, before)
+    const expected = [
+      {
+        action: 'setDefaultBillingAddress',
+        addressId: now.defaultBillingAddressId,
+      },
+    ]
+
+    t.deepEqual(
+      actual,
+      expected,
+      'should generate setDefaultBillingAddress action'
+    )
+    t.end()
+  })
+
+  t.test('should build `setDefaultShippingAddress` action', (t) => {
+    setup()
+
+    const before = {
+      defaultShippingAddressId: 'abc123',
+    }
+    const now = {
+      defaultShippingAddressId: 'def456',
+    }
+
+    const actual = customerSync.buildActions(now, before)
+    const expected = [
+      {
+        action: 'setDefaultShippingAddress',
+        addressId: now.defaultShippingAddressId,
+      },
+    ]
+
+    t.deepEqual(
+      actual,
+      expected,
+      'should generate setDefaultShippingAddress action'
+    )
     t.end()
   })
 
