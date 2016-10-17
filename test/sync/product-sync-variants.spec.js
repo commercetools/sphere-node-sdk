@@ -142,6 +142,8 @@ test('Sync::product::variants', (t) => {
           { name: 'size', value: undefined },
           // normal attribute
           { name: 'weigth', value: '3' },
+          // non existent value removed
+          { name: 'length', value: undefined },
         ],
       },
       variants: [
@@ -156,13 +158,15 @@ test('Sync::product::variants', (t) => {
             { name: 'size', value: undefined },
             // normal attribute
             { name: 'weigth', value: '4' },
+            // non existent value removed
+            { name: 'length', value: undefined },
           ],
         },
       ],
     }
 
     const actions = productsSync.buildActions(now, before, {
-      sameForAllAttributeNames: ['vendor', 'color', 'size'],
+      sameForAllAttributeNames: ['vendor', 'color', 'size', 'length'],
     })
 
     t.deepEqual(actions, [
