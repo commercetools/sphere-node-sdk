@@ -328,8 +328,12 @@ function _buildNewSetAttributeAction (id, el, sameForAllAttributeNames) {
   return action
 }
 
-function _buildSetAttributeAction (diffedValue, oldVariant, attribute,
-  sameForAllAttributeNames) {
+function _buildSetAttributeAction (
+  diffedValue,
+  oldVariant,
+  attribute,
+  sameForAllAttributeNames
+) {
   if (!attribute) return undefined
 
   const action = {
@@ -338,13 +342,18 @@ function _buildSetAttributeAction (diffedValue, oldVariant, attribute,
     name: attribute.name,
   }
 
+  // Used as original object for patching long diff text
+  const oldAttribute = oldVariant.attributes.find(
+    a => a.name === attribute.name
+  ) || {}
+
   if (sameForAllAttributeNames.indexOf(attribute.name) !== -1) {
     Object.assign(action, { action: 'setAttributeInAllVariants' })
     delete action.variantId
   }
 
   if (Array.isArray(diffedValue))
-    action.value = diffpatcher.getDeltaValue(diffedValue, attribute.value)
+    action.value = diffpatcher.getDeltaValue(diffedValue, oldAttribute.value)
 
   else
     // LText: value: {en: "", de: ""}
@@ -355,7 +364,7 @@ function _buildSetAttributeAction (diffedValue, oldVariant, attribute,
 
     if (typeof diffedValue === 'string')
       // normal
-      action.value = diffpatcher.getDeltaValue(diffedValue, attribute.value)
+      action.value = diffpatcher.getDeltaValue(diffedValue, oldAttribute.value)
 
     else if (diffedValue.centAmount || diffedValue.currencyCode)
       // Money
@@ -382,16 +391,16 @@ function _buildSetAttributeAction (diffedValue, oldVariant, attribute,
         Object.assign(action, { value: attribute.value })
       } else {
         // LText
-        const attrib = oldVariant.attributes.find(
-          a => a.name === attribute.name
-        )
 
-        const text = attrib ? attrib.value : null
-        forEach(diffedValue, (localValue, lang) => {
-          text[lang] = diffpatcher.getDeltaValue(localValue)
-        })
+        const updatedValue = Object.keys(diffedValue).reduce((acc, lang) => {
+          const patchedValue = diffpatcher.getDeltaValue(
+            diffedValue[lang],
+            acc[lang]
+          )
+          return Object.assign(acc, { [lang]: patchedValue })
+        }, Object.assign({}, oldAttribute.value))
 
-        action.value = text
+        action.value = updatedValue
       }
 
   return action
