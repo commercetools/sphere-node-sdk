@@ -1,11 +1,15 @@
 /* eslint-disable max-len */
 import forEach from 'lodash.foreach'
-import unique from 'lodash.uniq'
+import uniqWith from 'lodash.uniqwith'
 import * as diffpatcher from './utils/diffpatcher'
 import {
   buildBaseAttributesActions,
   buildReferenceActions,
 } from './utils/common-actions'
+import createBuildArrayActions, {
+  ADD_ACTIONS,
+  REMOVE_ACTIONS,
+} from './utils/create-build-array-actions'
 
 const REGEX_NUMBER = new RegExp(/^\d+$/)
 const REGEX_UNDERSCORE_NUMBER = new RegExp(/^_\d+$/)
@@ -51,26 +55,19 @@ export function actionsMapMeta (diff, oldObj, newObj) {
 }
 
 export function actionsMapVariants (diff, oldObj, newObj) {
-  const actions = []
-  if (!diff.variants) return actions
-
-  const addVariantActions = []
-  const removeVariantActions = []
-  forEach(diff.variants, (variant, index) => {
-    if (REGEX_NUMBER.test(index) && Array.isArray(variant)) {
-      const newVariant = newObj.variants[index]
-      const action = Object.assign({ action: 'addVariant' }, newVariant)
-      addVariantActions.push(action)
-    } else if (REGEX_UNDERSCORE_NUMBER.test(index) && Array.isArray(variant))
-      // If array move do nothing, otherwise remove the variant
-      if (!(variant.length === 3 && variant[2] === 3))
-        removeVariantActions.push({
-          action: 'removeVariant', id: variant[0].id,
-        })
+  const handler = createBuildArrayActions('variants', {
+    [ADD_ACTIONS]: (newObject) =>
+      Object.assign(
+        newObject,
+        { action: 'addVariant' }
+      ),
+    [REMOVE_ACTIONS]: (objectToRemove) => ({
+      action: 'removeVariant',
+      id: objectToRemove.id,
+    }),
   })
 
-  // Make sure `removeVariant` actions come first
-  return removeVariantActions.concat(addVariantActions)
+  return handler(diff, oldObj, newObj)
 }
 
 export function actionsMapReferences (diff, oldObj, newObj) {
@@ -88,6 +85,7 @@ export function actionsMapCategories (diff) {
 
   const addToCategoryActions = []
   const removeFromCategoryActions = []
+
   forEach(diff.categories, (category) => {
     if (Array.isArray(category)) {
       const action = { category: category[0] }
@@ -109,21 +107,30 @@ export function actionsMapCategories (diff) {
   return removeFromCategoryActions.concat(addToCategoryActions)
 }
 
-export function actionsMapAttributes (diff, oldObj, newObj,
-  sameForAllAttributeNames = []) {
+export function actionsMapAttributes (
+  diff,
+  oldObj,
+  newObj,
+  sameForAllAttributeNames = []
+) {
   // TODO: validate ProductType between products
   let actions = []
   const { masterVariant, variants } = diff
 
   if (masterVariant) {
-    const skuAction =
-      _buildSkuActions(masterVariant, oldObj.masterVariant)
+    const skuAction = _buildSkuActions(
+      masterVariant,
+      oldObj.masterVariant
+    )
     if (skuAction) actions.push(skuAction)
 
     const { attributes } = masterVariant
     const attrActions = _buildVariantAttributesActions(
-      attributes, oldObj.masterVariant, newObj.masterVariant,
-      sameForAllAttributeNames)
+      attributes,
+      oldObj.masterVariant,
+      newObj.masterVariant,
+      sameForAllAttributeNames
+    )
     actions = actions.concat(attrActions)
   }
 
@@ -136,15 +143,22 @@ export function actionsMapAttributes (diff, oldObj, newObj,
 
         const { attributes } = variant
         const attrActions = _buildVariantAttributesActions(
-          attributes, oldObj.variants[key], newObj.variants[key],
-          sameForAllAttributeNames)
+          attributes,
+          oldObj.variants[key],
+          newObj.variants[key],
+          sameForAllAttributeNames
+        )
         actions = actions.concat(attrActions)
       }
     })
 
-  // Ensure we have each action only once per product.
-  // Use string representation of object to allow `===` on array objects
-  return unique(actions, action => JSON.stringify(action))
+  // Ensure that an action is unique.
+  // This is especially necessary for SFA attributes.
+  return uniqWith(actions, (a, b) =>
+    a.action === b.action &&
+    a.name === b.name &&
+    a.variantId === b.variantId
+  )
 }
 
 export function actionsMapImages (diff, oldObj, newObj) {
@@ -152,15 +166,21 @@ export function actionsMapImages (diff, oldObj, newObj) {
   const { masterVariant, variants } = diff
 
   if (masterVariant) {
-    const mActions = _buildVariantImagesAction(masterVariant.images,
-      oldObj.masterVariant, newObj.masterVariant)
+    const mActions = _buildVariantImagesAction(
+      masterVariant.images,
+      oldObj.masterVariant,
+      newObj.masterVariant
+    )
     actions = actions.concat(mActions)
   }
 
   if (variants)
     forEach(variants, (variant, key) => {
-      const vActions = _buildVariantImagesAction(variant.images,
-        oldObj.variants[key], newObj.variants[key])
+      const vActions = _buildVariantImagesAction(
+        variant.images,
+        oldObj.variants[key],
+        newObj.variants[key]
+      )
       actions = actions.concat(vActions)
     })
 
@@ -175,8 +195,11 @@ export function actionsMapPrices (diff, oldObj, newObj) {
   const { masterVariant, variants } = diff
 
   if (masterVariant) {
-    const [ a, c, r ] = _buildVariantPricesAction(masterVariant.prices,
-      oldObj.masterVariant, newObj.masterVariant)
+    const [ a, c, r ] = _buildVariantPricesAction(
+      masterVariant.prices,
+      oldObj.masterVariant,
+      newObj.masterVariant
+    )
     addPriceActions = addPriceActions.concat(a)
     changePriceActions = changePriceActions.concat(c)
     removePriceActions = removePriceActions.concat(r)
@@ -184,16 +207,20 @@ export function actionsMapPrices (diff, oldObj, newObj) {
 
   if (variants)
     forEach(variants, (variant, key) => {
-      const [ a, c, r ] = _buildVariantPricesAction(variant.prices,
-      oldObj.variants[key], newObj.variants[key])
+      const [ a, c, r ] = _buildVariantPricesAction(
+        variant.prices,
+        oldObj.variants[key],
+        newObj.variants[key]
+      )
 
       addPriceActions = addPriceActions.concat(a)
       changePriceActions = changePriceActions.concat(c)
       removePriceActions = removePriceActions.concat(r)
     })
 
-  return changePriceActions.concat(
-    removePriceActions.concat(addPriceActions))
+  return changePriceActions
+    .concat(removePriceActions)
+    .concat(addPriceActions)
 }
 
 
@@ -217,7 +244,10 @@ function _buildSkuActions (variantDiff, oldVariant) {
 }
 
 function _buildVariantAttributesActions (
-  attributes, oldVariant, newVariant, sameForAllAttributeNames
+  attributes,
+  oldVariant,
+  newVariant,
+  sameForAllAttributeNames
 ) {
   const actions = []
 
@@ -234,8 +264,12 @@ function _buildVariantAttributesActions (
         if (setAction) actions.push(setAction)
       } else
         if (newVariant.attributes) {
-          const setAction = _buildSetAttributeAction(value.value, oldVariant,
-            newVariant.attributes[key], sameForAllAttributeNames)
+          const setAction = _buildSetAttributeAction(
+            value.value,
+            oldVariant,
+            newVariant.attributes[key],
+            sameForAllAttributeNames
+          )
           if (setAction) actions.push(setAction)
         }
     } else if (REGEX_UNDERSCORE_NUMBER.test(key))
@@ -261,8 +295,12 @@ function _buildVariantAttributesActions (
       } else {
         const index = key.substring(1)
         if (newVariant.attributes) {
-          const setAction = _buildSetAttributeAction(value.value, oldVariant,
-            newVariant.attributes[index], sameForAllAttributeNames)
+          const setAction = _buildSetAttributeAction(
+            value.value,
+            oldVariant,
+            newVariant.attributes[index],
+            sameForAllAttributeNames
+          )
           if (setAction) actions.push(setAction)
         }
       }
@@ -290,8 +328,12 @@ function _buildNewSetAttributeAction (id, el, sameForAllAttributeNames) {
   return action
 }
 
-function _buildSetAttributeAction (diffedValue, oldVariant, attribute,
-  sameForAllAttributeNames) {
+function _buildSetAttributeAction (
+  diffedValue,
+  oldVariant,
+  attribute,
+  sameForAllAttributeNames
+) {
   if (!attribute) return undefined
 
   const action = {
@@ -300,13 +342,18 @@ function _buildSetAttributeAction (diffedValue, oldVariant, attribute,
     name: attribute.name,
   }
 
+  // Used as original object for patching long diff text
+  const oldAttribute = oldVariant.attributes.find(
+    a => a.name === attribute.name
+  ) || {}
+
   if (sameForAllAttributeNames.indexOf(attribute.name) !== -1) {
     Object.assign(action, { action: 'setAttributeInAllVariants' })
     delete action.variantId
   }
 
   if (Array.isArray(diffedValue))
-    action.value = diffpatcher.getDeltaValue(diffedValue, attribute.value)
+    action.value = diffpatcher.getDeltaValue(diffedValue, oldAttribute.value)
 
   else
     // LText: value: {en: "", de: ""}
@@ -317,7 +364,7 @@ function _buildSetAttributeAction (diffedValue, oldVariant, attribute,
 
     if (typeof diffedValue === 'string')
       // normal
-      action.value = diffpatcher.getDeltaValue(diffedValue, attribute.value)
+      action.value = diffpatcher.getDeltaValue(diffedValue, oldAttribute.value)
 
     else if (diffedValue.centAmount || diffedValue.currencyCode)
       // Money
@@ -344,15 +391,16 @@ function _buildSetAttributeAction (diffedValue, oldVariant, attribute,
         Object.assign(action, { value: attribute.value })
       } else {
         // LText
-        const attrib = oldVariant.attributes.find(a =>
-          a.name === attribute.name)
 
-        const text = attrib ? attrib.value : null
-        forEach(diffedValue, (localValue, lang) => {
-          text[lang] = diffpatcher.getDeltaValue(localValue)
-        })
+        const updatedValue = Object.keys(diffedValue).reduce((acc, lang) => {
+          const patchedValue = diffpatcher.getDeltaValue(
+            diffedValue[lang],
+            acc[lang]
+          )
+          return Object.assign(acc, { [lang]: patchedValue })
+        }, Object.assign({}, oldAttribute.value))
 
-        action.value = text
+        action.value = updatedValue
       }
 
   return action

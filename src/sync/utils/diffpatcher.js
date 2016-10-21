@@ -33,7 +33,7 @@ export function patch (obj, delta) {
   return diffpatcher.patch(obj, delta)
 }
 
-export function getDeltaValue (arr, obj) {
+export function getDeltaValue (arr, originalObject) {
   if (!Array.isArray(arr))
     throw new Error('Expected array to extract delta value')
 
@@ -44,11 +44,11 @@ export function getDeltaValue (arr, obj) {
   if (arr.length === 3 && arr[2] === 0) return undefined // delete
 
   if (arr.length === 3 && arr[2] === 2) { // text diff
-    if (!obj)
+    if (!originalObject)
       throw new Error('Cannot apply patch to long text diff. ' +
         'Missing original object.')
     // try to apply patch to given object based on delta value
-    return jsondiffpatch.patch(obj, arr)
+    return jsondiffpatch.patch(originalObject, arr)
   }
 
   if (arr.length === 3 && arr[2] === 3) // array move

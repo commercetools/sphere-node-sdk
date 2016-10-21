@@ -113,9 +113,20 @@ test('Sync::product::variants', (t) => {
         id: 1,
         attributes: [
           { name: 'color', value: 'red' },
+          { name: 'size', value: 'M' },
+          { name: 'weigth', value: '1' },
         ],
       },
-      variants: [],
+      variants: [
+        {
+          id: 2,
+          attributes: [
+            { name: 'color', value: 'red' },
+            { name: 'size', value: 'M' },
+            { name: 'weigth', value: '2' },
+          ],
+        },
+      ],
     }
 
     const now = {
@@ -123,20 +134,43 @@ test('Sync::product::variants', (t) => {
       masterVariant: {
         id: 1,
         attributes: [
+          // new
           { name: 'vendor', value: 'ferrari' },
+          // changed
           { name: 'color', value: 'yellow' },
+          // removed
+          { name: 'size', value: undefined },
+          // normal attribute
+          { name: 'weigth', value: '3' },
         ],
       },
-      variants: [],
+      variants: [
+        {
+          id: 2,
+          attributes: [
+            // new
+            { name: 'vendor', value: 'ferrari' },
+            // changed
+            { name: 'color', value: 'yellow' },
+            // removed
+            { name: 'size', value: undefined },
+            // normal attribute
+            { name: 'weigth', value: '4' },
+          ],
+        },
+      ],
     }
 
     const actions = productsSync.buildActions(now, before, {
-      sameForAllAttributeNames: ['vendor'],
+      sameForAllAttributeNames: ['vendor', 'color', 'size'],
     })
 
     t.deepEqual(actions, [
       { action: 'setAttributeInAllVariants', name: 'vendor', value: 'ferrari' },
-      { action: 'setAttribute', variantId: 1, name: 'color', value: 'yellow' },
+      { action: 'setAttributeInAllVariants', name: 'color', value: 'yellow' },
+      { action: 'setAttributeInAllVariants', name: 'size', value: undefined },
+      { action: 'setAttribute', variantId: 1, name: 'weigth', value: '3' },
+      { action: 'setAttribute', variantId: 2, name: 'weigth', value: '4' },
     ])
     t.end()
   })
@@ -264,6 +298,45 @@ test('Sync::product::variants', (t) => {
       { action: 'setAttribute', variantId: 1, name: 'foo', value: 'new value' },
       { action: 'setAttribute', variantId: 2, name: 'foo', value: 'another value' },
       { action: 'setSku', sku: 'v4', variantId: 3 },
+      { action: 'setAttribute', variantId: 3, name: 'foo', value: 'i dont care' },
+    ])
+    t.end()
+  })
+
+  t.test('should handle mapping actions for new variants without masterVariant',
+  (t) => {
+    const before = {
+      id: '123',
+      version: 1,
+      masterVariant: {
+        id: 1,
+        sku: 'v1',
+        attributes: [{ name: 'foo', value: 'bar' }],
+      },
+      variants: [
+        { id: 2, sku: 'v2', attributes: [{ name: 'foo', value: 'qux' }] },
+        { id: 3, sku: 'v3', attributes: [{ name: 'foo', value: 'baz' }] },
+      ],
+    }
+
+    const now = {
+      id: '123',
+      // <-- no masterVariant
+      variants: [
+        // changed
+        { id: 2, sku: 'v2', attributes: [{ name: 'foo', value: 'another value' }] },
+        // changed
+        { id: 3, sku: 'v3', attributes: [{ name: 'foo', value: 'i dont care' }] },
+        // new
+        { sku: 'v4', attributes: [{ name: 'foo', value: 'yet another' }] },
+      ],
+    }
+
+    const actions = productsSync.buildActions(now, before)
+
+    t.deepEqual(actions, [
+      { action: 'addVariant', sku: 'v4', attributes: [{ name: 'foo', value: 'yet another' }] },
+      { action: 'setAttribute', variantId: 2, name: 'foo', value: 'another value' },
       { action: 'setAttribute', variantId: 3, name: 'foo', value: 'i dont care' },
     ])
     t.end()
@@ -405,6 +478,94 @@ test('Sync::product::variants', (t) => {
 
     const actions = productsSync.buildActions(now, before)
     t.deepEqual(actions, [], 'should not generate any action')
+    t.end()
+  })
+
+  t.test('should build `setAttribute` action text/ltext attributes ' +
+    'with long text',
+  (t) => {
+    setup()
+
+    const longText = `
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+    Nunc ultricies fringilla tortor eu egestas.
+    Praesent rhoncus molestie libero, eu tempor sapien placerat id.
+    Donec commodo nunc sed nulla scelerisque, eu pulvinar augue egestas.
+    Donec at leo dolor. Cras at molestie arcu.
+    Sed non fringilla quam, sit amet ultricies massa.
+    Donec luctus tempus erat, ut suscipit elit varius nec.
+    Mauris dolor enim, aliquet sed nulla et, dignissim lobortis augue.
+    Proin pharetra magna eu neque semper tristique sed.
+    `
+
+    const newLongText = `Hello, ${longText}`
+
+    /* eslint-disable max-len */
+    const before = {
+      masterVariant: {
+        id: 1,
+        attributes: [
+          {
+            name: 'text',
+            value: longText,
+          },
+        ],
+      },
+      variants: [
+        {
+          id: 2,
+          attributes: [
+            {
+              name: 'ltext',
+              value: {
+                en: longText,
+              },
+            },
+          ],
+        },
+      ],
+    }
+    const now = {
+      masterVariant: {
+        id: 1,
+        attributes: [
+          {
+            name: 'text',
+            value: newLongText,
+          },
+        ],
+      },
+      variants: [
+        {
+          id: 2,
+          attributes: [
+            {
+              name: 'ltext',
+              value: {
+                en: newLongText,
+              },
+            },
+          ],
+        },
+      ],
+    }
+    /* eslint-enable max-len */
+    const actions = productsSync.buildActions(now, before)
+
+    t.deepEqual(actions, [
+      {
+        action: 'setAttribute',
+        variantId: 1,
+        name: 'text',
+        value: newLongText,
+      },
+      {
+        action: 'setAttribute',
+        variantId: 2,
+        name: 'ltext',
+        value: { en: newLongText },
+      },
+    ])
     t.end()
   })
 })

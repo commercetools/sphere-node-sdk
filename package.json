@@ -1,7 +1,7 @@
 {
   "name": "sphere-node-sdk",
   "description": "Officially supported Node.js SDK library for working with the SPHERE.IO HTTP API, with OAuth2 support.",
-  "version": "2.0.0-alpha.42",
+  "version": "2.0.0-alpha.45",
   "private": false,
   "homepage": "https://github.com/sphereio/sphere-node-sdk",
   "author": "Nicola Molinari <nicola.molinari@commercetools.de>",
@@ -48,7 +48,7 @@
     "jsondiffpatch": "emmenko/jsondiffpatch#patch-webpack",
     "lodash.flatten": "^4.2.0",
     "lodash.foreach": "^4.2.0",
-    "lodash.uniq": "^4.2.1",
+    "lodash.uniqwith": "^4.5.0",
     "loose-envify": "^1.1.0"
   },
   "devDependencies": {

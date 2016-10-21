@@ -198,4 +198,62 @@ test('Sync::product::base', (t) => {
     ])
     t.end()
   })
+
+  t.test('should build base actions for long diff text', (t) => {
+    setup()
+
+    const longText = `
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+    Nunc ultricies fringilla tortor eu egestas.
+    Praesent rhoncus molestie libero, eu tempor sapien placerat id.
+    Donec commodo nunc sed nulla scelerisque, eu pulvinar augue egestas.
+    Donec at leo dolor. Cras at molestie arcu.
+    Sed non fringilla quam, sit amet ultricies massa.
+    Donec luctus tempus erat, ut suscipit elit varius nec.
+    Mauris dolor enim, aliquet sed nulla et, dignissim lobortis augue.
+    Proin pharetra magna eu neque semper tristique sed.
+    `
+
+    /* eslint-disable max-len */
+    const before = {
+      name: {
+        en: longText,
+      },
+      slug: {
+        en: longText,
+      },
+      description: {
+        en: longText,
+      },
+    }
+    const now = {
+      name: {
+        en: `Hello, ${longText}`,
+      },
+      slug: {
+        en: `Hello, ${longText}`,
+      },
+      description: {
+        en: `Hello, ${longText}`,
+      },
+    }
+    /* eslint-enable max-len */
+    const actions = productsSync.buildActions(now, before)
+
+    t.deepEqual(actions, [
+      {
+        action: 'changeName',
+        name: now.name,
+      },
+      {
+        action: 'changeSlug',
+        slug: now.slug,
+      },
+      {
+        action: 'setDescription',
+        description: now.description,
+      },
+    ])
+    t.end()
+  })
 })
