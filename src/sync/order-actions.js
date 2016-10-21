@@ -1,16 +1,13 @@
 import {
   buildBaseAttributesActions,
-  buildReferenceActions,
 } from './utils/common-actions'
 
 export const baseActionsList = [
-  { action: 'setShipmentState', key: 'shipmentState' },
-  { action: 'setPaymentState', key: 'paymentState' },
-  { action: 'setOrderState', key: 'orderState' },
+  { action: 'changeOrderState', key: 'orderState' },
+  { action: 'changePaymentState', key: 'paymentState' },
+  { action: 'changeShipmentState', key: 'shipmentState' },
 ]
 
-export const referenceActionsList = [
-]
 
 /**
  * SYNC FUNCTIONS
@@ -23,18 +20,4 @@ export function actionsMapBase (diff, oldObj, newObj) {
     oldObj,
     newObj,
   })
-}
-
-export function actionsMapReferences (diff, oldObj, newObj) {
-  return buildReferenceActions({
-    actions: referenceActionsList,
-    diff,
-    oldObj,
-    newObj,
-  })
-}
-
-export function actionsMapAddresses (/* diff, oldObj, newObj */) {
-  const actions = []
-  return actions
 }

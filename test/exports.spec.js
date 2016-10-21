@@ -3,6 +3,7 @@ import SphereClient, {
   createSyncCategories,
   createSyncCustomers,
   createSyncInventories,
+  createSyncOrders,
   createSyncProducts,
 } from '../src'
 import pkg from '../package.json'
@@ -29,6 +30,7 @@ test('Public exports', (t) => {
     t.equal(typeof createSyncCategories, 'function')
     t.equal(typeof createSyncCustomers, 'function')
     t.equal(typeof createSyncInventories, 'function')
+    t.equal(typeof createSyncOrders, 'function')
     t.equal(typeof createSyncProducts, 'function')
     t.end()
   })
