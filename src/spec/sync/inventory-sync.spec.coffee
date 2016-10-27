@@ -128,7 +128,7 @@ describe 'InventorySync', ->
 
         update = @sync.buildActions(ieNew, ieOld).getUpdatePayload()
         expect(update.actions[0].action).toBe 'setCustomType'
-        expect(update.actions[0].type).toEqual { typeId : 'type', id : '123' }
+        expect(update.actions[0].type).toEqual { typeId: 'type', id: '123' }
         expect(update.actions[0].fields).toEqual { nac: 'ho' }
 
       it 'should update custom type', ->
@@ -143,7 +143,7 @@ describe 'InventorySync', ->
 
         update = @sync.buildActions(ieNew, ieOld).getUpdatePayload()
         expect(update.actions[0].action).toBe 'setCustomType'
-        expect(update.actions[0].type).toEqual { typeId : 'type', id : '123' }
+        expect(update.actions[0].type).toEqual { typeId: 'type', id: '123' }
 
       it 'should update custom fields', ->
         ieOld =

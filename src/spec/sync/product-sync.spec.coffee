@@ -195,28 +195,17 @@ describe 'ProductSync', ->
       oldProduct =
         id: '123'
         version: 1
-        masterVariant:
-          id: 1
-          sku: 'v1'
-          attributes: [{name: 'foo', value: 'bar'}]
-        variants: [
-          { id: 2, sku: 'v2', attributes: [{name: 'foo', value: 'qux'}] }
-          { id: 3, sku: 'v3', attributes: [{name: 'foo', value: 'baz'}] }
-        ]
+        variants: []
 
       newProduct =
         id: '123'
         variants: [
-          { id: 2, sku: 'v2', attributes: [{name: 'foo', value: 'another value'}] }
-          { id: 3, sku: 'v4', attributes: [{name: 'foo', value: 'i dont care'}] }
-          { id: 4, sku: 'v3', attributes: [{name: 'foo', value: 'yet another'}] }
+          { id: 2, sku: 'v2', attributes: [{name: 'foo', value: 'new variant'}] }
         ]
       update = @sync.buildActions(newProduct, oldProduct).getUpdatePayload()
       expected_update =
         actions: [
-          { action: 'setAttribute', variantId: 2, name: 'foo', value: 'another value' }
-          { action: 'setAttribute', variantId: 3, name: 'foo', value: 'yet another' }
-          { action: 'addVariant', sku: 'v4', attributes: [{ name: 'foo', value: 'i dont care' }] }
+          { action: 'addVariant', sku: 'v2', attributes: [{ name: 'foo', value: 'new variant' }] }
         ]
         version: oldProduct.version
       expect(update).toEqual expected_update
