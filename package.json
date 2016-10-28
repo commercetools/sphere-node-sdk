@@ -22,6 +22,7 @@
   "scripts": {
     "commit": "git-cz",
     "build": "grunt build",
+    "watch": "grunt watch",
     "test": "grunt coverage"
   },
   "dependencies": {
