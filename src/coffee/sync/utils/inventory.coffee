@@ -69,14 +69,14 @@ class InventoryUtils extends BaseUtils
         action: 'setCustomType'
         type:
           typeId: 'type',
-          id: if Array.isArray(diff.custom.type.id) then @getDeltaValue(diff.custom.type.id) else new_obj.custom.type.id
-        fields: if Array.isArray(diff.custom.fields) then @getDeltaValue(diff.custom.fields) else new_obj.custom.fields
+          id: @getNewDiffValue(diff.custom.type.id, new_obj.custom.type.id)
+        fields: @getNewDiffValue(diff.custom.fields, new_obj.custom.fields)
     else if diff.custom.fields
       customFieldsActions = Object.keys(diff.custom.fields).map((name) =>
         {
           action: 'setCustomField'
           name: name
-          value: if Array.isArray(diff.custom.fields[name]) then @getDeltaValue(diff.custom.fields[name]) else new_obj.custom.fields[name]
+          value: @getNewDiffValue(diff.custom.fields[name], new_obj.custom.fields[name])
         }
       )
       actions = actions.concat(customFieldsActions)

@@ -26,6 +26,10 @@ class BaseUtils
   # Internal: Patch the given object based on the delta
   patch: (obj, delta) -> @diffpatcher.patch(obj, delta)
 
+  # Internal: Return the expected new value from the given diff and key name
+  getNewDiffValue: (diff, new_obj) ->
+    if Array.isArray(diff) then @getDeltaValue(diff) else new_obj
+
   # Internal: Pick correct value based on delta format
   getDeltaValue: (arr, obj) ->
     throw new Error 'Expected array to extract delta value' unless _.isArray(arr)
