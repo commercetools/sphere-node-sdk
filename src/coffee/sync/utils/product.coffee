@@ -329,6 +329,43 @@ class ProductUtils extends BaseUtils
     # this will sort the actions ranked in asc order (first 'remove' then 'add')
     _.sortBy actions, (a) -> a.action is 'addExternalImage'
 
+  # Private: map price custom type and fields
+  #
+  # diff - {Object} The result of diff from `jsondiffpatch`
+  # old_obj - {Object} The existing inventory
+  # new_obj - {Object} The new inventory
+  #
+  # Returns {Array} The list of actions, or empty if there are none
+  actionsMapPriceCustom: (diff, old_obj, new_obj) =>
+    actions = []
+    if !diff.custom
+      return actions
+
+    # if custom is new in itself it's placed in an array we need to unwrap
+    if diff.custom.type
+      diff.custom.type = diff.custom.type[0] || diff.custom.type
+    else
+      diff.custom.type = {}
+
+    if diff.custom.type.id || diff.custom.priceId || diff.custom.staged
+      actions.push
+        action: 'setProductPriceCustomType'
+        type:
+          typeId: 'type',
+          id: @getNewDiffValue(diff.custom.type.id, new_obj.custom.type.id)
+        priceId: @getNewDiffValue(diff.custom.priceId, new_obj.custom.priceId)
+        staged: @getNewDiffValue(diff.custom.staged, new_obj.custom.staged)
+        fields: @getNewDiffValue(diff.custom.fields, new_obj.custom.fields)
+    else if diff.custom.fields
+      customFieldsActions = Object.keys(diff.custom.fields).map((name) =>
+        {
+          action: 'setProductPriceCustomField'
+          name: name
+          value: @getNewDiffValue(diff.custom.fields[name], new_obj.custom.fields[name])
+        }
+      )
+      actions = actions.concat(customFieldsActions)
+    actions
 
   _buildBaseAttributesAction: (item, diff, old_obj) ->
     key = item.key

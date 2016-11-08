@@ -209,3 +209,102 @@ describe 'ProductSync', ->
         ]
         version: oldProduct.version
       expect(update).toEqual expected_update
+
+    describe 'actionsMapPriceCustom', ->
+      ieNew =
+        sku: 'abc'
+        custom: {
+          type: {
+            typeId: 'type',
+            id: '123'
+          },
+          priceId: '456',
+          staged: false
+          fields: {
+            nac: 'ho'
+          }
+        }
+
+      it 'should set new custom type and fields', ->
+        ieOld =
+          sku: 'abc'
+          custom: {}
+
+        update = @sync.buildActions(ieNew, ieOld).getUpdatePayload()
+        expect(update.actions[0].action).toBe 'setProductPriceCustomType'
+        expect(update.actions[0].type).toEqual { typeId: 'type', id: '123' }
+        expect(update.actions[0].priceId).toBe '456'
+        expect(update.actions[0].staged).toBe false
+        expect(update.actions[0].fields).toEqual { nac: 'ho' }
+
+      it 'should update custom type', ->
+        ieOld =
+          sku: 'abc'
+          custom: {
+            type: {
+              typeId: 'type',
+              id: '000'
+            }
+          }
+
+        update = @sync.buildActions(ieNew, ieOld).getUpdatePayload()
+        expect(update.actions[0].action).toBe 'setProductPriceCustomType'
+        expect(update.actions[0].type).toEqual { typeId: 'type', id: '123' }
+
+      it 'should update priceId field', ->
+        ieOld =
+          sku: 'abc'
+          custom: {
+            type: {
+              typeId: 'type',
+              id: '123'
+            },
+            priceId: '789',
+            staged: false
+            fields: {
+              nac: 'ho'
+            }
+          }
+
+        update = @sync.buildActions(ieNew, ieOld).getUpdatePayload()
+        expect(update.actions[0].action).toBe 'setProductPriceCustomType'
+        expect(update.actions[0].priceId).toBe '456'
+
+      it 'should update staged field', ->
+        ieOld =
+          sku: 'abc'
+          custom: {
+            type: {
+              typeId: 'type',
+              id: '123'
+            },
+            priceId: '456',
+            staged: true
+            fields: {
+              nac: 'ho'
+            }
+          }
+
+        update = @sync.buildActions(ieNew, ieOld).getUpdatePayload()
+        expect(update.actions[0].action).toBe 'setProductPriceCustomType'
+        expect(update.actions[0].staged).toBe false
+
+      it 'should update custom fields', ->
+        ieOld =
+          sku: 'abc'
+          custom: {
+            type: {
+              typeId: 'type',
+              id: '123'
+            },
+            priceId: '456',
+            staged: false
+            fields: {
+              nac: 'choo'
+            }
+          }
+
+        update = @sync.buildActions(ieNew, ieOld).getUpdatePayload()
+        expect(update.actions[0].action).toBe 'setProductPriceCustomField'
+        expect(update.actions[0].name).toBe 'nac'
+        expect(update.actions[0].value).toBe 'ho'
