@@ -12,6 +12,7 @@ ProductUtils = require './utils/product'
 # - `images`
 # - `variants`
 # - `categories`
+# - `custom`
 #
 # Examples
 #
@@ -25,7 +26,7 @@ ProductUtils = require './utils/product'
 #     # do nothing
 class ProductSync extends BaseSync
 
-  @actionGroups = ['base', 'references', 'prices', 'attributes', 'images', 'variants', 'categories']
+  @actionGroups = ['base', 'references', 'prices', 'attributes', 'images', 'variants', 'categories', 'custom']
 
   # Public: Construct a `ProductSync` object.
   constructor: ->
@@ -45,6 +46,7 @@ class ProductSync extends BaseSync
     allActions.push @_mapActionOrNot 'attributes', => @_utils.actionsMapAttributes(diff, old_obj, new_obj, @sameForAllAttributeNames)
     allActions.push @_mapActionOrNot 'images', => @_utils.actionsMapImages(diff, old_obj, new_obj)
     allActions.push @_mapActionOrNot 'categories', => @_utils.actionsMapCategories(diff)
+    allActions.push @_mapActionOrNot 'custom', => @_utils.actionsMapPriceCustom(diff, old_obj, new_obj)
     _.flatten allActions
 
 module.exports = ProductSync

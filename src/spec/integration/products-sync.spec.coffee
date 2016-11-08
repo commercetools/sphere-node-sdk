@@ -374,3 +374,130 @@ describe 'Integration Products Sync', ->
       .catch (error) ->
         done(_.prettify(error))
     , 10000 # 10sec
+  
+  describe 'price custom type and field handling', (done) ->
+    customType = undefined
+
+    typesCleanup = (client) ->
+      client.types.all().fetch()
+        .then (result) ->
+          Promise.all _.map result.body.results, (e) ->
+            client.types.byId(e.id).delete(e.version)
+        .then (results) ->
+          debug('Cleaned up all custom types.')
+          Promise.resolve()
+        .catch (error) ->
+          Promise.resolve(error)
+
+    beforeEach (done) ->
+      @client = new SphereClient config: Config
+      customTypePayload = {
+        "key": "price-withKilosPrice",
+        "name": {
+          "en": "additional custom field kiloPrice"
+        },
+        "resourceTypeIds": [
+          "product-price"
+        ],
+        "fieldDefinitions": [
+          {
+            "type": {
+              "name": "Money"
+            },
+            "name": "kiloPrice",
+            "label": {
+              "en": "kilo price"
+            },
+            "required": false,
+            "inputHint": "SingleLine"
+          }
+        ]
+      }
+      typesCleanup(@client).then =>
+        @client.types.create(customTypePayload)
+          .then (result) ->
+            customType = result.body
+            done()
+          .catch (error) ->
+            done()
+
+    it 'should handle price custom type and fields', (done) ->
+      pName = uniqueId('Foo')
+      pSlug = uniqueId('foo')
+      OLD_PROD =
+        productType:
+          id: @productType.id
+          typeId: 'product-type'
+        name: {en: pName}
+        slug: {en: pSlug}
+        description: {en: 'A foo product'}
+        masterVariant:
+          sku: 'v2'
+          prices: [
+            {
+              value: {
+                centAmount: 1000,
+                currencyCode: 'EUR'
+              },
+              custom: {
+                typeId: customType.id,
+                fields: {
+                  kiloPrice: {
+                    currencyCode: 'EUR',
+                    centAmount: 1000
+                  }
+                }
+              }
+            }
+          ]
+
+      NEW_PROD =
+        productType:
+          id: @productType.id
+          typeId: 'product-type'
+        name: {de: pName}
+        slug: {de: pSlug}
+        description: {de: 'A foo product'}
+        masterVariant:
+          id: 1
+          sku: 'v2'
+          prices: [
+            {
+              value: {
+                centAmount: 1500,
+                currencyCode: 'EUR'
+              },
+              custom: {
+                typeId: customType.id,
+                fields: {
+                  kiloPrice: {
+                    currencyCode: 'JPY',
+                    centAmount: 9000
+                  }
+                }
+              }
+            }
+          ]
+
+      debug 'Create initial product to be synced'
+      @client.products.create(OLD_PROD)
+        .then (result) =>
+          debug 'Fetch projection of created product'
+          @client.productProjections.byId(result.body.id).staged(true).fetch()
+        .then (result) =>
+          syncedActions = @sync.buildActions(NEW_PROD, result.body)
+          expect(syncedActions.shouldUpdate()).toBe true
+          updatePayload = syncedActions.getUpdatePayload()
+          debug 'About to update product with synced actions'
+          @client.products.byId(syncedActions.getUpdateId()).update(updatePayload)
+        .then (result) =>
+          debug 'Fetch projection of updated product'
+          @client.productProjections.byId(result.body.id).staged(true).fetch()
+        .then (result) ->
+          updated = result.body
+          expect(updated.masterVariant.prices[0].value.centAmount).toBe 1500
+          expect(updated.masterVariant.prices[0].custom.type.id).toBe customType.id
+          expect(updated.masterVariant.prices[0].custom.fields.kiloPrice.currencyCode).toBe 'JPY'
+          expect(updated.masterVariant.prices[0].custom.fields.kiloPrice.centAmount).toBe 9000
+          done()
+        .catch (error) -> done(_.prettify(error))
