@@ -15,12 +15,23 @@ export function buildRequest (options) {
     credentials: { projectKey, clientId, clientSecret },
   } = options
 
-  const authHost = `https://${clientId}:${clientSecret}@${host}`
+  const authHost = `https://${host}`
   const endpoint = `${authHost}/oauth/token`
   const body = 'grant_type=client_credentials' +
     `&scope=manage_project:${projectKey}`
 
-  return { endpoint, body }
+  // Notes on the encoding:
+  // Since result is smaller than 76 chars the "MIME" restrictions for base64
+  //    can be ignored.
+  // Since the sdk is compatibly only IE10+ , using btoa() is OK
+  // Browser vs. Node polyfill for String to base64 encoded String:
+  const base64 = (typeof btoa === 'function') ?
+    btoa :
+    str => new Buffer(str.toString(), 'binary').toString('base64')
+  const basicAuthRaw = `${clientId}:${clientSecret}`
+  const authorizationHeader = `Basic ${base64(basicAuthRaw)}`
+
+  return { endpoint, body, authorizationHeader }
 }
 
 /**
@@ -38,6 +49,7 @@ export function getAccessToken (options) {
       headers: Object.assign({}, options.request.headers, {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Content-Length': Buffer.byteLength(authRequest.body),
+        Authorization: authRequest.authorizationHeader,
       }),
     }),
   }))
