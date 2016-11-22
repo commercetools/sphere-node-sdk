@@ -121,10 +121,19 @@ describe 'InventorySync', ->
           }
         }
 
-      it 'should set new custom type and fields', ->
+      it 'should set empty new custom type and fields', ->
         ieOld =
           sku: 'abc'
           custom: {}
+
+        update = @sync.buildActions(ieNew, ieOld).getUpdatePayload()
+        expect(update.actions[0].action).toBe 'setCustomType'
+        expect(update.actions[0].type).toEqual { typeId: 'type', id: '123' }
+        expect(update.actions[0].fields).toEqual { nac: 'ho' }
+
+      it 'should set completely new custom type and fields', ->
+        ieOld =
+          sku: 'abc'
 
         update = @sync.buildActions(ieNew, ieOld).getUpdatePayload()
         expect(update.actions[0].action).toBe 'setCustomType'
