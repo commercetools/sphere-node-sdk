@@ -32,7 +32,7 @@ class InventorySync extends BaseSync
     allActions = []
     allActions.push @_mapActionOrNot 'quantity', => @_utils.actionsMapQuantity(diff, old_obj)
     allActions.push @_mapActionOrNot 'expectedDelivery', => @_utils.actionsMapExpectedDelivery(diff, old_obj)
-    allActions.push @_mapActionOrNot 'custom', => @_utils.actionsMapCustom(diff, old_obj)
+    allActions.push @_mapActionOrNot 'custom', => @_utils.actionsMapCustom(diff, old_obj, new_obj)
     _.flatten allActions
 
 module.exports = InventorySync

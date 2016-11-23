@@ -54,7 +54,7 @@ class InventoryUtils extends BaseUtils
   # old_obj - {Object} The existing inventory
   #
   # Returns {Array} The list of actions, or empty if there are none
-  actionsMapCustom: (diff, old_obj) =>
+  actionsMapCustom: (diff, old_obj, new_obj) =>
     actions = []
     if !diff.custom
       return actions
@@ -79,7 +79,7 @@ class InventoryUtils extends BaseUtils
         {
           action: 'setCustomField'
           name: name
-          value: if Array.isArray(diff.custom.fields[name]) then @getDeltaValue(diff.custom.fields[name]) else diff.custom.fields[name]
+          value: if Array.isArray(diff.custom.fields[name]) then @getDeltaValue(diff.custom.fields[name]) else new_obj.custom.fields[name]
         }
       )
       actions = actions.concat(customFieldsActions)
