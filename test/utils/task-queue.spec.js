@@ -49,4 +49,87 @@ test('Utils::taskQueue', t => {
     })
     .catch(t.end)
   })
+
+  t.test('should renew access token before it expires', t => {
+    const fetchResponseMock = (status, body) => Promise.resolve({
+      headers: {},
+      status,
+      ok: status === 200,
+      json: () => Promise.resolve(body),
+      text: () => Promise.resolve(JSON.stringify(body)),
+    })
+
+    let apiCalls = 0
+    const httpMock = (url, fetchOptions) => {
+      const { Authorization } = fetchOptions.headers
+
+      if (url === 'https://test_client:test_secret@auth.sphere.io/oauth/token') { // eslint-disable-line
+        // Ensure credentials are sent with url
+        // and not with Authorization header
+        if (Authorization) return fetchResponseMock(401, {
+          error: 'The client should not send the Authorization header.',
+        })
+
+        return fetchResponseMock(200, {
+          access_token: `token${apiCalls}`,
+          expires_in: 2 * 60 * 60 - 1, // 1h59m59s
+          scope: 'manage_project:test',
+          token_type: 'Bearer',
+        })
+      }
+
+
+      const result = Authorization === `Bearer token${apiCalls}` ?
+        fetchResponseMock(200, { foo: 'bar' }) :
+        fetchResponseMock(401, { error: 'Invalid token' })
+
+      // A token is only valid for one api call.
+      // All returned tokens expire in 1h59m59s.
+      // The client implementation should request a new token if
+      // the token expires in less than 2 hours, ie
+      // it should use a new token for every api call.
+      apiCalls++
+
+      return result
+    }
+
+    options = {
+      Promise: Promise, // eslint-disable-line object-shorthand
+      auth: {
+        credentials: {
+          clientId: 'test_client',
+          clientSecret: 'test_secret',
+          projectKey: 'test_project',
+        },
+        shouldRetrieveToken (cb) { cb(true) },
+        host: 'auth.sphere.io',
+      },
+      request: {
+        maxParallel: 20,
+        headers: {},
+        host: 'api.sphere.io',
+        protocol: 'https',
+      },
+      httpMock,
+    }
+
+    const taskQueue = taskQueueFn(options)
+
+    const task = {
+      method: 'GET',
+      url: 'https://api.sphere.io/foo',
+    }
+
+    taskQueue.addTask(task)
+      .then(res => {
+        t.deepEqual(res.body, { foo: 'bar' })
+
+        return taskQueue.addTask(task)
+          .then(res => {
+            t.deepEqual(res.body, { foo: 'bar' })
+            t.end()
+          })
+      })
+      .catch(t.end)
+  })
 })

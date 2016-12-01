@@ -29,6 +29,7 @@ function defaultOptions (options = {}) {
     Promise: options.Promise || Promise,
     auth: {
       accessToken: auth.accessToken,
+      accessTokenExpirationTime: auth.accessTokenExpiresIn,
       credentials: auth.credentials || {},
       shouldRetrieveToken: auth.shouldRetrieveToken || (cb => { cb(true) }),
       host: auth.host || 'auth.sphere.io',
