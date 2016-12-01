@@ -83,7 +83,7 @@ test('Integration - TaskQueue token retrieval', t => {
       t.equal(e.body.error_description, 'Please provide valid client ' +
         'credentials using HTTP Basic Authentication.')
       t.deepEqual(e.body.originalRequest, {
-        url: 'https://123:secret@auth.sphere.io/oauth/token',
+        url: 'https://auth.sphere.io/oauth/token',
         method: 'POST',
         body: 'grant_type=client_credentials&scope=manage_project:foo',
       })
