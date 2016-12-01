@@ -6,6 +6,7 @@ import * as diffpatcher from './utils/diffpatcher'
 
 export const actionGroups = [
   'base',
+  'deliveries',
 ]
 
 function createOrderMapActions (mapActionGroup) {
@@ -14,6 +15,9 @@ function createOrderMapActions (mapActionGroup) {
 
     allActions.push(mapActionGroup('base', () =>
       orderActions.actionsMapBase(diff, oldObj, newObj)))
+
+    allActions.push(mapActionGroup('deliveries', () =>
+      orderActions.actionsMapDeliveries(diff, oldObj, newObj)))
 
     return flatten(allActions)
   }

@@ -13,6 +13,7 @@ test('Sync::order', (t) => {
   t.test('should export action group list', (t) => {
     t.deepEqual(actionGroups, [
       'base',
+      'deliveries',
     ])
     t.end()
   })
@@ -53,6 +54,48 @@ test('Sync::order', (t) => {
     ]
     t.deepEqual(actual, expected)
 
+    t.end()
+  })
+
+  t.test('should build `addDelivery` action', (t) => {
+    setup()
+
+    const before = {
+      shippingInfo: {
+        deliveries: [],
+      },
+    }
+    const now = {
+      shippingInfo: {
+        deliveries: [
+          {
+            items: [
+              { id: 'li-1', qty: 1 },
+              { id: 'li-2', qty: 2 },
+            ],
+            parcels: [{
+              measurements: {
+                heightInMillimeter: 1,
+                lengthInMillimeter: 1,
+                widthInMillimeter: 1,
+                weightInGram: 1,
+              },
+              trackingData: {
+                trackingId: '111',
+              },
+            }],
+          },
+        ],
+      },
+    }
+
+    const actual = orderSync.buildActions(now, before)
+    const expected = [{
+      action: 'addDelivery',
+      items: now.shippingInfo.deliveries[0].items,
+      parcels: now.shippingInfo.deliveries[0].parcels,
+    }]
+    t.deepEqual(actual, expected, 'should create `addDelivery` action')
     t.end()
   })
 })
