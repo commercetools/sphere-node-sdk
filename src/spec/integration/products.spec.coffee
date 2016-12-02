@@ -153,7 +153,7 @@ describe 'Integration Products', ->
       expect(result.body.productType.hasOwnProperty('obj')).toBe(true)
       done()
     .catch (error) -> done(_.prettify(error))
-  , 30000 # 30sec
+  , 60000 # 60sec
 
   # it 'should search for suggestions', (done) ->
   #   debug 'Creating products with search keywords'

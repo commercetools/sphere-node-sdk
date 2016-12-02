@@ -1,6 +1,6 @@
-_ = require 'underscore'
-Rest = require './connect/rest'
-TaskQueue = require './task-queue'
+_                        = require 'underscore'
+Rest                     = require './connect/rest'
+RepeaterTaskQueue        = require '../lib/repeater-task-queue'
 CartDiscountService      = require './services/cart-discounts'
 CartService              = require './services/carts'
 CategoryService          = require './services/categories'
@@ -220,9 +220,8 @@ class SphereClient
   #
   # options - An {Object} to configure the client
   constructor: (options = {}) ->
-
     # Private: instance of a {TaskQueue}
-    @_task = options.task or new TaskQueue
+    @_task = options.task or new RepeaterTaskQueue {}, { attempts: 50, timeout: 200, timeoutType: 'v' }
 
     # Private: instance of a {Rest}
     @_rest = options.rest or new Rest _.defaults options, {user_agent: 'sphere-node-sdk'}
