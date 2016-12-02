@@ -63,6 +63,8 @@ describe 'Integration Orders Sync', ->
       expect(orderUpdated.shipmentState).toBe orderNew.shipmentState
       done()
     .catch (error) -> done(_.prettify(error))
+  , 60000
+
 
   it 'should sync returnInfo', (done) ->
     orderNew = _.deepClone @order
@@ -87,6 +89,7 @@ describe 'Integration Orders Sync', ->
       expect(orderUpdated.returnInfo[0].id).toBe orderNew.returnInfo[0].id
       done()
     .catch (error) -> done(_.prettify(error))
+  , 60000
 
   it 'should sync returnInfo (status)', (done) ->
     orderNew = _.deepClone @order
@@ -125,9 +128,9 @@ describe 'Integration Orders Sync', ->
       expect(orderUpdated2.returnInfo[0].items[0].paymentState).toEqual @orderNew2.returnInfo[0].items[0].paymentState
       done()
     .catch (error) -> done(_.prettify(error))
+  , 60000
 
   it 'should sync delivery items', (done) ->
-
     orderNew = _.deepClone @order
 
     # add one delivery item
@@ -148,6 +151,7 @@ describe 'Integration Orders Sync', ->
       expect(orderUpdated.shippingInfo.deliveries.length).toBe 1
       done()
     .catch (error) -> done(_.prettify(error))
+  , 60000
 
   it 'should sync parcel items of a delivery', (done) ->
     orderNew = _.deepClone @order
@@ -211,7 +215,7 @@ describe 'Integration Orders Sync', ->
       expect(parcels.length).toBe 2
       done()
     .catch (error) -> done(_.prettify(error))
-
+  , 60000
 ###
 helper methods
 ###

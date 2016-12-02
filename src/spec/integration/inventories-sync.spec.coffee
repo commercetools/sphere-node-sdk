@@ -101,6 +101,7 @@ describe 'Integration Inventories Sync', ->
       expect(result.body.expectedDelivery).not.toBeDefined()
       done()
     .catch (error) -> done(_.prettify(error))
+  , 60000
 
   describe 'custom type and field handling', (done) ->
     customType = undefined
