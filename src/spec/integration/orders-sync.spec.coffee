@@ -26,17 +26,30 @@ describe 'Integration Orders Sync', ->
       @client.products.create(productMock(@productType))
     .then (result) =>
       @product = result.body
-      @client.orders.import(orderMock(@shippingMethod, @product, @taxCategory))
+      Promise.all([
+        @client.states.create(stateMock("Wubalubadubdub!")),
+        @client.states.create(stateMock("pineapple!")),
+      ])
+    .then (result) =>
+      @states = [result[0].body, result[1].body]
+      @client.orders.import(orderMock(@shippingMethod, @product, @taxCategory, @states))
     .then (result) =>
       @order = result.body
       done()
     .catch (error) -> done(_.prettify(error))
 
   afterEach (done) ->
-    # TODO: delete order (not supported by API yet)
     @client.products.byId(@product.id).delete(@product.version)
     .then (result) =>
       @client.productTypes.byId(@productType.id).delete(@productType.version)
+    .then (result) =>
+      @client.orders.byId(@order.id).fetch().then (result) =>
+        @client.orders.byId(@order.id).delete(result.body.version)
+    .then (result) =>
+      Promise.all([
+        @states.map (state) =>
+          @client.states.byId(state.id).delete(state.version)
+      ])
     .then (result) -> done()
     .catch (error) -> done(_.prettify(error))
     .finally =>
@@ -212,6 +225,38 @@ describe 'Integration Orders Sync', ->
       done()
     .catch (error) -> done(_.prettify(error))
 
+  it 'should sync line items', (done) ->
+    orderNew = _.deepClone @order
+    
+    orderNew.lineItems[0].state = [
+      {
+        quantity: 1,
+        fromState: {
+          typeId: 'state',
+          id: @states[0].id,
+        },
+        toState: {
+          typeId: 'state',
+          id: @states[1].id,
+        },
+      }
+    ]
+
+    syncedActions = @sync.buildActions(orderNew, @order)
+    debug 'About to update order with synced actions (lineItems)'
+    @client.orders.byId(syncedActions.getUpdateId()).update(syncedActions.getUpdatePayload())
+      .then (result) =>
+        orderUpdated = result.body
+
+        expect(orderUpdated).toBeDefined()
+
+        orderUpdated.lineItems[0].state.forEach (itemState, index) =>
+          expect(itemState.state.id).toBe @states[index].id
+          expect(itemState.quantity).toBe 2
+
+        done()
+      .catch (error) -> done(_.prettify(error))
+
 ###
 helper methods
 ###
@@ -265,7 +310,13 @@ productMock = (productType) ->
   masterVariant:
     sku: uniqueId 'sku'
 
-orderMock = (shippingMethod, product, taxCategory) ->
+stateMock = (keyName) ->
+  key: keyName
+  type: 'LineItemState'
+  name:
+    en: 'can do!'
+
+orderMock = (shippingMethod, product, taxCategory, states) ->
   orderState: 'Open'
   paymentState: 'Pending'
   shipmentState: 'Pending'
@@ -281,7 +332,23 @@ orderMock = (shippingMethod, product, taxCategory) ->
       amount: 0.10
       includedInPrice: false
       country: 'DE'
-    quantity: 1
+    quantity: 4
+    state: [
+      {
+        quantity: 3,
+        state: {
+          typeId: 'state',
+          id: states[0].id
+        }
+      },
+      {
+        quantity: 1,
+        state: {
+          typeId: 'state',
+          id: states[1].id
+        }
+      }
+    ]
     price:
       value:
         centAmount: 999

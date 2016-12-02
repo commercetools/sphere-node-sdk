@@ -14,6 +14,7 @@ ORDER =
   paymentState: 'Pending'
   shipmentState: 'Pending'
   lineItems: [
+    id: 'watwatwat'
     productId: uniqueId 'p'
     name:
       de: 'foo'
@@ -25,6 +26,22 @@ ORDER =
       includedInPrice: false
       country: 'DE'
     quantity: 1
+    state: [
+      {
+        quantity: 3,
+        state: {
+          typeId: 'state',
+          id: 'HL3'
+        }
+      },
+      {
+        quantity: 1,
+        state: {
+          typeId: 'state',
+          id: 'PBJ'
+        }
+      }
+    ]
     price:
       value:
         centAmount: 999
@@ -281,3 +298,91 @@ describe 'OrderUtils', ->
       expectedUpdate.deliveryId = orderChanged.shippingInfo.deliveries[0].id
 
       expect(update).toEqual [expectedUpdate]
+      
+  describe ':: actionsMapLineItems', ->
+
+    it 'should return required actions for syncing lineItem state', ->
+      orderChanged = _.deepClone @order
+      orderChanged.lineItems[0].state = [
+        {
+          quantity: 1,
+          fromState: {
+            typeId: 'state',
+            id: 'HL3'
+          },
+          toState: {
+            typeId: 'state',
+            id: 'PBJ'
+          },
+        }
+      ]
+
+      delta = @utils.diff(@order, orderChanged)
+      actions = @utils.actionsMapLineItems(delta, orderChanged)
+
+      expectedActions =  [
+          {
+              action: 'transitionLineItemState',
+              lineItemId: 'watwatwat',
+              quantity: 1,
+              fromState: {
+                  typeId: 'state',
+                  id: 'HL3'
+              },
+              toState: {
+                  typeId: 'state',
+                  id: 'PBJ'
+              }
+          }
+      ]
+
+      expect(actions).toEqual expectedActions
+
+    it 'should return required actions for syncing lineItem state with actualTransitionDate', ->
+      orderChanged = _.deepClone @order
+      orderChanged.lineItems[0].state = [
+        {
+          quantity: 1,
+          fromState: {
+            typeId: 'state',
+            id: 'HL3'
+          },
+          toState: {
+            typeId: 'state',
+            id: 'PBJ'
+          },
+          actualTransitionDate: '2000NEIN'
+        }
+      ]
+
+      delta = @utils.diff(@order, orderChanged)
+      actions = @utils.actionsMapLineItems(delta, orderChanged)
+
+      expectedActions =  [
+          {
+              action: 'transitionLineItemState',
+              lineItemId: 'watwatwat',
+              quantity: 1,
+              fromState: {
+                  typeId: 'state',
+                  id: 'HL3'
+              },
+              toState: {
+                  typeId: 'state',
+                  id: 'PBJ'
+              },
+              actualTransitionDate: '2000NEIN'
+          }
+      ]
+
+      expect(actions).toEqual expectedActions
+
+    it 'should ignore data without from or to state', ->
+      orderChanged = _.deepClone @order
+
+      delta = @utils.diff(@order, orderChanged)
+      actions = @utils.actionsMapLineItems(delta, orderChanged)
+
+      expectedActions =  []
+
+      expect(actions).toEqual expectedActions
