@@ -256,8 +256,12 @@ function _buildVariantAttributesActions (
   forEach(attributes, (value, key) => {
     if (REGEX_NUMBER.test(key)) {
       if (Array.isArray(value)) {
+        // this attribute did not exist before on the product
         const { id } = oldVariant
         const deltaValue = diffpatcher.getDeltaValue(value)
+        // if there is no new value, and the attribute did not even exist before
+        // we don't need to generate any action at all
+        if (!deltaValue.value) return
         const setAction =
           _buildNewSetAttributeAction(id, deltaValue, sameForAllAttributeNames)
 
