@@ -3,6 +3,7 @@ Promise = require 'bluebird'
 util = require 'util'
 TaskQueue = require './task-queue'
 
+# Response messages which will be handled by `RepeaterTaskQueue`
 retryKeywords = [
   'ETIMEDOUT'
   'socket hang up'
@@ -21,6 +22,16 @@ retryKeywords = [
   'Cannot commit on stream id'
 ]
 
+# Public: A `RepeaterTaskQueue` adds request repeater on particular response errors
+#
+# `RepeaterTaskQueue` receives two objects as parameter.
+# First object overriding `maxParallel` value of `TaskQueue`
+# Second object contains information about the count of attempts, timeout and timeout type.
+# There are 2 types of `timeoutType`:
+# - `c`: constant delay
+# - `v`: variable delay (grows with attempts count with a random component)
+#
+#   task = new RepeaterTaskQueue { maxParallel: 30 }, { attempts: 50, timeout: 200, timeoutType: 'v' }
 class RepeaterTaskQueue extends TaskQueue
 
 
