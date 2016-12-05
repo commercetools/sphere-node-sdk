@@ -248,7 +248,7 @@ describe 'Integration Products Sync', ->
       expect(updated.variants[1].prices[0].country).toBe 'FR'
       done()
     .catch (error) -> done(_.prettify(error))
-  , 10000 # 10sec
+  , 30000 # 30sec
 
   describe 'State update actions', ->
 
@@ -696,6 +696,6 @@ describe 'Integration Products Sync', ->
           expect(updated.masterVariant.prices[0].custom.fields.kiloPrice.centAmount).toBe 4948
           done()
         .catch (error) -> done(_.prettify(error))
-
+    , 60000
 
 
