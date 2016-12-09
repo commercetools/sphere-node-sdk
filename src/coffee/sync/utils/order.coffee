@@ -151,6 +151,40 @@ class OrderUtils extends BaseUtils
 
     actions
 
+  # Private: map custom line items
+  #
+  # diff - {Object} The result of diff from `jsondiffpatch`
+  # old_obj - {Object} The existing order
+  #
+  # Returns {Array} The list of actions, or empty if there are none
+  actionsMapCustomLineItems: (diff, old_obj, new_obj) ->
+    actions = []
+
+    data = new_obj || old_obj
+
+    # Note the lineItem.state contains 'from/to' instead of just the data
+
+    if data.customLineItems
+      data.customLineItems.forEach (lineItem) ->
+        if (lineItem.state)
+          lineItem.state.forEach (state) ->
+            if (state.fromState && state.toState)
+              action = {
+                action: 'transitionCustomLineItemState',
+                customLineItemId: lineItem.id,
+                quantity: state.quantity,
+                fromState: state.fromState,
+                toState: state.toState,
+              }
+
+              # Check for optional fields
+              if (state.actualTransitionDate)
+                action.actualTransitionDate = state.actualTransitionDate
+
+              actions.push(action)
+
+    actions
+
 module.exports = OrderUtils
 
 #################

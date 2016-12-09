@@ -257,6 +257,38 @@ describe 'Integration Orders Sync', ->
         done()
       .catch (error) -> done(_.prettify(error))
 
+  it 'should sync custom line items', (done) ->
+    orderNew = _.deepClone @order
+
+    orderNew.customLineItems[0].state = [
+      {
+        quantity: 1,
+        fromState: {
+          typeId: 'state',
+          id: @states[0].id,
+        },
+        toState: {
+          typeId: 'state',
+          id: @states[1].id,
+        },
+      }
+    ]
+
+    syncedActions = @sync.buildActions(orderNew, @order)
+    debug 'About to update order with synced actions (customLineItems)'
+    @client.orders.byId(syncedActions.getUpdateId()).update(syncedActions.getUpdatePayload())
+      .then (result) =>
+        orderUpdated = result.body
+
+        expect(orderUpdated).toBeDefined()
+
+        orderUpdated.customLineItems[0].state.forEach (itemState, index) =>
+          expect(itemState.state.id).toBe @states[index].id
+          expect(itemState.quantity).toBe 2
+
+        done()
+      .catch (error) -> done(_.prettify(error))
+
 ###
 helper methods
 ###
@@ -320,7 +352,6 @@ orderMock = (shippingMethod, product, taxCategory, states) ->
   orderState: 'Open'
   paymentState: 'Pending'
   shipmentState: 'Pending'
-
   lineItems: [ {
     productId: product.id
     name:
@@ -353,6 +384,31 @@ orderMock = (shippingMethod, product, taxCategory, states) ->
       value:
         centAmount: 999
         currencyCode: 'EUR'
+  } ]
+  customLineItems: [ {
+    name:
+      nl: '53 65 6c 77 79 6e'
+    quantity: 4
+    money:
+      currencyCode: 'CHF'
+      centAmount: 2938
+    slug: 'het is een slak'
+    state: [
+      {
+        quantity: 3,
+        state: {
+          typeId: 'state'
+          id: states[0].id
+        }
+      },
+      {
+        quantity: 1,
+        state: {
+          typeId: 'state'
+          id: states[1].id
+        }
+      }
+    ]
   } ]
   totalPrice:
     currencyCode: 'EUR'
