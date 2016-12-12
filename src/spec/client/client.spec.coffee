@@ -77,7 +77,7 @@ describe 'SphereClient', ->
     expect(=> @client.setMaxParallel(0)).toThrow new Error 'MaxParallel must be a number between 1 and 100'
     expect(=> @client.setMaxParallel(101)).toThrow new Error 'MaxParallel must be a number between 1 and 100'
 
-  it 'should not repeat request on error',(done) ->
+  it 'should not repeat request on error if repeater is disabled',(done) ->
     client =  new SphereClient {config: Config, enableRepeater: false}
     callsMap = {
       0: { statusCode: 500, message: 'ETIMEDOUT' }
