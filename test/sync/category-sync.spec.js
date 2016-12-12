@@ -138,4 +138,182 @@ test('Sync::category', (t) => {
 
     t.end()
   })
+
+  t.test('should build `setCustomField` action with Enum values', t => {
+    setup()
+    const before = {
+      custom: {
+        type: {
+          typeId: 'type',
+          id: 'customType1'
+        },
+        fields: {
+          enumField1: 'old_enum_value_1', // will change
+          enumField2: 'enum_value_2', // will be removed
+        }
+      }
+    }
+
+    const now = {
+      custom: {
+        type: {
+          typeId: 'type',
+          id: 'customType1'
+        },
+        fields: {
+          enumField1: 'new_enum_value_1',
+          enumField3: 'enum_value_3'
+        }
+      }
+    }
+    const actual = categorySync.buildActions(now, before)
+    const expected = [
+      {
+        action: 'setCustomField',
+        name: 'enumField1',
+        value: 'new_enum_value_1'
+      },
+      {
+        action: 'setCustomField',
+        name: 'enumField2',
+        value: undefined
+      },
+      {
+        action: 'setCustomField',
+        name: 'enumField3',
+        value: 'enum_value_3'
+      }
+    ]
+    t.deepEqual(actual, expected)
+    t.end()
+  })
+
+  t.test('should build `setCustomField` action with LocalizedEnum values',
+    t => {
+      setup()
+      const before = {
+        custom: {
+          type: {
+            typeId: 'type',
+            id: 'customType1'
+          },
+          fields: {
+            localizedEnumField1: {
+              "en": "lenum_en_1",
+              "de": "lenum_de_1" // will change
+            },
+            localizedEnumField2: { // will be removed
+              "en": "lenum_en_2",
+              "de": "lenum_de_2"
+            },
+          }
+        }
+      }
+
+      const now = {
+        custom: {
+          type: {
+            typeId: 'type',
+            id: 'customType1'
+          },
+          fields: {
+            localizedEnumField1: {
+              "en": "lenum_en_1",
+              "de": "lenum_de_2"
+            },
+            localizedEnumField3: { // was added
+              "en": "lenum_en_3",
+              "de": "lenum_de_3"
+            },
+          }
+        }
+      }
+      const actual = categorySync.buildActions(now, before)
+      const expected = [
+        {
+          action: 'setCustomField',
+          name: 'localizedEnumField1',
+          value: {
+            "en": "lenum_en_1",
+            "de": "lenum_de_2"
+          }
+        },
+        {
+          action: 'setCustomField',
+          name: 'localizedEnumField2',
+          value: undefined
+        },
+        {
+          action: 'setCustomField',
+          name: 'localizedEnumField3',
+          value: {
+            "en": "lenum_en_3",
+            "de": "lenum_de_3"
+          }
+        }
+      ]
+      t.deepEqual(actual, expected)
+      t.end()
+    })
+
+  t.test('should build `setCustomField` action with Money values', t => {
+    setup()
+    const before = {
+      custom: {
+        type: {
+          typeId: 'type',
+          id: 'customType1'
+        },
+        fields: {
+          moneyField1: { // will change
+            centAmount: 123000,
+            currencyCode: 'EUR'
+          },
+          moneyField2: { // wil be removed
+            centAmount: 213000,
+            currencyCode: 'EUR'
+          }
+        }
+      }
+    }
+
+    const now = {
+      custom: {
+        type: {
+          typeId: 'type',
+          id: 'customType1'
+        },
+        fields: {
+          moneyField1: {
+            centAmount: 123000,
+            currencyCode: 'SEK'
+          },
+          moneyField3: {
+            centAmount: 213000,
+            currencyCode: 'USD'
+          }
+        }
+      }
+    }
+    const actual = categorySync.buildActions(now, before)
+    const expected = [
+      {
+        action: 'setCustomField',
+        name: 'moneyField1',
+        value: { centAmount: 123000, currencyCode: 'SEK' }
+      },
+      {
+        action: 'setCustomField',
+        name: 'moneyField2',
+        value: undefined
+      },
+      {
+        action: 'setCustomField',
+        name: 'moneyField3',
+        value: { centAmount: 213000, currencyCode: 'USD' }
+      }
+    ]
+    t.deepEqual(actual, expected)
+    t.end()
+  })
 })
