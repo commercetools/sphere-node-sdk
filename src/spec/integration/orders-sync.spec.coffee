@@ -4,58 +4,55 @@ _.mixin require 'underscore-mixins'
 {SphereClient, OrderSync} = require '../../lib/main'
 Config = require('../../config').config
 
+deleteAllApiItems = (client, service) ->
+  client[service]
+  .all().fetch()
+  .then((data) -> data.body.results.filter (item) -> !item.builtIn)
+    .then (items) ->
+      Promise.all items.map((item) ->
+        client[service]
+        .byId(item.id)
+        .delete(item.version)
+      )
+
 describe 'Integration Orders Sync', ->
 
   beforeEach (done) ->
     @client = new SphereClient config: Config
     @sync = new OrderSync
 
-    # get a tax category required for setting up shippingInfo (simply returning first found)
-    @client.taxCategories.create(taxCategoryMock())
-    .then (result) =>
-      @taxCategory = result.body
-      @client.zones.create(zoneMock())
-    .then (result) =>
-      @zone = result.body
-      @client.shippingMethods.create(shippingMethodMock(@zone, @taxCategory))
-    .then (result) =>
-      @shippingMethod = result.body
-      @client.productTypes.create(productTypeMock())
-    .then (result) =>
-      @productType = result.body
-      @client.products.create(productMock(@productType))
-    .then (result) =>
-      @product = result.body
-      Promise.all([
-        @client.states.create(stateMock("Wubalubadubdub!")),
-        @client.states.create(stateMock("pineapple!")),
-      ])
-    .then (result) =>
-      @states = [result[0].body, result[1].body]
-      @client.orders.import(orderMock(@shippingMethod, @product, @taxCategory, @states))
-    .then (result) =>
-      @order = result.body
-      done()
-    .catch (error) -> done(_.prettify(error))
-
-  afterEach (done) ->
-    @client.products.byId(@product.id).delete(@product.version)
-    .then (result) =>
-      @client.productTypes.byId(@productType.id).delete(@productType.version)
-    .then (result) =>
-      @client.orders.byId(@order.id).fetch().then (result) =>
-        @client.orders.byId(@order.id).delete(result.body.version)
-    .then (result) =>
-      Promise.all([
-        @states.map (state) =>
-          @client.states.byId(state.id).delete(state.version)
-      ])
-    .then (result) -> done()
-    .catch (error) -> done(_.prettify(error))
-    .finally =>
-      @product = null
-      @productType = null
-      @order = null
+    deleteAllApiItems(@client, 'products')
+      .then(() => deleteAllApiItems(@client, 'productTypes'))
+      .then(() => deleteAllApiItems(@client, 'orders'))
+      .then(() => deleteAllApiItems(@client, 'states'))
+      # get a tax category required for setting up shippingInfo (simply returning first found)
+      .then(() => @client.taxCategories.create(taxCategoryMock()))
+      .then (result) =>
+        @taxCategory = result.body
+        @client.zones.create(zoneMock())
+      .then (result) =>
+        @zone = result.body
+        @client.shippingMethods.create(shippingMethodMock(@zone, @taxCategory))
+      .then (result) =>
+        @shippingMethod = result.body
+        @client.productTypes.create(productTypeMock())
+      .then (result) =>
+        @productType = result.body
+        @client.products.create(productMock(@productType))
+      .then (result) =>
+        @product = result.body
+        Promise.all([
+          @client.states.create(stateMock('Wubalubadubdub!')),
+          @client.states.create(stateMock('pineapple!')),
+        ])
+      .then (result) =>
+        @states = [result[0].body, result[1].body]
+        @client.orders.import(orderMock(@shippingMethod, @product, @taxCategory, @states))
+      .then (result) =>
+        @order = result.body
+        done()
+      .catch (error) -> done(_.prettify(error))
+  , 10000
 
   it 'should sync order statuses', (done) ->
     orderNew = _.deepClone @order
