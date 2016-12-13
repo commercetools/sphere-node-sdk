@@ -14,6 +14,7 @@ ORDER =
   paymentState: 'Pending'
   shipmentState: 'Pending'
   lineItems: [
+    id: 'watwatwat'
     productId: uniqueId 'p'
     name:
       de: 'foo'
@@ -25,11 +26,53 @@ ORDER =
       includedInPrice: false
       country: 'DE'
     quantity: 1
+    state: [
+      {
+        quantity: 3,
+        state: {
+          typeId: 'state',
+          id: 'HL3'
+        }
+      },
+      {
+        quantity: 1,
+        state: {
+          typeId: 'state',
+          id: 'PBJ'
+        }
+      }
+    ]
     price:
       value:
         centAmount: 999
         currencyCode: 'EUR'
   ]
+  customLineItems: [ {
+    id: 'hello'
+    name:
+      nl: '53 65 6c 77 79 6e'
+    quantity: 4
+    money:
+      currencyCode: 'CHF'
+      centAmount: 2938
+    slug: 'het is een slak'
+    state: [
+      {
+        quantity: 3,
+        state: {
+          typeId: 'state'
+          id: '67 72 65 65 74 73'
+        }
+      },
+      {
+        quantity: 1,
+        state: {
+          typeId: 'state'
+          id: '79 6f 75'
+        }
+      }
+    ]
+  } ]
   totalPrice:
     currencyCode: 'EUR'
     centAmount: 999
@@ -281,3 +324,179 @@ describe 'OrderUtils', ->
       expectedUpdate.deliveryId = orderChanged.shippingInfo.deliveries[0].id
 
       expect(update).toEqual [expectedUpdate]
+      
+  describe ':: actionsMapLineItems', ->
+
+    it 'should return required actions for syncing lineItem state', ->
+      orderChanged = _.deepClone @order
+      orderChanged.lineItems[0].state = [
+        {
+          quantity: 1,
+          fromState: {
+            typeId: 'state',
+            id: 'HL3'
+          },
+          toState: {
+            typeId: 'state',
+            id: 'PBJ'
+          },
+        }
+      ]
+
+      delta = @utils.diff(@order, orderChanged)
+      actions = @utils.actionsMapLineItems(delta, orderChanged)
+
+      expectedActions =  [
+          {
+              action: 'transitionLineItemState',
+              lineItemId: 'watwatwat',
+              quantity: 1,
+              fromState: {
+                  typeId: 'state',
+                  id: 'HL3'
+              },
+              toState: {
+                  typeId: 'state',
+                  id: 'PBJ'
+              }
+          }
+      ]
+
+      expect(actions).toEqual expectedActions
+
+    it 'should return required actions for syncing lineItem state with actualTransitionDate', ->
+      orderChanged = _.deepClone @order
+      orderChanged.lineItems[0].state = [
+        {
+          quantity: 1,
+          fromState: {
+            typeId: 'state',
+            id: 'HL3'
+          },
+          toState: {
+            typeId: 'state',
+            id: 'PBJ'
+          },
+          actualTransitionDate: '2000NEIN'
+        }
+      ]
+
+      delta = @utils.diff(@order, orderChanged)
+      actions = @utils.actionsMapLineItems(delta, orderChanged)
+
+      expectedActions =  [
+          {
+              action: 'transitionLineItemState',
+              lineItemId: 'watwatwat',
+              quantity: 1,
+              fromState: {
+                  typeId: 'state',
+                  id: 'HL3'
+              },
+              toState: {
+                  typeId: 'state',
+                  id: 'PBJ'
+              },
+              actualTransitionDate: '2000NEIN'
+          }
+      ]
+
+      expect(actions).toEqual expectedActions
+
+    it 'should ignore data without from or to state', ->
+      orderChanged = _.deepClone @order
+
+      delta = @utils.diff(@order, orderChanged)
+      actions = @utils.actionsMapLineItems(delta, orderChanged)
+
+      expectedActions =  []
+
+      expect(actions).toEqual expectedActions
+
+  describe ':: actionsMapCustomLineItems', ->
+
+    it 'should return required actions for syncing customLineItem state', ->
+      orderChanged = _.deepClone @order
+      orderChanged.customLineItems[0].state = [
+        {
+          quantity: 1,
+          fromState: {
+            typeId: 'state',
+            id: 'HL3'
+          },
+          toState: {
+            typeId: 'state',
+            id: 'PBJ'
+          },
+        }
+      ]
+
+      delta = @utils.diff(@order, orderChanged)
+      actions = @utils.actionsMapCustomLineItems(delta, orderChanged)
+
+      expectedActions =  [
+          {
+              action: 'transitionCustomLineItemState',
+              customLineItemId: 'hello',
+              quantity: 1,
+              fromState: {
+                  typeId: 'state',
+                  id: 'HL3'
+              },
+              toState: {
+                  typeId: 'state',
+                  id: 'PBJ'
+              }
+          }
+      ]
+
+      expect(actions).toEqual expectedActions
+
+    it 'should return required actions for syncing customLineItem state with actualTransitionDate', ->
+      orderChanged = _.deepClone @order
+      orderChanged.lineItems[0].state = [
+        {
+          quantity: 1,
+          fromState: {
+            typeId: 'state',
+            id: 'HL3'
+          },
+          toState: {
+            typeId: 'state',
+            id: 'PBJ'
+          },
+          actualTransitionDate: '2000NEIN'
+        }
+      ]
+
+      delta = @utils.diff(@order, orderChanged)
+      actions = @utils.actionsMapLineItems(delta, orderChanged)
+
+      expectedActions =  [
+          {
+              action: 'transitionLineItemState',
+              lineItemId: 'watwatwat',
+              quantity: 1,
+              fromState: {
+                  typeId: 'state',
+                  id: 'HL3'
+              },
+              toState: {
+                  typeId: 'state',
+                  id: 'PBJ'
+              },
+              actualTransitionDate: '2000NEIN'
+          }
+      ]
+
+      expect(actions).toEqual expectedActions
+
+    it 'should ignore data without from or to state', ->
+      orderChanged = _.deepClone @order
+
+      delta = @utils.diff(@order, orderChanged)
+      actions = @utils.actionsMapLineItems(delta, orderChanged)
+
+      expectedActions =  []
+
+      expect(actions).toEqual expectedActions

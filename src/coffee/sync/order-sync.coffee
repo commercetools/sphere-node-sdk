@@ -8,6 +8,7 @@ OrderUtils = require './utils/order'
 # - `status` (orderState, paymentState, shipmentState)
 # - `returnInfo` (returnInfo, shipmentState / paymentState of ReturnInfo)
 # - `deliveries` (delivery, parcel)
+# - `lineItems`
 #
 # Examples
 #
@@ -21,7 +22,13 @@ OrderUtils = require './utils/order'
 #     # do nothing
 class OrderSync extends BaseSync
 
-  @actionGroups = ['status', 'returnInfo', 'deliveries']
+  @actionGroups = [
+    'status',
+    'returnInfo',
+    'deliveries',
+    'lineItems',
+    'customLineItems',
+  ]
 
   # Public: Construct a `OrderSync` object.
   constructor: ->
@@ -33,6 +40,8 @@ class OrderSync extends BaseSync
     allActions.push @_mapActionOrNot 'status', => @_utils.actionsMapStatusValues(diff, old_obj)
     allActions.push @_mapActionOrNot 'returnInfo', => @_utils.actionsMapReturnInfo(diff, old_obj)
     allActions.push @_mapActionOrNot 'deliveries', => @_utils.actionsMapDeliveries(diff, old_obj)
+    allActions.push @_mapActionOrNot 'lineItems', => @_utils.actionsMapLineItems(diff, old_obj, new_obj)
+    allActions.push @_mapActionOrNot 'customLineItems', => @_utils.actionsMapCustomLineItems(diff, old_obj, new_obj)
     _.flatten allActions
 
 module.exports = OrderSync
