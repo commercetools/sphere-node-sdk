@@ -230,7 +230,7 @@ class SphereClient
     if options.enableRepeater? and !options.enableRepeater
       @_task = new TaskQueue
     else
-      @_task = options.task or new RepeaterTaskQueue {}, { attempts: 50, timeout: 200, timeoutType: 'v' }
+      @_task = options.task or new RepeaterTaskQueue {}, {}
 
     # Private: instance of a {Rest}
     @_rest = options.rest or new Rest _.defaults options, {user_agent: 'sphere-node-sdk'}

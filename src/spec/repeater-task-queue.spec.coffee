@@ -2,6 +2,7 @@ SphereClient = require '../lib/client'
 RepeaterTaskQueue = require '../lib/repeater-task-queue'
 Config = require('../config').config
 util = require('util')
+_ = require 'underscore'
 describe 'RepeaterTaskQueue', ->
 
   repeaterOptions = {
@@ -73,3 +74,40 @@ describe 'RepeaterTaskQueue', ->
       expect(err.message).toEqual 'something'
       expect(@client._rest.GET.calls.length).toEqual 1
       done()
+
+  it 'should set default repeater options on empty object', (done) ->
+    retryKeywords = [
+      'ETIMEDOUT'
+      'socket hang up'
+      'write EPROTO'
+      'Retry later'
+      'I am the LoadBalancer of'
+      'Gateway Timeout'
+      'Bad Gateway'
+      'EAI_AGAIN'
+      'ESOCKETTIMEDOUT'
+      'Oops. This shouldn\'t happen'
+      'InternalServerError: Undefined'
+      'Temporary overloading'
+      'read ECONNRESET'
+      'getaddrinfo ENOTFOUND'
+      'Cannot commit on stream id'
+    ]
+    task = new RepeaterTaskQueue {}, {}
+    expect(_.isEqual(task.repeaterOptions.retryKeywords, retryKeywords)).toEqual true
+    expect(task.repeaterOptions.attempts).toEqual 50
+    expect(task.repeaterOptions.timeout).toEqual 200
+    expect(task.repeaterOptions.timeoutType).toEqual 'v'
+    done()
+
+  it 'should set custom repeater options', (done) ->
+    retryKeywords = [
+      'test1'
+      'test2'
+    ]
+    task = new RepeaterTaskQueue {}, { attempts: 7, timeout: 211, timeoutType: 'c',  retryKeywords: retryKeywords}
+    expect(_.isEqual(task.repeaterOptions.retryKeywords, retryKeywords)).toEqual true
+    expect(task.repeaterOptions.attempts).toEqual 7
+    expect(task.repeaterOptions.timeout).toEqual 211
+    expect(task.repeaterOptions.timeoutType).toEqual 'c'
+    done()
