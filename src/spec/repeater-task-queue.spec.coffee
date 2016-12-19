@@ -20,8 +20,9 @@ describe 'RepeaterTaskQueue', ->
 
     callsMap = {
       0: { statusCode: 500, message: 'ETIMEDOUT' }
-      1: { statusCode: 500, message: 'ETIMEDOUT' }
-      2: { statusCode: 200, message: 'success' }
+      1: { code: 500, message: 'ETIMEDOUT' }
+      2: { code: 789, message: 'ETIMEDOUT' }
+      3: { statusCode: 200, message: 'success' }
     }
     callCount = 0
     spyOn(@client._rest, 'GET').andCallFake (resource, callback) ->
@@ -33,7 +34,7 @@ describe 'RepeaterTaskQueue', ->
 
     @client.products.fetch()
     .then (res) =>
-      expect(@client._rest.GET.calls.length).toEqual 3
+      expect(@client._rest.GET.calls.length).toEqual 4
       expect(res.body.message).toEqual 'success'
       done()
     .catch (err) -> done(err)
