@@ -16,7 +16,7 @@ describe 'RepeaterTaskQueue', ->
     @client = new SphereClient sphereConfig
 
 
-  it 'should finally resolve after three tries', (done) ->
+  it 'should finally resolve after four tries', (done) ->
 
     callsMap = {
       0: { statusCode: 500, message: 'ETIMEDOUT' }
