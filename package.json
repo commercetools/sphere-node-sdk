@@ -57,6 +57,7 @@
     "istanbul": "0.3.x",
     "jasmine-node": "1.14.5",
     "sphere-coffeelint": "git://github.com/sphereio/sphere-coffeelint.git#master",
+    "sphere-node-utils": "^0.8.4",
     "underscore": "1.8.x",
     "underscore-mixins": "0.1.x",
     "validate-commit-msg": "2.0.0"
