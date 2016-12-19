@@ -1,6 +1,5 @@
 { Repeater } = require 'sphere-node-utils'
 Promise = require 'bluebird'
-util = require 'util'
 TaskQueue = require './task-queue'
 _ = require 'underscore'
 
@@ -70,10 +69,9 @@ class RepeaterTaskQueue extends TaskQueue
 
 
   _shouldRetry: (error) ->
-    if error and (error.code and util.inspect(error.code).startsWith('5') or error.statusCode and util.inspect(error.statusCode).startsWith('5'))
-      return true
-    @repeaterOptions.retryKeywords.find (str) ->
-      util.inspect(error, depth: null).toUpperCase().indexOf(str.toUpperCase()) > -1
-      return
+    return error?.code?.toString().startsWith('5') or
+        error?.statusCode?.toString().startsWith('5') or
+        @repeaterOptions.retryKeywords.some (keyword) ->
+          JSON.stringify(error).toUpperCase().includes(keyword.toUpperCase())
 
 module.exports = RepeaterTaskQueue
