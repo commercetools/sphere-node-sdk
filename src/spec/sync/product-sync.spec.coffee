@@ -22,6 +22,9 @@ OLD_PRODUCT =
       {id: 'p-3', value: {currencyCode: 'EUR', centAmount: 1100}, country: 'DE'},
       {id: 'p-4', value: {currencyCode: 'EUR', centAmount: 1200}, customerGroup: {id: '984a64de-24a4-42c0-868b-da7abfe1c5f6', typeId: 'customer-group'}}
     ]
+    attributes: [
+      { name: 'textAttribute', value: '[{"textAttributeValue":{"fr-CH":"","de-CH":"","it-CH":"","de-DE":"<p><strong>Some random text to make this longer than the value that was in jsondiffpatch.textDiff.minLength = 300. Also this will be badly formatted JSON”</p>","en-GB":"","es-ES":"","fr-FR":""fr-CH":"","fr-FR": "","it-IT": "","nl-NL": "","ru-RU": ""},"testberichte_video": ""}]' }
+    ]
   variants: [
     {
       id: 2
@@ -47,6 +50,7 @@ OLD_PRODUCT =
     de: [{text: 'altes'}, {text: 'zeug'}, {text: 'weg'}]
   }
 
+newTextAttributeValue = '[{"textAttributeValue":{"fr-CH":"","de-CH":"","it-CH":"","de-DE":"<p><strong>Some random text to make this longer than the value that was in jsondiffpatch.textDiff.minLength = 300. This should be now a correctly formatted JSON. However, after jsondiffpatch, it will be changed into a different string”</p>","en-GB":"","es-ES":"","fr-FR":""}}]'
 NEW_PRODUCT =
   id: '123'
   name:
@@ -64,6 +68,9 @@ NEW_PRODUCT =
       {value: {currencyCode: 'EUR', centAmount: 100}},
       {value: {currencyCode: 'EUR', centAmount: 3800}}, # change
       {value: {currencyCode: 'EUR', centAmount: 1100}, country: 'IT'} # change
+    ]
+    attributes: [
+      { name: 'textAttribute', value: newTextAttributeValue }
     ]
   categoryOrderHints:
     myFancyCategoryId: 0.9
@@ -125,8 +132,9 @@ describe 'ProductSync', ->
 
   describe ':: buildActions', ->
 
-    it 'should build the action update', ->
+    iit 'should build the action update', ->
       update = @sync.buildActions(NEW_PRODUCT, OLD_PRODUCT).getUpdatePayload()
+      console.log 'update is ' + JSON.stringify(update.actions[update.actions.length - 1], null, 2)
       expected_update =
         actions: [
           { action: 'removeVariant', id: 4 }
@@ -153,6 +161,7 @@ describe 'ProductSync', ->
           { action: 'addPrice', variantId: 77, price: { value: { currencyCode: 'EUR', centAmount: 4790 }, country: 'AT', customerGroup: { id: 'special-price-id', typeId: 'customer-group' } } }
           { action: 'addPrice', variantId: 77, price: { value: { currencyCode: 'EUR', centAmount: 6559 }, country: 'FR' } }
           { action: 'addPrice', variantId: 77, price: { value: { currencyCode: 'EUR', centAmount: 13118 }, country: 'BE' } }
+          { action: 'setAttribute', variantId : 1, name : 'textAttribute', value : newTextAttributeValue }
         ]
         version: OLD_PRODUCT.version
       expect(update).toEqual expected_update
