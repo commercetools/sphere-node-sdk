@@ -132,9 +132,8 @@ describe 'ProductSync', ->
 
   describe ':: buildActions', ->
 
-    iit 'should build the action update', ->
+    it 'should build the action update', ->
       update = @sync.buildActions(NEW_PRODUCT, OLD_PRODUCT).getUpdatePayload()
-      console.log 'update is ' + JSON.stringify(update.actions[update.actions.length - 1], null, 2)
       expected_update =
         actions: [
           { action: 'removeVariant', id: 4 }
