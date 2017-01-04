@@ -18,7 +18,7 @@ class BaseUtils
       textDiff:
         # if value to diff has a bigger length, a text diffing algorithm is used
         # https://github.com/benjamine/jsondiffpatch/blob/master/docs/deltas.md#text-diffs
-        minLength: 300
+        minLength: 50000
 
   # Internal: Compute the difference between given objects
   diff: (old_obj, new_obj) -> @diffpatcher.diff(old_obj, new_obj)
