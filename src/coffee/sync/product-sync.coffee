@@ -37,12 +37,17 @@ class ProductSync extends BaseSync
     super new_obj, old_obj
 
   _doMapActions: (diff, new_obj, old_obj) ->
+    variantActions = @_mapActionOrNot 'variants', => @_utils.actionsMapVariants(diff, old_obj, new_obj)
+    removeVariantActions = variantActions.filter (action) -> action.action is 'removeVariant'
+    addVariantActions = variantActions.filter (action) -> action.action is 'addVariant'
+
     allActions = []
-    allActions.push @_mapActionOrNot 'variants', => @_utils.actionsMapVariants(diff, old_obj, new_obj)
+    allActions.push removeVariantActions
+    allActions.push @_mapActionOrNot 'attributes', => @_utils.actionsMapAttributes(diff, old_obj, new_obj, @sameForAllAttributeNames)
+    allActions.push addVariantActions
     allActions.push @_mapActionOrNot 'base', => @_utils.actionsMapBase(diff, old_obj)
     allActions.push @_mapActionOrNot 'references', => @_utils.actionsMapReferences(diff, old_obj, new_obj)
     allActions.push @_mapActionOrNot 'prices', => @_utils.actionsMapPrices(diff, old_obj, new_obj)
-    allActions.push @_mapActionOrNot 'attributes', => @_utils.actionsMapAttributes(diff, old_obj, new_obj, @sameForAllAttributeNames)
     allActions.push @_mapActionOrNot 'images', => @_utils.actionsMapImages(diff, old_obj, new_obj)
     allActions.push @_mapActionOrNot 'categories', => @_utils.actionsMapCategories(diff)
     _.flatten allActions
