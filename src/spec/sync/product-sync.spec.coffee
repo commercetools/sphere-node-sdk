@@ -68,6 +68,15 @@ NEW_PRODUCT =
       {value: {currencyCode: 'EUR', centAmount: 100}},
       {value: {currencyCode: 'EUR', centAmount: 3800}}, # change
       {value: {currencyCode: 'EUR', centAmount: 1100}, country: 'IT'} # change
+      {
+        value: {currencyCode: 'JPY', centAmount: 9001},
+        custom: {
+          type: {
+            typeId: 'type', id: 'decaf-f005ba11-abaca',
+            fields: {superCustom: 'super true'}
+          }
+        }
+      }
     ]
     attributes: [
       { name: 'textAttribute', value: newTextAttributeValue }
@@ -154,6 +163,7 @@ describe 'ProductSync', ->
           { action: 'removePrice', variantId: 77, price: { value: { currencyCode: 'EUR', centAmount: 6559 }, country: 'FR' } }
           { action: 'removePrice', variantId: 77, price: { value: { currencyCode: 'EUR', centAmount: 13118 }, country: 'BE' } }
           { action: 'addPrice', variantId: 1, price: {value: {currencyCode: 'EUR', centAmount: 1100}, country: 'IT'} }
+          { action: 'addPrice', variantId: 1, price: {value: {currencyCode: 'JPY', centAmount: 9001}, custom: {type: {typeId: 'type', id: 'decaf-f005ba11-abaca', fields: {superCustom: 'super true'}}}} }
           { action: 'addPrice', variantId: 2, price: {value: {currencyCode: 'EUR', centAmount: 2200}, customerGroup: {id: '59c64f80-6472-474e-b5be-dc57b45b2faf', typeId: 'customer-group'}} }
           { action: 'addPrice', variantId: 77, price: { value: { currencyCode: 'EUR', centAmount: 4790 }, country: 'DE', customerGroup: { id: 'special-price-id', typeId: 'customer-group' } } }
           { action: 'addPrice', variantId: 77, price: { value: { currencyCode: 'EUR', centAmount: 5889 }, country: 'AT' } }

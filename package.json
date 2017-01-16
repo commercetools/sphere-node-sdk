@@ -1,7 +1,7 @@
 {
   "name": "sphere-node-sdk",
   "description": "Officially supported Node.js SDK library for working with the SPHERE.IO HTTP API, with OAuth2 support.",
-  "version": "1.16.0",
+  "version": "1.17.2",
   "homepage": "https://github.com/sphereio/sphere-node-sdk",
   "author": {
     "name": "Nicola Molinari",
@@ -28,7 +28,8 @@
   "dependencies": {
     "debug": "2.1.x",
     "jsondiffpatch": "0.2.4",
-    "request": "2.54.x"
+    "request": "2.54.x",
+    "sphere-node-utils": "^0.8.4"
   },
   "peerDependencies": {
     "bluebird": ">=2.3.0",

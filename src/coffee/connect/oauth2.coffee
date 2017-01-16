@@ -49,7 +49,7 @@ class OAuth2
       host: host
       protocol: protocol
       accessTokenUrl: opts.accessTokenUrl or '/oauth/token'
-      timeout: opts.timeout or 20000
+      timeout: opts.timeout or 60000
       rejectUnauthorized: rejectUnauthorized
       userAgent: userAgent
 
