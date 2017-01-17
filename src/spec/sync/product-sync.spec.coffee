@@ -247,39 +247,10 @@ describe 'ProductSync', ->
         ]
       update = @sync.buildActions(newProduct, oldProduct, ['new attribute']).getUpdatePayload()
 
-      expected_update =
-        actions: [
-          {
-            action: 'removeVariant',
-            id: 3
-          },
-          {
-            action: 'setAttribute',
-            variantId: 1,
-            name: 'foo',
-            value: 'new value'
-          },
-          {
-            action: 'setAttributeInAllVariants',
-            name: 'new attribute',
-            value: 'sameForAllAttribute'
-          },
-          {
-            action: 'setAttribute',
-            variantId: 2,
-            name: 'foo',
-            value: 'another value'
-          },
-          {
-            action: 'addVariant',
-            sku: 'v4',
-            attributes: [
-              {
-                name: 'foo',
-                value: 'yet another'
-              }
-            ]
-          }
-        ],
-        version: oldProduct.version
-      expect(update).toEqual expected_update
+      actionNames = update.actions.map((a) -> a.action)
+      setAttrPos = actionNames.indexOf('setAttributeInAllVariants')
+      removeVariantPos = actionNames.indexOf('removeVariant')
+      addVariantPos = actionNames.indexOf('addVariant')
+
+      expect(setAttrPos).toBeGreaterThan removeVariantPos
+      expect(setAttrPos).toBeLessThan addVariantPos
