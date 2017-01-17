@@ -219,3 +219,67 @@ describe 'ProductSync', ->
         ]
         version: oldProduct.version
       expect(update).toEqual expected_update
+
+    it 'should create update actions in correct order', ->
+      oldProduct =
+        id: '123'
+        version: 1
+        masterVariant:
+          id: 1
+          sku: 'v1'
+          attributes: [{name: 'foo', value: 'bar'}]
+        variants: [
+          { id: 2, sku: 'v2', attributes: [{name: 'foo', value: 'qux'}] }
+          { id: 3, sku: 'v3', attributes: [{name: 'foo', value: 'baz'}] }
+        ]
+
+      newProduct =
+        id: '123'
+        masterVariant:
+          sku: 'v1'
+          attributes: [
+            { name: 'foo', value: 'new value' },
+            { name: 'new attribute', value: 'sameForAllAttribute' }
+          ]
+        variants: [
+          { id: 2, sku: 'v2', attributes: [{name: 'foo', value: 'another value'}] }
+          { id: 4, sku: 'v4', attributes: [{name: 'foo', value: 'yet another'}] }
+        ]
+      update = @sync.buildActions(newProduct, oldProduct, ['new attribute']).getUpdatePayload()
+
+      expected_update =
+        actions: [
+          {
+            action: 'removeVariant',
+            id: 3
+          },
+          {
+            action: 'setAttribute',
+            variantId: 1,
+            name: 'foo',
+            value: 'new value'
+          },
+          {
+            action: 'setAttributeInAllVariants',
+            name: 'new attribute',
+            value: 'sameForAllAttribute'
+          },
+          {
+            action: 'setAttribute',
+            variantId: 2,
+            name: 'foo',
+            value: 'another value'
+          },
+          {
+            action: 'addVariant',
+            sku: 'v4',
+            attributes: [
+              {
+                name: 'foo',
+                value: 'yet another'
+              }
+            ]
+          }
+        ],
+        version: oldProduct.version
+      expect(update).toEqual expected_update
