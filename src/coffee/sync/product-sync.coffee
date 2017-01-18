@@ -41,13 +41,11 @@ class ProductSync extends BaseSync
     # has old value of the sameForAll attribute. That's why it's necessary to update the attributes
     # before adding new variant
     variantActions = @_mapActionOrNot 'variants', => @_utils.actionsMapVariants(diff, old_obj, new_obj)
-    removeVariantActions = variantActions.filter (action) -> action.action is 'removeVariant'
-    addVariantActions = variantActions.filter (action) -> action.action is 'addVariant'
 
     allActions = []
-    allActions.push removeVariantActions
+    allActions.push variantActions.filter (action) -> action.action is 'removeVariant'
     allActions.push @_mapActionOrNot 'attributes', => @_utils.actionsMapAttributes(diff, old_obj, new_obj, @sameForAllAttributeNames)
-    allActions.push addVariantActions
+    allActions.push variantActions.filter (action) -> action.action is 'addVariant'
     allActions.push @_mapActionOrNot 'base', => @_utils.actionsMapBase(diff, old_obj)
     allActions.push @_mapActionOrNot 'references', => @_utils.actionsMapReferences(diff, old_obj, new_obj)
     allActions.push @_mapActionOrNot 'prices', => @_utils.actionsMapPrices(diff, old_obj, new_obj)
