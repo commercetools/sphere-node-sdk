@@ -7,10 +7,9 @@ class InventoryUtils extends BaseUtils
   # Private: map inventory quantities
   #
   # diff - {Object} The result of diff from `jsondiffpatch`
-  # old_obj - {Object} The existing inventory
   #
   # Returns {Array} The list of actions, or empty if there are none
-  actionsMapQuantity: (diff, old_obj) ->
+  actionsMapQuantity: (diff) ->
     actions = []
     if diff.quantityOnStock
       if _.isArray(diff.quantityOnStock) and _.size(diff.quantityOnStock) is 2

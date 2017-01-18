@@ -23,7 +23,7 @@ describe 'InventoryUtils', ->
       inventoryChanged.quantityOnStock = 10
 
       delta = @utils.diff(@inventory, inventoryChanged)
-      update = @utils.actionsMapQuantity(delta, inventoryChanged)
+      update = @utils.actionsMapQuantity(delta)
 
       expected_update =
         [
