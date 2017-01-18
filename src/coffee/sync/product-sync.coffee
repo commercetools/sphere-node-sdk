@@ -37,13 +37,14 @@ class ProductSync extends BaseSync
     super new_obj, old_obj
 
   _doMapActions: (diff, new_obj, old_obj) ->
-    # New variant can have attributes with new values and this can cause conflict if the product still
-    # has old value of the sameForAll attribute. That's why it's necessary to update the attributes
-    # before adding new variant
+    # Update actions needs to be sorted and executed in particular order.
     variantActions = @_mapActionOrNot 'variants', => @_utils.actionsMapVariants(diff, old_obj, new_obj)
 
     allActions = []
+    # First redundant variants need to be removed to prevent SKU conflicts, e.g. in case of chaging the master variant
     allActions.push variantActions.filter (action) -> action.action is 'removeVariant'
+    # Before adding new variants, all attributes needs to be updated to the newest value to prevent adding a new variant with different
+    # sameForAll attribute value than the variants in the CTP product.
     allActions.push @_mapActionOrNot 'attributes', => @_utils.actionsMapAttributes(diff, old_obj, new_obj, @sameForAllAttributeNames)
     allActions.push variantActions.filter (action) -> action.action is 'addVariant'
     allActions.push @_mapActionOrNot 'base', => @_utils.actionsMapBase(diff, old_obj)
