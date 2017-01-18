@@ -37,6 +37,9 @@ class ProductSync extends BaseSync
     super new_obj, old_obj
 
   _doMapActions: (diff, new_obj, old_obj) ->
+    # New variant can have attributes with new values and this can cause conflict if the product still
+    # has old value of the sameForAll attribute. That's why it's necessary to update the attributes
+    # before adding new variant
     variantActions = @_mapActionOrNot 'variants', => @_utils.actionsMapVariants(diff, old_obj, new_obj)
     removeVariantActions = variantActions.filter (action) -> action.action is 'removeVariant'
     addVariantActions = variantActions.filter (action) -> action.action is 'addVariant'
