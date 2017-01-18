@@ -18,12 +18,9 @@ class InventoryUtils extends BaseUtils
         newVal = diff.quantityOnStock[1]
         diffVal = newVal - oldVal
         a =
-          quantity: Math.abs diffVal
-        if diffVal > 0
-          a.action = 'addQuantity'
-          actions.push a
-        else if diffVal < 0
-          a.action = 'removeQuantity'
+          quantity: newVal
+        if diffVal
+          a.action = 'changeQuantity'
           actions.push a
     actions
 

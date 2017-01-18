@@ -27,7 +27,7 @@ describe 'InventoryUtils', ->
 
       expected_update =
         [
-          { action: 'addQuantity', quantity: 3 }
+          { action: 'changeQuantity', quantity: 10 }
         ]
       expect(update).toEqual expected_update
 
