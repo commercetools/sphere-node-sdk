@@ -19,7 +19,7 @@ class BaseUtils
         # if value to diff has a bigger length, a text diffing algorithm is used
         # disable the text diffing algorithm by passing an unreachable minimum length
         # https://github.com/benjamine/jsondiffpatch/blob/master/docs/deltas.md#text-diffs
-        minLength: Infinity
+        minLength: 300
 
   # Internal: Compute the difference between given objects
   diff: (old_obj, new_obj) -> @diffpatcher.diff(old_obj, new_obj)
@@ -28,7 +28,7 @@ class BaseUtils
   patch: (obj, delta) -> @diffpatcher.patch(obj, delta)
 
   # Internal: Pick correct value based on delta format
-  getDeltaValue: (arr, obj) ->
+  getDeltaValue: (arr, originalObject) ->
     throw new Error 'Expected array to extract delta value' unless _.isArray(arr)
     size = arr.length
     switch size
@@ -40,9 +40,9 @@ class BaseUtils
         if arr[2] is 0 # delete
           undefined
         else if arr[2] is 2 # text diff
-          throw new Error 'Cannot apply patch to long text diff. Missing original object.' unless obj
+          throw new Error 'Cannot apply patch to long text diff. Missing original object.' unless originalObject
           # try to apply patch to given object based on delta value
-          jsondiffpatch.patch(obj, arr)
+          jsondiffpatch.patch(originalObject, arr)
         else if arr[2] is 3 # array move
           throw new Error 'Detected an array move, it should not happen as includeValueOnMove should be set to false'
         else
