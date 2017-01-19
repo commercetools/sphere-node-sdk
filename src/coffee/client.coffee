@@ -1,6 +1,7 @@
-_ = require 'underscore'
-Rest = require './connect/rest'
-TaskQueue = require './task-queue'
+_                        = require 'underscore'
+Rest                     = require './connect/rest'
+TaskQueue                = require './task-queue'
+RepeaterTaskQueue        = require '../lib/repeater-task-queue'
 CartDiscountService      = require './services/cart-discounts'
 CartService              = require './services/carts'
 CategoryService          = require './services/categories'
@@ -75,6 +76,11 @@ ALL_SERVICES = [
 # To optimize processing lots of requests all together, e.g.: avoiding connection timeouts, we introduced {TaskQueue}.
 # Every request is internally pushed in a queue which automatically starts resolving promises (requests)
 # and will process concurrently some of them based on the `maxParallel` parameter. You can set this parameter by calling {::setMaxParallel}.
+#
+# ### RepeaterTaskQueue
+# To repeat request on case of some errors. It's possible to use custom repeater by passing it to constructor.
+# Also it's possible to turn off by passing `enableRepeater = false` flag.
+# There is a default repeater if constructor parameter is empty.
 #
 # ```coffeescript
 # client = new SphereClient # a TaskQueue is internally initialized at this point with maxParallel of 20
@@ -220,9 +226,11 @@ class SphereClient
   #
   # options - An {Object} to configure the client
   constructor: (options = {}) ->
-
     # Private: instance of a {TaskQueue}
-    @_task = options.task or new TaskQueue
+    if options.enableRepeater? and !options.enableRepeater
+      @_task = new TaskQueue
+    else
+      @_task = options.task or new RepeaterTaskQueue {}, {}
 
     # Private: instance of a {Rest}
     @_rest = options.rest or new Rest _.defaults options, {user_agent: 'sphere-node-sdk'}

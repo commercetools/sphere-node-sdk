@@ -10,7 +10,7 @@ describe 'OAuth2', ->
     expect(oa._options.host).toBe 'auth.sphere.io'
     expect(oa._options.protocol).toBe 'https'
     expect(oa._options.accessTokenUrl).toBe '/oauth/token'
-    expect(oa._options.timeout).toBe 20000
+    expect(oa._options.timeout).toBe 60000
     expect(oa._options.rejectUnauthorized).toBe true
 
   it 'should throw error if no credentials are given', ->
