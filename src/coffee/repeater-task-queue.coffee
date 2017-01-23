@@ -69,8 +69,8 @@ class RepeaterTaskQueue extends TaskQueue
 
 
   _shouldRetry: (error) ->
-    return error?.code?.toString().startsWith('5') or
-        error?.statusCode?.toString().startsWith('5') or
+    return error?.code?.toString().substr(0, 1) is '5' or
+        error?.statusCode?.toString().substr(0, 1) is '5' or
         @repeaterOptions.retryKeywords.some (keyword) ->
           JSON.stringify(error).toUpperCase().includes(keyword.toUpperCase())
 
