@@ -27,7 +27,7 @@ class BaseUtils
   patch: (obj, delta) -> @diffpatcher.patch(obj, delta)
 
   # Internal: Pick correct value based on delta format
-  getDeltaValue: (arr, obj) ->
+  getDeltaValue: (arr, originalObject) ->
     throw new Error 'Expected array to extract delta value' unless _.isArray(arr)
     size = arr.length
     switch size
@@ -39,9 +39,9 @@ class BaseUtils
         if arr[2] is 0 # delete
           undefined
         else if arr[2] is 2 # text diff
-          throw new Error 'Cannot apply patch to long text diff. Missing original object.' unless obj
+          throw new Error 'Cannot apply patch to long text diff. Missing original object.' unless originalObject
           # try to apply patch to given object based on delta value
-          jsondiffpatch.patch(obj, arr)
+          jsondiffpatch.patch(originalObject, arr)
         else if arr[2] is 3 # array move
           throw new Error 'Detected an array move, it should not happen as includeValueOnMove should be set to false'
         else

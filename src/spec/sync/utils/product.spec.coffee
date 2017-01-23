@@ -1104,6 +1104,10 @@ describe 'ProductUtils', ->
               value: '//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-1.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-2.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-4.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-5.jpg'
             },
             {
+              name: 'textAttribute',
+              value: '[{"textAttributeValue":{"fr-CH":"","de-CH":"","it-CH":"","de-DE":"<p><strong>Some random text to make this longer than the value that was in jsondiffpatch.textDiff.minLength = 300. This should be now a correctly formatted JSON. However, after jsondiffpatch, it will be changed into a different string”</p>","en-GB":"","es-ES":"","fr-FR":""}}]'
+            },
+            {
               name: 'localized_images',
               value: {
                 en: '//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-1.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-2.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-4.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-5.jpg'
@@ -1123,6 +1127,10 @@ describe 'ProductUtils', ->
               value: 'http://images.luxodo.com/html/zoom/luxodo/p-HARJPUL101601-1/2000/2000/p-HARJPUL101601-1.jpg;http://images.luxodo.com/html/zoom/luxodo/p-HARJPUL101601-2/2000/2000/p-HARJPUL101601-2.jpg;http://images.luxodo.com/html/zoom/luxodo/p-HARJPUL101601-4/2000/2000/p-HARJPUL101601-4.jpg;http://images.luxodo.com/html/zoom/luxodo/p-HARJPUL101601-5/2000/2000/p-HARJPUL101601-5.jpg'
             },
             {
+              name: 'textAttribute',
+              value: '[{"textAttributeValue":{"fr-CH":"","de-CH":"","it-CH":"","de-DE":"<p><strong>Some random text to make this longer than the value that was in jsondiffpatch.textDiff.minLength = 300. Also this will be badly formatted JSON”</p>","en-GB":"","es-ES":"","fr-FR":""fr-CH":"","fr-FR": "","it-IT": "","nl-NL": "","ru-RU": ""},"testberichte_video": ""}]'
+            },
+            {
               name: 'localized_images',
               value: {
                 en: 'http://images.luxodo.com/html/zoom/luxodo/p-HARJPUL101601-1/2000/2000/p-HARJPUL101601-1.jpg;http://images.luxodo.com/html/zoom/luxodo/p-HARJPUL101601-2/2000/2000/p-HARJPUL101601-2.jpg;http://images.luxodo.com/html/zoom/luxodo/p-HARJPUL101601-4/2000/2000/p-HARJPUL101601-4.jpg;http://images.luxodo.com/html/zoom/luxodo/p-HARJPUL101601-5/2000/2000/p-HARJPUL101601-5.jpg'
@@ -1138,6 +1146,7 @@ describe 'ProductUtils', ->
       expected_update =
         [
           { action: 'setAttribute', variantId: 1, name: 'images', value: '//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-1.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-2.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-4.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-5.jpg' },
+          { action: 'setAttribute', variantId: 1, name: 'textAttribute', value: '[{"textAttributeValue":{"fr-CH":"","de-CH":"","it-CH":"","de-DE":"<p><strong>Some random text to make this longer than the value that was in jsondiffpatch.textDiff.minLength = 300. This should be now a correctly formatted JSON. However, after jsondiffpatch, it will be changed into a different string”</p>","en-GB":"","es-ES":"","fr-FR":""}}]' },
           { action: 'setAttribute', variantId: 1, name: 'localized_images', value: { en: '//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-1.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-2.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-4.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-5.jpg' } }
         ]
       expect(update).toEqual expected_update
