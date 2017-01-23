@@ -57,7 +57,7 @@ describe 'Errors', ->
           payload:
             version: 1
             actions: [
-              {action: 'addQuantity', quantity: 10 }
+              {action: 'changeQuantity', quantity: 10 }
             ]
       ce = new Errors.SphereHttpError[error.name] 'Ooops', expectedBody
 

@@ -13,7 +13,7 @@ BaseService = require './base'
 #       version: result.body.version
 #       actions: [
 #         {
-#           action: 'addQuantity'
+#           action: 'changeQuantity'
 #           quantity: 10
 #         }
 #       ]

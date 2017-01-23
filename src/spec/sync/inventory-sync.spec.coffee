@@ -27,7 +27,7 @@ describe 'InventorySync', ->
       update = @sync.config(opts).buildActions(newInventory, oldInventory).getUpdatePayload()
       expected_update =
         actions: [
-          { action: 'removeQuantity', quantity: 8 }
+          { action: 'changeQuantity', quantity: 2 }
         ]
         version: oldInventory.version
       expect(update).toEqual expected_update
@@ -53,8 +53,8 @@ describe 'InventorySync', ->
         quantityOnStock: 9
       update = @sync.buildActions(ieNew, ieOld).getUpdatePayload()
       expect(update).toBeDefined()
-      expect(update.actions[0].action).toBe 'addQuantity'
-      expect(update.actions[0].quantity).toBe 68
+      expect(update.actions[0].action).toBe 'changeQuantity'
+      expect(update.actions[0].quantity).toBe 77
 
     it 'less quantity', ->
       ieNew =
@@ -65,8 +65,8 @@ describe 'InventorySync', ->
         quantityOnStock: 9
       update = @sync.buildActions(ieNew, ieOld).getUpdatePayload()
       expect(update).toBeDefined()
-      expect(update.actions[0].action).toBe 'removeQuantity'
-      expect(update.actions[0].quantity).toBe 2
+      expect(update.actions[0].action).toBe 'changeQuantity'
+      expect(update.actions[0].quantity).toBe 7
 
     it 'should add expectedDelivery', ->
       ieNew =
