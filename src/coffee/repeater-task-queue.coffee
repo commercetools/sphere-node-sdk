@@ -72,6 +72,6 @@ class RepeaterTaskQueue extends TaskQueue
     return error?.code?.toString().substr(0, 1) is '5' or
         error?.statusCode?.toString().substr(0, 1) is '5' or
         @repeaterOptions.retryKeywords.some (keyword) ->
-          JSON.stringify(error).toUpperCase().includes(keyword.toUpperCase())
+          JSON.stringify(error).toUpperCase().indexOf(keyword.toUpperCase()) != -1
 
 module.exports = RepeaterTaskQueue
