@@ -562,8 +562,11 @@ class ProductUtils extends BaseUtils
               return
             deltaValue = @getDeltaValue(value)
             unless deltaValue
-              deltaValue = value[0]
-              delete deltaValue.value
+              # Taken from https://github.com/commercetools/nodejs/blob/ab8edfb41bdc7d429f20554d3d8a45ef251228f8/packages/sync-actions/src/product-actions.js#L286
+              if (value[0] && value[0].name)
+                deltaValue = { name: value[0].name }
+              else
+                deltaValue = undefined
             id = old_variant.id
             setAction = @_buildNewSetAttributeAction(id, deltaValue, sameForAllAttributeNames)
             actions.push setAction if setAction
