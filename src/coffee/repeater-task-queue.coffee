@@ -71,7 +71,7 @@ class RepeaterTaskQueue extends TaskQueue
   _shouldRetry: (error) ->
     return error?.code?.toString().substr(0, 1) is '5' or
         error?.statusCode?.toString().substr(0, 1) is '5' or
-        @repeaterOptions.retryKeywords.some (keyword) ->
+        _.some @repeaterOptions.retryKeywords, (keyword) ->
           JSON.stringify(error).toUpperCase().indexOf(keyword.toUpperCase()) != -1
 
 module.exports = RepeaterTaskQueue
