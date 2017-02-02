@@ -470,6 +470,14 @@ class ProductUtils extends BaseUtils
         imageUrl: image.url
     action
 
+  _isExistingAttribute: (oldAttribute, newAttribute) ->
+    oldValue = oldAttribute.value
+    newValue = newAttribute.value
+    if _.isArray(oldValue) && _.isArray(newValue)
+      return _.difference(oldValue, newValue).length == 0
+    else
+      return false
+
   _buildSetAttributeAction: (diffed_value, old_variant, newAttribute, sameForAllAttributeNames) ->
     return unless newAttribute
     if newAttribute
@@ -480,45 +488,48 @@ class ProductUtils extends BaseUtils
       oldAttribute = _.find old_variant.attributes, (attrib) ->
         attrib.name is newAttribute.name
 
-      if _.contains(sameForAllAttributeNames, newAttribute.name)
-        action.action = 'setAttributeInAllVariants'
-        delete action.variantId
-
-      if _.isArray(diffed_value)
-        action.value = @getDeltaValue(diffed_value, oldAttribute.value)
+      if @_isExistingAttribute(oldAttribute, newAttribute)
+        action = null
       else
-        # LText: value: {en: "", de: ""}
-        # Money: value: {centAmount: 123, currencyCode: ""}
-        # *: value: ""
-        if _.isString(diffed_value)
-          # normal
+        if _.contains(sameForAllAttributeNames, newAttribute.name)
+          action.action = 'setAttributeInAllVariants'
+          delete action.variantId
+
+        if _.isArray(diffed_value)
           action.value = @getDeltaValue(diffed_value, oldAttribute.value)
-        else if diffed_value.centAmount
-          # Money
-          if diffed_value.centAmount
-            centAmount = @getDeltaValue(diffed_value.centAmount)
-          else
-            centAmount = newAttribute.value.centAmount
-          if diffed_value.currencyCode
-            currencyCode = @getDeltaValue(diffed_value.currencyCode)
-          else
-            currencyCode = newAttribute.value.currencyCode
-          action.value =
-            centAmount: centAmount
-            currencyCode: currencyCode
-        else if _.isObject(diffed_value)
-          if _.has(diffed_value, '_t') and diffed_value['_t'] is 'a'
-            # set-typed attribute
-            _.each newAttribute.value, (v) ->
-              delete v._MATCH_CRITERIA unless _.isString(v)
-            action.value = newAttribute.value
-          else
-            # LText
-            text = _.extend {}, oldAttribute?.value
-            _.each diffed_value, (localValue, lang) =>
-              # make sure to support long text diff patching
-              text[lang] = @getDeltaValue(localValue, oldAttribute.value[lang])
-            action.value = text
+        else
+          # LText: value: {en: "", de: ""}
+          # Money: value: {centAmount: 123, currencyCode: ""}
+          # *: value: ""
+          if _.isString(diffed_value)
+            # normal
+            action.value = @getDeltaValue(diffed_value, oldAttribute.value)
+          else if diffed_value.centAmount
+            # Money
+            if diffed_value.centAmount
+              centAmount = @getDeltaValue(diffed_value.centAmount)
+            else
+              centAmount = newAttribute.value.centAmount
+            if diffed_value.currencyCode
+              currencyCode = @getDeltaValue(diffed_value.currencyCode)
+            else
+              currencyCode = newAttribute.value.currencyCode
+            action.value =
+              centAmount: centAmount
+              currencyCode: currencyCode
+          else if _.isObject(diffed_value)
+            if _.has(diffed_value, '_t') and diffed_value['_t'] is 'a'
+              # set-typed attribute
+              _.each newAttribute.value, (v) ->
+                delete v._MATCH_CRITERIA unless _.isString(v)
+              action.value = newAttribute.value
+            else
+              # LText
+              text = _.extend {}, oldAttribute?.value
+              _.each diffed_value, (localValue, lang) =>
+                # make sure to support long text diff patching
+                text[lang] = @getDeltaValue(localValue, oldAttribute.value[lang])
+              action.value = text
     action
 
   _buildNewSetAttributeAction: (id, el, sameForAllAttributeNames) ->
