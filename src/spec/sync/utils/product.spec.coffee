@@ -1151,6 +1151,7 @@ describe 'ProductUtils', ->
         ]
       expect(update).toEqual expected_update
 
+
     it 'should not modify original attributes', ->
       newProduct =
         masterVariant:
@@ -1196,6 +1197,58 @@ describe 'ProductUtils', ->
         ]
       expect(cloneOfOriginalProduct.masterVariant.attributes).toEqual originalProduct.masterVariant.attributes
       expect(update).toEqual expected_update
+
+    it 'should not create update action if attribute is not changed', ->
+      newProduct =
+        masterVariant:
+          sku: 'TEST MASTER VARIANT'
+          attributes: [
+            {
+              'name': 'test_attribute',
+              'value': [
+                {
+                  'label': {
+                    'de': 'grün'
+                  },
+                  'key': 'GN'
+                },
+                {
+                  'label': {
+                    'de': 'schwarz'
+                  },
+                  'key': 'SW'
+                }
+              ]
+            }
+          ]
+
+      originalProduct =
+        masterVariant:
+          sku: 'TEST MASTER VARIANT'
+          attributes: [
+            {
+              name: 'test_attribute',
+              value: [
+                {
+                  label: {
+                    'de': 'schwarz'
+                  },
+                  key: 'SW'
+                },
+                {
+                  label: {
+                    'de': 'grün'
+                  },
+                  key: 'GN'
+                }
+              ]
+            }
+          ]
+
+      delta = @utils.diff originalProduct, newProduct
+      update = @utils.actionsMapAttributes delta, originalProduct, newProduct
+      expect(update.length).toBe(0)
+
 
   describe ':: actionsMapImages', ->
 
