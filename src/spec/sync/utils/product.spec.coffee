@@ -1151,6 +1151,53 @@ describe 'ProductUtils', ->
         ]
       expect(update).toEqual expected_update
 
+
+    it 'should not modify original attributes', ->
+      newProduct =
+        masterVariant:
+          id: 1
+          sku: 'test_sku_1'
+          attributes: [
+            {
+              name: 'testAttribute1',
+              value: false
+            }
+          ]
+        variants: [
+          id: 2
+          sku: 'test_sku_2'
+          attributes: [
+            {
+              name: 'testAttribute1',
+              value: false
+            }
+          ]
+        ]
+
+      originalProduct =
+        masterVariant:
+          id: 1
+          sku: 'test_sku_1'
+          attributes: [
+            {
+              name: 'testAttribute2',
+              value: 'testValue'
+            }
+          ]
+
+      cloneOfOriginalProduct = _.deepClone(originalProduct)
+
+      delta = @utils.diff originalProduct, newProduct
+      update = @utils.actionsMapAttributes delta, originalProduct, newProduct
+
+      expected_update =
+        [
+          { action: 'setAttribute', variantId: 1, name: 'testAttribute1', value: false },
+          { action: 'setAttribute', variantId: 1, name: 'testAttribute2' }
+        ]
+      expect(cloneOfOriginalProduct.masterVariant.attributes).toEqual originalProduct.masterVariant.attributes
+      expect(update).toEqual expected_update
+
     it 'should not create update action if attribute is not changed', ->
       newProduct =
         masterVariant:
@@ -1201,6 +1248,7 @@ describe 'ProductUtils', ->
       delta = @utils.diff originalProduct, newProduct
       update = @utils.actionsMapAttributes delta, originalProduct, newProduct
       expect(update.length).toBe(0)
+
 
   describe ':: actionsMapImages', ->
 
