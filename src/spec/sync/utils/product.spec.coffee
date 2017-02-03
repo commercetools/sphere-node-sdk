@@ -1187,9 +1187,15 @@ describe 'ProductUtils', ->
       cloneOfOriginalProduct = _.deepClone(originalProduct)
 
       delta = @utils.diff originalProduct, newProduct
-      @utils.actionsMapAttributes delta, originalProduct, newProduct
+      update = @utils.actionsMapAttributes delta, originalProduct, newProduct
 
+      expected_update =
+        [
+          { action: 'setAttribute', variantId: 1, name: 'testAttribute1', value: false },
+          { action: 'setAttribute', variantId: 1, name: 'testAttribute2' }
+        ]
       expect(cloneOfOriginalProduct.masterVariant.attributes).toEqual originalProduct.masterVariant.attributes
+      expect(update).toEqual expected_update
 
   describe ':: actionsMapImages', ->
 
