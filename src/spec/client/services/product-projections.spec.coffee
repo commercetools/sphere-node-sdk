@@ -65,6 +65,18 @@ describe 'ProductProjectionService', ->
   it 'should query for fuzzy', ->
     expect(@service.fuzzy()._queryString()).toBe 'fuzzy=true'
 
+  it 'should query for markMatchingVariants when set to true', ->
+    expect(@service.markMatchingVariants(true)._queryString()).toBe 'markMatchingVariants=true'
+
+  it 'should query for markMatchingVariants when set to false', ->
+    expect(@service.markMatchingVariants(false)._queryString()).toBe 'markMatchingVariants=false'
+
+  it 'should query for not set anything when no value is passed to markMatchingVariants', ->
+    expect(@service.markMatchingVariants()._queryString()).toBe ''
+
+  it 'should query for not set anything when value passed to markMatchingVariants is not valid boolean', ->
+    expect(@service.markMatchingVariants()._queryString()).toBe ''
+
   it 'should query for published', ->
     expect(@service.staged(false)._queryString()).toBe ''
 
@@ -98,10 +110,11 @@ describe 'ProductProjectionService', ->
       .filter('foo:bar')
       .filterByQuery('foo:bar')
       .filterByFacets('foo:bar')
+      .markMatchingVariants(true)
       .facet('foo:bar')
       ._queryString()
 
-    expect(queryString).toBe 'limit=25&offset=50&sort=createdAt%20asc&text.de=foo&filter=foo%3Abar&filter.query=foo%3Abar&filter.facets=foo%3Abar&facet=foo%3Abar'
+    expect(queryString).toBe 'limit=25&offset=50&sort=createdAt%20asc&text.de=foo&markMatchingVariants=true&filter=foo%3Abar&filter.query=foo%3Abar&filter.facets=foo%3Abar&facet=foo%3Abar'
 
   it "should reset search custom params after creating a promise", ->
     _service = @service

@@ -65,6 +65,22 @@ class ProductProjectionService extends BaseService
     debug 'setting fuzzy: %s', fuzzy
     this
 
+  # Public: Define whether to mark product variants in the search result matching the criteria or not.
+  #
+  # markMatchingVariants - {Boolean} `true` to do a mark product variants, `false` not mark matching product variants
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.productProjections
+  #   service.text('Sapphure', 'en').markMatchingVariants(true).search()
+  markMatchingVariants: (value) ->
+    return this unless _.isBoolean(value)
+    @_params.query.markMatchingVariants = value
+    debug 'Setting markMatchingVariants: %s', value
+    this
+
   # Public: Define the text to analyze and ([full-text](http://dev.sphere.io/http-api-projects-products-search.html#search-text)) search.
   #
   # text - {String} The string to search for
@@ -226,7 +242,7 @@ class ProductProjectionService extends BaseService
   #
   # Returns the built query string
   _queryString: ->
-    {staged, fuzzy, text, filter, filterByQuery, filterByFacets, facet, searchKeywords} = _.defaults @_params.query,
+    {staged, fuzzy, text, filter, filterByQuery, filterByFacets, facet, searchKeywords, markMatchingVariants} = _.defaults @_params.query,
       fuzzy: false
       staged: false
       filter: []
@@ -239,6 +255,7 @@ class ProductProjectionService extends BaseService
     customQueryString.push "staged=#{staged}" if staged
     customQueryString.push "fuzzy=#{fuzzy}" if fuzzy
     customQueryString.push "text.#{text.lang}=#{text.value}" if text
+    customQueryString.push "markMatchingVariants=#{markMatchingVariants}" if _.isBoolean markMatchingVariants
 
     # filter param
     _.each filter, (f) -> customQueryString.push "filter=#{f}"
