@@ -34,9 +34,9 @@
   "peerDependencies": {
     "bluebird": ">=2.3.0",
     "underscore": ">=1.8.0",
-    "underscore-mixins": "^0.1.x"
   },
   "devDependencies": {
+    "underscore-mixins": "0.1.4",
     "biscotto": "emmenko/biscotto#v2.4.0",
     "bluebird": "2.9.x",
     "coffeelint": "^1.14.1",
