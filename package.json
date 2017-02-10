@@ -33,7 +33,7 @@
   },
   "peerDependencies": {
     "bluebird": ">=2.3.0",
-    "underscore": ">=1.8.0",
+    "underscore": ">=1.8.0"
   },
   "devDependencies": {
     "underscore-mixins": "0.1.4",
