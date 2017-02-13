@@ -30,7 +30,7 @@
     "jsondiffpatch": "0.2.4",
     "request": "2.54.x",
     "sphere-node-utils": "^0.8.4",
-    "underscore-mixins": "0.1.4"
+    "underscore-mixins": "^0.1.4"
   },
   "peerDependencies": {
     "bluebird": ">=2.3.0",
