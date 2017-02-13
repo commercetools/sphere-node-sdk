@@ -1277,6 +1277,9 @@ describe 'ProductUtils', ->
       delta = @utils.diff originalProduct, newProduct
       update = @utils.actionsMapAttributes delta, originalProduct, newProduct
       expect(update.length).toBe(1)
+      expect(update[0].action).toBe 'setAttribute'
+      expect(update[0].name).toBe 'test_attribute'
+      expect(update[0].value).toEqual [ 'a', 'b' ]
 
     it 'should create update action if attribute value item is added', ->
       newProduct =
@@ -1306,6 +1309,9 @@ describe 'ProductUtils', ->
       delta = @utils.diff originalProduct, newProduct
       update = @utils.actionsMapAttributes delta, originalProduct, newProduct
       expect(update.length).toBe(1)
+      expect(update[0].action).toBe 'setAttribute'
+      expect(update[0].name).toBe 'test_attribute'
+      expect(update[0].value).toEqual [ 'a', 'b', 'c' ]
 
   describe ':: actionsMapImages', ->
 
