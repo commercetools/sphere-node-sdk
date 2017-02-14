@@ -474,7 +474,7 @@ class ProductUtils extends BaseUtils
     oldValue = oldAttribute.value
     newValue = newAttribute.value
     if _.isArray(oldValue) && _.isArray(newValue)
-      return _.difference(oldValue, newValue).length == 0
+      return _.difference(oldValue, newValue).length + _.difference(newValue, oldValue).length == 0
     else
       return false
 

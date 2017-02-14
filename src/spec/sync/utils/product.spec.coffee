@@ -1249,6 +1249,69 @@ describe 'ProductUtils', ->
       update = @utils.actionsMapAttributes delta, originalProduct, newProduct
       expect(update.length).toBe(0)
 
+    it 'should create update action if attribute value item is removed', ->
+      newProduct =
+        masterVariant:
+          sku: 'TEST MASTER VARIANT'
+          attributes: [
+            {
+              'name': 'test_attribute',
+              'value': [
+                'a', 'b'
+              ]
+            }
+          ]
+
+      originalProduct =
+        masterVariant:
+          sku: 'TEST MASTER VARIANT'
+          attributes: [
+            {
+              name: 'test_attribute',
+              value: [
+                'a', 'b', 'c'
+              ]
+            }
+          ]
+
+      delta = @utils.diff originalProduct, newProduct
+      update = @utils.actionsMapAttributes delta, originalProduct, newProduct
+      expect(update.length).toBe(1)
+      expect(update[0].action).toBe 'setAttribute'
+      expect(update[0].name).toBe 'test_attribute'
+      expect(update[0].value).toEqual [ 'a', 'b' ]
+
+    it 'should create update action if attribute value item is added', ->
+      newProduct =
+        masterVariant:
+          sku: 'TEST MASTER VARIANT'
+          attributes: [
+            {
+              'name': 'test_attribute',
+              'value': [
+                'a', 'b', 'c'
+              ]
+            }
+          ]
+
+      originalProduct =
+        masterVariant:
+          sku: 'TEST MASTER VARIANT'
+          attributes: [
+            {
+              name: 'test_attribute',
+              value: [
+                'a', 'b'
+              ]
+            }
+          ]
+
+      delta = @utils.diff originalProduct, newProduct
+      update = @utils.actionsMapAttributes delta, originalProduct, newProduct
+      expect(update.length).toBe(1)
+      expect(update[0].action).toBe 'setAttribute'
+      expect(update[0].name).toBe 'test_attribute'
+      expect(update[0].value).toEqual [ 'a', 'b', 'c' ]
 
   describe ':: actionsMapImages', ->
 
