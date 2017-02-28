@@ -29,7 +29,7 @@ You can lint your code by running `grunt lint`
 ## Commit message
 Make sure your commit messages follow [Angular's commit message format](https://github.com/angular/angular.js/blob/master/CONTRIBUTING.md#-git-commit-guidelines). To make this easy run `npm run commit` from the root.
 
-````
+```
     docs(contributing): add example of a full commit message
 
     The example commit message in the contributing.md document is not a concrete example. This is a problem because the
@@ -38,17 +38,17 @@ Make sure your commit messages follow [Angular's commit message format](https://
 
     Closes #1
     BREAKING CHANGE: imagination no longer works
-````
+```
 
 ## Branching
 When creating a branch. Use the issue number(without the '#') as the prefix and add a short title, like: `1-commit-message-example`
 
 ## Labels
-We have two categories of labels, one for _status_ and _type_ of issue.
-Please add the relevant label as needed. When you working on an issue, please add the _status: in progress_ label and when you want it to be reviewed. Add the _status: in review_ and it will be reviewed.
+We have two categories of labels, one for _status_ and another for _type_ of issue.
+Please add the relevant labels as needed. When working on an issue, please add the _status: in progress_ label and when you want it to be reviewed. Add the _status: in review_ and it will be reviewed.
 
 ## Tests
-Before submitting a PR, please make sure you code is well unit tests, and build passes on CI
+Before submitting a PR, please make sure your code is well unit tested, and build passes on CI
 We use [jasmine-node](https://github.com/mhevery/jasmine-node) for testing.
 
 ## Submitting a Pull Request
