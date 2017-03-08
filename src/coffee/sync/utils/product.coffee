@@ -68,7 +68,9 @@ class ProductUtils extends BaseUtils
 
     patch = (obj, arrayIndexFieldName) ->
       debug 'patching product: %j', obj
-      _.each allVariants(obj), (variant, index) ->
+      _allVariants = allVariants(obj)
+      _.each _allVariants, (variant, index) ->
+        return variant unless variant?
         patchPrices variant
         patchEnums variant
         patchSetLText variant
@@ -79,7 +81,6 @@ class ProductUtils extends BaseUtils
 
     patch old_obj, '_EXISTING_ARRAY_INDEX'
     patch new_obj, '_NEW_ARRAY_INDEX'
-
     super old_obj, new_obj
 
   # Private: map base product actions
@@ -469,54 +470,54 @@ class ProductUtils extends BaseUtils
         imageUrl: image.url
     action
 
-  _buildSetAttributeAction: (diffed_value, old_variant, attribute, sameForAllAttributeNames) ->
-    return unless attribute
-    if attribute
+  _buildSetAttributeAction: (diffed_value, old_variant, newAttribute, sameForAllAttributeNames) ->
+    return unless newAttribute
+    if newAttribute
       action =
         action: 'setAttribute'
         variantId: old_variant.id
-        name: attribute.name
+        name: newAttribute.name
+      oldAttribute = _.find old_variant.attributes, (attrib) ->
+        attrib.name is newAttribute.name
 
-      if _.contains(sameForAllAttributeNames, attribute.name)
+      if _.contains(sameForAllAttributeNames, newAttribute.name)
         action.action = 'setAttributeInAllVariants'
         delete action.variantId
 
       if _.isArray(diffed_value)
-        action.value = @getDeltaValue(diffed_value, attribute.value)
+        action.value = @getDeltaValue(diffed_value, oldAttribute.value)
       else
         # LText: value: {en: "", de: ""}
         # Money: value: {centAmount: 123, currencyCode: ""}
         # *: value: ""
         if _.isString(diffed_value)
           # normal
-          action.value = @getDeltaValue(diffed_value, attribute.value)
+          action.value = @getDeltaValue(diffed_value, oldAttribute.value)
         else if diffed_value.centAmount
           # Money
           if diffed_value.centAmount
             centAmount = @getDeltaValue(diffed_value.centAmount)
           else
-            centAmount = attribute.value.centAmount
+            centAmount = newAttribute.value.centAmount
           if diffed_value.currencyCode
             currencyCode = @getDeltaValue(diffed_value.currencyCode)
           else
-            currencyCode = attribute.value.currencyCode
+            currencyCode = newAttribute.value.currencyCode
           action.value =
             centAmount: centAmount
             currencyCode: currencyCode
         else if _.isObject(diffed_value)
           if _.has(diffed_value, '_t') and diffed_value['_t'] is 'a'
             # set-typed attribute
-            _.each attribute.value, (v) ->
+            _.each newAttribute.value, (v) ->
               delete v._MATCH_CRITERIA unless _.isString(v)
-            action.value = attribute.value
+            action.value = newAttribute.value
           else
             # LText
-            attrib = _.find old_variant.attributes, (attrib) ->
-              attrib.name is attribute.name
-            text = _.extend {}, attrib?.value
+            text = _.extend {}, oldAttribute?.value
             _.each diffed_value, (localValue, lang) =>
               # make sure to support long text diff patching
-              text[lang] = @getDeltaValue(localValue, attrib.value[lang])
+              text[lang] = @getDeltaValue(localValue, oldAttribute.value[lang])
             action.value = text
     action
 
@@ -624,6 +625,6 @@ actionsBaseList = ->
 
 allVariants = (product) ->
   {masterVariant, variants} = _.defaults product,
-    masterVariant: {}
+    masterVariant: undefined
     variants: []
   [masterVariant].concat variants

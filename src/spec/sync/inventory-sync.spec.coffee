@@ -27,7 +27,7 @@ describe 'InventorySync', ->
       update = @sync.config(opts).buildActions(newInventory, oldInventory).getUpdatePayload()
       expected_update =
         actions: [
-          { action: 'removeQuantity', quantity: 8 }
+          { action: 'changeQuantity', quantity: 2 }
         ]
         version: oldInventory.version
       expect(update).toEqual expected_update
@@ -53,8 +53,8 @@ describe 'InventorySync', ->
         quantityOnStock: 9
       update = @sync.buildActions(ieNew, ieOld).getUpdatePayload()
       expect(update).toBeDefined()
-      expect(update.actions[0].action).toBe 'addQuantity'
-      expect(update.actions[0].quantity).toBe 68
+      expect(update.actions[0].action).toBe 'changeQuantity'
+      expect(update.actions[0].quantity).toBe 77
 
     it 'less quantity', ->
       ieNew =
@@ -65,8 +65,8 @@ describe 'InventorySync', ->
         quantityOnStock: 9
       update = @sync.buildActions(ieNew, ieOld).getUpdatePayload()
       expect(update).toBeDefined()
-      expect(update.actions[0].action).toBe 'removeQuantity'
-      expect(update.actions[0].quantity).toBe 2
+      expect(update.actions[0].action).toBe 'changeQuantity'
+      expect(update.actions[0].quantity).toBe 7
 
     it 'should add expectedDelivery', ->
       ieNew =
@@ -107,3 +107,91 @@ describe 'InventorySync', ->
       expect(update).toBeDefined()
       expect(update.actions[0].action).toBe 'setExpectedDelivery'
       expect(update.actions[0].expectedDelivery).toBeUndefined()
+
+    describe 'actionsMapCustom', ->
+      ieNew =
+        sku: 'abc'
+        custom: {
+          type: {
+            typeId: 'type',
+            id: '123'
+          },
+          fields: {
+            nac: 'ho',
+            pie: {
+              'nl': 'taart'
+            }
+          }
+        }
+
+      it 'should set empty new custom type and fields', ->
+        ieOld =
+          sku: 'abc'
+          custom: {}
+
+        update = @sync.buildActions(ieNew, ieOld).getUpdatePayload()
+        expect(update.actions[0].action).toBe 'setCustomType'
+        expect(update.actions[0].type).toEqual { typeId: 'type', id: '123' }
+        expect(update.actions[0].fields).toEqual { nac: 'ho', pie: {nl:'taart'} }
+
+      it 'should set completely new custom type and fields', ->
+        ieOld =
+          sku: 'abc'
+
+        update = @sync.buildActions(ieNew, ieOld).getUpdatePayload()
+        expect(update.actions[0].action).toBe 'setCustomType'
+        expect(update.actions[0].type).toEqual { typeId: 'type', id: '123' }
+        expect(update.actions[0].fields).toEqual { nac: 'ho', pie: {nl: 'taart'} }
+
+      it 'should update custom type', ->
+        ieOld =
+          sku: 'abc'
+          custom: {
+            type: {
+              typeId: 'type',
+              id: '000'
+            }
+          }
+
+        update = @sync.buildActions(ieNew, ieOld).getUpdatePayload()
+        expect(update.actions[0].action).toBe 'setCustomType'
+        expect(update.actions[0].type).toEqual { typeId: 'type', id: '123' }
+
+      it 'should update custom fields', ->
+        ieOld =
+          sku: 'abc'
+          custom: {
+            type: {
+              typeId: 'type',
+              id: '123'
+            },
+            fields: {
+              nac: 'choo'
+            }
+          }
+
+        update = @sync.buildActions(ieNew, ieOld).getUpdatePayload()
+        expect(update.actions[0].action).toBe 'setCustomField'
+        expect(update.actions[0].name).toBe 'nac'
+        expect(update.actions[0].value).toBe 'ho'
+
+      it 'should update localized custom fields', ->
+        ieOld =
+          sku: 'abc'
+          custom: {
+            type: {
+              typeId: 'type',
+              id: '123'
+            },
+            fields: {
+              nac: 'ho',
+              pie: {
+                'nl': 'echt niet'
+              }
+            }
+          }
+
+        update = @sync.buildActions(ieNew, ieOld).getUpdatePayload()
+        expect(update.actions[0].action).toBe 'setCustomField'
+        expect(update.actions[0].name).toBe 'pie'
+        expect(update.actions[0].value).toEqual {'nl': 'taart'}

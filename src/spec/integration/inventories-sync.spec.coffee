@@ -101,3 +101,69 @@ describe 'Integration Inventories Sync', ->
       expect(result.body.expectedDelivery).not.toBeDefined()
       done()
     .catch (error) -> done(_.prettify(error))
+  , 60000
+
+  describe 'custom type and field handling', (done) ->
+    customType = undefined
+    inventoryEntry = undefined
+
+    typesCleanup = (client) ->
+      client.types.all().fetch()
+        .then (result) ->
+          Promise.all _.map result.body.results, (e) ->
+            client.types.byId(e.id).delete(e.version)
+        .then (results) ->
+          debug('Cleaned up all custom types.')
+          Promise.resolve()
+
+    beforeEach (done) ->
+      @client = new SphereClient config: Config
+      customTypePayload = {
+        key: 'my-type',
+        name: { 'en': 'customized fields' },
+        description: { 'en': 'customized fields definition' },
+        resourceTypeIds: ['inventory-entry'],
+        fieldDefinitions: [
+          {
+            name: 'nac',
+            type: { 'name': 'String' },
+            required: true,
+            label: { 'en': 'size' },
+            inputHint: 'SingleLine'
+          }
+        ]
+      }
+      typesCleanup(@client).then =>
+        @client.types.create(customTypePayload).then (result) ->
+          customType = result.body
+          done()
+
+    it 'should update custom type and fields', (done) ->
+      ie =
+        sku: 'x6'
+        quantityOnStock: 0
+        custom: {
+          type: {
+            key: 'my-type'
+          },
+          fields: {
+            nac: 'ho'
+          }
+        }
+      ieChanged =
+        sku: 'x6'
+        quantityOnStock: 7
+
+      @client.inventoryEntries.create(ie)
+        .then (result) =>
+          expect(result.statusCode).toBe 201
+          syncedActions = @sync.buildActions(ieChanged, result.body)
+          debug 'About to update inventory with synced actions (quantity)'
+          @client.inventoryEntries.byId(syncedActions.getUpdateId()).update(syncedActions.getUpdatePayload())
+        .then (result) ->
+          inventoryEntry = result.body
+          expect(result.statusCode).toBe 200
+          expect(result.body.custom.type.id).toBe customType.id
+          expect(result.body.custom.fields).toEqual {nac: 'ho'}
+          done()
+        .catch (error) -> done(_.prettify(error))

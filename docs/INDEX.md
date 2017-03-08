@@ -18,6 +18,6 @@ The SDK exposes some libraries which can be either used alone or together:
 - `*Sync` - a collection of utils to build update actions
 
 ## Content
-- [Getting Started](GETTING_STARTED.md.html)
+- [Getting Started](GETTING_STARTED.md)
 - [Release Notes](https://github.com/sphereio/sphere-node-sdk/releases)
 - [Issues](https://github.com/sphereio/sphere-node-sdk/issues)

@@ -64,6 +64,15 @@ NEW_PRODUCT =
       {value: {currencyCode: 'EUR', centAmount: 100}},
       {value: {currencyCode: 'EUR', centAmount: 3800}}, # change
       {value: {currencyCode: 'EUR', centAmount: 1100}, country: 'IT'} # change
+      {
+        value: {currencyCode: 'JPY', centAmount: 9001},
+        custom: {
+          type: {
+            typeId: 'type', id: 'decaf-f005ba11-abaca',
+            fields: {superCustom: 'super true'}
+          }
+        }
+      }
     ]
   categoryOrderHints:
     myFancyCategoryId: 0.9
@@ -129,6 +138,9 @@ describe 'ProductSync', ->
       update = @sync.buildActions(NEW_PRODUCT, OLD_PRODUCT).getUpdatePayload()
       expected_update =
         actions: [
+          { action: 'removeVariant', id: 4 }
+          { action: 'addVariant', sku: 'new', attributes: [ { name: 'what', value: 'no ID' } ] }
+          { action: 'addVariant', attributes: [ { name: 'what', value: 'no SKU' } ] }
           { action: 'changeName', name: {en: 'Foo', de: undefined, it: 'Boo'} }
           { action: 'changeSlug', slug: {en: 'foo', it: 'boo'} }
           { action: 'setCategoryOrderHint', categoryId : 'myFancyCategoryId', orderHint : '0.9' }
@@ -144,15 +156,13 @@ describe 'ProductSync', ->
           { action: 'removePrice', variantId: 77, price: { value: { currencyCode: 'EUR', centAmount: 6559 }, country: 'FR' } }
           { action: 'removePrice', variantId: 77, price: { value: { currencyCode: 'EUR', centAmount: 13118 }, country: 'BE' } }
           { action: 'addPrice', variantId: 1, price: {value: {currencyCode: 'EUR', centAmount: 1100}, country: 'IT'} }
+          { action: 'addPrice', variantId: 1, price: {value: {currencyCode: 'JPY', centAmount: 9001}, custom: {type: {typeId: 'type', id: 'decaf-f005ba11-abaca', fields: {superCustom: 'super true'}}}} }
           { action: 'addPrice', variantId: 2, price: {value: {currencyCode: 'EUR', centAmount: 2200}, customerGroup: {id: '59c64f80-6472-474e-b5be-dc57b45b2faf', typeId: 'customer-group'}} }
           { action: 'addPrice', variantId: 77, price: { value: { currencyCode: 'EUR', centAmount: 4790 }, country: 'DE', customerGroup: { id: 'special-price-id', typeId: 'customer-group' } } }
           { action: 'addPrice', variantId: 77, price: { value: { currencyCode: 'EUR', centAmount: 5889 }, country: 'AT' } }
           { action: 'addPrice', variantId: 77, price: { value: { currencyCode: 'EUR', centAmount: 4790 }, country: 'AT', customerGroup: { id: 'special-price-id', typeId: 'customer-group' } } }
           { action: 'addPrice', variantId: 77, price: { value: { currencyCode: 'EUR', centAmount: 6559 }, country: 'FR' } }
           { action: 'addPrice', variantId: 77, price: { value: { currencyCode: 'EUR', centAmount: 13118 }, country: 'BE' } }
-          { action: 'removeVariant', id: 4 }
-          { action: 'addVariant', sku: 'new', attributes: [ { name: 'what', value: 'no ID' } ] }
-          { action: 'addVariant', attributes: [ { name: 'what', value: 'no SKU' } ] }
         ]
         version: OLD_PRODUCT.version
       expect(update).toEqual expected_update
@@ -190,3 +200,57 @@ describe 'ProductSync', ->
         ]
         version: oldProduct.version
       expect(update).toEqual expected_update
+
+    it 'should handle mapping actions for new variants without masterVariant', ->
+      oldProduct =
+        id: '123'
+        version: 1
+        variants: []
+
+      newProduct =
+        id: '123'
+        variants: [
+          { id: 2, sku: 'v2', attributes: [{name: 'foo', value: 'new variant'}] }
+        ]
+      update = @sync.buildActions(newProduct, oldProduct).getUpdatePayload()
+      expected_update =
+        actions: [
+          { action: 'addVariant', sku: 'v2', attributes: [{ name: 'foo', value: 'new variant' }] }
+        ]
+        version: oldProduct.version
+      expect(update).toEqual expected_update
+
+    it 'should create update actions in correct order', ->
+      oldProduct =
+        id: '123'
+        version: 1
+        masterVariant:
+          id: 1
+          sku: 'v1'
+          attributes: [{name: 'foo', value: 'bar'}]
+        variants: [
+          { id: 2, sku: 'v2', attributes: [{name: 'foo', value: 'qux'}] }
+          { id: 3, sku: 'v3', attributes: [{name: 'foo', value: 'baz'}] }
+        ]
+
+      newProduct =
+        id: '123'
+        masterVariant:
+          sku: 'v1'
+          attributes: [
+            { name: 'foo', value: 'new value' },
+            { name: 'new attribute', value: 'sameForAllAttribute' }
+          ]
+        variants: [
+          { id: 2, sku: 'v2', attributes: [{name: 'foo', value: 'another value'}] }
+          { id: 4, sku: 'v4', attributes: [{name: 'foo', value: 'yet another'}] }
+        ]
+      update = @sync.buildActions(newProduct, oldProduct, ['new attribute']).getUpdatePayload()
+
+      actionNames = update.actions.map((a) -> a.action)
+      setAttrPos = actionNames.indexOf('setAttributeInAllVariants')
+      removeVariantPos = actionNames.indexOf('removeVariant')
+      addVariantPos = actionNames.indexOf('addVariant')
+
+      expect(setAttrPos).toBeGreaterThan removeVariantPos
+      expect(setAttrPos).toBeLessThan addVariantPos

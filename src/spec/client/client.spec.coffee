@@ -77,6 +77,26 @@ describe 'SphereClient', ->
     expect(=> @client.setMaxParallel(0)).toThrow new Error 'MaxParallel must be a number between 1 and 100'
     expect(=> @client.setMaxParallel(101)).toThrow new Error 'MaxParallel must be a number between 1 and 100'
 
+  it 'should not repeat request on error if repeater is disabled',(done) ->
+    client =  new SphereClient {config: Config, enableRepeater: false}
+    callsMap = {
+      0: { statusCode: 500, message: 'ETIMEDOUT' }
+      1: { statusCode: 500, message: 'ETIMEDOUT' }
+      2: { statusCode: 200, message: 'success' }
+    }
+    callCount = 0
+    spyOn(client._rest, 'GET').andCallFake (resource, callback) ->
+      currentCall = callsMap[callCount]
+      callCount++
+      statusCode = currentCall.statusCode
+      message = currentCall.message
+      callback(null, { statusCode }, { message })
+
+    client.products.fetch()
+    .catch (err) ->
+      expect(client._rest.GET.calls.length).toEqual 1
+      expect(err.body.message).toEqual 'ETIMEDOUT'
+      done()
 
   _.each [
     {name: 'cartDiscounts', className: 'CartDiscountService', blacklist: []}
