@@ -1151,6 +1151,168 @@ describe 'ProductUtils', ->
         ]
       expect(update).toEqual expected_update
 
+
+    it 'should not modify original attributes', ->
+      newProduct =
+        masterVariant:
+          id: 1
+          sku: 'test_sku_1'
+          attributes: [
+            {
+              name: 'testAttribute1',
+              value: false
+            }
+          ]
+        variants: [
+          id: 2
+          sku: 'test_sku_2'
+          attributes: [
+            {
+              name: 'testAttribute1',
+              value: false
+            }
+          ]
+        ]
+
+      originalProduct =
+        masterVariant:
+          id: 1
+          sku: 'test_sku_1'
+          attributes: [
+            {
+              name: 'testAttribute2',
+              value: 'testValue'
+            }
+          ]
+
+      cloneOfOriginalProduct = _.deepClone(originalProduct)
+
+      delta = @utils.diff originalProduct, newProduct
+      update = @utils.actionsMapAttributes delta, originalProduct, newProduct
+
+      expected_update =
+        [
+          { action: 'setAttribute', variantId: 1, name: 'testAttribute1', value: false },
+          { action: 'setAttribute', variantId: 1, name: 'testAttribute2' }
+        ]
+      expect(cloneOfOriginalProduct.masterVariant.attributes).toEqual originalProduct.masterVariant.attributes
+      expect(update).toEqual expected_update
+
+    it 'should not create update action if attribute is not changed', ->
+      newProduct =
+        masterVariant:
+          sku: 'TEST MASTER VARIANT'
+          attributes: [
+            {
+              'name': 'test_attribute',
+              'value': [
+                {
+                  'label': {
+                    'de': 'grün'
+                  },
+                  'key': 'GN'
+                },
+                {
+                  'label': {
+                    'de': 'schwarz'
+                  },
+                  'key': 'SW'
+                }
+              ]
+            }
+          ]
+
+      originalProduct =
+        masterVariant:
+          sku: 'TEST MASTER VARIANT'
+          attributes: [
+            {
+              name: 'test_attribute',
+              value: [
+                {
+                  label: {
+                    'de': 'schwarz'
+                  },
+                  key: 'SW'
+                },
+                {
+                  label: {
+                    'de': 'grün'
+                  },
+                  key: 'GN'
+                }
+              ]
+            }
+          ]
+
+      delta = @utils.diff originalProduct, newProduct
+      update = @utils.actionsMapAttributes delta, originalProduct, newProduct
+      expect(update.length).toBe(0)
+
+    it 'should create update action if attribute value item is removed', ->
+      newProduct =
+        masterVariant:
+          sku: 'TEST MASTER VARIANT'
+          attributes: [
+            {
+              'name': 'test_attribute',
+              'value': [
+                'a', 'b'
+              ]
+            }
+          ]
+
+      originalProduct =
+        masterVariant:
+          sku: 'TEST MASTER VARIANT'
+          attributes: [
+            {
+              name: 'test_attribute',
+              value: [
+                'a', 'b', 'c'
+              ]
+            }
+          ]
+
+      delta = @utils.diff originalProduct, newProduct
+      update = @utils.actionsMapAttributes delta, originalProduct, newProduct
+      expect(update.length).toBe(1)
+      expect(update[0].action).toBe 'setAttribute'
+      expect(update[0].name).toBe 'test_attribute'
+      expect(update[0].value).toEqual [ 'a', 'b' ]
+
+    it 'should create update action if attribute value item is added', ->
+      newProduct =
+        masterVariant:
+          sku: 'TEST MASTER VARIANT'
+          attributes: [
+            {
+              'name': 'test_attribute',
+              'value': [
+                'a', 'b', 'c'
+              ]
+            }
+          ]
+
+      originalProduct =
+        masterVariant:
+          sku: 'TEST MASTER VARIANT'
+          attributes: [
+            {
+              name: 'test_attribute',
+              value: [
+                'a', 'b'
+              ]
+            }
+          ]
+
+      delta = @utils.diff originalProduct, newProduct
+      update = @utils.actionsMapAttributes delta, originalProduct, newProduct
+      expect(update.length).toBe(1)
+      expect(update[0].action).toBe 'setAttribute'
+      expect(update[0].name).toBe 'test_attribute'
+      expect(update[0].value).toEqual [ 'a', 'b', 'c' ]
+
   describe ':: actionsMapImages', ->
 
     it 'should build actions for images', ->
