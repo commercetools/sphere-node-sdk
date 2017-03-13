@@ -1,6 +1,6 @@
 {SphereClient} = require '../../lib/main'
 Config = require('../../config').config
-testConfig = require('../../test-config').config
+ironConfig = require('../../config').ironConfig
 Promise = require 'bluebird'
 debug = require('debug')('spec-integration:products')
 
@@ -8,7 +8,7 @@ newSubscription =
   key: 'testKey'
   destination:
     type: 'IronMQ'
-    uri: "https://#{testConfig.iron_mq_url}/3/projects/#{testConfig.iron_project_id}/queues/test-queue/webhook?oauth=#{testConfig.iron_token}"
+    uri: "#{ironConfig.iron_mq_url}/3/projects/#{ironConfig.iron_project_id}/queues/test-queue/webhook?oauth=#{ironConfig.iron_token}"
   messages: [
     resourceTypeId: 'inventory-entry'
     types: ['InventoryEntryDeleted']
