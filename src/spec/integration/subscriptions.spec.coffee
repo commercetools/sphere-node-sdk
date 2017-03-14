@@ -16,9 +16,8 @@ newSubscription =
 
 describe 'Integration Subscriptions', ->
 
-  beforeEach (done) ->
+  beforeEach () ->
     @client = new SphereClient config: Config
-    done()
 
   afterEach (done) ->
     debug 'Removing all subscriptions'
@@ -26,9 +25,10 @@ describe 'Integration Subscriptions', ->
     .then (response) =>
       Promise.map(response.body.results, (sub) =>
         @client.subscriptions.byId(sub.id).delete(sub.version)
-      )
+      , { concurrency: 10 })
     .then () ->
       done()
+    .catch (error) -> done(_.prettify(error))
 
   it 'should create subscription', (done) ->
     @client.subscriptions.save(newSubscription)
@@ -36,6 +36,7 @@ describe 'Integration Subscriptions', ->
       expect(response.statusCode).toBe 201
       expect(response.body.id).toBeDefined()
       done()
+    .catch (error) -> done(_.prettify(error))
   , 20000
 
   it 'should update message subscriptions', (done) ->
@@ -57,6 +58,7 @@ describe 'Integration Subscriptions', ->
       expect(response.body.messages[0].resourceTypeId).toBe 'cart'
       expect(response.body.messages[0].types.length).toBe 0
       done()
+    .catch (error) -> done(_.prettify(error))
   , 20000
 
   it 'should delete subscription by key', (done) ->
@@ -69,3 +71,4 @@ describe 'Integration Subscriptions', ->
       .then (response) =>
         expect(response.body.total).toBe 0
         done()
+    .catch (error) -> done(_.prettify(error))
