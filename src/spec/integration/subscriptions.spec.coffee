@@ -1,6 +1,7 @@
 {SphereClient} = require '../../lib/main'
-Config = require('../../config').config
-ironConfig = require('../../config').ironConfig
+_ = require 'underscore'
+config = require('../../config').config
+ironConfig = config.iron
 Promise = require 'bluebird'
 debug = require('debug')('spec-integration:products')
 
@@ -8,7 +9,7 @@ newSubscription =
   key: 'testKey'
   destination:
     type: 'IronMQ'
-    uri: "#{ironConfig.iron_mq_url}/3/projects/#{ironConfig.iron_project_id}/queues/test-queue/webhook?oauth=#{ironConfig.iron_token}"
+    uri: "#{ironConfig.mq_url}/3/projects/#{ironConfig.project_id}/queues/test-queue/webhook?oauth=#{ironConfig.token}"
   messages: [
     resourceTypeId: 'inventory-entry'
     types: ['InventoryEntryDeleted']
@@ -17,7 +18,7 @@ newSubscription =
 describe 'Integration Subscriptions', ->
 
   beforeEach () ->
-    @client = new SphereClient config: Config
+    @client = new SphereClient config: config
 
   afterEach (done) ->
     debug 'Removing all subscriptions'
