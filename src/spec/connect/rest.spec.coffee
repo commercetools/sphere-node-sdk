@@ -97,6 +97,7 @@ describe 'Rest', ->
       expected_options =
         uri: "https://api.sphere.io/#{Config.project_key}#{endpoint}"
         json: true
+        gzip: true
         method: method
         host: 'api.sphere.io'
         headers:

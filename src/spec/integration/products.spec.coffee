@@ -77,6 +77,33 @@ updatePublish = (version) ->
     {action: "publish"}
   ]
 
+describe 'gzip compression', ->
+  beforeEach (done) ->
+    @client = new SphereClient
+      config: Config
+      stats:
+        includeHeaders: true
+    @client.productTypes.save(newProductType())
+    .then (result) =>
+      expect(result.statusCode).toBe 201
+      @productType = result.body
+      done()
+    .catch (error) -> done(_.prettify(error))
+  , 20000 # 20 sec
+
+  it 'should use gzip compression for requests', (done) ->
+    @client.productTypes.fetch()
+    .then (results) ->
+      gzipReqHeader = results.http.request.headers['accept-encoding']
+      gzipResHeader = results.http.response.headers['content-encoding']
+      expect(gzipReqHeader).toBeTruthy()
+      expect(gzipReqHeader).toBe 'gzip'
+      expect(gzipResHeader).toBeTruthy()
+      expect(gzipResHeader).toBe 'gzip'
+      done()
+    .catch (error) -> done(_.prettify(error))
+  , 20000 # 20 sec
+
 describe 'Integration Products', ->
 
   beforeEach (done) ->

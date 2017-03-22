@@ -154,6 +154,7 @@ class Rest
         request_options =
           uri: "#{@_options.uri}#{params.resource}"
           json: true
+          gzip: true
           method: params.method
           host: @_options.host
           headers: @_options.headers
