@@ -23,6 +23,7 @@ ProjectService           = require './services/project'
 ReviewService            = require './services/reviews'
 ShippingMethodService    = require './services/shipping-methods'
 StateService             = require './services/states'
+SubscriptionService      = require './services/subscriptions'
 TaxCategoryService       = require './services/tax-categories'
 TypeService              = require './services/types'
 ZoneService              = require './services/zones'
@@ -49,6 +50,7 @@ ALL_SERVICES = [
   {key: 'reviews',            name: ReviewService},
   {key: 'shippingMethods',    name: ShippingMethodService},
   {key: 'states',             name: StateService},
+  {key: 'subscriptions',      name: SubscriptionService},
   {key: 'taxCategories',      name: TaxCategoryService},
   {key: 'types',              name: TypeService}
   {key: 'zones',              name: ZoneService}
