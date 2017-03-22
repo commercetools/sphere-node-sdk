@@ -1,6 +1,14 @@
-- [ ] commit messages are commitizen-friendly
-- [ ] code is unit tested
-- [ ] code is integration tested
-- [ ] public code is documented
-- [ ] code is reviewed by at least one person
-- [ ] code satisfies linter rules
+#### Summary
+<!-- Provide a short summary of your changes -->
+
+#### Description
+<!-- Describe the changes in this PR here and provide some context -->
+
+#### Todo
+
+- Tests
+    - [ ] Unit
+    - [ ] Integration
+    - [ ] Acceptance
+- [ ] Documentation
+<!-- Two persons should review a PR, don't forget to assign them. -->
