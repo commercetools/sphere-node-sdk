@@ -67,6 +67,8 @@ class Rest
     if @_options.access_token
       @_options.headers['Authorization'] = "Bearer #{@_options.access_token}"
 
+    @_options.gzipEnable = if !_.isUndefined(opts.gzipEnable) then opts.gzipEnable else true
+
     debug 'rest options: %j', @_options
     return
 
@@ -154,7 +156,7 @@ class Rest
         request_options =
           uri: "#{@_options.uri}#{params.resource}"
           json: true
-          gzip: true
+          gzip: @_options.gzipEnable
           method: params.method
           host: @_options.host
           headers: @_options.headers
