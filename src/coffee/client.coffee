@@ -152,6 +152,7 @@ ALL_SERVICES = [
 #   stats:
 #     includeHeaders: true
 #     maskSensitiveHeaderData: false
+#   gzipEnable: true # not necessary as gzip is enabled by default. Set to false to disable
 # client.products.fetch()
 # .then (result) ->
 #   # result.statusCode
