@@ -211,6 +211,7 @@ describe 'Rest', ->
 
     describe ':: PAGED', ->
 
+      pagedLimit = 500
       idCounter = 0
       uniqueId = (prefix) ->
         id = ++idCounter + ''
@@ -224,15 +225,15 @@ describe 'Rest', ->
           access_token: 'foo'
         @pagedRest = new Rest opts
 
-        offset = -50
-        count = 50
+        offset = -pagedLimit
+        count = pagedLimit
         spyOn(@pagedRest, '_doRequest').andCallFake (options, callback) ->
-          offset += 50
+          offset += pagedLimit
           callback null, {statusCode: 200},
             total: 1004
             count: if offset is 1000 then 4 else count
             offset: offset
-            results: _.map (if offset is 1000 then [1..4] else [1..50]), (i) ->
+            results: _.map (if offset is 1000 then [1..4] else [1..pagedLimit]), (i) ->
               {id: uniqueId("_#{i}") , value: 'foo'}
         spyOn(@pagedRest._oauth, 'getAccessToken')
           .andCallFake (callback) -> callback(null, null, {access_token: 'foo'})
@@ -249,7 +250,7 @@ describe 'Rest', ->
           expect(b.count).toBe 1004
           expect(b.offset).toBe 1000
           expect(b.results.length).toBe 1004
-          expect(@pagedRest._doRequest.calls.length).toBe 21
+          expect(@pagedRest._doRequest.calls.length).toBe 3
           done()
 
       it 'should send PAGED request and preserving query parameters', (done) ->
@@ -265,20 +266,20 @@ describe 'Rest', ->
           expect(b.count).toBe 1004
           expect(b.offset).toBe 1000
           expect(b.results.length).toBe 1004
-          expect(@pagedRest._doRequest.calls.length).toBe 21
+          expect(@pagedRest._doRequest.calls.length).toBe 3
           expect(@pagedRest._doRequest.calls[0].args[0].uri).toEqual "https://api.sphere.io/#{Config.project_key}/products?" + _.stringifyQuery
             where: encodeURIComponent('sku in ("123", "456")')
             expand: 'productType'
             staged: true
             sort: encodeURIComponent('createdAt asc')
-            limit: 50
+            limit: pagedLimit
             withTotal: false
           expect(@pagedRest._doRequest.calls[1].args[0].uri).toEqual "https://api.sphere.io/#{Config.project_key}/products?" + _.stringifyQuery
-            where: encodeURIComponent('sku in ("123", "456") and id > "_5050"')
+            where: encodeURIComponent('sku in ("123", "456") and id > "_' + pagedLimit + '' + pagedLimit + '"')
             expand: 'productType'
             staged: true
             sort: encodeURIComponent('createdAt asc')
-            limit: 50
+            limit: pagedLimit
             withTotal: false
           done()
 
