@@ -17,8 +17,9 @@ class BaseUtils
         includeValueOnMove: false  # value of items moved is not included in deltas
       textDiff:
         # if value to diff has a bigger length, a text diffing algorithm is used
+        # disable the text diffing algorithm by passing an unreachable minimum length
         # https://github.com/benjamine/jsondiffpatch/blob/master/docs/deltas.md#text-diffs
-        minLength: 300
+        minLength: Infinity
 
   # Internal: Compute the difference between given objects
   diff: (old_obj, new_obj) -> @diffpatcher.diff(old_obj, new_obj)
