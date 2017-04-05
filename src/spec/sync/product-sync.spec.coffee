@@ -49,6 +49,9 @@ OLD_PRODUCT =
 
 NEW_PRODUCT =
   id: '123'
+  categories: [
+    'myFancyCategoryId'
+  ],
   name:
     en: 'Foo'
     it: 'Boo'
@@ -141,6 +144,7 @@ describe 'ProductSync', ->
           { action: 'removeVariant', id: 4 }
           { action: 'addVariant', sku: 'new', attributes: [ { name: 'what', value: 'no ID' } ] }
           { action: 'addVariant', attributes: [ { name: 'what', value: 'no SKU' } ] }
+          { action: 'addToCategory', category: 'myFancyCategoryId' }
           { action: 'changeName', name: {en: 'Foo', de: undefined, it: 'Boo'} }
           { action: 'changeSlug', slug: {en: 'foo', it: 'boo'} }
           { action: 'setCategoryOrderHint', categoryId : 'myFancyCategoryId', orderHint : '0.9' }
