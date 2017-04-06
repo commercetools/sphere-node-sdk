@@ -47,11 +47,12 @@ class ProductSync extends BaseSync
     # sameForAll attribute value than the variants in the CTP product.
     allActions.push @_mapActionOrNot 'attributes', => @_utils.actionsMapAttributes(diff, old_obj, new_obj, @sameForAllAttributeNames)
     allActions.push variantActions.filter (action) -> action.action is 'addVariant'
-    allActions.push @_mapActionOrNot 'categories', => @_utils.actionsMapCategories(diff)
     allActions.push @_mapActionOrNot 'base', => @_utils.actionsMapBase(diff, old_obj)
     allActions.push @_mapActionOrNot 'references', => @_utils.actionsMapReferences(diff, old_obj, new_obj)
     allActions.push @_mapActionOrNot 'prices', => @_utils.actionsMapPrices(diff, old_obj, new_obj)
     allActions.push @_mapActionOrNot 'images', => @_utils.actionsMapImages(diff, old_obj, new_obj)
+    allActions.push @_mapActionOrNot 'categories', => @_utils.actionsMapCategories(diff)
+    allActions.push @_mapActionOrNot 'categoryOrderHints', => @_utils.actionsMapCategoryOrderHints(diff, old_obj)
     _.flatten allActions
 
 module.exports = ProductSync
