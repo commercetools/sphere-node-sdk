@@ -25,7 +25,7 @@ ProductUtils = require './utils/product'
 #     # do nothing
 class ProductSync extends BaseSync
 
-  @actionGroups = ['base', 'references', 'prices', 'attributes', 'images', 'variants', 'categories']
+  @actionGroups = ['base', 'references', 'prices', 'attributes', 'images', 'variants', 'categories', 'categoryOrderHints']
 
   # Public: Construct a `ProductSync` object.
   constructor: ->
