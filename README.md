@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/sphereio/sphere-node-client.png?label=ready&title=Ready)](https://waffle.io/sphereio/sphere-node-client)
 ![SPHERE.IO icon](https://admin.sphere.io/assets/images/sphere_logo_rgb_long.png)
 
 # Node.js SDK
