@@ -265,6 +265,8 @@ class ProductUtils extends BaseUtils
                   newVariant = new_obj.variants[index_new]
                   _mapVariantPrices(value, key, oldVariant, newVariant)
 
+    # remove duplicate actions
+    actions = @removeDuplicateActions(actions)
     # this will sort the actions ranked in asc order (first 'remove' then 'add')
     _.sortBy actions, (a) -> a.action is 'addPrice'
 

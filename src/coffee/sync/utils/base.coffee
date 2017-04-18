@@ -47,4 +47,17 @@ class BaseUtils
         else
           throw new Error "Got unsupported number #{arr[2]} in delta value"
 
+
+  removeDuplicateActions: (actions) ->
+    _.reduce(actions, (filteredActions, action) ->
+      notUnique = _.find(filteredActions, (filteredAction) ->
+        return _.isEqual(filteredAction, action)
+      )
+      if notUnique
+        return filteredActions
+      else
+        filteredActions.push(action)
+        return filteredActions
+    , [])
+
 module.exports = BaseUtils
