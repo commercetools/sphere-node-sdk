@@ -287,3 +287,39 @@ describe 'ProductProjectionService', ->
         expect(result[2].endpoint).toMatch /\?sort=id%20asc&where=foo%3Dbar%20or%20hello%3Dworld&sort=name%20desc&staged=true&withTotal=false&where=id%20%3E%20%22id_20%22$/
         done()
       .catch (err) -> done(_.prettify err)
+
+    it 'should call the product-projection-search endpoint
+    when using asSearch', (done) ->
+      offset = -20
+      count = 20
+      spyOn(@restMock, 'GET').andCallFake (endpoint, callback) ->
+        offset += 20
+        callback(null, {statusCode: 200}, {
+          total: 50
+          count: if offset is 40 then 10 else count
+          offset: offset
+          results: _.map (if offset is 40 then [1..10] else [1..20]), (i) -> {id: "id_#{i}", endpoint}
+
+        })
+      fn = (payload) ->
+        Promise.resolve payload.body.results[0]
+      @service
+      .asSearch()
+      .process(fn)
+      .then (results) ->
+        allEndpointsAreSearch = _.reduce(results,
+          (allSearchEndpoints, request) ->
+            endpointIsSearch =
+              request.endpoint.match /^\/product-projections\/search/
+            return allSearchEndpoints && !!endpointIsSearch
+        )
+        actual = allEndpointsAreSearch
+        expected = true
+        expect(actual).toEqual(expected)
+        done()
+      .catch (err) -> done(_.prettify err)
+
+    it 'should throw error if function is missing', ->
+      spyOn(@restMock, 'GET')
+      expect(=> @service.asSearch().process()).toThrow new Error 'Please provide a function to process the elements'
+      expect(@restMock.GET).not.toHaveBeenCalled()
