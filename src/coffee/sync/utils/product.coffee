@@ -93,27 +93,38 @@ class ProductUtils extends BaseUtils
     actions = []
     _.each actionsBaseList(), (item) =>
       action = @_buildBaseAttributesAction(item, diff, old_obj)
-      if action?.action is "setCategoryOrderHint"
-        # if the the category order hint was changed from {} to not existant
-        if action.categoryOrderHints is undefined
-          return
-        orderHintActions = Object.keys(action.categoryOrderHints)
-          .map((categoryId) ->
-            orderHint = action.categoryOrderHints[categoryId]
-            if orderHint is null or orderHint is undefined
-              orderHint = undefined
-            else
-              # stringify the order hint so that javascript numbers also get
-              # accepted as values
-              # for empty string we assume that the orderHint should be unset
-              orderHint = "#{orderHint}" || undefined
-            action: 'setCategoryOrderHint'
-            categoryId: categoryId
-            orderHint: orderHint
-          )
-        actions = actions.concat(orderHintActions)
-      else
-        actions.push action if action
+      actions.push action if action
+    actions
+
+  # Private: map categoryOrderHints actions
+  #
+  # diff - {Object} The result of diff from `jsondiffpatch`
+  # old_obj - {Object} The existing product
+  #
+  # Returns {Array} The list of actions, or empty if there are none
+  actionsMapCategoryOrderHints: (diff, old_obj) ->
+    actions = []
+    actionCategoryOrderHint = {
+      action: 'setCategoryOrderHint',
+      key: 'categoryOrderHints'
+    }
+
+    action = @_buildBaseAttributesAction(actionCategoryOrderHint, diff, old_obj)
+    if action and action.categoryOrderHints isnt undefined
+      # if the the category order hint was changed from {} to not existant
+      actions = Object.keys(action.categoryOrderHints)
+        .map (categoryId) ->
+          orderHint = action.categoryOrderHints[categoryId]
+          if orderHint is null or orderHint is undefined
+            orderHint = undefined
+          else
+            # stringify the order hint so that javascript numbers also get
+            # accepted as values
+            # for empty string we assume that the orderHint should be unset
+            orderHint = "#{orderHint}" || undefined
+          action: 'setCategoryOrderHint'
+          categoryId: categoryId
+          orderHint: orderHint
     actions
 
   # Private: map product variants
@@ -610,10 +621,6 @@ actionsBaseList = ->
     {
       action: 'changeSlug'
       key: 'slug'
-    },
-    {
-      action: 'setCategoryOrderHint',
-      key: 'categoryOrderHints'
     },
     {
       action: 'setDescription'

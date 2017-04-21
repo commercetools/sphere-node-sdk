@@ -11,6 +11,8 @@ OLD_PRODUCT =
     en: 'sapphire1366126441922'
   description:
     en: 'Sample description'
+  categoryOrderHints:
+    categoryId2: 0.3
   state:
     typeId: 'state'
     id: 'old-state-id'
@@ -49,6 +51,9 @@ OLD_PRODUCT =
 
 NEW_PRODUCT =
   id: '123'
+  categories: [
+    'myFancyCategoryId'
+  ],
   name:
     en: 'Foo'
     it: 'Boo'
@@ -124,7 +129,6 @@ describe 'ProductSync', ->
         actions: [
           { action: 'changeName', name: {en: 'Foo', de: undefined, it: 'Boo'} }
           { action: 'changeSlug', slug: {en: 'foo', it: 'boo'} }
-          { action: 'setCategoryOrderHint', categoryId : 'myFancyCategoryId', orderHint : '0.9' }
           { action: 'setDescription', description: undefined }
           { action: 'setSearchKeywords', searchKeywords: en: [{text: 'new'}, {text: 'search'}, {text: 'keywords'}], "fr-BE": [{text: 'bruxelles'}, {text:'liege'}, {text: 'brugge'}] }
         ]
@@ -143,7 +147,6 @@ describe 'ProductSync', ->
           { action: 'addVariant', attributes: [ { name: 'what', value: 'no SKU' } ] }
           { action: 'changeName', name: {en: 'Foo', de: undefined, it: 'Boo'} }
           { action: 'changeSlug', slug: {en: 'foo', it: 'boo'} }
-          { action: 'setCategoryOrderHint', categoryId : 'myFancyCategoryId', orderHint : '0.9' }
           { action: 'setDescription', description: undefined }
           { action: 'setSearchKeywords', searchKeywords: en: [{text: 'new'}, {text: 'search'}, {text: 'keywords'}], "fr-BE": [{text: 'bruxelles'}, {text:'liege'}, {text: 'brugge'}]}
           { action: 'transitionState', state: { typeId: 'state', id: 'new-state-id' } }
@@ -163,6 +166,9 @@ describe 'ProductSync', ->
           { action: 'addPrice', variantId: 77, price: { value: { currencyCode: 'EUR', centAmount: 4790 }, country: 'AT', customerGroup: { id: 'special-price-id', typeId: 'customer-group' } } }
           { action: 'addPrice', variantId: 77, price: { value: { currencyCode: 'EUR', centAmount: 6559 }, country: 'FR' } }
           { action: 'addPrice', variantId: 77, price: { value: { currencyCode: 'EUR', centAmount: 13118 }, country: 'BE' } }
+          { action: 'addToCategory', category: 'myFancyCategoryId' }
+          { action: 'setCategoryOrderHint', categoryId: 'categoryId2', orderHint: undefined }
+          { action: 'setCategoryOrderHint', categoryId : 'myFancyCategoryId', orderHint : '0.9' }
         ]
         version: OLD_PRODUCT.version
       expect(update).toEqual expected_update

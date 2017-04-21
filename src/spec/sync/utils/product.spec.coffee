@@ -765,7 +765,7 @@ describe 'ProductUtils', ->
           anotherCategoryId: '0.1'
 
       delta = @utils.diff OLD, NEW
-      update = @utils.actionsMapBase(delta, OLD)
+      update = @utils.actionsMapCategoryOrderHints(delta, OLD)
       expected_update = [
         {
           action: 'setCategoryOrderHint'
@@ -798,7 +798,7 @@ describe 'ProductUtils', ->
           categoryId: ''
 
       delta = @utils.diff OLD, NEW
-      update = @utils.actionsMapBase(delta, OLD)
+      update = @utils.actionsMapCategoryOrderHints(delta, OLD)
       expected_update = [
         {
           action: 'setCategoryOrderHint'
