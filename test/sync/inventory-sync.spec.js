@@ -60,4 +60,21 @@ test('Sync::inventory', (t) => {
 
     t.end()
   })
+
+  t.test('should accept 0 as a value', (t) => {
+    setup()
+
+    const before = {
+      quantityOnStock: 1,
+    }
+    const now = {
+      quantityOnStock: 0,
+    }
+
+    const actual = inventorySync.buildActions(now, before)
+    const expected = [{ action: 'changeQuantity', quantity: 0 }]
+    t.deepEqual(actual, expected)
+
+    t.end()
+  })
 })

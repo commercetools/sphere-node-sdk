@@ -24,18 +24,20 @@ export function buildBaseAttributesActions ({
       const delta = diff[key]
       const before = oldObj[key]
       const now = newObj[key]
+      const hasBefore = oldObj[key] !== null && oldObj[key] !== undefined
+      const hasNow = newObj[key] !== null && newObj[key] !== undefined
 
       if (!delta) return undefined
 
-      if (!now && !before) return undefined
+      if (!hasNow && !hasBefore) return undefined
 
-      if (now && !before) // no value previously set
+      if (hasNow && !hasBefore) // no value previously set
         return { action: item.action, [actionKey]: now }
 
-      if (!now && !{}.hasOwnProperty.call(newObj, key)) // no new value
+      if (!hasNow && !{}.hasOwnProperty.call(newObj, key)) // no new value
         return undefined
 
-      if (!now && {}.hasOwnProperty.call(newObj, key)) // value unset
+      if (!hasNow && {}.hasOwnProperty.call(newObj, key)) // value unset
         return { action: item.action }
 
       // We need to clone `before` as `patch` will mutate it
