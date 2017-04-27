@@ -1,5 +1,6 @@
 import clone from './clone'
 import * as diffpatcher from './diffpatcher'
+import isNil from 'lodash.isnil'
 
 /**
  * Builds actions for simple object properties, given a list of actions
@@ -24,8 +25,8 @@ export function buildBaseAttributesActions ({
       const delta = diff[key]
       const before = oldObj[key]
       const now = newObj[key]
-      const hasBefore = oldObj[key] !== null && oldObj[key] !== undefined
-      const hasNow = newObj[key] !== null && newObj[key] !== undefined
+      const hasBefore = isNil(oldObj[key])
+      const hasNow = isNil(newObj[key])
 
       if (!delta) return undefined
 
