@@ -268,18 +268,18 @@ describe 'Rest', ->
           expect(b.results.length).toBe 1004
           expect(@pagedRest._doRequest.calls.length).toBe 21
           expect(@pagedRest._doRequest.calls[0].args[0].uri).toEqual "https://api.sphere.io/#{Config.project_key}/products?" + _.stringifyQuery
+            limit: 50
             where: encodeURIComponent('sku in ("123", "456")')
             expand: 'productType'
             staged: true
             sort: encodeURIComponent('createdAt asc')
-            limit: 50
             withTotal: false
           expect(@pagedRest._doRequest.calls[1].args[0].uri).toEqual "https://api.sphere.io/#{Config.project_key}/products?" + _.stringifyQuery
+            limit: 50
             where: encodeURIComponent('sku in ("123", "456") and id > "_5050"')
             expand: 'productType'
             staged: true
             sort: encodeURIComponent('createdAt asc')
-            limit: 50
             withTotal: false
           done()
 
@@ -289,8 +289,8 @@ describe 'Rest', ->
           url = @pagedRest.GET.calls[0].args[0]
           query = url.split('?')[1]
           query = query.split('&')
-          expect(query[0]).toEqual('expand=foo')
-          expect(query[1]).toEqual('expand=bar')
+          expect(query[1]).toEqual('expand=foo')
+          expect(query[2]).toEqual('expand=bar')
           done()
 
       it 'should correctly return error', (done) ->
@@ -313,9 +313,6 @@ describe 'Rest', ->
           expect(b.statusCode).toBe 400
           expect(b.message).toBe 'Something went wrong'
           done()
-
-      it 'should throw if limit param is not 0', ->
-        expect(=> @pagedRest.PAGED '/products?limit=100').toThrow new Error 'Query limit doesn\'t seem to be 0. This function queries all results, are you sure you want to use this?'
 
       it 'should not throw if limit param is 0', (done) ->
         expect(=> @pagedRest.PAGED '/products?limit=0', -> done()).not.toThrow()
