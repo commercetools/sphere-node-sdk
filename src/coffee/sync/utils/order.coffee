@@ -38,16 +38,16 @@ class OrderUtils extends BaseUtils
   # Private: map order deliveries
   #
   # diff - {Object} The result of diff from `jsondiffpatch`
-  # old_obj - {Object} The existing order
+  # new_obj - {Object} The new order
   #
   # Returns {Array} The list of actions, or empty if there are none
-  actionsMapDeliveries: (diff, old_obj) ->
+  actionsMapDeliveries: (diff, new_obj) ->
 
     return [] unless _.has(diff, 'shippingInfo') and _.has(diff.shippingInfo, 'deliveries')
     # iterate over returnInfo instances
     actions = _.chain diff.shippingInfo.deliveries
-      .filter (item, key) -> key isnt '_t'
-      .map (deliveryDiff, deliveryIndex) ->
+      .filter (item, key) -> key[0] isnt '_' # ignore _t and all removed items
+      .map (deliveryDiff) ->
         if _.isArray deliveryDiff
           # delivery was added
           delivery = _.last deliveryDiff
@@ -59,13 +59,16 @@ class OrderUtils extends BaseUtils
         else
           # iterate over parcel instances
           _.chain deliveryDiff.parcels
-            .filter (item, key) -> key isnt '_t' and  _.isArray item
+            # filter out keys starting with '_' (old removed items or _t key)
+            .filter (item, key) -> key[0] isnt '_' and  _.isArray item
             .map (parcelDiff) ->
               # delivery was added
               parcel = _.last parcelDiff
+              deliveryId = findDeliveryIdByParcel(new_obj.shippingInfo.deliveries, parcel)
+
               action =
                 action: 'addParcelToDelivery'
-                deliveryId: old_obj.shippingInfo.deliveries[deliveryIndex].id
+                deliveryId: deliveryId
               _.each parcel, (item, key) ->
                 action[key] = item
               action
@@ -122,6 +125,13 @@ module.exports = OrderUtils
 #################
 # Order helper methods
 #################
+
+findDeliveryIdByParcel = (deliveries, newParcel) ->
+  for oldDelivery in deliveries
+    if oldDelivery.parcels
+      for oldParcel in oldDelivery.parcels
+        if _.isEqual(oldParcel, newParcel)
+          return oldDelivery.id
 
 actionsList = ->
   [
