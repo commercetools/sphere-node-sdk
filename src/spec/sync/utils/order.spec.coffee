@@ -244,7 +244,7 @@ describe 'OrderUtils', ->
       delete @order.shippingInfo.deliveries
 
       delta = @utils.diff(@order, orderChanged)
-      update = @utils.actionsMapDeliveries(delta, orderChanged)
+      update = @utils.actionsMapDeliveries(delta, orderChanged, @order)
 
       action = _.deepClone(orderChanged.shippingInfo.deliveries[0])
       action.action = "addDelivery"
@@ -272,7 +272,7 @@ describe 'OrderUtils', ->
       orderChanged.shippingInfo.deliveries[0].parcels.push parcel
 
       delta = @utils.diff(@order, orderChanged)
-      update = @utils.actionsMapDeliveries(delta, orderChanged)
+      update = @utils.actionsMapDeliveries(delta, orderChanged, @order)
 
       expectedUpdate = _.deepClone parcel
       expectedUpdate.action = 'addParcelToDelivery'
@@ -291,7 +291,7 @@ describe 'OrderUtils', ->
       newOrder.shippingInfo.deliveries = [newDelivery]
 
       delta = @utils.diff(@order, newOrder)
-      update = @utils.actionsMapDeliveries(delta, newOrder)
+      update = @utils.actionsMapDeliveries(delta, newOrder, @order)
 
       action = _.deepClone(newDelivery)
       action.action = "addDelivery"
@@ -307,7 +307,7 @@ describe 'OrderUtils', ->
       newOrder.shippingInfo.deliveries[0].parcels = [newParcel]
 
       delta = @utils.diff(@order, newOrder)
-      update = @utils.actionsMapDeliveries(delta, newOrder)
+      update = @utils.actionsMapDeliveries(delta, newOrder, @order)
 
       action = _.deepClone(newParcel)
       action.action = "addParcelToDelivery"
@@ -317,7 +317,7 @@ describe 'OrderUtils', ->
     it 'should generate no update actions when there are no changes', ->
       newOrder = _.deepClone ORDER
       delta = @utils.diff(@order, newOrder)
-      update = @utils.actionsMapDeliveries(delta, newOrder)
+      update = @utils.actionsMapDeliveries(delta, newOrder, @order)
       expect(update.length).toBe 0
 
     it 'should process new deliveries and parcels in a wrong order', ->
@@ -380,7 +380,20 @@ describe 'OrderUtils', ->
               id: '4dc17170-30ad-4b95-9a83-1388b40f5a1e'
               quantity: 100
             ]
-            parcels: [
+            parcels: [{
+              id: 'new-parcel'
+              trackingData:
+                trackingId: '123456789'
+                carrier: 'DHL'
+                provider: 'provider'
+                providerTransaction: 'transaction provider'
+                isReturn: false
+              measurements:
+                lengthInMillimeter: 100
+                heightInMillimeter: 200
+                widthInMillimeter: 200
+                weightInGram: 500
+            }, {
               id: 'new-delivery-parcel'
               trackingData:
                 trackingId: '123456789'
@@ -393,7 +406,7 @@ describe 'OrderUtils', ->
                 heightInMillimeter: 200
                 widthInMillimeter: 200
                 weightInGram: 500
-            ]
+            }]
           }, {
             id: 'old-delivery-2'
             items: [
@@ -438,7 +451,7 @@ describe 'OrderUtils', ->
           }]
 
       delta = @utils.diff(oldOrder, newOrder)
-      actions = @utils.actionsMapDeliveries(delta, newOrder)
+      actions = @utils.actionsMapDeliveries(delta, newOrder, oldOrder)
 
       expect(actions.length).toBe 2
       action = actions[0]
@@ -449,3 +462,4 @@ describe 'OrderUtils', ->
       expect(action.action).toBe('addParcelToDelivery')
       expect(action.deliveryId).toBe('old-delivery-2')
       expect(action.id).toBe('new-parcel')
+

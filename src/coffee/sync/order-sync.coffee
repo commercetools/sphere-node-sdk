@@ -32,7 +32,7 @@ class OrderSync extends BaseSync
     allActions = []
     allActions.push @_mapActionOrNot 'status', => @_utils.actionsMapStatusValues(diff, old_obj)
     allActions.push @_mapActionOrNot 'returnInfo', => @_utils.actionsMapReturnInfo(diff, old_obj)
-    allActions.push @_mapActionOrNot 'deliveries', => @_utils.actionsMapDeliveries(diff, new_obj)
+    allActions.push @_mapActionOrNot 'deliveries', => @_utils.actionsMapDeliveries(diff, new_obj, old_obj)
     _.flatten allActions
 
 module.exports = OrderSync

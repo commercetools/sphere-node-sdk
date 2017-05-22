@@ -39,9 +39,12 @@ class OrderUtils extends BaseUtils
   #
   # diff - {Object} The result of diff from `jsondiffpatch`
   # new_obj - {Object} The new order
+  # old_obj - {Object} The old order
   #
   # Returns {Array} The list of actions, or empty if there are none
-  actionsMapDeliveries: (diff, new_obj) ->
+  actionsMapDeliveries: (diff, new_obj, old_obj) ->
+    newDeliveries = new_obj.shippingInfo?.deliveries or []
+    oldDeliveries = old_obj.shippingInfo?.deliveries or []
 
     return [] unless _.has(diff, 'shippingInfo') and _.has(diff.shippingInfo, 'deliveries')
     # iterate over returnInfo instances
@@ -64,7 +67,11 @@ class OrderUtils extends BaseUtils
             .map (parcelDiff) ->
               # delivery was added
               parcel = _.last parcelDiff
-              deliveryId = findDeliveryIdByParcel(new_obj.shippingInfo.deliveries, parcel)
+              deliveryId = findDeliveryIdByParcel(
+                newDeliveries,
+                oldDeliveries,
+                parcel
+              )
 
               action =
                 action: 'addParcelToDelivery'
@@ -126,12 +133,17 @@ module.exports = OrderUtils
 # Order helper methods
 #################
 
-findDeliveryIdByParcel = (deliveries, newParcel) ->
-  for oldDelivery in deliveries
-    if oldDelivery.parcels
-      for oldParcel in oldDelivery.parcels
-        if _.isEqual(oldParcel, newParcel)
-          return oldDelivery.id
+# When adding new parcel, loop through newDeliveries and take ID from a delivery
+# which has a new parcel and is in oldDeliveries
+findDeliveryIdByParcel = (newDeliveries, oldDeliveries, newParcel) ->
+  oldDeliveryIds = oldDeliveries.map (delivery) -> delivery.id
+  for newDelivery in newDeliveries
+    if newDelivery.parcels
+      for oldParcel in newDelivery.parcels
+        # find a correct existing delivery where we are adding new parcel
+        if _.isEqual(oldParcel, newParcel) and newDelivery.id in oldDeliveryIds
+          # and return its id
+          return newDelivery.id
 
 actionsList = ->
   [
