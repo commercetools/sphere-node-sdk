@@ -380,33 +380,6 @@ describe 'OrderUtils', ->
               id: '4dc17170-30ad-4b95-9a83-1388b40f5a1e'
               quantity: 100
             ]
-            parcels: [{
-              id: 'new-parcel'
-              trackingData:
-                trackingId: '123456789'
-                carrier: 'DHL'
-                provider: 'provider'
-                providerTransaction: 'transaction provider'
-                isReturn: false
-              measurements:
-                lengthInMillimeter: 100
-                heightInMillimeter: 200
-                widthInMillimeter: 200
-                weightInGram: 500
-            }, {
-              id: 'new-delivery-parcel'
-              trackingData:
-                trackingId: '123456789'
-                carrier: 'TEST'
-                provider: 'provider 1'
-                providerTransaction: 'provider transaction 1'
-                isReturn: false
-              measurements:
-                lengthInMillimeter: 100
-                heightInMillimeter: 200
-                widthInMillimeter: 200
-                weightInGram: 500
-            }]
           }, {
             id: 'old-delivery-2'
             items: [
