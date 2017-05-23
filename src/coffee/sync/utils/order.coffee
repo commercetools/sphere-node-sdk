@@ -44,7 +44,7 @@ class OrderUtils extends BaseUtils
   # Returns {Array} The list of actions, or empty if there are none
   actionsMapDeliveries: (diff, new_obj, old_obj) ->
     newDeliveries = new_obj.shippingInfo?.deliveries or []
-    oldDeliveries = old_obj.shippingInfo?.deliveries or []
+    oldDeliveries = old_obj.shippingInfo.deliveries
 
     return [] unless _.has(diff, 'shippingInfo') and _.has(diff.shippingInfo, 'deliveries')
     # iterate over returnInfo instances

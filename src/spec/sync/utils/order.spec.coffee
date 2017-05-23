@@ -241,7 +241,7 @@ describe 'OrderUtils', ->
       orderChanged = _.deepClone ORDER
 
       # empty deliveries list
-      delete @order.shippingInfo.deliveries
+      @order.shippingInfo.deliveries = []
 
       delta = @utils.diff(@order, orderChanged)
       update = @utils.actionsMapDeliveries(delta, orderChanged, @order)

@@ -6,6 +6,8 @@ OLD_ORDER =
   paymentState: 'Pending'
   shipmentState: 'Pending'
   version: 2
+  shippingInfo:
+    deliveries: []
 
 NEW_ORDER =
   id: '123'
