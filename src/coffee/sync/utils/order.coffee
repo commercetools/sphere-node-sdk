@@ -62,7 +62,11 @@ class OrderUtils extends BaseUtils
         else
           # iterate over parcel instances
           _.chain deliveryDiff.parcels
-            # filter out keys starting with '_' (old removed items or _t key)
+            # keys starting with an underscore are:
+            # - _t - internal jsondiffpatch property
+            # - _N - removed keys where N is an index of a removed item
+            # We do not support removed deliveries so we filter out all
+            # keys starting with an underscore "_"
             .filter (item, key) -> key[0] isnt '_' and  _.isArray item
             .map (parcelDiff) ->
               # delivery was added
