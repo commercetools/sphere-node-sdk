@@ -38,16 +38,19 @@ class OrderUtils extends BaseUtils
   # Private: map order deliveries
   #
   # diff - {Object} The result of diff from `jsondiffpatch`
-  # old_obj - {Object} The existing order
+  # new_obj - {Object} The new order
+  # old_obj - {Object} The old order
   #
   # Returns {Array} The list of actions, or empty if there are none
-  actionsMapDeliveries: (diff, old_obj) ->
+  actionsMapDeliveries: (diff, new_obj, old_obj) ->
+    newDeliveries = new_obj.shippingInfo?.deliveries or []
+    oldDeliveries = old_obj.shippingInfo.deliveries
 
     return [] unless _.has(diff, 'shippingInfo') and _.has(diff.shippingInfo, 'deliveries')
     # iterate over returnInfo instances
     actions = _.chain diff.shippingInfo.deliveries
-      .filter (item, key) -> key isnt '_t'
-      .map (deliveryDiff, deliveryIndex) ->
+      .filter (item, key) -> key[0] isnt '_' # ignore _t and all removed items
+      .map (deliveryDiff) ->
         if _.isArray deliveryDiff
           # delivery was added
           delivery = _.last deliveryDiff
@@ -59,13 +62,24 @@ class OrderUtils extends BaseUtils
         else
           # iterate over parcel instances
           _.chain deliveryDiff.parcels
-            .filter (item, key) -> key isnt '_t' and  _.isArray item
+            # keys starting with an underscore are:
+            # - _t - internal jsondiffpatch property
+            # - _N - removed keys where N is an index of a removed item
+            # We do not support removed deliveries so we filter out all
+            # keys starting with an underscore "_"
+            .filter (item, key) -> key[0] isnt '_' and  _.isArray item
             .map (parcelDiff) ->
               # delivery was added
               parcel = _.last parcelDiff
+              deliveryId = findDeliveryIdByParcel(
+                newDeliveries,
+                oldDeliveries,
+                parcel
+              )
+
               action =
                 action: 'addParcelToDelivery'
-                deliveryId: old_obj.shippingInfo.deliveries[deliveryIndex].id
+                deliveryId: deliveryId
               _.each parcel, (item, key) ->
                 action[key] = item
               action
@@ -122,6 +136,18 @@ module.exports = OrderUtils
 #################
 # Order helper methods
 #################
+
+# When adding new parcel, loop through newDeliveries and take ID from a delivery
+# which has a new parcel and is in oldDeliveries
+findDeliveryIdByParcel = (newDeliveries, oldDeliveries, newParcel) ->
+  oldDeliveryIds = oldDeliveries.map (delivery) -> delivery.id
+  for newDelivery in newDeliveries
+    if newDelivery.parcels
+      for oldParcel in newDelivery.parcels
+        # find a correct existing delivery where we are adding new parcel
+        if _.isEqual(oldParcel, newParcel) and newDelivery.id in oldDeliveryIds
+          # and return its id
+          return newDelivery.id
 
 actionsList = ->
   [
