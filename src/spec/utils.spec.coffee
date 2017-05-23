@@ -48,7 +48,6 @@ describe 'Utils', ->
       {amount: 10, type: 'h', expected_time: 10 * 1000 * 60 * 60}
       {amount: 15, type: 'd', expected_time: 15 * 1000 * 60 * 60 * 24}
       {amount: 12, type: 'w', expected_time: 12 * 1000 * 60 * 60 * 24 * 7}
-      {amount: 12, type: 'unknown', expected_time: 0}
     ], (o) ->
       it "should get time in milliseconds for '#{o.type}'", ->
         expect(Utils.getTime(o.amount, o.type)).toBe o.expected_time
