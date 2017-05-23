@@ -237,23 +237,21 @@ describe 'OrderUtils', ->
 
   describe ':: actionsMapDeliveries', ->
 
-    it 'should return required actions for syncing deliveries', ->
-
+    it 'should return addDelivery action when syncing deliveries', ->
       orderChanged = _.deepClone ORDER
 
       # empty deliveries list
       @order.shippingInfo.deliveries = []
 
       delta = @utils.diff(@order, orderChanged)
-      update = @utils.actionsMapDeliveries(delta, orderChanged)
+      update = @utils.actionsMapDeliveries(delta, orderChanged, @order)
 
       action = _.deepClone(orderChanged.shippingInfo.deliveries[0])
       action.action = "addDelivery"
 
       expect(update).toEqual [action]
 
-    it 'should return required action for syncing parcels (deliveries)', ->
-
+    it 'should return addParcelToDelivery action when syncing parcels (deliveries)', ->
       orderChanged = _.deepClone ORDER
 
       parcel =
@@ -274,10 +272,167 @@ describe 'OrderUtils', ->
       orderChanged.shippingInfo.deliveries[0].parcels.push parcel
 
       delta = @utils.diff(@order, orderChanged)
-      update = @utils.actionsMapDeliveries(delta, orderChanged)
+      update = @utils.actionsMapDeliveries(delta, orderChanged, @order)
 
       expectedUpdate = _.deepClone parcel
       expectedUpdate.action = 'addParcelToDelivery'
       expectedUpdate.deliveryId = orderChanged.shippingInfo.deliveries[0].id
 
       expect(update).toEqual [expectedUpdate]
+
+    it 'should add delivery when old deliveries are not provided', ->
+      newOrder = _.deepClone ORDER
+      newDelivery =
+        id: uniqueId 'new'
+        items: [
+          lineItemId: 2
+          quantity: 10
+        ]
+      newOrder.shippingInfo.deliveries = [newDelivery]
+
+      delta = @utils.diff(@order, newOrder)
+      update = @utils.actionsMapDeliveries(delta, newOrder, @order)
+
+      action = _.deepClone(newDelivery)
+      action.action = "addDelivery"
+
+      expect(update).toEqual [action]
+
+    it 'should add parcel when old parcels are not provided', ->
+      newOrder = _.deepClone ORDER
+      newParcel =
+        id: uniqueId 'newParcel'
+        trackingData:
+          trackingId: uniqueId 'newTrackingId'
+      newOrder.shippingInfo.deliveries[0].parcels = [newParcel]
+
+      delta = @utils.diff(@order, newOrder)
+      update = @utils.actionsMapDeliveries(delta, newOrder, @order)
+
+      action = _.deepClone(newParcel)
+      action.action = "addParcelToDelivery"
+      action.deliveryId = newOrder.shippingInfo.deliveries[0].id
+      expect(update).toEqual [action]
+
+    it 'should generate no update actions when there are no changes', ->
+      newOrder = _.deepClone ORDER
+      delta = @utils.diff(@order, newOrder)
+      update = @utils.actionsMapDeliveries(delta, newOrder, @order)
+      expect(update.length).toBe 0
+
+    it 'should process new deliveries and parcels in a wrong order', ->
+      oldOrder =
+        shippingInfo:
+          deliveries: [{
+            id: 'old-delivery-1'
+            createdAt: '2017-05-22T07:33:02.202Z'
+            items: [
+              id: '4dc17170-30ad-4b95-9a83-1388b40f5a1e'
+              quantity: 100
+            ]
+            parcels: [
+              id: 'parcel-123'
+              trackingData:
+                trackingId: '1111'
+                carrier: 'PPL'
+                isReturn: true
+            ]
+          }, {
+            id: 'old-delivery-2'
+            createdAt: '2017-05-22T07:33:02.202Z'
+            items: [
+              id: '4dc17170-30ad-4b95-9a83-1388b40f5a1e'
+              quantity: 200
+            ]
+            parcels: [
+              id: 'old-parcel'
+              createdAt: '2017-05-22T07:33:02.202Z'
+              trackingData:
+                trackingId: '447883009643'
+                carrier: 'dhl'
+                isReturn: false
+            ]
+          }, {
+            id: 'old-delivery-3'
+            items: [
+              id: '4dc17170-30ad-4b95-9a83-1388b40f5a1e'
+              quantity: 300
+            ]
+            parcels: [
+              id: 'parcel-300'
+            ]
+          }]
+
+      newOrder =
+        shippingInfo:
+          deliveries: [{
+            id: 'old-delivery-3'
+            items: [
+              id: '4dc17170-30ad-4b95-9a83-1388b40f5a1e'
+              quantity: 300
+            ]
+            parcels: [
+              id: 'parcel-300'
+            ]
+          }, {
+            id: 'new-delivery'
+            items: [
+              id: '4dc17170-30ad-4b95-9a83-1388b40f5a1e'
+              quantity: 100
+            ]
+          }, {
+            id: 'old-delivery-2'
+            items: [
+              id: '4dc17170-30ad-4b95-9a83-1388b40f5a1e'
+              quantity: 9001
+            ]
+            parcels: [{
+              id: 'new-parcel'
+              trackingData:
+                trackingId: '123456789'
+                carrier: 'DHL'
+                provider: 'provider'
+                providerTransaction: 'transaction provider'
+                isReturn: false
+              measurements:
+                lengthInMillimeter: 100
+                heightInMillimeter: 200
+                widthInMillimeter: 200
+                weightInGram: 500
+            }, {
+              id: 'old-parcel'
+              createdAt: '2017-05-22T07:33:02.202Z'
+              trackingData:
+                trackingId: '447883009643'
+                carrier: 'dhl'
+                isReturn: false
+            }]
+          }, {
+            id: 'old-delivery-1'
+            createdAt: '2017-05-22T07:33:02.202Z'
+            items: [
+              id: '4dc17170-30ad-4b95-9a83-1388b40f5a1e'
+              quantity: 9001
+            ]
+            parcels: [
+              id: 'parcel-123'
+              trackingData:
+                trackingId: '1111'
+                carrier: 'PPL'
+                isReturn: true
+            ]
+          }]
+
+      delta = @utils.diff(oldOrder, newOrder)
+      actions = @utils.actionsMapDeliveries(delta, newOrder, oldOrder)
+
+      expect(actions.length).toBe 2
+      action = actions[0]
+      expect(action.action).toBe('addDelivery')
+      expect(action.id).toBe('new-delivery')
+
+      action = actions[1]
+      expect(action.action).toBe('addParcelToDelivery')
+      expect(action.deliveryId).toBe('old-delivery-2')
+      expect(action.id).toBe('new-parcel')
+
