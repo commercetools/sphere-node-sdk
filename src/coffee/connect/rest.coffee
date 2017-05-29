@@ -196,7 +196,7 @@ class Rest
     throw new Error 'Query limit doesn\'t seem to be 0. This function queries all results, are you sure you want to use this?' if query.limit and query.limit isnt '0'
 
     params = _.extend {}, query,
-      limit: 50 # limit used for batches
+      limit: 500 # limit used for batches
     limit = params.limit
     debug 'PAGED request params: %j', params
 
