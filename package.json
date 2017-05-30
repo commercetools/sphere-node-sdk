@@ -28,7 +28,7 @@
   "dependencies": {
     "debug": "2.1.x",
     "jsondiffpatch": "0.2.4",
-    "request": "2.54.x",
+    "request": "^2.74.0",
     "sphere-node-utils": "^0.8.4",
     "underscore-mixins": "^0.1.4"
   },
