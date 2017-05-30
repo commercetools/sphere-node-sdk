@@ -29,7 +29,7 @@ describe 'ProductProjectionService', ->
   it 'should reset default params', ->
     expect(@service._params).toEqual
       encoded: ['where', 'expand', 'sort', 'filter', 'filter.query', 'filter.facets', 'facets', 'searchKeywords']
-      plain: ['perPage', 'page', 'staged', 'fuzzy']
+      plain: ['perPage', 'page', 'staged', 'fuzzy', 'markMatchingVariants']
       query:
         where: []
         operator: 'and'
@@ -37,6 +37,7 @@ describe 'ProductProjectionService', ->
         expand: []
         staged: false
         fuzzy: false
+        markMatchingVariants: false
         filter: []
         filterByQuery: []
         filterByFacets: []
@@ -46,6 +47,7 @@ describe 'ProductProjectionService', ->
   _.each [
     ['staged', [false]]
     ['fuzzy', [false]]
+    ['markMatchingVariants', [false]]
     ['text', ['foo', 'de']]
     ['filter', ['foo:bar']]
     ['filterByQuery', ['foo:bar']]
@@ -64,6 +66,12 @@ describe 'ProductProjectionService', ->
 
   it 'should query for fuzzy', ->
     expect(@service.fuzzy()._queryString()).toBe 'fuzzy=true'
+
+  it 'should query for markMatchingVariants when set to true', ->
+    expect(@service.markMatchingVariants(true)._queryString()).toBe 'markMatchingVariants=true'
+
+  it 'should query for set markMatchingVariants to true when called', ->
+    expect(@service.markMatchingVariants()._queryString()).toBe 'markMatchingVariants=true'
 
   it 'should query for published', ->
     expect(@service.staged(false)._queryString()).toBe ''
@@ -98,10 +106,11 @@ describe 'ProductProjectionService', ->
       .filter('foo:bar')
       .filterByQuery('foo:bar')
       .filterByFacets('foo:bar')
+      .markMatchingVariants(true)
       .facet('foo:bar')
       ._queryString()
 
-    expect(queryString).toBe 'limit=25&offset=50&sort=createdAt%20asc&text.de=foo&filter=foo%3Abar&filter.query=foo%3Abar&filter.facets=foo%3Abar&facet=foo%3Abar'
+    expect(queryString).toBe 'limit=25&offset=50&sort=createdAt%20asc&text.de=foo&markMatchingVariants=true&filter=foo%3Abar&filter.query=foo%3Abar&filter.facets=foo%3Abar&facet=foo%3Abar'
 
   it "should reset search custom params after creating a promise", ->
     _service = @service
@@ -110,6 +119,7 @@ describe 'ProductProjectionService', ->
       .sort('createdAt')
       .staged()
       .fuzzy()
+      .markMatchingVariants()
       .text('foo', 'de')
       .filter('filter1:bar1')
       .filter('filter2:bar2')
@@ -121,7 +131,7 @@ describe 'ProductProjectionService', ->
       .facet('facet2:bar2')
     expect(@service._params).toEqual
       encoded: ['where', 'expand', 'sort', 'filter', 'filter.query', 'filter.facets', 'facets', 'searchKeywords']
-      plain: ['perPage', 'page', 'staged', 'fuzzy']
+      plain: ['perPage', 'page', 'staged', 'fuzzy', 'markMatchingVariants']
       query:
         where: []
         operator: 'and'
@@ -131,6 +141,7 @@ describe 'ProductProjectionService', ->
         perPage: 25
         staged: true
         fuzzy: true
+        markMatchingVariants: true
         text:
           lang: 'de'
           value: 'foo'
@@ -142,7 +153,7 @@ describe 'ProductProjectionService', ->
     _service.search()
     expect(@service._params).toEqual
       encoded: ['where', 'expand', 'sort', 'filter', 'filter.query', 'filter.facets', 'facets', 'searchKeywords']
-      plain: ['perPage', 'page', 'staged', 'fuzzy']
+      plain: ['perPage', 'page', 'staged', 'fuzzy', 'markMatchingVariants']
       query:
         where: []
         operator: 'and'
@@ -150,6 +161,7 @@ describe 'ProductProjectionService', ->
         expand: []
         staged: false
         fuzzy: false
+        markMatchingVariants: false
         filter: []
         filterByQuery: []
         filterByFacets: []
@@ -171,10 +183,10 @@ describe 'ProductProjectionService', ->
     expect(@service._params.queryString).toEqual 'filter=variants.price.centAmount%3A100&filter=variants.attributes.foo%3Abar&staged=true&limit=100&offset=2'
 
   it 'should analyze and store params from queryString', ->
-    @service.byQueryString('where=productType(id="123")&perPage=100&staged=true&fuzzy=true')
+    @service.byQueryString('where=productType(id="123")&perPage=100&staged=true&fuzzy=true&markMatchingVariants=true')
     expect(@service._params).toEqual
       encoded: ['where', 'expand', 'sort', 'filter', 'filter.query', 'filter.facets', 'facets', 'searchKeywords']
-      plain: ['perPage', 'page', 'staged', 'fuzzy']
+      plain: ['perPage', 'page', 'staged', 'fuzzy', 'markMatchingVariants']
       query:
         where: ['productType(id%3D%22123%22)']
         operator: 'and'
@@ -188,7 +200,8 @@ describe 'ProductProjectionService', ->
         perPage: '100'
         staged: 'true'
         fuzzy: 'true'
-      queryString : 'where=productType(id%3D%22123%22)&perPage=100&staged=true&fuzzy=true'
+        markMatchingVariants: 'true'
+      queryString : 'where=productType(id%3D%22123%22)&perPage=100&staged=true&fuzzy=true&markMatchingVariants=true'
 
   describe ':: search', ->
 

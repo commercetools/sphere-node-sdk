@@ -6,7 +6,8 @@ BaseService = require './base'
 # A [`ProductProjection`](http://dev.sphere.io/http-api-projects-products.html#product-projection) is a representation
 # of a the `current` or `staged` version of a product (**only GET requests**).
 #
-# _Products are the sellable goods in an e-commerce project on SPHERE.IO. This document explains some design concepts of products on SPHERE.IO and describes the available HTTP APIs for working with them._
+# _Products are the sellable goods in an e-commerce project on SPHERE.IO.
+# This document explains some design concepts of products on SPHERE.IO and describes the available HTTP APIs for working with them._
 #
 # Examples
 #
@@ -25,6 +26,7 @@ class ProductProjectionService extends BaseService
     super()
     _.extend @_params.query,
       fuzzy: false
+      markMatchingVariants: false
       staged: false
       filter: []
       filterByQuery: []
@@ -33,7 +35,7 @@ class ProductProjectionService extends BaseService
       searchKeywords: []
 
     @_params.encoded = @_params.encoded.concat(['filter', 'filter.query', 'filter.facets', 'facets', 'searchKeywords'])
-    @_params.plain = @_params.plain.concat(['staged', 'fuzzy'])
+    @_params.plain = @_params.plain.concat(['staged', 'fuzzy', 'markMatchingVariants'])
 
   # Public: Define whether to query for staged or current product projection.
   #
@@ -63,6 +65,21 @@ class ProductProjectionService extends BaseService
   fuzzy: (fuzzy = true) ->
     @_params.query.fuzzy = fuzzy
     debug 'setting fuzzy: %s', fuzzy
+    this
+
+  # Public: Define whether to mark product variants in the search result matching the criteria or not.
+  #
+  # markMatchingVariants - {Boolean} `true` to do a mark product variants, `false` not mark matching product variants
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.productProjections
+  #   service.text('Sapphure', 'en').markMatchingVariants().search()
+  markMatchingVariants: (value = true) ->
+    @_params.query.markMatchingVariants = value
+    debug 'Setting markMatchingVariants: %s', value
     this
 
   # Public: Define the text to analyze and ([full-text](http://dev.sphere.io/http-api-projects-products-search.html#search-text)) search.
@@ -226,9 +243,10 @@ class ProductProjectionService extends BaseService
   #
   # Returns the built query string
   _queryString: ->
-    {staged, fuzzy, text, filter, filterByQuery, filterByFacets, facet, searchKeywords} = _.defaults @_params.query,
+    {staged, fuzzy, text, filter, filterByQuery, filterByFacets, facet, searchKeywords, markMatchingVariants} = _.defaults @_params.query,
       fuzzy: false
       staged: false
+      markMatchingVariants: false
       filter: []
       filterByQuery: []
       filterByFacets: []
@@ -239,6 +257,7 @@ class ProductProjectionService extends BaseService
     customQueryString.push "staged=#{staged}" if staged
     customQueryString.push "fuzzy=#{fuzzy}" if fuzzy
     customQueryString.push "text.#{text.lang}=#{text.value}" if text
+    customQueryString.push "markMatchingVariants=#{markMatchingVariants}" if markMatchingVariants
 
     # filter param
     _.each filter, (f) -> customQueryString.push "filter=#{f}"
