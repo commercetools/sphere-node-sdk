@@ -193,10 +193,13 @@ class Rest
     endpoint = splitted[0]
     query = _.parseQuery splitted[1], false
 
-    throw new Error 'Query limit doesn\'t seem to be 0. This function queries all results, are you sure you want to use this?' if query.limit and query.limit isnt '0'
+    defaultLimit = 50
+    params = _.extend { limit: defaultLimit }, # limit used for batches
+      query
 
-    params = _.extend {}, query,
-      limit: 50 # limit used for batches
+    if parseInt(params.limit, 10) is 0
+      params.limit = defaultLimit
+
     limit = params.limit
     debug 'PAGED request params: %j', params
 
