@@ -29,7 +29,7 @@ describe 'ProductProjectionService', ->
   it 'should reset default params', ->
     expect(@service._params).toEqual
       encoded: ['where', 'expand', 'sort', 'filter', 'filter.query', 'filter.facets', 'facets', 'searchKeywords']
-      plain: ['perPage', 'page', 'staged', 'fuzzy']
+      plain: ['perPage', 'page', 'staged', 'fuzzy', 'priceCurrency', 'priceCountry', 'priceCustomerGroup', 'priceChannel']
       query:
         where: []
         operator: 'and'
@@ -42,6 +42,10 @@ describe 'ProductProjectionService', ->
         filterByFacets: []
         facet: []
         searchKeywords: []
+        priceCurrency: false
+        priceCountry: false
+        priceCustomerGroup: false
+        priceChannel: false
 
   _.each [
     ['staged', [false]]
@@ -51,6 +55,10 @@ describe 'ProductProjectionService', ->
     ['filterByQuery', ['foo:bar']]
     ['filterByFacets', ['foo:bar']]
     ['facet', ['foo:bar']]
+    ['priceCurrency', ['abcd']]
+    ['priceCountry', ['abcd']]
+    ['priceCustomerGroup', ['abcd']]
+    ['priceChannel', ['abcd']]
   ], (f) ->
     it "should chain search function '#{f[0]}'", ->
       clazz = @service[f[0]].apply(@service, _.toArray(f[1]))
@@ -61,6 +69,18 @@ describe 'ProductProjectionService', ->
 
   it 'should query for staged', ->
     expect(@service.staged()._queryString()).toBe 'staged=true'
+
+  it 'should query for priceCurrency', ->
+    expect(@service.priceCurrency('abcd')._queryString()).toBe 'priceCurrency=abcd'
+
+  it 'should query for priceCountry', ->
+    expect(@service.priceCountry('abcd')._queryString()).toBe 'priceCountry=abcd'
+
+  it 'should query for priceCustomerGroup', ->
+    expect(@service.priceCustomerGroup('abcd')._queryString()).toBe 'priceCustomerGroup=abcd'
+
+  it 'should query for priceChannel', ->
+    expect(@service.priceChannel('abcd')._queryString()).toBe 'priceChannel=abcd'
 
   it 'should query for fuzzy', ->
     expect(@service.fuzzy()._queryString()).toBe 'fuzzy=true'
@@ -99,9 +119,15 @@ describe 'ProductProjectionService', ->
       .filterByQuery('foo:bar')
       .filterByFacets('foo:bar')
       .facet('foo:bar')
+      .priceCurrency('EUR')
+      .priceCountry('GB')
+      .priceCustomerGroup('UUID1')
+      .priceChannel('UUID2')
       ._queryString()
 
-    expect(queryString).toBe 'limit=25&offset=50&sort=createdAt%20asc&text.de=foo&filter=foo%3Abar&filter.query=foo%3Abar&filter.facets=foo%3Abar&facet=foo%3Abar'
+    priceSelectionQuery = 'priceCurrency=EUR&priceCountry=GB&priceCustomerGroup=UUID1&priceChannel=UUID2'
+    expectedQuery = 'limit=25&offset=50&sort=createdAt%20asc&text.de=foo&filter=foo%3Abar&filter.query=foo%3Abar&filter.facets=foo%3Abar&facet=foo%3Abar'
+    expect(queryString).toBe "#{expectedQuery}&#{priceSelectionQuery}"
 
   it "should reset search custom params after creating a promise", ->
     _service = @service
@@ -121,7 +147,7 @@ describe 'ProductProjectionService', ->
       .facet('facet2:bar2')
     expect(@service._params).toEqual
       encoded: ['where', 'expand', 'sort', 'filter', 'filter.query', 'filter.facets', 'facets', 'searchKeywords']
-      plain: ['perPage', 'page', 'staged', 'fuzzy']
+      plain: ['perPage', 'page', 'staged', 'fuzzy', 'priceCurrency', 'priceCountry', 'priceCustomerGroup', 'priceChannel']
       query:
         where: []
         operator: 'and'
@@ -134,6 +160,10 @@ describe 'ProductProjectionService', ->
         text:
           lang: 'de'
           value: 'foo'
+        priceCurrency: false
+        priceCountry: false
+        priceCustomerGroup: false
+        priceChannel: false
         filter: [encodeURIComponent('filter1:bar1'), encodeURIComponent('filter2:bar2')]
         filterByQuery: [encodeURIComponent('filterQuery1:bar1'), encodeURIComponent('filterQuery2:bar2')]
         filterByFacets: [encodeURIComponent('filterFacets1:bar1'), encodeURIComponent('filterFacets2:bar2')]
@@ -142,7 +172,7 @@ describe 'ProductProjectionService', ->
     _service.search()
     expect(@service._params).toEqual
       encoded: ['where', 'expand', 'sort', 'filter', 'filter.query', 'filter.facets', 'facets', 'searchKeywords']
-      plain: ['perPage', 'page', 'staged', 'fuzzy']
+      plain: ['perPage', 'page', 'staged', 'fuzzy', 'priceCurrency', 'priceCountry', 'priceCustomerGroup', 'priceChannel']
       query:
         where: []
         operator: 'and'
@@ -155,6 +185,10 @@ describe 'ProductProjectionService', ->
         filterByFacets: []
         facet: []
         searchKeywords: []
+        priceCurrency: false
+        priceCountry: false
+        priceCustomerGroup: false
+        priceChannel: false
 
   it 'should set queryString, if given', ->
     @service.byQueryString('where=name(en = "Foo")&limit=10&staged=true&sort=name asc&expand=foo.bar1&expand=foo.bar2')
@@ -171,10 +205,10 @@ describe 'ProductProjectionService', ->
     expect(@service._params.queryString).toEqual 'filter=variants.price.centAmount%3A100&filter=variants.attributes.foo%3Abar&staged=true&limit=100&offset=2'
 
   it 'should analyze and store params from queryString', ->
-    @service.byQueryString('where=productType(id="123")&perPage=100&staged=true&fuzzy=true')
+    @service.byQueryString('where=productType(id="123")&perPage=100&staged=true&fuzzy=true&priceCurrency=EUR&priceCountry=GB&priceCustomerGroup=UUID1&priceChannel=UUID2')
     expect(@service._params).toEqual
       encoded: ['where', 'expand', 'sort', 'filter', 'filter.query', 'filter.facets', 'facets', 'searchKeywords']
-      plain: ['perPage', 'page', 'staged', 'fuzzy']
+      plain: ['perPage', 'page', 'staged', 'fuzzy', 'priceCurrency', 'priceCountry', 'priceCustomerGroup', 'priceChannel']
       query:
         where: ['productType(id%3D%22123%22)']
         operator: 'and'
@@ -188,7 +222,11 @@ describe 'ProductProjectionService', ->
         perPage: '100'
         staged: 'true'
         fuzzy: 'true'
-      queryString : 'where=productType(id%3D%22123%22)&perPage=100&staged=true&fuzzy=true'
+        priceCurrency: 'EUR'
+        priceCountry: 'GB'
+        priceCustomerGroup: 'UUID1'
+        priceChannel: 'UUID2'
+      queryString: 'where=productType(id%3D%22123%22)&perPage=100&staged=true&fuzzy=true&priceCurrency=EUR&priceCountry=GB&priceCustomerGroup=UUID1&priceChannel=UUID2'
 
   describe ':: search', ->
 

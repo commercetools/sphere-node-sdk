@@ -6,7 +6,8 @@ BaseService = require './base'
 # A [`ProductProjection`](http://dev.sphere.io/http-api-projects-products.html#product-projection) is a representation
 # of a the `current` or `staged` version of a product (**only GET requests**).
 #
-# _Products are the sellable goods in an e-commerce project on SPHERE.IO. This document explains some design concepts of products on SPHERE.IO and describes the available HTTP APIs for working with them._
+# _Products are the sellable goods in an e-commerce project on SPHERE.IO.
+# This document explains some design concepts of products on SPHERE.IO and describes the available HTTP APIs for working with them._
 #
 # Examples
 #
@@ -20,10 +21,9 @@ class ProductProjectionService extends BaseService
   # Public Unsupported: Not supported by the API
   byKey: -> # noop
 
-  # Private: Reset default query/search params used to build request endpoints
-  _setDefaults: ->
-    super()
-    _.extend @_params.query,
+  # Private: Get products Projection default query params
+  _getProductsProjectionDefault: ->
+    JSON.parse JSON.stringify(
       fuzzy: false
       staged: false
       filter: []
@@ -31,9 +31,19 @@ class ProductProjectionService extends BaseService
       filterByFacets: []
       facet: []
       searchKeywords: []
+      priceCurrency: false
+      priceCountry: false
+      priceCustomerGroup: false
+      priceChannel: false
+    )
+
+  # Private: Reset default query/search params used to build request endpoints
+  _setDefaults: ->
+    super()
+    _.extend @_params.query, @_getProductsProjectionDefault()
 
     @_params.encoded = @_params.encoded.concat(['filter', 'filter.query', 'filter.facets', 'facets', 'searchKeywords'])
-    @_params.plain = @_params.plain.concat(['staged', 'fuzzy'])
+    @_params.plain = @_params.plain.concat(['staged', 'fuzzy', 'priceCurrency', 'priceCountry', 'priceCustomerGroup', 'priceChannel'])
 
   # Public: Define whether to query for staged or current product projection.
   #
@@ -222,18 +232,96 @@ class ProductProjectionService extends BaseService
     debug 'setting searchKeywords: %s, %s', text, lang
     this
 
+  # Public: Define whether to set [priceSelection](http://dev.commercetools.com/http-api-projects-products.html#price-selection) or not
+  # Set the given `priceCurrency` param used for price selection.
+  #
+  # priceCurrency - The currency code compliant to ISO 4217
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.productProjections
+  #   service
+  #     .priceCurrency('EUR')
+  #     .fetch()
+  priceCurrency: (priceCurrency) ->
+    throw new Error 'PriceCurrency parameter is required' unless priceCurrency
+
+    @_params.query.priceCurrency = priceCurrency
+    this
+
+  # Public: Define whether to set [priceSelection](http://dev.commercetools.com/http-api-projects-products.html#price-selection) or not
+  # Set the given `priceCountry` param used for price selection.
+  #
+  # priceCountry - A two-digit country code as per ISO 3166-1 alpha-2
+  #              - Can only be used with priceCurrency parameter
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.productProjections
+  #   service
+  #     .priceCurrency('EUR')
+  #     .priceCountry('GB')
+  #     .fetch()
+  priceCountry: (priceCountry) ->
+    throw new Error 'PriceCountry parameter is required' unless priceCountry
+
+    @_params.query.priceCountry = priceCountry
+    this
+
+  # Public: Define whether to set [priceSelection](http://dev.commercetools.com/http-api-projects-products.html#price-selection) or not
+  # Set the given `priceCustomerGroup` param used for price selection.
+  #
+  # priceCustomerGroup - Price customer group UUID
+  #                    - Can only be used with priceCurrency parameter
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.productProjections
+  #   service
+  #     .priceCurrency('EUR')
+  #     .priceCustomerGroup('UUID')
+  #     .fetch()
+  priceCustomerGroup: (priceCustomerGroup) ->
+    throw new Error 'PriceCustomerGroup parameter is required' unless priceCustomerGroup
+
+    @_params.query.priceCustomerGroup = priceCustomerGroup
+    this
+
+  # Public: Define whether to set [priceSelection](http://dev.commercetools.com/http-api-projects-products.html#price-selection) or not
+  # Set the given `priceChannel` param used for price selection.
+  #
+  # priceChannel - Price channel UUID
+  #              - Can only be used with priceCurrency parameter
+  #
+  # Returns a chained instance of `this` class
+  #
+  # Examples
+  #
+  #   service = client.productProjections
+  #   service
+  #     .priceCurrency('EUR')
+  #     .priceChannel('UUID')
+  #     .fetch()
+  priceChannel: (priceChannel) ->
+    throw new Error 'PriceChannel parameter is required' unless priceChannel
+
+    @_params.query.priceChannel = priceChannel
+    this
+
   # Private: Build a query string from (pre)defined params and custom search params
   #
   # Returns the built query string
   _queryString: ->
-    {staged, fuzzy, text, filter, filterByQuery, filterByFacets, facet, searchKeywords} = _.defaults @_params.query,
-      fuzzy: false
-      staged: false
-      filter: []
-      filterByQuery: []
-      filterByFacets: []
-      facet: []
-      searchKeywords: []
+    {
+      staged, fuzzy, text, filter, filterByQuery, filterByFacets, facet, searchKeywords,
+      priceCurrency, priceCountry, priceCustomerGroup, priceChannel
+    } = _.defaults @_params.query, @_getProductsProjectionDefault()
 
     customQueryString = []
     customQueryString.push "staged=#{staged}" if staged
@@ -255,6 +343,12 @@ class ProductProjectionService extends BaseService
     # searchKeywords param
     _.each searchKeywords, (keys) ->
       customQueryString.push "searchKeywords.#{keys.lang}=#{keys.text}"
+
+    # priceSelection params
+    customQueryString.push "priceCurrency=#{priceCurrency}" if priceCurrency
+    customQueryString.push "priceCountry=#{priceCountry}" if priceCountry
+    customQueryString.push "priceCustomerGroup=#{priceCustomerGroup}" if priceCustomerGroup
+    customQueryString.push "priceChannel=#{priceChannel}" if priceChannel
 
     _.compact([super()].concat(customQueryString)).join '&'
 
