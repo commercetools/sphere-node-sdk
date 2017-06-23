@@ -228,6 +228,18 @@ describe 'ProductProjectionService', ->
         priceChannel: 'UUID2'
       queryString: 'where=productType(id%3D%22123%22)&perPage=100&staged=true&fuzzy=true&priceCurrency=EUR&priceCountry=GB&priceCustomerGroup=UUID1&priceChannel=UUID2'
 
+  describe ':: priceSelection required params', ->
+    _.each [
+      'priceCurrency'
+      'priceCountry'
+      'priceCustomerGroup'
+      'priceChannel'
+    ], (paramName) ->
+      it "should throw if param '#{paramName}' is not provided", ->
+        # Uppercase first letter
+        expectedError = "#{paramName.charAt(0).toUpperCase() + paramName.slice(1)} parameter is required"
+        expect(=> @service[paramName]()).toThrow new Error expectedError
+
   describe ':: search', ->
 
     it 'should call \'fetch\' after setting search endpoint', ->
