@@ -344,11 +344,15 @@ class ProductProjectionService extends BaseService
     _.each searchKeywords, (keys) ->
       customQueryString.push "searchKeywords.#{keys.lang}=#{keys.text}"
 
+
     # priceSelection params
-    customQueryString.push "priceCurrency=#{priceCurrency}" if priceCurrency
-    customQueryString.push "priceCountry=#{priceCountry}" if priceCountry
-    customQueryString.push "priceCustomerGroup=#{priceCustomerGroup}" if priceCustomerGroup
-    customQueryString.push "priceChannel=#{priceChannel}" if priceChannel
+    if priceCurrency
+      customQueryString.push "priceCurrency=#{priceCurrency}"
+      customQueryString.push "priceCountry=#{priceCountry}" if priceCountry
+      customQueryString.push "priceCustomerGroup=#{priceCustomerGroup}" if priceCustomerGroup
+      customQueryString.push "priceChannel=#{priceChannel}" if priceChannel
+    else if priceCountry or priceCustomerGroup or priceChannel
+      throw new Error "Field priceCurrency is required to enable price selection. Read more here http://dev.commercetools.com/http-api-projects-products.html#price-selection"
 
     _.compact([super()].concat(customQueryString)).join '&'
 

@@ -56,9 +56,6 @@ describe 'ProductProjectionService', ->
     ['filterByFacets', ['foo:bar']]
     ['facet', ['foo:bar']]
     ['priceCurrency', ['abcd']]
-    ['priceCountry', ['abcd']]
-    ['priceCustomerGroup', ['abcd']]
-    ['priceChannel', ['abcd']]
   ], (f) ->
     it "should chain search function '#{f[0]}'", ->
       clazz = @service[f[0]].apply(@service, _.toArray(f[1]))
@@ -73,14 +70,18 @@ describe 'ProductProjectionService', ->
   it 'should query for priceCurrency', ->
     expect(@service.priceCurrency('abcd')._queryString()).toBe 'priceCurrency=abcd'
 
+  it 'should throw when querying price selection without priceCurrency', ->
+    expect(=> @service.priceChannel('abcd')._queryString())
+      .toThrow(new Error("Field priceCurrency is required to enable price selection. Read more here http://dev.commercetools.com/http-api-projects-products.html#price-selection"))
+
   it 'should query for priceCountry', ->
-    expect(@service.priceCountry('abcd')._queryString()).toBe 'priceCountry=abcd'
+    expect(@service.priceCurrency('abcd').priceCountry('abcd')._queryString()).toBe 'priceCurrency=abcd&priceCountry=abcd'
 
   it 'should query for priceCustomerGroup', ->
-    expect(@service.priceCustomerGroup('abcd')._queryString()).toBe 'priceCustomerGroup=abcd'
+    expect(@service.priceCurrency('abcd').priceCustomerGroup('abcd')._queryString()).toBe 'priceCurrency=abcd&priceCustomerGroup=abcd'
 
   it 'should query for priceChannel', ->
-    expect(@service.priceChannel('abcd')._queryString()).toBe 'priceChannel=abcd'
+    expect(@service.priceCurrency('abcd').priceChannel('abcd')._queryString()).toBe 'priceCurrency=abcd&priceChannel=abcd'
 
   it 'should query for fuzzy', ->
     expect(@service.fuzzy()._queryString()).toBe 'fuzzy=true'
