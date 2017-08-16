@@ -379,6 +379,7 @@ class ProductUtils extends BaseUtils
             updated[k] = diffed_value
 
       # extend with an old object only if value is an object or an array
+      # if the new value is not an array or an object, use just the new value
       if old_obj[key] and (_.isArray(old_obj[key]) or _.isObject(old_obj[key]))
         # extend values of original object with possible new values of the diffed object
         # e.g.:
