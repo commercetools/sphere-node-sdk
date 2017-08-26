@@ -220,14 +220,18 @@ describe 'ProductProjectionService', ->
         filterByFacets: []
         facet: []
         searchKeywords: []
-        perPage: '100'
+        perPage: 100
         staged: 'true'
         fuzzy: 'true'
         priceCurrency: 'EUR'
         priceCountry: 'GB'
         priceCustomerGroup: 'UUID1'
         priceChannel: 'UUID2'
-      queryString: 'where=productType(id%3D%22123%22)&perPage=100&staged=true&fuzzy=true&priceCurrency=EUR&priceCountry=GB&priceCustomerGroup=UUID1&priceChannel=UUID2'
+      queryString: 'where=productType(id%3D%22123%22)&staged=true&fuzzy=true&priceCurrency=EUR&priceCountry=GB&priceCustomerGroup=UUID1&priceChannel=UUID2&limit=100'
+
+  it 'should support also API limit parameter', ->
+    @service.byQueryString('where=productType(id="123")&limit=100&staged=true&fuzzy=true&priceCurrency=EUR&priceCountry=GB&priceCustomerGroup=UUID1&priceChannel=UUID2')
+    expect(@service._params.queryString).toEqual 'where=productType(id%3D%22123%22)&limit=100&staged=true&fuzzy=true&priceCurrency=EUR&priceCountry=GB&priceCustomerGroup=UUID1&priceChannel=UUID2'
 
   describe ':: priceSelection required params', ->
     _.each [
@@ -313,28 +317,63 @@ describe 'ProductProjectionService', ->
       .catch (err) -> done(_.prettify err)
 
     it 'should call each page with the same query (given sorting)', (done) ->
-      offset = -20
-      count = 20
-      spyOn(@restMock, 'GET').andCallFake (endpoint, callback) ->
-        offset += 20
-        callback(null, {statusCode: 200}, {
-          # total: 50
-          count: if offset is 40 then 10 else count
-          offset: offset
-          results: _.map (if offset is 40 then [1..10] else [1..20]), (i) -> {id: "id_#{i}", endpoint}
+      # create a list of 80 products
+      products = [1..80].map (i) -> {id: "id_#{i}"}
+      perPage = 30
+      offset = -perPage
 
+      spyOn(@restMock, 'GET').andCallFake (endpoint, callback) ->
+        offset += perPage
+        # get subset of 30 products starting with a given offset
+        results = products.slice(offset, offset + perPage)
+        callback(null, {statusCode: 200}, {
+          total: products.length
+          count: results.length
+          offset: offset
+          results: results
         })
-      fn = (payload) ->
-        Promise.resolve payload.body.results[0]
-      @service.staged(true).sort('name', false)
-      .where('foo=bar')
-      .where('hello=world')
-      .whereOperator('or')
-      .process(fn)
-      .then (result) ->
-        expect(_.size result).toBe 3
-        expect(result[0].endpoint).toMatch /\?sort=id%20asc&where=foo%3Dbar%20or%20hello%3Dworld&sort=name%20desc&staged=true&withTotal=false$/
-        expect(result[1].endpoint).toMatch /\?sort=id%20asc&where=foo%3Dbar%20or%20hello%3Dworld&sort=name%20desc&staged=true&withTotal=false&where=id%20%3E%20%22id_20%22$/
-        expect(result[2].endpoint).toMatch /\?sort=id%20asc&where=foo%3Dbar%20or%20hello%3Dworld&sort=name%20desc&staged=true&withTotal=false&where=id%20%3E%20%22id_20%22$/
-        done()
-      .catch (err) -> done(_.prettify err)
+
+      @service
+        .staged(true)
+        .perPage(perPage)
+        .sort('name', false)
+        .where('foo=bar')
+        .where('hello=world')
+        .whereOperator('or')
+        .process -> Promise.resolve()
+        .then =>
+          expect(@restMock.GET.calls.length).toEqual 3
+          expect(@restMock.GET.calls[0].args[0]).toMatch /\?sort=id%20asc&where=foo%3Dbar%20or%20hello%3Dworld&limit=30&sort=name%20desc&staged=true&withTotal=false$/
+          expect(@restMock.GET.calls[1].args[0]).toMatch /\?sort=id%20asc&where=foo%3Dbar%20or%20hello%3Dworld&limit=30&sort=name%20desc&staged=true&withTotal=false&where=id%20%3E%20%22id_30%22$/
+          expect(@restMock.GET.calls[2].args[0]).toMatch /\?sort=id%20asc&where=foo%3Dbar%20or%20hello%3Dworld&limit=30&sort=name%20desc&staged=true&withTotal=false&where=id%20%3E%20%22id_60%22$/
+          done()
+        .catch (err) -> done(_.prettify err)
+
+    it 'should call each page with the same query when using byQueryString', (done) ->
+      # create a list of 80 products
+      products = [1..80].map (i) -> {id: "id_#{i}"}
+      perPage = 30
+      offset = -perPage
+
+      spyOn(@restMock, 'GET').andCallFake (endpoint, callback) ->
+        offset += perPage
+        # get subset of 30 products starting with a given offset
+        results = products.slice(offset, offset + perPage)
+        callback(null, {statusCode: 200}, {
+          total: products.length
+          count: results.length
+          offset: offset
+          results: results
+        })
+
+      @service
+        .byQueryString('where=foo=bar&staged=true&limit=30')
+        .process -> Promise.resolve()
+        .then =>
+          # sdk should use custom queryString
+          expect(@restMock.GET.calls.length).toEqual 3
+          expect(@restMock.GET.calls[0].args[0]).toMatch /\?sort=id%20asc&where=foo%3Dbar&staged=true&limit=30&withTotal=false$/
+          expect(@restMock.GET.calls[1].args[0]).toMatch /\?sort=id%20asc&where=foo%3Dbar&staged=true&limit=30&withTotal=false&where=id%20%3E%20%22id_30%22$/
+          expect(@restMock.GET.calls[2].args[0]).toMatch /\?sort=id%20asc&where=foo%3Dbar&staged=true&limit=30&withTotal=false&where=id%20%3E%20%22id_60%22$/
+          done()
+        .catch (err) -> done(_.prettify err)

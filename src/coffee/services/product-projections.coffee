@@ -317,11 +317,15 @@ class ProductProjectionService extends BaseService
   # Private: Build a query string from (pre)defined params and custom search params
   #
   # Returns the built query string
-  _queryString: ->
+  _queryString: (params = @_params) ->
+    # use custom queryString if it is set
+    if params.queryString
+      return super(params)
+
     {
       staged, fuzzy, text, filter, filterByQuery, filterByFacets, facet, searchKeywords,
       priceCurrency, priceCountry, priceCustomerGroup, priceChannel
-    } = _.defaults @_params.query, @_getProductsProjectionDefault()
+    } = _.defaults params.query, @_getProductsProjectionDefault()
 
     customQueryString = []
     customQueryString.push "staged=#{staged}" if staged
@@ -354,7 +358,7 @@ class ProductProjectionService extends BaseService
     else if priceCountry or priceCustomerGroup or priceChannel
       throw new Error "Field priceCurrency is required to enable price selection. Read more here http://dev.commercetools.com/http-api-projects-products.html#price-selection"
 
-    _.compact([super()].concat(customQueryString)).join '&'
+    _.compact([super(params)].concat(customQueryString)).join '&'
 
   # Public: Search `ProductProjections` with all the search parameters
   #

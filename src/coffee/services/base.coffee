@@ -278,6 +278,13 @@ class BaseService
       _.each @_params.plain, (param) =>
         if parsed[param]
           @_params.query[param] = parsed[param]
+
+    # API accepts limit parameter instead of perPage which we use here in SDK so this
+    # quick hash unifies both worlds
+    parsed.limit = parsed.perPage if parsed.perPage
+    delete parsed.perPage
+    @_params.query.perPage = Number(parsed.limit) if parsed.limit
+
     @_params.queryString = _.stringifyQuery(parsed)
     debug 'setting queryString: %s', query
     this
@@ -285,17 +292,17 @@ class BaseService
   # Private: Build a query string from (pre)defined params (can be overriden for custom params)
   #
   # Returns the built query string
-  _queryString: ->
-    qs = if @_params.queryString
-      @_params.queryString
+  _queryString: (params = @_params) ->
+    qs = if params.queryString
+      params.queryString
     else
       Utils.buildQueryString
-        where: @_params.query.where
-        whereOperator: @_params.query.operator
-        page: @_params.query.page
-        perPage: @_params.query.perPage
-        sort: @_params.query.sort
-        expand: @_params.query.expand
+        where: params.query.where
+        whereOperator: params.query.operator
+        page: params.query.page
+        perPage: params.query.perPage
+        sort: params.query.sort
+        expand: params.query.expand
     debug 'built query string: %s', qs
     qs
 
@@ -366,19 +373,18 @@ class BaseService
 
       endpoint = @constructor.baseResourceEndpoint
       originalQuery = @_params.query
-      originalPredicate = @_params.query.where
 
       if originalQuery.perPage is 0
         debug 'using batch size of 20 since 0 wont return any results'
         originalQuery.perPage = 20
 
-      _processPage = (lastId, acc = []) =>
+      _processPage = (params, lastId, acc = []) =>
         debug 'processing next page with id: %s', lastId
 
         # set the query to the original query
         # this is needed since the query is reset after each request
         @_params.query = originalQuery
-        queryString = @_queryString()
+        queryString = @_queryString params
 
         if lastId
           wherePredicate = encodeURIComponent("id > \"#{lastId}\"")
@@ -393,7 +399,7 @@ class BaseService
           # they had been specified in a single `where` query parameter and
           # combined with `and`"
           if wherePredicate then "where=#{wherePredicate}" else null,
-        ].filter((el) -> !!el).join('&')
+        ].filter(Boolean).join('&')
         debug 'enhanced query: %s', enhancedQueryString
 
         @_get("#{endpoint}?#{enhancedQueryString}")
@@ -408,11 +414,11 @@ class BaseService
 
             last = _.last(payload.body.results)
             newLastId = last && last.id
-            _processPage newLastId, accumulated
+            _processPage params, newLastId, accumulated
 
         .catch (error) -> reject error
         .done()
-      _processPage()
+      _processPage(@_params)
 
   # Public: Save a new resource defined by the `Service` by passing the payload {Object}.
   #
