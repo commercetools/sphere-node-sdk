@@ -294,6 +294,9 @@ class ProductUtils extends BaseUtils
     if masterVariant
       skuAction = @_buildSkuActions(masterVariant, old_obj.masterVariant)
       actions.push(skuAction) if skuAction?
+      # variant key update action
+      keyAction = @_buildVariantKeyActions(masterVariant, old_obj.masterVariant)
+      actions.push(keyAction) if keyAction?
       attributes = masterVariant.attributes
       attrActions = @_buildVariantAttributesActions attributes, old_obj.masterVariant, new_obj.masterVariant, sameForAllAttributeNames
       actions = actions.concat attrActions
@@ -306,6 +309,9 @@ class ProductUtils extends BaseUtils
             index_new = variant._NEW_ARRAY_INDEX[0]
             skuAction = @_buildSkuActions(variant, old_obj.variants[index_old])
             actions.push(skuAction) if skuAction?
+            # variant key update action
+            keyAction = @_buildVariantKeyActions(variant, old_obj.variants[index_old])
+            actions.push(keyAction) if keyAction?
             attributes = variant.attributes
             attrActions = @_buildVariantAttributesActions attributes, old_obj.variants[index_old], new_obj.variants[index_new], sameForAllAttributeNames
             actions = actions.concat attrActions
@@ -372,7 +378,9 @@ class ProductUtils extends BaseUtils
             # no idea what this is but lets just use it for updating
             updated[k] = diffed_value
 
-      if old_obj[key]
+      # extend with an old object only if value is an object or an array
+      # if the new value is not an array or an object, use just the new value
+      if old_obj[key] and (_.isArray(old_obj[key]) or _.isObject(old_obj[key]))
         # extend values of original object with possible new values of the diffed object
         # e.g.:
         #   old = {en: 'foo'}
@@ -384,6 +392,7 @@ class ProductUtils extends BaseUtils
         old = updated
       action =
         action: item.action
+      # what if updated value is null, empty string or zero?
       if updated
         action[key] = old
       else
@@ -606,6 +615,13 @@ class ProductUtils extends BaseUtils
         variantId: old_variant.id
         sku: @getDeltaValue(variantDiff.sku)
 
+  _buildVariantKeyActions: (variantDiff, old_variant) ->
+    if _.has variantDiff, 'key'
+      action =
+        action: 'setProductVariantKey'
+        sku: old_variant.sku
+        key: @getDeltaValue(variantDiff.key)
+
 module.exports = ProductUtils
 
 #################
@@ -614,6 +630,10 @@ module.exports = ProductUtils
 
 actionsBaseList = ->
   [
+    {
+      action: 'setKey'
+      key: 'key'
+    },
     {
       action: 'changeName'
       key: 'name'

@@ -647,6 +647,7 @@ describe 'ProductUtils', ->
 
     it 'should diff if basic attribute is undefined', ->
       OLD =
+        key: 'oldKey'
         id: '123'
         name:
           en: 'Foo'
@@ -655,6 +656,7 @@ describe 'ProductUtils', ->
         masterVariant:
           id: 1
       NEW =
+        key: 'newKey'
         id: '123'
         name:
           de: 'Boo'
@@ -671,6 +673,7 @@ describe 'ProductUtils', ->
       delta = @utils.diff OLD, NEW
       update = @utils.actionsMapBase(delta, OLD)
       expected_update = [
+        { action: 'setKey', key: 'newKey' }
         { action: 'changeName', name: {en: undefined, de: 'Boo'} }
         { action: 'changeSlug', slug: {en: 'boo'} }
         { action: 'setDescription', description: {en: 'Sample', it: 'Esempio'} }
@@ -890,6 +893,56 @@ describe 'ProductUtils', ->
       update = @utils.actionsMapAttributes delta, OLD_VARIANT, NEW_VARIANT
       expected_update = [
         { action: 'setAttribute', variantId: 3, name: 'foo', value: 'CHANGED' }
+      ]
+      expect(update).toEqual expected_update
+
+    it 'should create actions for changed variant keys', ->
+      OLD =
+        id: '123'
+        masterVariant:
+          sku: 'masterSku'
+          key: 'oldKey'
+        variants: [
+          {
+            sku: 'variantSku'
+            key: 'oldVariantKey'
+          },
+          {
+            sku: 'variantSku2'
+            key: 'oldVariantKey2'
+          },
+          {
+            sku: 'variantSku3'
+          }
+        ]
+
+      NEW =
+        id: '123'
+        masterVariant:
+          sku: 'masterSku'
+          key: 'newKey'
+        variants: [
+          {
+            sku: 'variantSku'
+            key: 'newVariantKey'
+          },
+          {
+            sku: 'variantSku2'
+          },
+          {
+            sku: 'variantSku3'
+            key: 'newVariantKey3'
+          }
+        ]
+
+      delta = @utils.diff OLD, NEW
+      update = @utils.actionsMapAttributes delta, OLD, NEW
+
+      expected_update = [
+        { action: 'setProductVariantKey', sku: 'masterSku', key: 'newKey' }
+        { action: 'setProductVariantKey', sku: 'variantSku', key: 'newVariantKey' }
+        { action: 'setProductVariantKey', sku: 'variantSku2', key: undefined }
+        { action: 'setProductVariantKey', sku: 'variantSku3', key: 'newVariantKey3' }
       ]
       expect(update).toEqual expected_update
 
@@ -1151,7 +1204,6 @@ describe 'ProductUtils', ->
         ]
       expect(update).toEqual expected_update
 
-
     it 'should not modify original attributes', ->
       newProduct =
         masterVariant:
@@ -1350,7 +1402,6 @@ describe 'ProductUtils', ->
       _.each(expected_update, (expectedAction) ->
         expect(update).toContain expectedAction
       )
-
 
     it 'should not build actions if images are not set', ->
       oldProduct =
