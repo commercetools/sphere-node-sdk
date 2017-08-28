@@ -619,7 +619,7 @@ class ProductUtils extends BaseUtils
     if _.has variantDiff, 'key'
       action =
         action: 'setProductVariantKey'
-        sku: old_variant.sku
+        variantId: old_variant.id
         key: @getDeltaValue(variantDiff.key)
 
 module.exports = ProductUtils
