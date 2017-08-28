@@ -900,18 +900,22 @@ describe 'ProductUtils', ->
       OLD =
         id: '123'
         masterVariant:
+          id: 1
           sku: 'masterSku'
           key: 'oldKey'
         variants: [
           {
+            id: 2
             sku: 'variantSku'
             key: 'oldVariantKey'
           },
           {
+            id: 3
             sku: 'variantSku2'
             key: 'oldVariantKey2'
           },
           {
+            id: 4
             sku: 'variantSku3'
           }
         ]
@@ -939,10 +943,10 @@ describe 'ProductUtils', ->
       update = @utils.actionsMapAttributes delta, OLD, NEW
 
       expected_update = [
-        { action: 'setProductVariantKey', sku: 'masterSku', key: 'newKey' }
-        { action: 'setProductVariantKey', sku: 'variantSku', key: 'newVariantKey' }
-        { action: 'setProductVariantKey', sku: 'variantSku2', key: undefined }
-        { action: 'setProductVariantKey', sku: 'variantSku3', key: 'newVariantKey3' }
+        { action: 'setProductVariantKey', variantId: 1, key: 'newKey' }
+        { action: 'setProductVariantKey', variantId: 2, key: 'newVariantKey' }
+        { action: 'setProductVariantKey', variantId: 3, key: undefined }
+        { action: 'setProductVariantKey', variantId: 4, key: 'newVariantKey3' }
       ]
       expect(update).toEqual expected_update
 
