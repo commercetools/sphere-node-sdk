@@ -143,6 +143,7 @@ class ProductUtils extends BaseUtils
           action =
             action: 'addVariant'
           action.sku = newVariant.sku if newVariant.sku
+          action.key = newVariant.key if newVariant.key
           action.prices = _.map(newVariant.prices, (price) ->
             delete price._MATCH_CRITERIA
             price
