@@ -90,7 +90,7 @@ NEW_PRODUCT =
         {value: {currencyCode: 'EUR', centAmount: 2200}, customerGroup: {id: '59c64f80-6472-474e-b5be-dc57b45b2faf', typeId: 'customer-group'}}
       ]
     }
-    { sku: 'new', attributes: [ { name: 'what', value: 'no ID' } ] }
+    { sku: 'new', key: 'foobar2', attributes: [ { name: 'what', value: 'no ID' } ] }
     { id: 7, attributes: [ { name: 'what', value: 'no SKU' } ] }
     {
       id: 77
@@ -143,7 +143,7 @@ describe 'ProductSync', ->
       expected_update =
         actions: [
           { action: 'removeVariant', id: 4 }
-          { action: 'addVariant', sku: 'new', attributes: [ { name: 'what', value: 'no ID' } ] }
+          { action: 'addVariant', sku: 'new', key: 'foobar2', attributes: [ { name: 'what', value: 'no ID' } ] }
           { action: 'addVariant', attributes: [ { name: 'what', value: 'no SKU' } ] }
           { action: 'changeName', name: {en: 'Foo', de: undefined, it: 'Boo'} }
           { action: 'changeSlug', slug: {en: 'foo', it: 'boo'} }
