@@ -26,10 +26,10 @@
     "test": "grunt coverage"
   },
   "dependencies": {
-    "debug": "2.1.x",
+    "debug": "2.6.9",
     "jsondiffpatch": "0.2.4",
     "request": "2.54.x",
-    "sphere-node-utils": "^0.8.4",
+    "sphere-node-utils": "^0.9.2",
     "underscore-mixins": "^0.1.4"
   },
   "peerDependencies": {
@@ -37,13 +37,13 @@
     "underscore": ">=1.8.0"
   },
   "devDependencies": {
-    "biscotto": "emmenko/biscotto#v2.4.0",
+    "biscotto": "wizzy25/biscotto#v2.4.1",
     "bluebird": "2.9.x",
     "coffeelint": "^1.14.1",
     "commitizen": "2.5.0",
     "coveralls": "2.11.x",
     "cz-conventional-changelog": "1.1.5",
-    "express": "4.12.x",
+    "express": "4.16.x",
     "gh-pages": "0.2.x",
     "ghooks": "1.0.3",
     "grunt": "0.4.5",
