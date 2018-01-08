@@ -24,6 +24,7 @@ newCartDiscount = ->
     predicate: 'variant.id = 1'
   sortOrder: "0.#{_.reduce [1..orderCount], ((m, i) -> '' + m + i), '2'}"
   isActive: false
+  requiresDiscountCode: true
 
 newDiscountCode = (cartDiscountId) ->
   code: uniqueId 'c'
