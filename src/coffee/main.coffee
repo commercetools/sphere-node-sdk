@@ -7,4 +7,5 @@ module.exports =
   InventorySync: require './sync/inventory-sync'
   CategorySync: require './sync/category-sync'
   TaskQueue: require './task-queue'
+  RepeaterTaskQueue: require './repeater-task-queue'
   Errors: require './errors'
