@@ -151,13 +151,13 @@ describe 'ProductSync', ->
           { action: 'setSearchKeywords', searchKeywords: en: [{text: 'new'}, {text: 'search'}, {text: 'keywords'}], "fr-BE": [{text: 'bruxelles'}, {text:'liege'}, {text: 'brugge'}]}
           { action: 'transitionState', state: { typeId: 'state', id: 'new-state-id' } }
           { action: 'changePrice', variantId: 1, price: {value: {currencyCode: 'EUR', centAmount: 3800}} }
-          { action: 'removePrice', variantId: 1, price: {value: {currencyCode: 'EUR', centAmount: 1100}, country: 'DE'} }
-          { action: 'removePrice', variantId: 1, price: {value: {currencyCode: 'EUR', centAmount: 1200}, customerGroup: {id: '984a64de-24a4-42c0-868b-da7abfe1c5f6', typeId: 'customer-group'}} }
-          { action: 'removePrice', variantId: 2, price: {value: {currencyCode: 'EUR', centAmount: 2100}, country: 'US'} }
-          { action: 'removePrice', variantId: 2, price: {value: {currencyCode: 'EUR', centAmount: 2200}, customerGroup: {id: '59c64f80-6472-474e-b5be-dc57b45b2faf', typeId: 'customer-group'}} }
-          { action: 'removePrice', variantId: 77, price: { value: { currencyCode: 'EUR', centAmount: 5889 }, country: 'AT' } }
-          { action: 'removePrice', variantId: 77, price: { value: { currencyCode: 'EUR', centAmount: 6559 }, country: 'FR' } }
-          { action: 'removePrice', variantId: 77, price: { value: { currencyCode: 'EUR', centAmount: 13118 }, country: 'BE' } }
+          { action: 'removePrice', priceId: 'p-3'}
+          { action: 'removePrice', priceId: 'p-4'}
+          { action: 'removePrice', priceId: 'p-8'}
+          { action: 'removePrice', priceId: 'p-9'}
+          { action: 'removePrice', priceId: 'p-11'}
+          { action: 'removePrice', priceId: 'p-12'}
+          { action: 'removePrice', priceId: 'p-13'}
           { action: 'addPrice', variantId: 1, price: {value: {currencyCode: 'EUR', centAmount: 1100}, country: 'IT'} }
           { action: 'addPrice', variantId: 1, price: {value: {currencyCode: 'JPY', centAmount: 9001}, custom: {type: {typeId: 'type', id: 'decaf-f005ba11-abaca', fields: {superCustom: 'super true'}}}} }
           { action: 'addPrice', variantId: 2, price: {value: {currencyCode: 'EUR', centAmount: 2200}, customerGroup: {id: '59c64f80-6472-474e-b5be-dc57b45b2faf', typeId: 'customer-group'}} }
@@ -224,6 +224,71 @@ describe 'ProductSync', ->
           { action: 'addVariant', sku: 'v2', attributes: [{ name: 'foo', value: 'new variant' }] }
         ]
         version: oldProduct.version
+      expect(update).toEqual expected_update
+
+    it 'should create `changePrice` action if new price has id', ->
+      oldProduct =
+        id: '123'
+        version: 1
+        masterVariant:
+          id: 1
+          sku: 'v1'
+          prices: [
+            {id: 'p-1', value: {currencyCode: 'EUR', centAmount: 100}},
+            {id: 'p-2', value: {currencyCode: 'EUR', centAmount: 1000}},
+          ]
+        variants: [
+          {
+            id: 2
+            prices: [
+              {id: 'p-7', value: {currencyCode: 'EUR', centAmount: 2000}},
+              {id: 'p-8', value: {currencyCode: 'EUR', centAmount: 2100}, country: 'FR'},
+            ]
+          }
+          {
+            id: 3
+            prices: [
+              {id: 'p-10', value: {currencyCode: 'EUR', centAmount: 5889}, country: 'DE'},
+            ]
+          }
+        ]
+
+      newProduct =
+        id: '123'
+        masterVariant:
+          sku: 'v1'
+          prices: [
+            {id: 'p-1', value: {currencyCode: 'GBP', centAmount: 555}},
+            {id: 'p-2', value: {currencyCode: 'GBP', centAmount: 245}},
+          ]
+        variants: [
+          {
+            id: 2
+            prices: [
+              {id: 'p-7', value: {currencyCode: 'USD', centAmount: 4444}},
+              {id: 'p-8', value: {currencyCode: 'USD', centAmount: 5555}, country: 'US'},
+            ]
+          }
+          {
+            id: 3
+            prices: [
+              {id: 'p-10', value: {currencyCode: 'USD', centAmount: 1257}, country: 'US'},
+            ]
+          }
+        ]
+      update = @sync.buildActions(newProduct, oldProduct).getUpdatePayload()
+
+      expected_update =
+        actions: [
+          { action: 'changePrice', priceId: 'p-1', price: {value: {currencyCode: 'GBP', centAmount: 555} }}
+          { action: 'changePrice', priceId: 'p-2', price: {value: {currencyCode: 'GBP', centAmount: 245} }}
+          { action: 'changePrice', priceId: 'p-7', price: {value: {currencyCode: 'USD', centAmount: 4444} }}
+          { action: 'changePrice', priceId: 'p-8', price: {value: {currencyCode: 'USD', centAmount: 5555}, country: 'US' }}
+          { action: 'changePrice', priceId: 'p-10', price: {value: {currencyCode: 'USD', centAmount: 1257}, country: 'US' }}
+        ]
+        version: oldProduct.version
+
+      # console.log JSON.stringify(update, null, 2)
       expect(update).toEqual expected_update
 
     it 'should create update actions in correct order', ->

@@ -565,38 +565,57 @@ describe 'ProductUtils', ->
         masterVariant:
           prices:
             0:
+              id: ['p-1', 0,0]
               value:
                 centAmount: [1, 2]
             1:
+              id: ['p-2', 0,0]
               value:
                 currencyCode: ['EUR', 'USD']
             _t: 'a'
         variants:
           0:
+            prices:
+              0:
+                id: ['p-3', 0, 0]
+              _t: 'a'
+            _EXISTING_ARRAY_INDEX: ['0', 0, 0],
             _NEW_ARRAY_INDEX: ['0']
-            _EXISTING_ARRAY_INDEX: ['0', 0, 0]
           1:
             prices:
               0:
+                id: ['p-4', 0, 0],
                 country: ['DE', 'CH']
               1:
+                id: ['p-5', 0, 0],
                 customerGroup:
                   id: ['123', '987']
               _t: 'a'
+            _EXISTING_ARRAY_INDEX: ['1', 0, 0],
             _NEW_ARRAY_INDEX: ['1']
-            _EXISTING_ARRAY_INDEX: ['1', 0, 0]
           2:
             prices:
-              _t: 'a'
-              _0: [ { value: { currencyCode: 'YEN', centAmount: 7777 }, _MATCH_CRITERIA: '0' }, 0, 0 ]
+              _t: 'a',
+              _0: [{
+                id: 'p-6',
+                value:
+                  currencyCode: 'YEN',
+                  centAmount: 7777
+                _MATCH_CRITERIA: '0'
+              }, 0, 0]
+            _EXISTING_ARRAY_INDEX: ['2', 0, 0],
             _NEW_ARRAY_INDEX: ['2']
-            _EXISTING_ARRAY_INDEX: ['2', 0, 0]
           3:
             prices:
-              0: [ { value: { currencyCode: 'EUR', centAmount: 999 }, _MATCH_CRITERIA: '0' } ]
+              0: [{
+                value:
+                  currencyCode: 'EUR',
+                  centAmount: 999
+                _MATCH_CRITERIA: '0'
+              }],
               _t: 'a'
+            _EXISTING_ARRAY_INDEX: ['3', 0, 0],
             _NEW_ARRAY_INDEX: ['3']
-            _EXISTING_ARRAY_INDEX: ['3', 0, 0]
           _t: 'a'
       expect(delta).toEqual expected_delta
 
@@ -1431,10 +1450,10 @@ describe 'ProductUtils', ->
       update = @utils.actionsMapPrices delta, OLD_PRODUCT, NEW_PRODUCT
       expected_update = [
         { action: 'changePrice', variantId: 1, price: { value: { currencyCode: 'EUR', centAmount: 2 } } }
-        { action: 'removePrice', variantId: 1, price: { value: { currencyCode: 'EUR', centAmount: 7 } } }
-        { action: 'removePrice', variantId: 3, price: { value: { currencyCode: 'EUR', centAmount: 2100 }, country: 'DE' } }
-        { action: 'removePrice', variantId: 3, price: { value: { currencyCode: 'EUR', centAmount: 2200 }, customerGroup: { id: '123', typeId: 'customer-group' } } }
-        { action: 'removePrice', variantId: 4, price: { value: { currencyCode: 'YEN', centAmount: 7777 } } }
+        { action: 'removePrice', priceId: 'p-2' }
+        { action: 'removePrice', priceId: 'p-4' }
+        { action: 'removePrice', priceId: 'p-5' }
+        { action: 'removePrice', priceId: 'p-6' }
         { action: 'addPrice', variantId: 1, price: { value: { currencyCode: 'USD', centAmount: 7 } } }
         { action: 'addPrice', variantId: 3, price: { value: { currencyCode: 'EUR', centAmount: 2100 }, country: 'CH' } }
         { action: 'addPrice', variantId: 3, price: { value: { currencyCode: 'EUR', centAmount: 2200 }, customerGroup: { id: '987', typeId: 'customer-group' } } }
@@ -1513,6 +1532,49 @@ describe 'ProductUtils', ->
       expect(update[1]).toEqual {action: 'changePrice', variantId: 1, price: {value: {currencyCode: 'EUR', centAmount: 20}, country: 'DE'}}
       expect(update[2]).toEqual {action: 'changePrice', variantId: 2, price: {value: {currencyCode: 'EUR', centAmount: 5}, customerGroup: {id: '987', typeId: 'customer-group'}}}
       expect(update[3]).toEqual {action: 'changePrice', variantId: 2, price: {value: {currencyCode: 'EUR', centAmount: 20}, country: 'DE'}}
+
+    it 'should build change price actions with priceId', ->
+      oldPrice =
+        masterVariant:
+          id: 1
+          prices: [
+            {id: 'p-1', value: {currencyCode: 'EUR', centAmount: 2}}
+            {id: 'p-2', value: {currencyCode: 'EUR', centAmount: 10}, country: 'DE'}
+          ]
+        variants: [
+          {
+            id: 2
+            prices: [
+              {id: 'p-3', value: {currencyCode: 'EUR', centAmount: 2}, customerGroup: {id: '987', typeId: 'customer-group'}}
+              {id: 'p-4', value: {currencyCode: 'EUR', centAmount: 10}, country: 'DE'}
+            ]
+          }
+        ]
+      newPrice =
+        masterVariant:
+          id: 1
+          prices: [
+            {id: 'p-1', value: {currencyCode: 'EUR', centAmount: 50}}
+            {id: 'p-2', value: {currencyCode: 'EUR', centAmount: 1000}, country: 'FR'}
+          ]
+        variants: [
+          {
+            id: 2
+            prices: [
+              {id: 'p-3', value: {currencyCode: 'EUR', centAmount: 567}, customerGroup: {id: '123', typeId: 'new-customer-group'}}
+              {id: 'p-4', value: {currencyCode: 'EUR', centAmount: 243}, country: 'DE'}
+            ]
+          }
+        ]
+
+      delta = @utils.diff oldPrice, newPrice
+      update = @utils.actionsMapPrices delta, oldPrice, newPrice
+
+      expect(update.length).toBe 4
+      expect(update[0]).toEqual {action: 'changePrice', priceId: 'p-1', price: {value: {currencyCode: 'EUR', centAmount: 50}}}
+      expect(update[1]).toEqual {action: 'changePrice', priceId: 'p-2', price: {value: {currencyCode: 'EUR', centAmount: 1000}, country: 'FR'}}
+      expect(update[2]).toEqual {action: 'changePrice', priceId: 'p-3', price: {value: {currencyCode: 'EUR', centAmount: 567}, customerGroup: {id: '123', typeId: 'new-customer-group'}}}
+      expect(update[3]).toEqual {action: 'changePrice', priceId: 'p-4', price: {value: {currencyCode: 'EUR', centAmount: 243}, country: 'DE'}}
 
     it 'should build price actions by ignoring discounts', ->
       oldPrice =

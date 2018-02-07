@@ -19,7 +19,6 @@ class ProductUtils extends BaseUtils
         _.each variant.prices, (price, index) ->
           price._MATCH_CRITERIA = "#{index}"
           delete price.discounted # discount values should not be diffed
-          delete price.id # ids should not be diffed
 
     # Let's compare variants with their SKU, if present.
     # Otherwise let's use the provided id.
@@ -240,6 +239,7 @@ class ProductUtils extends BaseUtils
     actions = []
 
     _mapVariantPrices = (price, key, old_variant, new_variant) =>
+
       if REGEX_NUMBER.test key
         # key is index of new price
         index = key
@@ -248,14 +248,21 @@ class ProductUtils extends BaseUtils
         index = key.substring(1)
       if index
         delete price.discounted # we don't need this for mapping the action
-        if _.size(price) is 1 and _.size(price.value) is 1 and _.has(price.value, 'centAmount')
-          changeAction = @_buildChangePriceAction(price.value.centAmount, old_variant, index)
+
+        # if id is unchanged, we initiate a changePrice action with priceId
+        if not _.isArray(price) and not price.id and old_variant.prices.length > index
+          changeAction = @_buildChangePriceActionWithPriceId(new_variant, index)
           actions.push changeAction if changeAction
         else
-          removeAction = @_buildRemovePriceAction(old_variant, index)
-          actions.push removeAction if removeAction
-          addAction = @_buildAddPriceAction(old_variant, new_variant, index)
-          actions.push addAction if addAction
+          delete price.id # delete the id so it doesn't conflict with other actions
+          if _.size(price) is 1 and _.size(price.value) is 1 and _.has(price.value, 'centAmount')
+            changeAction = @_buildChangePriceAction(price.value.centAmount, old_variant, index)
+            actions.push changeAction if changeAction
+          else if _.size(price)
+            removeAction = @_buildRemovePriceAction(old_variant, index)
+            actions.push removeAction if removeAction
+            addAction = @_buildAddPriceAction(old_variant, new_variant, index)
+            actions.push addAction if addAction
 
     if diff.masterVariant
       prices = diff.masterVariant.prices
@@ -402,10 +409,23 @@ class ProductUtils extends BaseUtils
         action = undefined
     action
 
+  _buildChangePriceActionWithPriceId: (new_variant, index) ->
+    price = new_variant.prices[index]
+    if price
+      priceId = price.id
+      delete price._MATCH_CRITERIA
+      delete price.id
+      action =
+        action: 'changePrice'
+        priceId: priceId
+        price: price
+    action
+
   _buildChangePriceAction: (centAmountDiff, variant, index) ->
     price = variant.prices[index]
     if price
       delete price._MATCH_CRITERIA
+      delete price.id
       price.value.centAmount = @getDeltaValue(centAmountDiff)
       action =
         action: 'changePrice'
@@ -419,8 +439,7 @@ class ProductUtils extends BaseUtils
       delete price._MATCH_CRITERIA
       action =
         action: 'removePrice'
-        variantId: variant.id
-        price: price
+        priceId: price.id
     action
 
   _buildAddPriceAction: (old_variant, new_variant, index) ->
