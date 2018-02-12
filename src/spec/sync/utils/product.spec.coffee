@@ -1449,7 +1449,7 @@ describe 'ProductUtils', ->
       delta = @utils.diff OLD_PRODUCT, NEW_PRODUCT
       update = @utils.actionsMapPrices delta, OLD_PRODUCT, NEW_PRODUCT
       expected_update = [
-        { action: 'changePrice', variantId: 1, price: { value: { currencyCode: 'EUR', centAmount: 2 } } }
+        { action: 'changePrice', priceId: 'p-1', price: { value: { currencyCode: 'EUR', centAmount: 2 } } }
         { action: 'removePrice', priceId: 'p-2' }
         { action: 'removePrice', priceId: 'p-4' }
         { action: 'removePrice', priceId: 'p-5' }
@@ -1528,10 +1528,10 @@ describe 'ProductUtils', ->
       update = @utils.actionsMapPrices delta, oldPrice, newPrice
 
       expect(update.length).toBe 4
-      expect(update[0]).toEqual {action: 'changePrice', variantId: 1, price: {value: {currencyCode: 'EUR', centAmount: 5}}}
-      expect(update[1]).toEqual {action: 'changePrice', variantId: 1, price: {value: {currencyCode: 'EUR', centAmount: 20}, country: 'DE'}}
-      expect(update[2]).toEqual {action: 'changePrice', variantId: 2, price: {value: {currencyCode: 'EUR', centAmount: 5}, customerGroup: {id: '987', typeId: 'customer-group'}}}
-      expect(update[3]).toEqual {action: 'changePrice', variantId: 2, price: {value: {currencyCode: 'EUR', centAmount: 20}, country: 'DE'}}
+      expect(update[0]).toEqual {action: 'changePrice', priceId: 'p-1', price: {value: {currencyCode: 'EUR', centAmount: 5}}}
+      expect(update[1]).toEqual {action: 'changePrice', priceId: 'p-2', price: {value: {currencyCode: 'EUR', centAmount: 20}, country: 'DE'}}
+      expect(update[2]).toEqual {action: 'changePrice', priceId: 'p-3', price: {value: {currencyCode: 'EUR', centAmount: 5}, customerGroup: {id: '987', typeId: 'customer-group'}}}
+      expect(update[3]).toEqual {action: 'changePrice', priceId: 'p-4', price: {value: {currencyCode: 'EUR', centAmount: 20}, country: 'DE'}}
 
     it 'should build change price actions with priceId', ->
       oldPrice =
@@ -1638,7 +1638,7 @@ describe 'ProductUtils', ->
       update = @utils.actionsMapPrices delta, oldPrice, newPrice
 
       expect(update.length).toBe 2
-      expect(update[0]).toEqual {action: 'changePrice', variantId: 2, price: {value: {currencyCode: 'EUR', centAmount: 5}, customerGroup: {id: '987', typeId: 'customer-group'}}}
+      expect(update[0]).toEqual {action: 'changePrice', priceId: 'p-2', price: {value: {currencyCode: 'EUR', centAmount: 5}, customerGroup: {id: '987', typeId: 'customer-group'}}}
       expect(update[1]).toEqual {action: 'addPrice', variantId: 1, price: {value: {currencyCode: 'EUR', centAmount: 20}, country: 'DE'}}
 
   describe ':: actionsMapReferences', ->

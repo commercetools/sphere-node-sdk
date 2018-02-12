@@ -239,7 +239,6 @@ class ProductUtils extends BaseUtils
     actions = []
 
     _mapVariantPrices = (price, key, old_variant, new_variant) =>
-
       if REGEX_NUMBER.test key
         # key is index of new price
         index = key
@@ -248,15 +247,15 @@ class ProductUtils extends BaseUtils
         index = key.substring(1)
       if index
         delete price.discounted # we don't need this for mapping the action
-
         # if id is unchanged, we initiate a changePrice action with priceId
         if not _.isArray(price) and not price.id and old_variant.prices.length > index
-          changeAction = @_buildChangePriceActionWithPriceId(new_variant, index)
+          changeAction = @_buildChangePriceActionWithPriceId(old_variant, new_variant, index)
           actions.push changeAction if changeAction
         else
           delete price.id # delete the id so it doesn't conflict with other actions
-          if _.size(price) is 1 and _.size(price.value) is 1 and _.has(price.value, 'centAmount')
-            changeAction = @_buildChangePriceAction(price.value.centAmount, old_variant, index)
+          # build changePrice update action with price selection
+          if not _.isArray(price) and _.size(price) and not _.has(price, 'country') and not _.has(price, 'channel') and not _.has(price, 'customerGroup') and not _.isArray(price.value?.currencyCode) and old_variant.prices.length > index
+            changeAction = @_buildChangePriceActionWithPriceId(old_variant, new_variant, index)
             actions.push changeAction if changeAction
           else if _.size(price)
             removeAction = @_buildRemovePriceAction(old_variant, index)
@@ -409,29 +408,29 @@ class ProductUtils extends BaseUtils
         action = undefined
     action
 
-  _buildChangePriceActionWithPriceId: (new_variant, index) ->
-    price = new_variant.prices[index]
-    if price
-      priceId = price.id
-      delete price._MATCH_CRITERIA
-      delete price.id
+  _buildChangePriceActionWithPriceId: (old_variant, new_variant, index) ->
+    new_price = new_variant.prices[index]
+    if new_price
+      priceId = old_variant.prices[index].id
+      delete new_price._MATCH_CRITERIA
+      delete new_price.id if new_price.id
       action =
         action: 'changePrice'
         priceId: priceId
-        price: price
+        price: new_price
     action
 
-  _buildChangePriceAction: (centAmountDiff, variant, index) ->
-    price = variant.prices[index]
-    if price
-      delete price._MATCH_CRITERIA
-      delete price.id
-      price.value.centAmount = @getDeltaValue(centAmountDiff)
-      action =
-        action: 'changePrice'
-        variantId: variant.id
-        price: price
-    action
+  # _buildChangePriceAction: (centAmountDiff, variant, index) ->
+  #   price = variant.prices[index]
+  #   if price
+  #     delete price._MATCH_CRITERIA
+  #     delete price.id
+  #     price.value.centAmount = @getDeltaValue(centAmountDiff)
+  #     action =
+  #       action: 'changePrice'
+  #       variantId: variant.id
+  #       price: price
+  #   action
 
   _buildRemovePriceAction: (variant, index) ->
     price = variant.prices[index]
