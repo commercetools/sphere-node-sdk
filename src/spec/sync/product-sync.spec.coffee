@@ -299,6 +299,7 @@ describe 'ProductSync', ->
           prices: [
             {id: 'p-1', value: {currencyCode: 'EUR', centAmount: 100}, validUntil: '2019-10-16'},
             {id: 'p-2', value: {currencyCode: 'EUR', centAmount: 1000}, country: 'DE'},
+            {id: 'p-3', value: {currencyCode: 'GBP', centAmount: 1000}},
           ]
         variants: [
           {
@@ -316,6 +317,7 @@ describe 'ProductSync', ->
           prices: [
             {value: {currencyCode: 'EUR', centAmount: 555}, validUntil: '2020-12-14'},
             {value: {currencyCode: 'EUR', centAmount: 245}, country: 'DE'},
+            {value: {currencyCode: 'GBP', centAmount: 2300}}
           ]
         variants: [
           {
@@ -331,6 +333,7 @@ describe 'ProductSync', ->
         actions: [
           { action: 'changePrice', priceId: 'p-1', price: {value: {currencyCode: 'EUR', centAmount: 555}, validUntil: '2020-12-14' }}
           { action: 'changePrice', priceId: 'p-2', price: {value: {currencyCode: 'EUR', centAmount: 245}, country: 'DE' }}
+          { action: 'changePrice', priceId: 'p-3', price: {value: {currencyCode: 'GBP', centAmount: 2300}}}
           { action: 'changePrice', priceId: 'p-8', price: {value: {currencyCode: 'USD', centAmount: 5555}, country: 'US', customerGroup: {id: 'special-price-id', typeId: 'customer-group'} }}
         ]
         version: oldProduct.version
