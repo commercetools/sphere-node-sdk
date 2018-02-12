@@ -31,7 +31,7 @@ OLD_PRODUCT =
         {id: 'p-6', value: {currencyCode: 'EUR', centAmount: 100}},
         {id: 'p-7', value: {currencyCode: 'EUR', centAmount: 2000}},
         {id: 'p-8', value: {currencyCode: 'EUR', centAmount: 2100}, country: 'US'},
-        {id: 'p-9', value: {currencyCode: 'EUR', centAmount: 2200e5}, customerGroup: {id: '59c64f80-6472-474e-b5be-dc57b45b2faf', typeId: 'customer-group'}}
+        {id: 'p-9', value: {currencyCode: 'EUR', centAmount: 2200}, customerGroup: {id: '59c64f80-6472-474e-b5be-dc57b45b2faf', typeId: 'customer-group'}}
       ]
     }
     { id: 4 }
