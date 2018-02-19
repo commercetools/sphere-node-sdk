@@ -289,7 +289,7 @@ describe 'ProductSync', ->
         version: oldProduct.version
       expect(update).toEqual expected_update
 
-    it 'should create `changePrice` action if price selection is unique', ->
+    it 'should create `changePrice` action based on price selection', ->
       oldProduct =
         id: '123'
         version: 1
