@@ -253,8 +253,17 @@ class ProductUtils extends BaseUtils
           actions.push changeAction if changeAction
         else
           delete price.id # delete the id so it doesn't conflict with other actions
+
           # build changePrice update action with price selection
-          if not _.isArray(price) and _.size(price) and not _.has(price, 'country') and not _.has(price, 'channel') and not _.has(price, 'customerGroup') and not _.isArray(price.value?.currencyCode) and old_variant.prices.length > index
+          # at this point, price must be a non-empty object with unchanged price
+          # selection fields to build the chanePrice action
+          if (
+            not _.isArray(price) and _.size(price) and
+            not _.has(price, 'country') and not _.has(price, 'channel') and
+            not _.has(price, 'customerGroup') and
+            not _.isArray(price.value?.currencyCode) and
+            old_variant.prices.length > index
+          )
             changeAction = @_buildChangePriceAction(old_variant, new_variant, index)
             actions.push changeAction if changeAction
           else if _.size(price)
