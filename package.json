@@ -1,7 +1,7 @@
 {
   "name": "sphere-node-sdk",
   "description": "Officially supported Node.js SDK library for working with the SPHERE.IO HTTP API, with OAuth2 support.",
-  "version": "1.24.0",
+  "version": "1.25.0",
   "homepage": "https://github.com/sphereio/sphere-node-sdk",
   "author": {
     "name": "Nicola Molinari",
@@ -17,7 +17,7 @@
   "license": "MIT",
   "main": "./lib/main",
   "engines": {
-    "node": ">= 0.10.0"
+    "node": ">= 6.0.0"
   },
   "scripts": {
     "commit": "git-cz",
