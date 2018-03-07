@@ -1,3 +1,7 @@
+# ⛔ [Deprecated]
+
+This repo has been deprecated and the code migrated to this [repo](https://github.com/commercetools/nodejs).
+
 ![commercetools logo](https://cdn.rawgit.com/commercetools/press-kit/master/PNG/72DPI/CT%20logo%20horizontal%20RGB%2072dpi.png)
 
 # Node.js SDK
@@ -9,8 +13,6 @@
 [commercetools](https://commercetools.com/) is a cloud-based commerce platform.
 
 Officially supported Node.js SDK library for working with the commercetools<span>&trade;</span> platform HTTP API, with OAuth2 support.
-
-> We are working on a [`v2.0`](https://github.com/sphereio/sphere-node-sdk/tree/rewrite-2.0) version, [more info](docs/MIGRATION-2.0.md) coming soon.
 
 ## Getting Started
 Install the module with `npm install sphere-node-sdk`
