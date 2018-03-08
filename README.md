@@ -1,3 +1,9 @@
+# ⛔ [Deprecated]
+
+This repo has been deprecated and the code migrated to this [repo](https://github.com/commercetools/nodejs).
+
+For migration, please follow this [guide](https://commercetools.github.io/nodejs/sdk/upgrading-from-sphere-node-sdk.html).
+
 ![SPHERE.IO icon](https://admin.sphere.io/assets/images/sphere_logo_rgb_long.png)
 
 # Node.js SDK
@@ -11,9 +17,6 @@
 See roadmap https://github.com/sphereio/sphere-node-sdk/issues/63
 
 # Documentation
-
-_Will follow soon_
-
 
 ### Installation
 
