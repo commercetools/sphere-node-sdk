@@ -2,6 +2,8 @@
 
 This repo has been deprecated and the code migrated to this [repo](https://github.com/commercetools/nodejs).
 
+For migration, please follow this [guide](https://commercetools.github.io/nodejs/sdk/upgrading-from-sphere-node-sdk.html).
+
 ![commercetools logo](https://cdn.rawgit.com/commercetools/press-kit/master/PNG/72DPI/CT%20logo%20horizontal%20RGB%2072dpi.png)
 
 # Node.js SDK
