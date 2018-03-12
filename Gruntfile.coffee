@@ -129,6 +129,7 @@ module.exports = (grunt) ->
   grunt.registerTask 'doc', ['shell:doc']
   grunt.registerTask 'doc:publish', ['build', 'shell:doc', 'shell:doc_publish']
   grunt.registerTask 'build', ['clean', 'coffeelint', 'coffee', 'concat']
+  grunt.registerTask 'lint', ['coffeelint']
   grunt.registerTask 'test', 'Run test with optional target', (target) ->
     suffix = if target then "-#{target}" else ''
     grunt.task.run 'build', "shell:jasmine#{suffix}"
