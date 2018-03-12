@@ -16,6 +16,15 @@ describe 'RepeaterTaskQueue', ->
     @client = new SphereClient sphereConfig
 
 
+  it 'should use default configuration', (done) ->
+    task = new RepeaterTaskQueue()
+    expect(task.repeaterOptions).toBeDefined()
+    expect(task.repeaterOptions.attempts).toBe(50)
+    expect(task.repeaterOptions.timeout).toBe(200)
+    expect(task.repeaterOptions.timeoutType).toBe('v')
+    expect(task.repeaterOptions.retryKeywords).toBeDefined()
+    done()
+
   it 'should finally resolve after four tries', (done) ->
 
     callsMap = {

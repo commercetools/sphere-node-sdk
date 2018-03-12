@@ -38,7 +38,7 @@ retryKeywords = [
 class RepeaterTaskQueue extends TaskQueue
 
 
-  constructor: (options, repeaterOptions) ->
+  constructor: (options = {}, repeaterOptions = {}) ->
     super options
     repeaterOptions = _.defaults repeaterOptions,
       attempts: 50
