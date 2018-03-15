@@ -12,7 +12,13 @@ describe 'gzip compression', ->
 
   afterEach (done) ->
     debug 'About to delete all product types'
-    @client.productTypes.all().fetch()
+    @client.products.all().fetch()
+    .then (payload) =>
+      debug "Deleting #{payload.body.total} products"
+      Promise.all _.map payload.body.results, (product) =>
+        @client.products.byId(product.id).delete(product.version)
+    .then () =>
+      @client.productTypes.all().fetch()
     .then (payload) =>
       debug "Deleting #{payload.body.total} product types"
       Promise.all _.map payload.body.results, (productType) =>
