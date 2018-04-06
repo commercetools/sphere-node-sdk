@@ -11,9 +11,9 @@ module.exports = (grunt) ->
         '# <%= pkg.title || pkg.name %> - v<%= pkg.version %>\n' +
         '# ==============================================================\n' +
         '# Copyright (c) <%= grunt.template.today(\"yyyy\") %> SPHERE.IO\u2122\n' +
-        '# Licensed <%= _.pluck(pkg.licenses, \"type\").join(\", \") %>.\n' +
+        '# Licensed <%= _.map(pkg.licenses, \"type\").join(\", \") %>.\n' +
         '#\n' +
-        '#    <%= _.pluck(pkg.licenses, \"url\").join(\"\\n\") %>\n' +
+        '#    <%= _.map(pkg.licenses, \"url\").join(\"\\n\") %>\n' +
         '*/\n'
 
     coffeelint:
@@ -82,17 +82,17 @@ module.exports = (grunt) ->
         stderr: true
         failOnError: true
       coverage:
-        command: '$(npm bin)/istanbul cover $(npm bin)/jasmine-node --captureExceptions test && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage'
+        command: '$(npm bin)/istanbul cover $(npm bin)/jasmine --stop-on-failure=true test/**/*spec.js && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage'
       jasmine:
-        command: 'jasmine-node --captureExceptions test'
+        command: 'jasmine test/**/*spec.js'
       'jasmine-client':
-        command: 'jasmine-node --captureExceptions test/client'
+        command: 'jasmine test/client/**/*spec.js'
       'jasmine-connect':
-        command: 'jasmine-node --captureExceptions test/connect'
+        command: 'jasmine test/connect/**/*spec.js'
       'jasmine-sync':
-        command: 'jasmine-node --captureExceptions test/sync'
+        command: 'jasmine test/sync/**/*spec.js'
       'jasmine-integration':
-        command: 'jasmine-node --captureExceptions test/integration'
+        command: 'jasmine test/integration/**/*spec.js'
       publish:
         command: 'npm publish'
       doc:
