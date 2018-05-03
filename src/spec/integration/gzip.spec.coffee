@@ -43,9 +43,9 @@ describe 'gzip compression', ->
       gzipReqHeader = results.http.request.headers['accept-encoding']
       gzipResHeader = results.http.response.headers['content-encoding']
       expect(gzipReqHeader).toBeTruthy()
-      expect(gzipReqHeader).toBe 'gzip, deflate'
+      expect(gzipReqHeader).toMatch /gzip/
       expect(gzipResHeader).toBeTruthy()
-      expect(gzipResHeader).toBe 'gzip'
+      expect(gzipResHeader).toMatch /gzip/
       done()
     .catch (error) -> done(_.prettify(error))
   , 20000 # 20 sec
