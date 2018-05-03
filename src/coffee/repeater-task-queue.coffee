@@ -20,6 +20,12 @@ retryKeywords = [
   'read ECONNRESET'
   'getaddrinfo ENOTFOUND'
   'Cannot commit on stream id'
+  'connect ECONNREFUSED'
+  'write ECONNRESET'
+  'connect EHOSTUNREACH'
+  'write EPIPE'
+  'connect ECONNRESET'
+  'Timed out while waiting for handshake'
 ]
 
 # Public: A `RepeaterTaskQueue` adds request repeater on particular response errors
