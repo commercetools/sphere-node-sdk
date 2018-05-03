@@ -102,6 +102,12 @@ describe 'RepeaterTaskQueue', ->
       'read ECONNRESET'
       'getaddrinfo ENOTFOUND'
       'Cannot commit on stream id'
+      'connect ECONNREFUSED'
+      'write ECONNRESET'
+      'connect EHOSTUNREACH'
+      'write EPIPE'
+      'connect ECONNRESET'
+      'Timed out while waiting for handshake'
     ]
     task = new RepeaterTaskQueue {}, {}
     expect(_.isEqual(task.repeaterOptions.retryKeywords, retryKeywords)).toEqual true
