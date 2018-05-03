@@ -43,7 +43,7 @@ describe 'gzip compression', ->
       gzipReqHeader = results.http.request.headers['accept-encoding']
       gzipResHeader = results.http.response.headers['content-encoding']
       expect(gzipReqHeader).toBeTruthy()
-      expect(gzipReqHeader).toBe 'gzip'
+      expect(gzipReqHeader).toBe 'gzip, deflate'
       expect(gzipResHeader).toBeTruthy()
       expect(gzipResHeader).toBe 'gzip'
       done()
