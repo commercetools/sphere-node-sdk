@@ -24,10 +24,12 @@ describe 'CategorySync', ->
       category =
         id: 'c123'
         externalId: 'ext123'
+        key: 'key123'
 
       newCategory =
         id: 'c123'
         externalId: 'ext234'
+        key: 'key234'
         name:
           en: 'my Category'
         slug:
@@ -41,7 +43,7 @@ describe 'CategorySync', ->
 
       update = @sync.buildActions(newCategory, category).getUpdatePayload()
       expect(update).toBeDefined()
-      expect(_.size update.actions).toBe 6
+      expect(_.size update.actions).toBe 7
       expect(update.actions[0].action).toBe 'changeName'
       expect(update.actions[0].name).toEqual { en : 'my Category' }
       expect(update.actions[1].action).toBe 'changeSlug'
@@ -54,6 +56,8 @@ describe 'CategorySync', ->
       expect(update.actions[4].orderHint).toBe '0.9'
       expect(update.actions[5].action).toBe 'setExternalId'
       expect(update.actions[5].externalId).toBe 'ext234'
+      expect(update.actions[6].action).toBe 'setKey'
+      expect(update.actions[6].key).toBe 'key234'
 
     it 'should create only externalId update actions', ->
       category =
