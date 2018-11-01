@@ -72,6 +72,10 @@ actionsList = ->
     {
       action: 'setMetaKeywords'
       key: 'metaKeywords'
+    },
+    {
+      action: 'setKey'
+      key: 'key'
     }
 
   ]
