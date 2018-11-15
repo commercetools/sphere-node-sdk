@@ -224,7 +224,7 @@ class Rest
             debug 'PAGED response: offset %s, count %s', body.offset, body.count
 
             acc = accumulator.concat(body.results)
-            if _.size(body.results) <= limit
+            if _.size(body.results) < limit
               resolve null, response,
                 count: body.total
                 offset: body.offset
