@@ -41,7 +41,7 @@
     "bluebird": "2.9.x",
     "coffeelint": "^1.14.1",
     "commitizen": "^3.0.4",
-    "coveralls": "2.11.x",
+    "coveralls": "^3.0.2",
     "cz-conventional-changelog": "1.1.5",
     "express": "4.16.x",
     "gh-pages": "0.2.x",
