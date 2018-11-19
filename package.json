@@ -53,7 +53,7 @@
     "grunt-contrib-clean": "0.6.0",
     "grunt-contrib-coffee": "0.13.x",
     "grunt-contrib-concat": "0.5.0",
-    "grunt-contrib-watch": "0.6.1",
+    "grunt-contrib-watch": "^1.1.0",
     "grunt-express-server": "0.4.x",
     "grunt-shell": "1.1.x",
     "istanbul": "0.3.x",
