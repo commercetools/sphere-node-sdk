@@ -51,7 +51,7 @@
     "grunt-cli": "^1.2.0",
     "grunt-coffeelint": "0.0.13",
     "grunt-contrib-clean": "0.6.0",
-    "grunt-contrib-coffee": "0.13.x",
+    "grunt-contrib-coffee": "^2.0.0",
     "grunt-contrib-concat": "0.5.0",
     "grunt-contrib-watch": "^1.1.0",
     "grunt-express-server": "0.4.x",
