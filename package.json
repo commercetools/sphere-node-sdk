@@ -40,7 +40,7 @@
     "biscotto": "wizzy25/biscotto#v2.4.1",
     "bluebird": "2.9.x",
     "coffeelint": "^1.14.1",
-    "commitizen": "2.5.0",
+    "commitizen": "^3.0.4",
     "coveralls": "2.11.x",
     "cz-conventional-changelog": "1.1.5",
     "express": "4.16.x",
