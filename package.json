@@ -47,7 +47,7 @@
     "gh-pages": "^2.0.1",
     "ghooks": "1.0.3",
     "grunt": "^1.0.3",
-    "grunt-bump": "0.0.13",
+    "grunt-bump": "^0.8.0",
     "grunt-cli": "^1.2.0",
     "grunt-coffeelint": "0.0.13",
     "grunt-contrib-clean": "0.6.0",
