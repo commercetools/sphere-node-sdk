@@ -11,9 +11,9 @@ module.exports = (grunt) ->
         '# <%= pkg.title || pkg.name %> - v<%= pkg.version %>\n' +
         '# ==============================================================\n' +
         '# Copyright (c) <%= grunt.template.today(\"yyyy\") %> SPHERE.IO\u2122\n' +
-        '# Licensed <%= _.pluck(pkg.licenses, \"type\").join(\", \") %>.\n' +
+        '# Licensed <%= _.map(pkg.licenses, \"type\").join(\", \") %>.\n' +
         '#\n' +
-        '#    <%= _.pluck(pkg.licenses, \"url\").join(\"\\n\") %>\n' +
+        '#    <%= _.map(pkg.licenses, \"url\").join(\"\\n\") %>\n' +
         '*/\n'
 
     coffeelint:
