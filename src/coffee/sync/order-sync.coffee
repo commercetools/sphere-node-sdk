@@ -25,7 +25,6 @@ class OrderSync extends BaseSync
 
   # Public: Construct a `OrderSync` object.
   constructor: ->
-    super()
     # Override base utils
     @_utils = new OrderUtils
 

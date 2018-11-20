@@ -29,7 +29,6 @@ class ProductSync extends BaseSync
 
   # Public: Construct a `ProductSync` object.
   constructor: ->
-    super()
     # Override base utils
     @_utils = new ProductUtils
 

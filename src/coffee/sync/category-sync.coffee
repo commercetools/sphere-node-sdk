@@ -22,7 +22,6 @@ class CategorySync extends BaseSync
 
   # Public: Construct a `CategorySync` object.
   constructor: ->
-    super()
     # Override base utils
     @_utils = new CategoryUtil()
 
