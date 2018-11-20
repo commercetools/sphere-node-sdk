@@ -25,6 +25,7 @@ class InventorySync extends BaseSync
 
   # Public: Construct a `InventorySync` object.
   constructor: ->
+    super()
     # Override base utils
     @_utils = new InventoryUtils
 

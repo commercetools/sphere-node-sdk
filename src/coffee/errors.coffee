@@ -6,6 +6,7 @@ class HttpError extends Error
   # message - {String} The error message
   # body - {Object} A JSON object with optional information to pass to the error, like the error response body
   constructor: (@message, @body = {}) ->
+    super()
     @name = "HttpError"
     @statusCode = @body.statusCode if @body.statusCode
     @code = @statusCode
@@ -19,6 +20,7 @@ class SphereError extends Error
   # message - {String} The error message
   # body - {Object} A JSON object with optional information to pass to the error, like the error response body
   constructor: (@message, @body = {}) ->
+    super()
     @name = "SphereError"
     @statusCode = @body.statusCode if @body.statusCode
     @code = @statusCode
@@ -32,6 +34,7 @@ class GraphQLError extends Error
   # message - {String} The error message
   # body - {Object} A JSON object with optional information to pass to the error, like the error response body
   constructor: (@message, @body = {}) ->
+    super()
     @name = "GraphQLError"
     @statusCode = @body.statusCode if @body.statusCode
     @code = @statusCode
@@ -45,6 +48,7 @@ class BadRequest extends SphereError
   # message - {String} The error message
   # body - {Object} A JSON object with optional information to pass to the error, like the error response body
   constructor: (@message, @body = {}) ->
+    super()
     @name = "BadRequest"
     @statusCode = 400
     @code = @statusCode
@@ -58,6 +62,7 @@ class Unauthorized extends SphereError
   # message - {String} The error message
   # body - {Object} A JSON object with optional information to pass to the error, like the error response body
   constructor: (@message, @body = {}) ->
+    super()
     @name = "Unauthorized"
     @statusCode = 401
     @code = @statusCode
@@ -71,6 +76,7 @@ class NotFound extends SphereError
   # message - {String} The error message
   # body - {Object} A JSON object with optional information to pass to the error, like the error response body
   constructor: (@message, @body = {}) ->
+    super()
     @name = "NotFound"
     @statusCode = 404
     @code = @statusCode
@@ -84,6 +90,7 @@ class MethodNotAllowed extends SphereError
   # message - {String} The error message
   # body - {Object} A JSON object with optional information to pass to the error, like the error response body
   constructor: (@message, @body = {}) ->
+    super()
     @name = "MethodNotAllowed"
     @statusCode = 405
     @code = @statusCode
@@ -97,6 +104,7 @@ class ConcurrentModification extends SphereError
   # message - {String} The error message
   # body - {Object} A JSON object with optional information to pass to the error, like the error response body
   constructor: (@message, @body = {}) ->
+    super()
     @name = "ConcurrentModification"
     @statusCode = 409
     @code = @statusCode
@@ -110,6 +118,7 @@ class InternalServerError extends SphereError
   # message - {String} The error message
   # body - {Object} A JSON object with optional information to pass to the error, like the error response body
   constructor: (@message, @body = {}) ->
+    super()
     @name = "InternalServerError"
     @statusCode = 500
     @code = @statusCode
@@ -123,6 +132,7 @@ class ServiceUnavailable extends SphereError
   # message - {String} The error message
   # body - {Object} A JSON object with optional information to pass to the error, like the error response body
   constructor: (@message, @body = {}) ->
+    super()
     @name = "ServiceUnavailable"
     @statusCode = 503
     @code = @statusCode
