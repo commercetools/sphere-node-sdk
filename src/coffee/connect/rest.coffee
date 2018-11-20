@@ -209,7 +209,7 @@ class Rest
       wherePredicate = if params.where then {where: params.where} else {}
       if lastId
         lastIdPredicate = encodeURIComponent("id > \"#{lastId}\"")
-        wherePredicate = {where: if params.where then "#{params.where}%20and%20#{lastIdPredicate}" else lastIdPredicate}
+        wherePredicate = {where: if params.where then "(#{params.where})%20and%20#{lastIdPredicate}" else lastIdPredicate}
       debug 'PAGED where predicate: %j', wherePredicate
 
       queryParams = _.stringifyQuery(_.extend({}, params,

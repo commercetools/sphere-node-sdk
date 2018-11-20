@@ -276,7 +276,7 @@ describe 'Rest', ->
             withTotal: false
           expect(@pagedRest._doRequest.calls[1].args[0].uri).toEqual "https://api.sphere.io/#{Config.project_key}/products?" + _.stringifyQuery
             limit: 50
-            where: encodeURIComponent('sku in ("123", "456") and id > "_5050"')
+            where: encodeURIComponent('(sku in ("123", "456")) and id > "_5050"')
             expand: 'productType'
             staged: true
             sort: encodeURIComponent('createdAt asc')
