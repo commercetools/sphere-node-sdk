@@ -369,6 +369,32 @@ describe 'ProductUtils', ->
 
       expect(delta).toEqual expected_delta
 
+  describe ':: getRemovedVariants', ->
+
+    it 'should throw an error when removing a variant without id and sku', ->
+      oldVariants = [
+        {
+          # no id or sku
+          key: 'newVar'
+        }
+      ]
+      newVariants = []
+
+      expect( () => @utils.getRemovedVariants(newVariants, oldVariants))
+        .toThrow new Error('ProductSync does need at least one of "id" or "sku" to generate a remove action')
+
+  describe ':: buildChangeMasterVariantAction', ->
+
+    it 'should throw an error when changing a masterVariant without id and sku', ->
+      newMasterVariant =
+        key: 'newVar'
+
+      oldMasterVariant =
+        key: 'oldVar'
+
+      expect( () => @utils.buildChangeMasterVariantAction(newMasterVariant, oldMasterVariant))
+        .toThrow new Error('ProductSync needs at least one of "id" or "sku" to generate changeMasterVariant update action')
+
   describe ':: buildVariantBaseAction', ->
 
     it 'should build update actions for variant base properties', ->
