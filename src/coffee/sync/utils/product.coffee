@@ -1,6 +1,7 @@
 debug = require('debug')('sphere-sync:product')
 _ = require 'underscore'
 _.mixin require 'underscore-mixins'
+isNil = require 'lodash.isnil'
 BaseUtils = require './base'
 
 REGEX_NUMBER = new RegExp /^\d+$/
@@ -65,9 +66,13 @@ class ProductUtils extends BaseUtils
         _.each variant.images, (image, index) ->
           image._MATCH_CRITERIA = "#{index}"
 
+    isProduct = (obj) -> obj.masterVariant or obj.variants
+
     patch = (obj, arrayIndexFieldName) ->
       debug 'patching product: %j', obj
-      _allVariants = allVariants(obj)
+
+      # check if we are patching product or variant
+      _allVariants = if isProduct(obj) then allVariants(obj) else [obj]
       _.each _allVariants, (variant, index) ->
         return variant unless variant?
         patchPrices variant
@@ -82,7 +87,7 @@ class ProductUtils extends BaseUtils
     patch new_obj, '_NEW_ARRAY_INDEX'
     super old_obj, new_obj
 
-  # Private: map base product actions
+  # Map base product actions
   #
   # diff - {Object} The result of diff from `jsondiffpatch`
   # old_obj - {Object} The existing product
@@ -95,7 +100,57 @@ class ProductUtils extends BaseUtils
       actions.push action if action
     actions
 
-  # Private: map categoryOrderHints actions
+  matchesByIdOrKeyOrSku: (variant1, variant2) ->
+    variant1 and variant2 and (
+      (!isNil(variant1.id) and variant1.id == variant2.id) or
+      (!isNil(variant1.key) and variant1.key == variant2.key) or
+      (!isNil(variant1.sku) and variant1.sku == variant2.sku)
+    )
+
+  findVariantInList: (variant, variantList) ->
+    variantList.find (testedVariant) =>
+      @matchesByIdOrKeyOrSku(testedVariant, variant)
+
+  buildChangeMasterVariantAction: (newMasterVariant, oldMasterVariant) ->
+    if newMasterVariant and oldMasterVariant and not @matchesByIdOrKeyOrSku(newMasterVariant, oldMasterVariant)
+      action =
+        action: 'changeMasterVariant'
+
+      if newMasterVariant.id
+        action.variantId = newMasterVariant.id
+      else if newMasterVariant.sku
+        action.sku = newMasterVariant.sku
+      else
+        throw new Error(
+          'ProductSync needs at least one of "id" or "sku" to generate changeMasterVariant update action'
+        )
+      action
+
+  getRemovedVariants: (newVariants, oldVariants) ->
+    actions = []
+    oldVariants.forEach (oldVariant) =>
+      if not @findVariantInList(oldVariant, newVariants)
+        removeAction =
+          action: 'removeVariant'
+
+        if oldVariant.id
+          removeAction.id = oldVariant.id
+        else if oldVariant.sku
+          removeAction.sku = oldVariant.sku
+        else
+          throw new Error('ProductSync does need at least one of "id" or "sku" to generate a remove action')
+
+        actions.push(removeAction)
+    actions
+
+  generateAddVariants: (newVariant) ->
+    addAction = _.deepClone(newVariant)
+    delete addAction._NEW_ARRAY_INDEX
+    delete addAction._MATCH_CRITERIA
+    addAction.action = 'addVariant'
+    addAction
+
+  # Map categoryOrderHints actions
   #
   # diff - {Object} The result of diff from `jsondiffpatch`
   # old_obj - {Object} The existing product
@@ -126,48 +181,14 @@ class ProductUtils extends BaseUtils
           orderHint: orderHint
     actions
 
-  # Private: map product variants
+  # Map product references
   #
   # diff - {Object} The result of diff from `jsondiffpatch`
   # old_obj - {Object} The existing product
   # new_obj - {Object} The product to be updated
   #
   # Returns {Array} The list of actions, or empty if there are none
-  actionsMapVariants: (diff, old_obj, new_obj) ->
-    actions = []
-    if diff.variants
-      _.each diff.variants, (variant, key) ->
-        if REGEX_NUMBER.test(key) and _.isArray(variant)
-          newVariant = new_obj.variants[key]
-          action =
-            action: 'addVariant'
-          action.sku = newVariant.sku if newVariant.sku
-          action.key = newVariant.key if newVariant.key
-          action.prices = _.map(newVariant.prices, (price) ->
-            delete price._MATCH_CRITERIA
-            price
-          ) if newVariant.prices
-          action.attributes = newVariant.attributes if newVariant.attributes
-          actions.push action
-        else if REGEX_UNDERSCORE_NUMBER.test(key) and _.isArray(variant)
-          if _.size(variant) is 3 and variant[2] is 3
-             # only array move - do nothing
-          else
-            action =
-              action: 'removeVariant'
-              id: variant[0].id
-            actions.push action
-
-    _.sortBy actions, (a) -> a.action is 'addVariant'
-
-  # Private: map product references
-  #
-  # diff - {Object} The result of diff from `jsondiffpatch`
-  # old_obj - {Object} The existing product
-  # new_obj - {Object} The product to be updated
-  #
-  # Returns {Array} The list of actions, or empty if there are none
-  actionsMapReferences: (diff, old_obj, new_obj) ->
+  actionsMapReferences: (diff, new_obj, old_obj) ->
     actions = []
     if diff.taxCategory
       if _.isArray diff.taxCategory
@@ -204,7 +225,7 @@ class ProductUtils extends BaseUtils
           actions.push action
     actions
 
-  # Private: map product categories
+  # Map product categories
   #
   # diff - {Object} The result of diff from `jsondiffpatch`
   #
@@ -228,14 +249,14 @@ class ProductUtils extends BaseUtils
 
     _.sortBy actions, (a) -> a.action is 'addToCategory'
 
-  # Private: map product prices
+  # Map product prices
   #
-  # diff - {Object} The result of diff from `jsondiffpatch`
-  # old_obj - {Object} The existing product
-  # new_obj - {Object} The product to be updated
+  # prices - {Object} The result of variant diff from `jsondiffpatch`
+  # oldVariant - {Object} The existing variant
+  # newVariant - {Object} The new variant
   #
   # Returns {Array} The list of actions, or empty if there are none
-  actionsMapPrices: (diff, old_obj, new_obj) ->
+  actionsMapVariantPrices: (prices, oldVariant, newVariant) ->
     actions = []
 
     _mapVariantPrices = (price, key, old_variant, new_variant) =>
@@ -272,96 +293,25 @@ class ProductUtils extends BaseUtils
             addAction = @_buildAddPriceAction(old_variant, new_variant, index)
             actions.push addAction if addAction
 
-    if diff.masterVariant
-      prices = diff.masterVariant.prices
-      if prices
-        _.each prices, (value, key) ->
-          _mapVariantPrices(value, key, old_obj.masterVariant, new_obj.masterVariant)
+    if prices
+      _.each prices, (value, key) ->
+        _mapVariantPrices(value, key, oldVariant, newVariant)
 
-    if diff.variants
-      _.each diff.variants, (variant, key) =>
-        if REGEX_NUMBER.test key
-          if not _.isArray variant
-            index_old = variant._EXISTING_ARRAY_INDEX[0]
-            index_new = variant._NEW_ARRAY_INDEX[0]
-            if not _.isArray variant
-              prices = variant.prices
-              if prices
-                _.each prices, (value, key) ->
-                  oldVariant = old_obj.variants[index_old]
-                  newVariant = new_obj.variants[index_new]
-                  _mapVariantPrices(value, key, oldVariant, newVariant)
+    actions
 
-    # this will sort the actions ranked in asc order (first 'remove' then 'add')
-    _.sortBy actions, (a) -> a.action is 'addPrice'
-
-  # Private: map product attributes
+  # Map product attributes
   #
-  # diff - {Object} The result of diff from `jsondiffpatch`
-  # old_obj - {Object} The existing product
-  # new_obj - {Object} The product to be updated
-  # sameForAllAttributeNames - {Array} A list of names of `SameForAll` attributes
+  # attributes - {Object} The result of variant diff from `jsondiffpatch`
+  # oldVariant - {Object} The existing variant
   #
   # Returns {Array} The list of actions, or empty if there are none
-  actionsMapAttributes: (diff, old_obj, new_obj, sameForAllAttributeNames = []) ->
+  buildVariantBaseAction: (diff, oldVariant) ->
     # TODO: validate ProductType between products
-    actions = []
-    masterVariant = diff.masterVariant
-    if masterVariant
-      skuAction = @_buildSkuActions(masterVariant, old_obj.masterVariant)
-      actions.push(skuAction) if skuAction?
-      # variant key update action
-      keyAction = @_buildVariantKeyActions(masterVariant, old_obj.masterVariant)
-      actions.push(keyAction) if keyAction?
-      attributes = masterVariant.attributes
-      attrActions = @_buildVariantAttributesActions attributes, old_obj.masterVariant, new_obj.masterVariant, sameForAllAttributeNames
-      actions = actions.concat attrActions
 
-    if diff.variants
-      _.each diff.variants, (variant, key) =>
-        if REGEX_NUMBER.test key
-          if not _.isArray variant
-            index_old = variant._EXISTING_ARRAY_INDEX[0]
-            index_new = variant._NEW_ARRAY_INDEX[0]
-            skuAction = @_buildSkuActions(variant, old_obj.variants[index_old])
-            actions.push(skuAction) if skuAction?
-            # variant key update action
-            keyAction = @_buildVariantKeyActions(variant, old_obj.variants[index_old])
-            actions.push(keyAction) if keyAction?
-            attributes = variant.attributes
-            attrActions = @_buildVariantAttributesActions attributes, old_obj.variants[index_old], new_obj.variants[index_new], sameForAllAttributeNames
-            actions = actions.concat attrActions
-
-    # Ensure we have each action only once per product. Use string representation of object to allow `===` on array objects
-    _.unique actions, (action) -> JSON.stringify action
-
-  # Private: map product images
-  #
-  # diff - {Object} The result of diff from `jsondiffpatch`
-  # old_obj - {Object} The existing product
-  # new_obj - {Object} The product to be updated
-  #
-  # Returns {Array} The list of actions, or empty if there are none
-  actionsMapImages: (diff, old_obj, new_obj) ->
-    actions = []
-    masterVariant = diff.masterVariant
-    if masterVariant
-      mActions = @_buildVariantImagesAction masterVariant.images, old_obj.masterVariant, new_obj.masterVariant
-      actions = actions.concat mActions
-
-    if diff.variants
-      _.each diff.variants, (variant, key) =>
-        if REGEX_NUMBER.test key
-          if not _.isArray variant
-            index_old = variant._EXISTING_ARRAY_INDEX[0]
-            index_new = variant._NEW_ARRAY_INDEX[0]
-            if not _.isArray variant
-              vActions = @_buildVariantImagesAction variant.images, old_obj.variants[index_old], new_obj.variants[index_new]
-              actions = actions.concat vActions
-
-    # this will sort the actions ranked in asc order (first 'remove' then 'add')
-    _.sortBy actions, (a) -> a.action is 'addExternalImage'
-
+    []
+      .concat(@_buildSkuActions(diff, oldVariant))
+      .concat(@_buildVariantKeyActions(diff, oldVariant))
+      .filter(Boolean)
 
   _buildBaseAttributesAction: (item, diff, old_obj) ->
     key = item.key
@@ -448,7 +398,7 @@ class ProductUtils extends BaseUtils
         price: price
     action
 
-  _buildVariantImagesAction: (images, old_variant, new_variant) ->
+  buildVariantImagesAction: (images, old_variant, new_variant) ->
     actions = []
     _.each images, (image, key) =>
       delete image._MATCH_CRITERIA
@@ -586,7 +536,7 @@ class ProductUtils extends BaseUtils
       delete action.variantId
     action
 
-  _buildVariantAttributesActions: (attributes, old_variant, new_variant, sameForAllAttributeNames) ->
+  buildVariantAttributesActions: (attributes, old_variant, new_variant, sameForAllAttributeNames) ->
     actions = []
     if attributes
       _.each attributes, (value, key) =>

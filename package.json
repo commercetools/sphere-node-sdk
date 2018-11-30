@@ -28,6 +28,7 @@
   "dependencies": {
     "debug": "2.6.9",
     "jsondiffpatch": "0.2.4",
+    "lodash.isnil": "^4.0.0",
     "request": "^2.88.0",
     "sphere-node-utils": "^1.0.0",
     "underscore-mixins": "^0.1.4"
