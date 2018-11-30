@@ -369,7 +369,7 @@ describe 'ProductUtils', ->
 
       expect(delta).toEqual expected_delta
 
-  describe ':: getRemovedVariants', ->
+  describe ':: buildRemoveVariantActions', ->
 
     it 'should throw an error when removing a variant without id and sku', ->
       oldVariants = [
@@ -380,7 +380,7 @@ describe 'ProductUtils', ->
       ]
       newVariants = []
 
-      expect( () => @utils.getRemovedVariants(newVariants, oldVariants))
+      expect( () => @utils.buildRemoveVariantActions(newVariants, oldVariants))
         .toThrow new Error('ProductSync does need at least one of "id" or "sku" to generate a remove action')
 
   describe ':: buildChangeMasterVariantAction', ->

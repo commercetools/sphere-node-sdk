@@ -55,7 +55,7 @@ class ProductSync extends BaseSync
         # TODO check action group for base variant update actions - original was attributes
         .concat @_mapActionOrNot 'attributes', => @_utils.buildVariantBaseAction(diff, oldVariant)
         .concat @_mapActionOrNot 'attributes', => @_utils.buildVariantAttributesActions(diff.attributes, oldVariant, newVariant, @sameForAllAttributeNames)
-        .concat @_mapActionOrNot 'prices', => @_utils.actionsMapVariantPrices(diff.prices, oldVariant, newVariant)
+        .concat @_mapActionOrNot 'prices', => @_utils.buildVariantPriceActions(diff.prices, oldVariant, newVariant)
         .concat @_mapActionOrNot 'images', => @_utils.buildVariantImagesAction(diff.images, oldVariant, newVariant)
         .filter(Boolean)
     actions
@@ -82,7 +82,7 @@ class ProductSync extends BaseSync
     )
 
     # generate remove variant actions
-    removeVariantActions = @_utils.getRemovedVariants(newVariants, oldVariants)
+    removeVariantActions = @_utils.buildRemoveVariantActions(newVariants, oldVariants)
 
     # generate set attribute/image/assets actions for all changed variants
     # if variant does not exist yet, create also addVariant action
@@ -92,7 +92,7 @@ class ProductSync extends BaseSync
 
       # if variant does not exist, add it
       if not oldVariant
-        addVariantActions.push(@_utils.generateAddVariants(newVariant))
+        addVariantActions.push(@_utils.buildAddVariantActions(newVariant))
       else
         variantUpdateActions.push.apply(variantUpdateActions, @_diffVariant(newVariant, oldVariant))
 

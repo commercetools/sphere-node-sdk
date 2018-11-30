@@ -126,7 +126,7 @@ class ProductUtils extends BaseUtils
         )
       action
 
-  getRemovedVariants: (newVariants, oldVariants) ->
+  buildRemoveVariantActions: (newVariants, oldVariants) ->
     actions = []
     oldVariants.forEach (oldVariant) =>
       if not @findVariantInList(oldVariant, newVariants)
@@ -143,7 +143,7 @@ class ProductUtils extends BaseUtils
         actions.push(removeAction)
     actions
 
-  generateAddVariants: (newVariant) ->
+  buildAddVariantActions: (newVariant) ->
     addAction = _.deepClone(newVariant)
     delete addAction._NEW_ARRAY_INDEX
     delete addAction._MATCH_CRITERIA
@@ -256,7 +256,7 @@ class ProductUtils extends BaseUtils
   # newVariant - {Object} The new variant
   #
   # Returns {Array} The list of actions, or empty if there are none
-  actionsMapVariantPrices: (prices, oldVariant, newVariant) ->
+  buildVariantPriceActions: (prices, oldVariant, newVariant) ->
     actions = []
 
     _mapVariantPrices = (price, key, old_variant, new_variant) =>
