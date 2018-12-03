@@ -287,9 +287,6 @@ describe 'ProductSync', ->
 
       expect(=> @sync.buildActions(newProduct, oldProduct)).toThrow new Error 'A variant must either have an ID or an SKU.'
 
-#    it 'should handle removing variant', ->
-#    it 'should handle adding variant', ->
-
   describe ':: config', ->
 
     it 'should build white/black-listed actions update', ->

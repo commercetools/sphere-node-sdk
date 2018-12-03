@@ -251,12 +251,12 @@ class ProductUtils extends BaseUtils
 
   # Map product prices
   #
-  # prices - {Object} The result of variant diff from `jsondiffpatch`
+  # pricesDiff - {Object} The result of variant.prices diff from `jsondiffpatch`
   # oldVariant - {Object} The existing variant
   # newVariant - {Object} The new variant
   #
   # Returns {Array} The list of actions, or empty if there are none
-  buildVariantPriceActions: (prices, oldVariant, newVariant) ->
+  buildVariantPriceActions: (pricesDiff, oldVariant, newVariant) ->
     actions = []
 
     _mapVariantPrices = (price, key, old_variant, new_variant) =>
@@ -293,15 +293,15 @@ class ProductUtils extends BaseUtils
             addAction = @_buildAddPriceAction(old_variant, new_variant, index)
             actions.push addAction if addAction
 
-    if prices
-      _.each prices, (value, key) ->
+    if pricesDiff
+      _.each pricesDiff, (value, key) ->
         _mapVariantPrices(value, key, oldVariant, newVariant)
 
     actions
 
   # Map product attributes
   #
-  # attributes - {Object} The result of variant diff from `jsondiffpatch`
+  # diff - {Object} The result of variant diff from `jsondiffpatch`
   # oldVariant - {Object} The existing variant
   #
   # Returns {Array} The list of actions, or empty if there are none

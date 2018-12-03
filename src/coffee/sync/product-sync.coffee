@@ -52,7 +52,6 @@ class ProductSync extends BaseSync
 
     if diff
       actions = []
-        # TODO check action group for base variant update actions - original was attributes
         .concat @_mapActionOrNot 'attributes', => @_utils.buildVariantBaseAction(diff, oldVariant)
         .concat @_mapActionOrNot 'attributes', => @_utils.buildVariantAttributesActions(diff.attributes, oldVariant, newVariant, @sameForAllAttributeNames)
         .concat @_mapActionOrNot 'prices', => @_utils.buildVariantPriceActions(diff.prices, oldVariant, newVariant)
