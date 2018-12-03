@@ -383,6 +383,12 @@ describe 'ProductUtils', ->
       expect( () => @utils.buildRemoveVariantActions(newVariants, oldVariants))
         .toThrow new Error('ProductSync does need at least one of "id" or "sku" to generate a remove action')
 
+  describe ':: buildVariantPriceActions', ->
+
+    it 'should return an empty array when no price diff is provided', ->
+      actions = @utils.buildVariantPriceActions(null, {}, {})
+      expect(actions).toEqual []
+
   describe ':: buildChangeMasterVariantAction', ->
 
     it 'should throw an error when changing a masterVariant without id and sku', ->
