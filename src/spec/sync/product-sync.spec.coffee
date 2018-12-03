@@ -766,14 +766,14 @@ describe 'ProductSync', ->
             }
           ]
 
-        update = @sync.buildActions(newProduct, oldProduct).getUpdatePayload()
+        actions = @sync.buildActions(newProduct, oldProduct).getUpdateActions()
         expected_update =
           [
             { action: 'setAttribute', variantId: 1, name: 'colors', value: [ 'pink', 'orange' ] }
             { action: 'setAttribute', variantId: 3, name: 'colors' }
             { action: 'setAttribute', variantId: 4, name: 'colors', value: [ 'gray' ] }
           ]
-        expect(update.actions).toEqual expected_update
+        expect(actions).toEqual expected_update
 
       it 'should build update actions', ->
         oldProduct =
@@ -804,9 +804,9 @@ describe 'ProductSync', ->
             { id: 100, sku: 'SKUwins' }
           ]
 
-        update = @sync.buildActions(newProduct, oldProduct).getUpdatePayload()
+        actions = @sync.buildActions(newProduct, oldProduct).getUpdateActions()
 
-        expect(update.actions).toEqual [
+        expect(actions).toEqual [
           { action: 'removeVariant', id: 4 }
           { action: 'removeVariant', id: 5 }
           { action: 'setSku', variantId: 2, sku: 'SKUadded' }
@@ -1542,9 +1542,9 @@ describe 'ProductSync', ->
           { id: 2, sku: 'v2', attributes: [{name: 'foo', value: 'another value'}] }
           { id: 4, sku: 'v4', attributes: [{name: 'foo', value: 'yet another'}] }
         ]
-      update = @sync.buildActions(newProduct, oldProduct, ['new attribute']).getUpdatePayload()
+      actions = @sync.buildActions(newProduct, oldProduct, ['new attribute']).getUpdateActions()
 
-      actionNames = update.actions.map((a) -> a.action)
+      actionNames = actions.map((a) -> a.action)
       setAttrPos = actionNames.indexOf('setAttributeInAllVariants')
       removeVariantPos = actionNames.indexOf('removeVariant')
       addVariantPos = actionNames.indexOf('addVariant')

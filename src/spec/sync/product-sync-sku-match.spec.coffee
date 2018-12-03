@@ -21,22 +21,16 @@ describe 'ProductUtils SKU based matching', ->
     opts = [
       {type: 'variants', group: 'white'}
     ]
-    update = sync.config(opts).buildActions(newProduct, oldProduct).getUpdatePayload()
-    if not update
-      expect([]).toEqual expectedVariantActions
-    else
-      expect(update.actions).toEqual expectedVariantActions
+    actions = sync.config(opts).buildActions(newProduct, oldProduct).getUpdateActions()
+    expect(actions).toEqual expectedVariantActions
 
   compareAttributeActions = (sync, oldProduct, newProduct, expectedAttributeActions) ->
     opts = [
       {type: 'variants', group: 'black'}
       {type: 'attributes', group: 'white'}
     ]
-    update = sync.config(opts).buildActions(newProduct, oldProduct).getUpdatePayload()
-    if not update
-      expect([]).toEqual expectedAttributeActions
-    else
-      expect(update.actions).toEqual expectedAttributeActions
+    actions = sync.config(opts).buildActions(newProduct, oldProduct).getUpdateActions()
+    expect(actions).toEqual expectedAttributeActions
 
   it 'should work with a new variant', ->
     @newProduct.variants = [
