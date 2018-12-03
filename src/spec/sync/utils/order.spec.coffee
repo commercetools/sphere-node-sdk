@@ -132,6 +132,10 @@ describe 'OrderUtils', ->
 
       expect(update).toEqual [action]
 
+    it 'should return an empty array when no diff provided', ->
+      update = @utils.actionsMapReturnInfo(null, _.deepClone ORDER)
+      expect(update).toEqual []
+
     it 'should return required action for syncing shipmentState (returnInfo)', ->
       orderChanged = _.deepClone @order
       orderChanged.returnInfo[0].items[0].shipmentState = 'Returned'

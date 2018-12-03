@@ -383,6 +383,20 @@ describe 'ProductUtils', ->
       expect( () => @utils.buildRemoveVariantActions(newVariants, oldVariants))
         .toThrow new Error('ProductSync does need at least one of "id" or "sku" to generate a remove action')
 
+    it 'should throw an error when removing a variant without id and sku', ->
+      oldVariants = [
+        {
+          # no id - use sku in removeVariant action
+          sku: 'newVar'
+        }
+      ]
+      newVariants = []
+
+      actions = @utils.buildRemoveVariantActions(newVariants, oldVariants)
+      expect(actions).toEqual([
+        { action: 'removeVariant', sku: 'newVar' }
+      ])
+
   describe ':: buildVariantPriceActions', ->
 
     it 'should return an empty array when no price diff is provided', ->
