@@ -434,6 +434,18 @@ describe 'ProductUtils', ->
       ]
       expect(update).toEqual expected_update
 
+  describe ':: _buildAddExternalImageAction', ->
+
+    it 'should not process an undefined image when adding', ->
+      update = @utils._buildAddExternalImageAction({}, null)
+      expect(update).toEqual undefined
+
+  describe ':: _buildRemoveImageAction', ->
+
+    it 'should not process an undefined image when removing', ->
+      update = @utils._buildRemoveImageAction({}, null)
+      expect(update).toEqual undefined
+
   describe ':: actionsMapBase', ->
 
     it 'should diff if basic attribute is undefined', ->
