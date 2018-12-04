@@ -9,3 +9,4 @@ coverage
 .coveralls.yml
 create_config.sh
 *.coffee
+.idea
