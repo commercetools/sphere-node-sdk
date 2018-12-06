@@ -102,14 +102,26 @@ class ProductUtils extends BaseUtils
 
   matchesByIdOrKeyOrSku: (variant1, variant2) ->
     variant1 and variant2 and (
-      (!isNil(variant1.id) and variant1.id == variant2.id) or
+      (!isNil(variant1.sku) and variant1.sku == variant2.sku) or
       (!isNil(variant1.key) and variant1.key == variant2.key) or
-      (!isNil(variant1.sku) and variant1.sku == variant2.sku)
+      (!isNil(variant1.id) and variant1.id == variant2.id)
     )
 
+  matchesById: (variant1, variant2) ->
+    variant1 and variant2 and not isNil(variant1.id) and variant1.id == variant2.id
+
+  matchesByKey: (variant1, variant2) ->
+    variant1 and variant2 and not isNil(variant1.key) and variant1.key == variant2.key
+
+  matchesBySku: (variant1, variant2) ->
+    variant1 and variant2 and not isNil(variant1.sku) and variant1.sku == variant2.sku
+
+  # match variant against variants in list - match first by sku, then by key and then by id
   findVariantInList: (variant, variantList) ->
-    variantList.find (testedVariant) =>
-      @matchesByIdOrKeyOrSku(testedVariant, variant)
+    return variantList.find((oldVariant) => @matchesBySku(variant, oldVariant)) or
+      variantList.find((oldVariant) => @matchesByKey(variant, oldVariant)) or
+      variantList.find((oldVariant) => @matchesById(variant, oldVariant)) or
+      undefined # if not found, return undefined
 
   buildChangeMasterVariantAction: (newMasterVariant, oldMasterVariant) ->
     if newMasterVariant and oldMasterVariant and not @matchesByIdOrKeyOrSku(newMasterVariant, oldMasterVariant)

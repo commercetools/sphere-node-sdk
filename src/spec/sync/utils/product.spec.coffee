@@ -397,6 +397,92 @@ describe 'ProductUtils', ->
         { action: 'removeVariant', sku: 'newVar' }
       ])
 
+  describe ':: findVariantInList', ->
+
+    it 'should find variant using sku', ->
+      oldVariants = [
+        {
+          id: 1
+          sku: 'sku1'
+        },
+        {
+          id: 2
+          sku: 'sku2'
+        }
+      ]
+      newVariant = {
+        id: 2,
+        sku: 'sku1'
+      }
+
+      actions = @utils.findVariantInList(newVariant, oldVariants)
+      expect(actions).toEqual({
+        id: 1
+        sku: 'sku1'
+      })
+
+    it 'should find variant using id', ->
+      oldVariants = [
+        {
+          id: 1
+          sku: 'sku1'
+        },
+        {
+          id: 2,
+          key: 'key'
+        }
+      ]
+      newVariant = {
+        id: 2,
+      }
+
+      actions = @utils.findVariantInList(newVariant, oldVariants)
+      expect(actions).toEqual({
+        id: 2
+        key: 'key'
+      })
+
+    it 'should find variant using key', ->
+      oldVariants = [
+        {
+          id: 1
+          sku: 'key1'
+        },
+        {
+          id: 2,
+          key: 'key2'
+        }
+      ]
+      newVariant = {
+        id: 1,
+        key: 'key2',
+      }
+
+      actions = @utils.findVariantInList(newVariant, oldVariants)
+      expect(actions).toEqual({
+        id: 2
+        key: 'key2'
+      })
+
+    it 'should not find an unknown variant', ->
+      oldVariants = [
+        {
+          id: 1
+          sku: 'key1'
+        },
+        {
+          id: 2,
+          key: 'key2'
+        }
+      ]
+      newVariant = {
+        id: 29,
+        key: 'key3',
+      }
+
+      actions = @utils.findVariantInList(newVariant, oldVariants)
+      expect(actions).toEqual(undefined)
+
   describe ':: buildVariantPriceActions', ->
 
     it 'should return an empty array when no price diff is provided', ->
