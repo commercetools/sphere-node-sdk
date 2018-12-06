@@ -101,11 +101,9 @@ class ProductUtils extends BaseUtils
     actions
 
   matchesByIdOrKeyOrSku: (variant1, variant2) ->
-    variant1 and variant2 and (
-      (!isNil(variant1.sku) and variant1.sku == variant2.sku) or
-      (!isNil(variant1.key) and variant1.key == variant2.key) or
-      (!isNil(variant1.id) and variant1.id == variant2.id)
-    )
+    @matchesBySku(variant1, variant2) or
+      @matchesByKey(variant1, variant2) or
+      @matchesById(variant1, variant2)
 
   matchesById: (variant1, variant2) ->
     variant1 and variant2 and not isNil(variant1.id) and variant1.id == variant2.id
