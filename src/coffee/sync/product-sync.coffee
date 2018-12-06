@@ -126,7 +126,7 @@ class ProductSync extends BaseSync
 
     # divide removeVariant actions to two groups - one for masterVariant, second for normal variants
     partitionedRemoveActionsByMasterVariant = _.partition variantActionGroups.removeVariantActions, (action) =>
-      oldObj.masterVariant and @_utils.matchesByIdOrKeyOrSku(action, oldObj.masterVariant)
+      oldObj.masterVariant and @_utils.matchesBySkuOrKeyOrId(action, oldObj.masterVariant)
 
     allActions.push @_mapActionOrNot 'variants', => partitionedRemoveActionsByMasterVariant[1] # normal variants
     allActions.push variantActionGroups.variantUpdateActions # already white/black listed from @_diffVariant

@@ -100,7 +100,7 @@ class ProductUtils extends BaseUtils
       actions.push action if action
     actions
 
-  matchesByIdOrKeyOrSku: (variant1, variant2) ->
+  matchesBySkuOrKeyOrId: (variant1, variant2) ->
     @matchesBySku(variant1, variant2) or
       @matchesByKey(variant1, variant2) or
       @matchesById(variant1, variant2)
@@ -122,7 +122,7 @@ class ProductUtils extends BaseUtils
       undefined # if not found, return undefined
 
   buildChangeMasterVariantAction: (newMasterVariant, oldMasterVariant) ->
-    if newMasterVariant and oldMasterVariant and not @matchesByIdOrKeyOrSku(newMasterVariant, oldMasterVariant)
+    if newMasterVariant and oldMasterVariant and not @matchesBySkuOrKeyOrId(newMasterVariant, oldMasterVariant)
       action =
         action: 'changeMasterVariant'
 
