@@ -100,26 +100,34 @@ class ProductUtils extends BaseUtils
       actions.push action if action
     actions
 
-  matchesByIdOrKeyOrSku: (variant1, variant2) ->
-    variant1 and variant2 and (
-      (!isNil(variant1.id) and variant1.id == variant2.id) or
-      (!isNil(variant1.key) and variant1.key == variant2.key) or
-      (!isNil(variant1.sku) and variant1.sku == variant2.sku)
-    )
+  matchesBySkuOrKeyOrId: (variant1, variant2) ->
+    @matchesBySku(variant1, variant2) or @matchesByKey(variant1, variant2) or @matchesById(variant1, variant2)
 
+  matchesById: (variant1, variant2) ->
+    variant1 and variant2 and not isNil(variant1.id) and variant1.id == variant2.id
+
+  matchesByKey: (variant1, variant2) ->
+    variant1 and variant2 and not isNil(variant1.key) and variant1.key == variant2.key
+
+  matchesBySku: (variant1, variant2) ->
+    variant1 and variant2 and not isNil(variant1.sku) and variant1.sku == variant2.sku
+
+  # match variant against variants in list - match first by sku, then by key and then by id
   findVariantInList: (variant, variantList) ->
-    variantList.find (testedVariant) =>
-      @matchesByIdOrKeyOrSku(testedVariant, variant)
+    return variantList.find((oldVariant) => @matchesBySku(variant, oldVariant)) or
+      variantList.find((oldVariant) => @matchesByKey(variant, oldVariant)) or
+      variantList.find((oldVariant) => @matchesById(variant, oldVariant)) or
+      undefined # if not found, return undefined
 
   buildChangeMasterVariantAction: (newMasterVariant, oldMasterVariant) ->
-    if newMasterVariant and oldMasterVariant and not @matchesByIdOrKeyOrSku(newMasterVariant, oldMasterVariant)
+    if newMasterVariant and oldMasterVariant and not @matchesBySkuOrKeyOrId(newMasterVariant, oldMasterVariant)
       action =
         action: 'changeMasterVariant'
 
-      if newMasterVariant.id
-        action.variantId = newMasterVariant.id
-      else if newMasterVariant.sku
+      if newMasterVariant.sku
         action.sku = newMasterVariant.sku
+      else if newMasterVariant.id
+        action.variantId = newMasterVariant.id
       else
         throw new Error(
           'ProductSync needs at least one of "id" or "sku" to generate changeMasterVariant update action'
@@ -133,10 +141,10 @@ class ProductUtils extends BaseUtils
         removeAction =
           action: 'removeVariant'
 
-        if oldVariant.id
-          removeAction.id = oldVariant.id
-        else if oldVariant.sku
+        if oldVariant.sku
           removeAction.sku = oldVariant.sku
+        else if oldVariant.id
+          removeAction.id = oldVariant.id
         else
           throw new Error('ProductSync does need at least one of "id" or "sku" to generate a remove action')
 
