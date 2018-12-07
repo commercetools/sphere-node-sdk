@@ -124,10 +124,10 @@ class ProductUtils extends BaseUtils
       action =
         action: 'changeMasterVariant'
 
-      if newMasterVariant.id
-        action.variantId = newMasterVariant.id
-      else if newMasterVariant.sku
+      if newMasterVariant.sku
         action.sku = newMasterVariant.sku
+      else if newMasterVariant.id
+        action.variantId = newMasterVariant.id
       else
         throw new Error(
           'ProductSync needs at least one of "id" or "sku" to generate changeMasterVariant update action'
@@ -141,10 +141,10 @@ class ProductUtils extends BaseUtils
         removeAction =
           action: 'removeVariant'
 
-        if oldVariant.id
-          removeAction.id = oldVariant.id
-        else if oldVariant.sku
+        if oldVariant.sku
           removeAction.sku = oldVariant.sku
+        else if oldVariant.id
+          removeAction.id = oldVariant.id
         else
           throw new Error('ProductSync does need at least one of "id" or "sku" to generate a remove action')
 

@@ -178,7 +178,7 @@ describe 'ProductSync', ->
             sku: 'sku3'
           }, {
             action: 'removeVariant',
-            id: 1
+            sku: 'sku1'
           }
         ]
         version: oldProduct.version
@@ -208,7 +208,7 @@ describe 'ProductSync', ->
       update = @sync.buildActions(newProduct, oldProduct).getUpdatePayload()
       expected_update =
         actions: [
-          { action: 'changeMasterVariant', variantId: 2 }
+          { action: 'changeMasterVariant', sku: 'sku2' }
         ]
         version: oldProduct.version
       expect(update).toEqual expected_update
@@ -804,7 +804,7 @@ describe 'ProductSync', ->
         actions = @sync.buildActions(newProduct, oldProduct).getUpdateActions()
 
         expect(actions).toEqual [
-          { action: 'removeVariant', id: 4 }
+          { action: 'removeVariant', sku: 'v4' }
           { action: 'removeVariant', id: 5 }
           { action: 'setSku', variantId: 2, sku: 'SKUadded' }
           { action: 'setAttribute', variantId: 3, name: 'foo', value: 'CHANGED' }
