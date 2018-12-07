@@ -54,7 +54,7 @@ describe 'ProductUtils SKU based matching', ->
     ]
 
     compareVariantActions @sync, @oldProduct, @newProduct,
-      [{ action: 'removeVariant', id: 7 }]
+      [{ action: 'removeVariant', sku: 'vX' }]
 
     compareAttributeActions @sync, @oldProduct, @newProduct, []
 
@@ -109,7 +109,7 @@ describe 'ProductUtils SKU based matching', ->
     ]
 
     compareVariantActions @sync, @oldProduct, @newProduct,  [
-      { action: 'removeVariant', id: 2 }
+      { action: 'removeVariant', sku: 'v2' }
       { action: 'addVariant', sku: 'v4', attributes: [{ name: 'attrib4', value: 'val4' }] }
       { action: 'addVariant', sku: 'v6', attributes: [{ name: 'attrib6', value: 'val6' }] }
     ]
