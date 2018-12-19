@@ -44,27 +44,27 @@ class InventoryUtils extends BaseUtils
         actions.push a
     actions
 
-  # Private: map inventory expected restockableInDays
+  # Private: map inventory restockableInDays
   #
   # diff - {Object} The result of diff from `jsondiffpatch`
-  # old_obj - {Object} The existing inventory
   #
   # Returns {Array} The list of actions, or empty if there are none
-  actionsMapExpectedRestockableInDays: (diff) ->
+  actionsMapRestockableInDays: (diff) ->
     actions = []
-    if diff.expectedRestockableInDays
-      if _.isArray(diff.expectedRestockableInDays)
-        size = _.size(diff.expectedRestockableInDays)
+    if diff.restockableInDays
+      if _.isArray(diff.restockableInDays)
+        size = _.size(diff.restockableInDays)
         a =
           action: 'setRestockableInDays'
         if size is 1
-          a.expectedRestockableInDays = diff.expectedRestockableInDays[0]
+          a.restockableInDays = diff.restockableInDays[0]
         else if size is 2
-          oldVal = diff.expectedRestockableInDays[0]
-          newVal = diff.expectedRestockableInDays[1]
+          oldVal = diff.restockableInDays[0]
+          newVal = diff.restockableInDays[1]
           diffVal = newVal - oldVal
           if diffVal
-            a.expectedRestockableInDays = newVal
+            a.restockableInDays = newVal
+        # Delete case (size is 3) - we do not set any restockableInDays
         actions.push a
     actions
 
