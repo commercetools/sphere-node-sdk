@@ -44,6 +44,30 @@ class InventoryUtils extends BaseUtils
         actions.push a
     actions
 
+  # Private: map inventory expected restockableInDays
+  #
+  # diff - {Object} The result of diff from `jsondiffpatch`
+  # old_obj - {Object} The existing inventory
+  #
+  # Returns {Array} The list of actions, or empty if there are none
+  actionsMapExpectedRestockableInDays: (diff) ->
+    actions = []
+    if diff.expectedRestockableInDays
+      if _.isArray(diff.expectedRestockableInDays)
+        size = _.size(diff.expectedRestockableInDays)
+        a =
+          action: 'setRestockableInDays'
+        if size is 1
+          a.expectedRestockableInDays = diff.expectedRestockableInDays[0]
+        else if size is 2
+          oldVal = diff.expectedRestockableInDays[0]
+          newVal = diff.expectedRestockableInDays[1]
+          diffVal = newVal - oldVal
+          if diffVal
+            a.expectedRestockableInDays = newVal
+        actions.push a
+    actions
+
   # Private: map inventory custom type and fields
   #
   # diff - {Object} The result of diff from `jsondiffpatch`
