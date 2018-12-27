@@ -7,6 +7,7 @@ InventoryUtils = require './utils/inventory'
 # Action groups for products are:
 # - `quantity`
 # - `expectedDelivery`
+# - `restockableInDays`
 # - `custom`
 #
 # Examples
@@ -21,7 +22,7 @@ InventoryUtils = require './utils/inventory'
 #     # do nothing
 class InventorySync extends BaseSync
 
-  @actionGroups = ['quantity', 'expectedDelivery', 'custom']
+  @actionGroups = ['quantity', 'expectedDelivery', 'restockableInDays', 'custom']
 
   # Public: Construct a `InventorySync` object.
   constructor: ->
@@ -32,6 +33,7 @@ class InventorySync extends BaseSync
     allActions = []
     allActions.push @_mapActionOrNot 'quantity', => @_utils.actionsMapQuantity(diff)
     allActions.push @_mapActionOrNot 'expectedDelivery', => @_utils.actionsMapExpectedDelivery(diff, old_obj)
+    allActions.push @_mapActionOrNot 'restockableInDays', => @_utils.actionsMapRestockableInDays(diff)
     allActions.push @_mapActionOrNot 'custom', => @_utils.actionsMapCustom(diff, old_obj, new_obj)
     _.flatten allActions
 

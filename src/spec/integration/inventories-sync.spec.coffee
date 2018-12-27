@@ -103,6 +103,77 @@ describe 'Integration Inventories Sync', ->
     .catch (error) -> done(_.prettify(error))
   , 60000
 
+  it 'should add restockableInDays', (done) ->
+    ie =
+      sku: 'xyz1'
+      quantityOnStock: 10
+      version: 1
+    ieChanged =
+      sku: 'xyz1'
+      quantityOnStock: 10
+      restockableInDays: 30
+      version: 1
+    @client.inventoryEntries.create(ie)
+    .then (result) =>
+      expect(result.statusCode).toBe 201
+      expect(result.body.restockableInDays).toBeUndefined()
+      syncedActions = @sync.buildActions(ieChanged, result.body)
+      debug 'About to add to inventory with synced actions (restockableInDays add)'
+      @client.inventoryEntries.byId(syncedActions.getUpdateId()).update(syncedActions.getUpdatePayload())
+    .then (result) ->
+      expect(result.statusCode).toBe 200
+      expect(result.body.quantityOnStock).toBe 10
+      expect(result.body.restockableInDays).toBe 30
+      done()
+    .catch (error) -> done(_.prettify(error))
+
+  it 'should update restockableInDays', (done) ->
+    ie =
+      sku: 'xyz2'
+      quantityOnStock: 3
+      restockableInDays: 30
+      version: 1
+    ieChanged =
+      sku: 'xyz2'
+      quantityOnStock: 3
+      restockableInDays: 7
+      version: 1
+    @client.inventoryEntries.create(ie)
+    .then (result) =>
+      expect(result.statusCode).toBe 201
+      expect(result.body.restockableInDays).toBe 30
+      syncedActions = @sync.buildActions(ieChanged, result.body)
+      debug 'About to update inventory with synced actions (restockableInDays update)'
+      @client.inventoryEntries.byId(syncedActions.getUpdateId()).update(syncedActions.getUpdatePayload())
+    .then (result) ->
+      expect(result.statusCode).toBe 200
+      expect(result.body.quantityOnStock).toBe 3
+      expect(result.body.restockableInDays).toBe 7
+      done()
+    .catch (error) -> done(_.prettify(error))
+
+  it 'should remove restockableInDays', (done) ->
+    ie =
+      sku: 'xyz3'
+      quantityOnStock: 5
+      restockableInDays: 7
+    ieChanged =
+      sku: 'xyz3'
+      quantityOnStock: 5
+    @client.inventoryEntries.create(ie)
+    .then (result) =>
+      expect(result.statusCode).toBe 201
+      expect(result.body.restockableInDays).toBe 7
+      syncedActions = @sync.buildActions(ieChanged, result.body)
+      debug 'About to update inventory with synced actions (restockableInDays remove)'
+      @client.inventoryEntries.byId(syncedActions.getUpdateId()).update(syncedActions.getUpdatePayload())
+    .then (result) ->
+      expect(result.statusCode).toBe 200
+      expect(result.body.quantityOnStock).toBe 5
+      expect(result.body.restockableInDays).not.toBeDefined()
+      done()
+    .catch (error) -> done(_.prettify(error))
+
   describe 'custom type and field handling', (done) ->
     customType = undefined
     inventoryEntry = undefined
