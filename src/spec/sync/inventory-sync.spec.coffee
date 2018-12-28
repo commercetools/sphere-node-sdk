@@ -110,6 +110,52 @@ describe 'InventorySync', ->
       expect(update.actions[0].action).toBe 'setExpectedDelivery'
       expect(update.actions[0].expectedDelivery).toBeUndefined()
 
+    iit 'should add restockableInDays', ->
+      ieNew =
+        sku: 'ijk'
+        quantityOnStock: 5
+        restockableInDays: 7
+        version: 1
+      ieOld =
+        sku: 'ijk'
+        quantityOnStock: 5
+        version: 1
+      update = @sync.buildActions(ieNew, ieOld).getUpdatePayload()
+      expect(update).toBeDefined()
+      expect(update.actions[0].action).toBe 'setRestockableInDays'
+      expect(update.actions[0].restockableInDays).toBe 7
+
+    iit 'should update restockableInDays', ->
+      ieNew =
+        sku: 'oik'
+        quantityOnStock: 0
+        restockableInDays: 3
+        version: 1
+      ieOld =
+        sku: 'oik'
+        quantityOnStock: 0
+        restockableInDays: 7
+        version: 1
+      update = @sync.buildActions(ieNew, ieOld).getUpdatePayload()
+      expect(update).toBeDefined()
+      expect(update.actions[0].action).toBe 'setRestockableInDays'
+      expect(update.actions[0].restockableInDays).toBe 3
+
+    iit 'should remove restockableInDays', ->
+      ieNew =
+        sku: 'oik'
+        quantityOnStock: 0
+        version: 1
+      ieOld =
+        sku: 'oik'
+        quantityOnStock: 0
+        version: 1
+        restockableInDays: 10
+      update = @sync.buildActions(ieNew, ieOld).getUpdatePayload()
+      expect(update).toBeDefined()
+      expect(update.actions[0].action).toBe 'setRestockableInDays'
+      expect(update.actions[0].restockableInDays).toBeUndefined()
+
     it 'no differences in restockableInDays', ->
       ie =
         id: '234'
