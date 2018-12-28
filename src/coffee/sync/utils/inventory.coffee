@@ -54,7 +54,6 @@ class InventoryUtils extends BaseUtils
     if diff.restockableInDays
       if _.isArray(diff.restockableInDays)
         size = _.size(diff.restockableInDays)
-        console.log size
         a =
           action: 'setRestockableInDays'
         if size is 2
