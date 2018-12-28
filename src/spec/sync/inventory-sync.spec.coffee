@@ -110,7 +110,7 @@ describe 'InventorySync', ->
       expect(update.actions[0].action).toBe 'setExpectedDelivery'
       expect(update.actions[0].expectedDelivery).toBeUndefined()
 
-    iit 'should add restockableInDays', ->
+    it 'should add restockableInDays', ->
       ieNew =
         sku: 'ijk'
         quantityOnStock: 5
@@ -125,7 +125,7 @@ describe 'InventorySync', ->
       expect(update.actions[0].action).toBe 'setRestockableInDays'
       expect(update.actions[0].restockableInDays).toBe 7
 
-    iit 'should update restockableInDays', ->
+    it 'should update restockableInDays', ->
       ieNew =
         sku: 'oik'
         quantityOnStock: 0
@@ -141,7 +141,7 @@ describe 'InventorySync', ->
       expect(update.actions[0].action).toBe 'setRestockableInDays'
       expect(update.actions[0].restockableInDays).toBe 3
 
-    iit 'should remove restockableInDays', ->
+    it 'should remove restockableInDays', ->
       ieNew =
         sku: 'oik'
         quantityOnStock: 0
