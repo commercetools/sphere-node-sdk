@@ -52,20 +52,15 @@ class InventoryUtils extends BaseUtils
   actionsMapRestockableInDays: (diff) ->
     actions = []
     if diff.restockableInDays
-      if _.isArray(diff.restockableInDays)
-        size = _.size(diff.restockableInDays)
-        a =
-          action: 'setRestockableInDays'
-        if size is 1
-          a.restockableInDays = diff.restockableInDays[0]
-        else if size is 2
-          oldVal = diff.restockableInDays[0]
-          newVal = diff.restockableInDays[1]
-          diffVal = newVal - oldVal
-          if diffVal
-            a.restockableInDays = newVal
-        # Delete case (size is 3) - we do not set any restockableInDays
-        actions.push a
+      if _.isArray(diff.restockableInDays) and _.size(diff.restockableInDays) is 2
+        oldVal = diff.restockableInDays[0]
+        newVal = diff.restockableInDays[1]
+        diffVal = newVal - oldVal
+        if diffVal
+          a =
+            action: 'setRestockableInDays'
+            restockableInDays: newVal
+          actions.push a
     actions
 
   # Private: map inventory custom type and fields
