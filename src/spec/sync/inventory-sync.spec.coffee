@@ -110,7 +110,7 @@ describe 'InventorySync', ->
       expect(update.actions[0].action).toBe 'setExpectedDelivery'
       expect(update.actions[0].expectedDelivery).toBeUndefined()
 
-    iit 'no differences in restockableInDays', ->
+    it 'no differences in restockableInDays', ->
       ie =
         id: '234'
         sku: 'bcd'
@@ -121,7 +121,7 @@ describe 'InventorySync', ->
       updateId = @sync.buildActions(ie, ie).getUpdateId()
       expect(updateId).toBe '234'
 
-    iit 'more differences in restockableInDays', ->
+    it 'more differences in restockableInDays', ->
       ieNew =
         sku: 'ijk'
         quantityOnStock: 3
@@ -135,7 +135,7 @@ describe 'InventorySync', ->
       expect(update.actions[0].action).toBe 'setRestockableInDays'
       expect(update.actions[0].restockableInDays).toBe 20
 
-    iit 'less differences in restockableInDays', ->
+    it 'less differences in restockableInDays', ->
       ieNew =
         sku: 'oik'
         quantityOnStock: 3
