@@ -110,51 +110,44 @@ describe 'InventorySync', ->
       expect(update.actions[0].action).toBe 'setExpectedDelivery'
       expect(update.actions[0].expectedDelivery).toBeUndefined()
 
-    it 'should add restockableInDays', ->
+    iit 'no differences in restockableInDays', ->
+      ie =
+        id: '234'
+        sku: 'bcd'
+        quantityOnStock: 3
+        restockableInDays: 8
+      update = @sync.buildActions(ie, ie).getUpdatePayload()
+      expect(update).toBeUndefined()
+      updateId = @sync.buildActions(ie, ie).getUpdateId()
+      expect(updateId).toBe '234'
+
+    iit 'more differences in restockableInDays', ->
       ieNew =
         sku: 'ijk'
-        quantityOnStock: 5
-        restockableInDays: 7
-        version: 1
+        quantityOnStock: 3
+        restockableInDays: 20
       ieOld =
         sku: 'ijk'
-        quantityOnStock: 5
-        version: 1
+        quantityOnStock: 3
+        restockableInDays: 4
       update = @sync.buildActions(ieNew, ieOld).getUpdatePayload()
       expect(update).toBeDefined()
       expect(update.actions[0].action).toBe 'setRestockableInDays'
-      expect(update.actions[0].restockableInDays).toBe 7
+      expect(update.actions[0].restockableInDays).toBe 20
 
-    it 'should update restockableInDays', ->
+    iit 'less differences in restockableInDays', ->
       ieNew =
         sku: 'oik'
-        quantityOnStock: 0
-        restockableInDays: 3
-        version: 1
+        quantityOnStock: 3
+        restockableInDays: 5
       ieOld =
         sku: 'oik'
-        quantityOnStock: 0
-        restockableInDays: 7
-        version: 1
+        quantityOnStock: 3
+        restockableInDays: 15
       update = @sync.buildActions(ieNew, ieOld).getUpdatePayload()
       expect(update).toBeDefined()
       expect(update.actions[0].action).toBe 'setRestockableInDays'
-      expect(update.actions[0].restockableInDays).toBe 3
-
-    it 'should remove restockableInDays', ->
-      ieNew =
-        sku: 'oik'
-        quantityOnStock: 0
-        version: 1
-      ieOld =
-        sku: 'oik'
-        quantityOnStock: 0
-        version: 1
-        restockableInDays: 10
-      update = @sync.buildActions(ieNew, ieOld).getUpdatePayload()
-      expect(update).toBeDefined()
-      expect(update.actions[0].action).toBe 'setRestockableInDays'
-      expect(update.actions[0].restockableInDays).toBeUndefined()
+      expect(update.actions[0].restockableInDays).toBe 5
 
     describe 'actionsMapCustom', ->
       ieNew =
