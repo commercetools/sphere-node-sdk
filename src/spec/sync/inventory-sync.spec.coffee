@@ -156,6 +156,45 @@ describe 'InventorySync', ->
       expect(update.actions[0].action).toBe 'setRestockableInDays'
       expect(update.actions[0].restockableInDays).toBeUndefined()
 
+    it 'no differences in restockableInDays', ->
+      ie =
+        id: '234'
+        sku: 'bcd'
+        quantityOnStock: 3
+        restockableInDays: 8
+      update = @sync.buildActions(ie, ie).getUpdatePayload()
+      expect(update).toBeUndefined()
+      updateId = @sync.buildActions(ie, ie).getUpdateId()
+      expect(updateId).toBe '234'
+
+    it 'more differences in restockableInDays', ->
+      ieNew =
+        sku: 'ijk'
+        quantityOnStock: 3
+        restockableInDays: 20
+      ieOld =
+        sku: 'ijk'
+        quantityOnStock: 3
+        restockableInDays: 4
+      update = @sync.buildActions(ieNew, ieOld).getUpdatePayload()
+      expect(update).toBeDefined()
+      expect(update.actions[0].action).toBe 'setRestockableInDays'
+      expect(update.actions[0].restockableInDays).toBe 20
+
+    it 'less differences in restockableInDays', ->
+      ieNew =
+        sku: 'oik'
+        quantityOnStock: 3
+        restockableInDays: 5
+      ieOld =
+        sku: 'oik'
+        quantityOnStock: 3
+        restockableInDays: 15
+      update = @sync.buildActions(ieNew, ieOld).getUpdatePayload()
+      expect(update).toBeDefined()
+      expect(update.actions[0].action).toBe 'setRestockableInDays'
+      expect(update.actions[0].restockableInDays).toBe 5
+
     describe 'actionsMapCustom', ->
       ieNew =
         sku: 'abc'

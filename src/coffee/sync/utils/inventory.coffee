@@ -64,8 +64,8 @@ class InventoryUtils extends BaseUtils
           diffVal = newVal - oldVal
           if diffVal
             a.restockableInDays = newVal
-        # Delete case (size is 3) - we do not set any restockableInDays
-        actions.push a
+      # Delete case (size is 3) - we do not set any restockableInDays
+      actions.push a
     actions
 
   # Private: map inventory custom type and fields
