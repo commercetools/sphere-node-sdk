@@ -26,7 +26,10 @@ class CategorySync extends BaseSync
     @_utils = new CategoryUtil()
 
   _doMapActions: (diff, new_obj, old_obj) ->
-    actions = @_utils.actionsMap diff, new_obj
+    actions = []
+    actions.push @_utils.actionsMap diff, new_obj
+    actions.push @_utils.actionsMapCustomFields new_obj, old_obj
+    _.flatten actions
 
   _doUpdate: ->
     @_client.categories.byId(@_data.updateId).update(@_data.update)
