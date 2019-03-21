@@ -50,7 +50,7 @@ class CategoryUtils extends BaseUtils
             action: 'setCustomField'
             name: name
 
-          if val
+          if not _.isUndefined(val)
             action.value = JSON.parse(JSON.stringify(val))
 
           actions.push action
@@ -58,7 +58,7 @@ class CategoryUtils extends BaseUtils
 
       # handle removed fields
       _.mapObject(oldCustom.fields, (val, name) =>
-        if not newCustom.fields[name]
+        if _.isUndefined(newCustom.fields[name])
           actions.push
             action: 'setCustomField'
             name: name

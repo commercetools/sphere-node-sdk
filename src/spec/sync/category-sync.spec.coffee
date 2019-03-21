@@ -224,6 +224,7 @@ describe 'CategorySync', ->
             id: 'customTypeId'
           fields:
             customFieldName: 'value'
+            booleanAttribute: true
 
       newCategory =
         id: 'c123'
@@ -234,15 +235,26 @@ describe 'CategorySync', ->
             id: 'customTypeId'
           fields:
             customFieldName: 'changedValue'
+            booleanAttribute: false
 
       update = @sync.buildActions(newCategory, category).getUpdatePayload()
       expect(update).toBeDefined()
 
-      expect(_.size update.actions).toBe 1
-      expect(update.actions[0]).toEqual
+      expect(_.size update.actions).toBe 2
+
+      actionsByName = _.indexBy(update.actions, 'name')
+
+      expect(actionsByName.customFieldName).toBeDefined()
+      expect(actionsByName.customFieldName).toEqual
         action: 'setCustomField'
         name: 'customFieldName'
         value: 'changedValue'
+
+      expect(actionsByName.booleanAttribute).toBeDefined()
+      expect(actionsByName.booleanAttribute).toEqual
+        action: 'setCustomField'
+        name: 'booleanAttribute'
+        value: false
 
     it 'should remove custom field using setCustomField update action', ->
       category =
