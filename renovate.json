@@ -1,0 +1,11 @@
+{
+  "extends": [
+    "config:base",
+    ":preserveSemverRanges",
+    ":automergeMinor",
+    "group:allNonMajor",
+    ":prHourlyLimitNone",
+    ":prConcurrentLimitNone",
+    ":automergeBranchMergeCommit"
+  ]
+}
