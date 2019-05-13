@@ -25,7 +25,7 @@ describe 'Integration GraphQL', ->
       @client.channels.save(newChannel()),
       @client.channels.save(newChannel())
     ]
-    .spread (ch1, ch2) =>
+    .then ([ch1, ch2]) =>
       @client.graphql.query
         query: """
 query Sphere {
