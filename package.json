@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "biscotto": "wizzy25/biscotto#v2.4.1",
-    "bluebird": "2.9.x",
+    "bluebird": "3.5.x",
     "coffeelint": "^1.14.1",
     "commitizen": "^3.0.4",
     "coveralls": "^3.0.2",
