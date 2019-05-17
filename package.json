@@ -51,7 +51,7 @@
     "grunt-bump": "^0.8.0",
     "grunt-cli": "^1.2.0",
     "grunt-coffeelint": "0.0.16",
-    "grunt-contrib-clean": "0.7.0",
+    "grunt-contrib-clean": "2.0.0",
     "grunt-contrib-coffee": "github:daern91/grunt-contrib-coffee",
     "grunt-contrib-concat": "1.0.1",
     "grunt-contrib-watch": "^1.1.0",
