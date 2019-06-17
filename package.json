@@ -30,7 +30,7 @@
     "jsondiffpatch": "0.3.11",
     "lodash.isnil": "^4.0.0",
     "request": "^2.88.0",
-    "sphere-node-utils": "^1.0.0",
+    "sphere-node-utils": "^1.0.2",
     "underscore-mixins": "^0.1.4"
   },
   "peerDependencies": {
@@ -38,16 +38,16 @@
     "underscore": ">=1.8.0"
   },
   "devDependencies": {
-    "biscotto": "wizzy25/biscotto#v2.4.1",
+    "biscotto": "github:daern91/biscotto",
     "bluebird": "3.5.x",
     "coffeelint": "^2.0.0",
-    "commitizen": "^3.0.4",
+    "commitizen": "^3.1.1",
     "coveralls": "^3.0.2",
     "cz-conventional-changelog": "2.1.0",
     "express": "4.17.x",
     "gh-pages": "^2.0.1",
     "ghooks": "2.0.4",
-    "grunt": "^1.0.3",
+    "grunt": "^1.0.4",
     "grunt-bump": "^0.8.0",
     "grunt-cli": "^1.2.0",
     "grunt-coffeelint": "0.0.16",
