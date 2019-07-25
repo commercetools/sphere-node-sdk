@@ -52,3 +52,8 @@ describe 'Utils', ->
     ], (o) ->
       it "should get time in milliseconds for '#{o.type}'", ->
         expect(Utils.getTime(o.amount, o.type)).toBe o.expected_time
+
+  describe ':: getVersion', ->
+
+    it "should return the current version of the sphere node sdk", ->
+      expect(Utils.getVersion()).toBe process.env.npm_package_version

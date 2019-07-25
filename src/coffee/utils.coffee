@@ -72,3 +72,10 @@ module.exports =
   _censorHeaderObj: (header) ->
     header.Authorization = "Bearer **********"
     return header
+
+  ###*
+   * Returns the version of this SDK 
+   * @return {Object} the version number as determined from package.json
+  ###
+  getVersion: () ->
+    return process.env.npm_package_version
