@@ -1,4 +1,5 @@
 _ = require 'underscore'
+appRoot = require('app-root-path')
 
 module.exports =
 
@@ -78,4 +79,5 @@ module.exports =
    * @return {Object} the version number as determined from package.json
   ###
   getVersion: () ->
-    return process.env.npm_package_version
+    pjson = require appRoot + '/package.json'
+    return pjson.version

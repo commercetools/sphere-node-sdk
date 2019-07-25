@@ -1,5 +1,6 @@
 _ = require 'underscore'
 Utils = require '../lib/utils'
+appRoot = require('app-root-path')
 
 describe 'Utils', ->
 
@@ -56,4 +57,5 @@ describe 'Utils', ->
   describe ':: getVersion', ->
 
     it "should return the current version of the sphere node sdk", ->
-      expect(Utils.getVersion()).toBe process.env.npm_package_version
+      pjson = require appRoot + '/package.json'
+      expect(Utils.getVersion()).toBe pjson.version

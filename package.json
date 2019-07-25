@@ -26,6 +26,7 @@
     "test": "grunt coverage"
   },
   "dependencies": {
+    "app-root-path": "^2.2.1",
     "debug": "4.1.1",
     "jsondiffpatch": "0.3.11",
     "lodash.isnil": "^4.0.0",
