@@ -59,3 +59,4 @@ describe 'Utils', ->
     it "should return the current version of the sphere node sdk", ->
       pjson = require appRoot + '/package.json'
       expect(Utils.getVersion()).toBe pjson.version
+      expect(Utils.getVersion()).toMatch(/^(\d+\.)?(\d+\.)?(\*|\d+)$/)
