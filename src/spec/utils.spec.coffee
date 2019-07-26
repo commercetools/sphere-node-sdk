@@ -1,6 +1,6 @@
 _ = require 'underscore'
 Utils = require '../lib/utils'
-appRoot = require('app-root-path')
+Semver = require 'semver'
 
 describe 'Utils', ->
 
@@ -57,6 +57,6 @@ describe 'Utils', ->
   describe ':: getVersion', ->
 
     it "should return the current version of the sphere node sdk", ->
-      pjson = require appRoot + '/package.json'
+      pjson = require '../package.json'
       expect(Utils.getVersion()).toBe pjson.version
-      expect(Utils.getVersion()).toMatch(/^(\d+\.)?(\d+\.)?(\*|\d+)$/)
+      expect(Semver.valid(Utils.getVersion())).toBeString
