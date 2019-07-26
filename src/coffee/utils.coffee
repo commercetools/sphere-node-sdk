@@ -75,9 +75,9 @@ module.exports =
     return header
 
   ###*
-   * Returns the version of this SDK 
+   * Returns the version of this SDK
    * @return {Object} the version number as determined from package.json
   ###
-  getVersion: () ->
+  getVersion: ->
     pjson = require appRoot + '/package.json'
     return pjson.version
