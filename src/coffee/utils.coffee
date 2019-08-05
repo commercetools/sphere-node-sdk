@@ -72,3 +72,11 @@ module.exports =
   _censorHeaderObj: (header) ->
     header.Authorization = "Bearer **********"
     return header
+
+  ###*
+   * Returns the version of this SDK
+   * @return {Object} the version number as determined from package.json
+  ###
+  getVersion: ->
+    pjson = require '../package.json'
+    return pjson.version

@@ -17,9 +17,11 @@ For migration, please follow this [guide](https://commercetools.github.io/nodejs
 Officially supported Node.js SDK library for working with the commercetools<span>&trade;</span> platform HTTP API, with OAuth2 support.
 
 ## Getting Started
+
 Install the module with `npm install sphere-node-sdk`
 
 ## Documentation
+
 Check out the [JSDoc](http://sphereio.github.io/sphere-node-sdk/).
 
 The module exposes some libraries which can be either used alone or together
@@ -28,6 +30,6 @@ The module exposes some libraries which can be either used alone or together
 - `Rest` - a low-level (callback-based) client to connect to the SPHERE.IO HTTP APIs
 - `*Sync` - a collection of utils to build update actions
 
-
 ## License
+
 Licensed under the [MIT license](LICENSE-MIT).
