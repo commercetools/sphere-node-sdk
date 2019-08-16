@@ -9,3 +9,4 @@ module.exports =
   TaskQueue: require './task-queue'
   RepeaterTaskQueue: require './repeater-task-queue'
   Errors: require './errors'
+  Utils: require './utils'
