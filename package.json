@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "biscotto": "github:daern91/biscotto",
-    "bluebird": "3.5.x",
+    "bluebird": "3.7.x",
     "coffeelint": "^2.0.0",
     "commitizen": "^4.0.0",
     "coveralls": "^3.0.2",
