@@ -59,7 +59,7 @@
     "grunt-shell": "3.0.x",
     "istanbul": "^0.4.5",
     "jasmine-node": "github:daern91/jasmine-node",
-    "semver": "^6.3.0",
+    "semver": "^7.0.0",
     "sphere-coffeelint": "git://github.com/sphereio/sphere-coffeelint.git#master",
     "underscore": "1.9.x",
     "validate-commit-msg": "2.14.0"
