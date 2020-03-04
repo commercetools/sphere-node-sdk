@@ -124,14 +124,7 @@ class ProductUtils extends BaseUtils
       action =
         action: 'changeMasterVariant'
 
-      if newMasterVariant.sku
-        action.sku = newMasterVariant.sku
-      else if newMasterVariant.id
-        action.variantId = newMasterVariant.id
-      else
-        throw new Error(
-          'ProductSync needs at least one of "id" or "sku" to generate changeMasterVariant update action'
-        )
+      @_setSkuOrVariantIdToUpdateAction(newMasterVariant, action)
       action
 
   buildRemoveVariantActions: (newVariants, oldVariants) ->
@@ -402,8 +395,8 @@ class ProductUtils extends BaseUtils
       delete price._MATCH_CRITERIA
       action =
         action: 'addPrice'
-        variantId: old_variant.id
         price: price
+      @_setSkuOrVariantIdToUpdateAction(old_variant, action)
     action
 
   buildVariantImagesAction: (images, old_variant, new_variant) ->
@@ -432,13 +425,12 @@ class ProductUtils extends BaseUtils
 
           else if _.has(image, 'label') and
           (image.label.length == 1 or image.label.length == 2)
-
-            actions.push(
+            action =
               action: 'changeImageLabel'
-              variantId: old_variant.id
               imageUrl: old_variant.images[key].url
               label: new_variant.images[key].label
-            )
+            @_setSkuOrVariantIdToUpdateAction(old_variant, action)
+            actions.push(action)
 
       else if REGEX_UNDERSCORE_NUMBER.test key
         index = key.substring(1)
@@ -452,16 +444,16 @@ class ProductUtils extends BaseUtils
       delete image._MATCH_CRITERIA
       action =
         action: 'addExternalImage'
-        variantId: variant.id
         image: image
+      @_setSkuOrVariantIdToUpdateAction(variant, action)
     action
 
   _buildRemoveImageAction: (variant, image) ->
     if image
       action =
         action: 'removeImage'
-        variantId: variant.id
         imageUrl: image.url
+      @_setSkuOrVariantIdToUpdateAction(variant, action)
     action
 
   _isExistingAttribute: (oldAttribute, newAttribute) ->
@@ -477,8 +469,10 @@ class ProductUtils extends BaseUtils
     if newAttribute
       action =
         action: 'setAttribute'
-        variantId: old_variant.id
         name: newAttribute.name
+
+      @_setSkuOrVariantIdToUpdateAction(old_variant, action)
+
       oldAttribute = _.find old_variant.attributes, (attrib) ->
         attrib.name is newAttribute.name
 
@@ -526,14 +520,15 @@ class ProductUtils extends BaseUtils
               action.value = text
     action
 
-  _buildNewSetAttributeAction: (id, el, sameForAllAttributeNames) ->
+  _buildNewSetAttributeAction: (oldVariant, el, sameForAllAttributeNames) ->
     attributeName = el?.name
     return unless attributeName
     action =
       action: "setAttribute"
-      variantId: id
       name: attributeName
       value: el.value
+
+    @_setSkuOrVariantIdToUpdateAction(oldVariant, action)
 
     if _.isArray(action.value)
       _.each action.value, (v) ->
@@ -544,6 +539,14 @@ class ProductUtils extends BaseUtils
       delete action.variantId
     action
 
+  _setSkuOrVariantIdToUpdateAction: (variant, action) ->
+    if variant.sku
+      action.sku = variant.sku
+    else if variant.id
+      action.variantId = variant.id
+    else
+      throw new Error("ProductSync needs at least one of \"id\" or \"sku\" to generate \"#{action.action}\" update action")
+
   buildVariantAttributesActions: (attributes, old_variant, new_variant, sameForAllAttributeNames) ->
     actions = []
     if attributes
@@ -551,8 +554,7 @@ class ProductUtils extends BaseUtils
         if REGEX_NUMBER.test key
           if _.isArray value
             deltaValue = @getDeltaValue(value)
-            id = old_variant.id
-            setAction = @_buildNewSetAttributeAction(id, deltaValue, sameForAllAttributeNames)
+            setAction = @_buildNewSetAttributeAction(old_variant, deltaValue, sameForAllAttributeNames)
             actions.push setAction if setAction
           else
             # key is index of attribute
@@ -572,8 +574,7 @@ class ProductUtils extends BaseUtils
                 deltaValue = { name: value[0].name }
               else
                 deltaValue = undefined
-            id = old_variant.id
-            setAction = @_buildNewSetAttributeAction(id, deltaValue, sameForAllAttributeNames)
+            setAction = @_buildNewSetAttributeAction(old_variant, deltaValue, sameForAllAttributeNames)
             actions.push setAction if setAction
           else
             index = key.substring(1)
@@ -593,8 +594,9 @@ class ProductUtils extends BaseUtils
     if _.has variantDiff, 'key'
       action =
         action: 'setProductVariantKey'
-        variantId: old_variant.id
         key: @getDeltaValue(variantDiff.key)
+      @_setSkuOrVariantIdToUpdateAction(old_variant, action)
+      action
 
 module.exports = ProductUtils
 
