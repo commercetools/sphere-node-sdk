@@ -439,21 +439,21 @@ class ProductUtils extends BaseUtils
           actions.push action if action
     actions
 
-  _buildAddExternalImageAction: (variant, image) ->
+  _buildAddExternalImageAction: (old_variant, image) ->
     if image
       delete image._MATCH_CRITERIA
       action =
         action: 'addExternalImage'
         image: image
-      @_setSkuOrVariantIdToUpdateAction(variant, action)
+      @_setSkuOrVariantIdToUpdateAction(old_variant, action)
     action
 
-  _buildRemoveImageAction: (variant, image) ->
+  _buildRemoveImageAction: (old_variant, image) ->
     if image
       action =
         action: 'removeImage'
         imageUrl: image.url
-      @_setSkuOrVariantIdToUpdateAction(variant, action)
+      @_setSkuOrVariantIdToUpdateAction(old_variant, action)
     action
 
   _isExistingAttribute: (oldAttribute, newAttribute) ->
@@ -520,7 +520,7 @@ class ProductUtils extends BaseUtils
               action.value = text
     action
 
-  _buildNewSetAttributeAction: (oldVariant, el, sameForAllAttributeNames) ->
+  _buildNewSetAttributeAction: (old_variant, el, sameForAllAttributeNames) ->
     attributeName = el?.name
     return unless attributeName
     action =
@@ -528,7 +528,7 @@ class ProductUtils extends BaseUtils
       name: attributeName
       value: el.value
 
-    @_setSkuOrVariantIdToUpdateAction(oldVariant, action)
+    @_setSkuOrVariantIdToUpdateAction(old_variant, action)
 
     if _.isArray(action.value)
       _.each action.value, (v) ->
