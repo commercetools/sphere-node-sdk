@@ -667,8 +667,8 @@ describe 'ProductSync', ->
           { action: 'addExternalImage', variantId: 3, image: { url: '//example.com/image2.png', label: 'foo', dimensions: { x: 400, y: 300 } } }
         ]
         expected_update = [
-          # expect a change label action for the first image of variant 3
-          { action: 'changeImageLabel', variantId: 3, imageUrl: '//example.com/image1.png', label: 'CHANGED' }
+          # expect a set image label action for the first image of variant 3
+          { action: 'setImageLabel', variantId: 3, imageUrl: '//example.com/image1.png', label: 'CHANGED' }
           # for the third image of the variant with the id 3 the image url changed
           # which should result in a remove+add action
           { action: 'removeImage', variantId: 3, imageUrl: '//example.com/image3.png' }

@@ -426,7 +426,7 @@ class ProductUtils extends BaseUtils
           else if _.has(image, 'label') and
           (image.label.length == 1 or image.label.length == 2)
             action =
-              action: 'changeImageLabel'
+              action: 'setImageLabel'
               imageUrl: old_variant.images[key].url
               label: new_variant.images[key].label
             @_setSkuOrVariantIdToUpdateAction(old_variant, action)
