@@ -71,7 +71,7 @@ describe 'ProductUtils SKU based matching', ->
       { action: 'addVariant', sku: 'vN', attributes: [{name: 'attribN', value: 'valN'}] }
     ]
     compareAttributeActions @sync, @oldProduct, @newProduct, [
-      { action: 'setAttribute', variantId: 9, name: 'attrib', value: 'CHANGED' }
+      { action: 'setAttribute', sku: 'v2', name: 'attrib', value: 'CHANGED' }
     ]
 
   it 'should work when the order of variant has changed', ->
@@ -91,8 +91,8 @@ describe 'ProductUtils SKU based matching', ->
     compareVariantActions @sync, @oldProduct, @newProduct,  []
 
     compareAttributeActions @sync, @oldProduct, @newProduct, [
-      { action: 'setAttribute', variantId: 5, name: 'attrib5', value: 'CHANGED5' }
-      { action: 'setAttribute', variantId: 2, name: 'attrib2', value: 'CHANGED2' }
+      { action: 'setAttribute', sku: 'v5', name: 'attrib5', value: 'CHANGED5' }
+      { action: 'setAttribute', sku: 'v2', name: 'attrib2', value: 'CHANGED2' }
     ]
 
   it 'should work in combination with variant additions and removes', ->
@@ -115,8 +115,8 @@ describe 'ProductUtils SKU based matching', ->
     ]
 
     compareAttributeActions @sync, @oldProduct, @newProduct, [
-      { action: 'setAttribute', variantId: 3, name: 'attrib3', value: 'CHANGED3' }
-      { action: 'setAttribute', variantId: 5, name: 'attrib5', value: 'CHANGED5' }
+      { action: 'setAttribute', sku: 'v3', name: 'attrib3', value: 'CHANGED3' }
+      { action: 'setAttribute', sku: 'v5', name: 'attrib5', value: 'CHANGED5' }
     ]
 
   it 'should work when master variant was switched with another variant', ->
@@ -135,6 +135,6 @@ describe 'ProductUtils SKU based matching', ->
       { action : 'changeMasterVariant', sku : 'v3' }
     ]
     compareAttributeActions @sync, @oldProduct, @newProduct, [
-      { action: 'setAttribute', variantId: 3, name: 'attrib3', value: undefined } # remove from master
-      { action: 'setAttribute', variantId: 1, name: 'attrib3', value: 'CHANGED3' } # set on variant v1
+      { action: 'setAttribute', sku: 'v3', name: 'attrib3', value: undefined } # remove from master
+      { action: 'setAttribute', sku: 'v1', name: 'attrib3', value: 'CHANGED3' } # set on variant v1
     ]

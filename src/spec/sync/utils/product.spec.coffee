@@ -499,7 +499,7 @@ describe 'ProductUtils', ->
         key: 'oldVar'
 
       expect( () => @utils.buildChangeMasterVariantAction(newMasterVariant, oldMasterVariant))
-        .toThrow new Error('ProductSync needs at least one of "id" or "sku" to generate changeMasterVariant update action')
+        .toThrow new Error('ProductSync needs at least one of "id" or "sku" to generate "changeMasterVariant" update action')
 
   describe ':: buildVariantBaseAction', ->
 
@@ -818,9 +818,9 @@ describe 'ProductUtils', ->
       update = @utils.buildVariantAttributesActions diff.attributes, oldVariant, newVariant
       expected_update =
         [
-          { action: 'setAttribute', variantId: 1, name: 'images', value: '//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-1.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-2.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-4.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-5.jpg' },
-          { action: 'setAttribute', variantId: 1, name: 'textAttribute', value: '[{"textAttributeValue":{"fr-CH":"","de-CH":"","it-CH":"","de-DE":"<p><strong>Some random text to make this longer than the value that was in jsondiffpatch.textDiff.minLength = 300. This should be now a correctly formatted JSON. However, after jsondiffpatch, it will be changed into a different string”</p>","en-GB":"","es-ES":"","fr-FR":""}}]' },
-          { action: 'setAttribute', variantId: 1, name: 'localized_images', value: { en: '//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-1.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-2.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-4.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-5.jpg' } }
+          { action: 'setAttribute', sku: 'HARJPUL101601202', name: 'images', value: '//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-1.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-2.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-4.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-5.jpg' },
+          { action: 'setAttribute', sku: 'HARJPUL101601202', name: 'textAttribute', value: '[{"textAttributeValue":{"fr-CH":"","de-CH":"","it-CH":"","de-DE":"<p><strong>Some random text to make this longer than the value that was in jsondiffpatch.textDiff.minLength = 300. This should be now a correctly formatted JSON. However, after jsondiffpatch, it will be changed into a different string”</p>","en-GB":"","es-ES":"","fr-FR":""}}]' },
+          { action: 'setAttribute', sku: 'HARJPUL101601202', name: 'localized_images', value: { en: '//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-1.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-2.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-4.jpg;//dceroyf7rfc0x.cloudfront.net/product/images/390x520/a/arj/po/HARJPUL101601-5.jpg' } }
         ]
       expect(update).toEqual expected_update
 

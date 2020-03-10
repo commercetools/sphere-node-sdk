@@ -495,8 +495,8 @@ describe 'ProductSync', ->
 
         update = @sync._doMapVariantActions newProduct, oldProduct
         expect(update.variantUpdateActions).toEqual [
-          {action: 'addPrice', variantId: 2, price: {value: {currencyCode: 'EUR', centAmount: 5}, customerGroup: {id: '987', typeId: 'customer-group'}}}
-          {action: 'addPrice', variantId: 2, price: {value: {currencyCode: 'EUR', centAmount: 20}, country: 'DE'}}
+          {action: 'addPrice', sku: 'foo', price: {value: {currencyCode: 'EUR', centAmount: 5}, customerGroup: {id: '987', typeId: 'customer-group'}}}
+          {action: 'addPrice', sku: 'foo', price: {value: {currencyCode: 'EUR', centAmount: 20}, country: 'DE'}}
         ]
 
       it 'should build change price actions', ->
@@ -667,8 +667,8 @@ describe 'ProductSync', ->
           { action: 'addExternalImage', variantId: 3, image: { url: '//example.com/image2.png', label: 'foo', dimensions: { x: 400, y: 300 } } }
         ]
         expected_update = [
-          # expect a change label action for the first image of variant 3
-          { action: 'changeImageLabel', variantId: 3, imageUrl: '//example.com/image1.png', label: 'CHANGED' }
+          # expect a set image label action for the first image of variant 3
+          { action: 'setImageLabel', variantId: 3, imageUrl: '//example.com/image1.png', label: 'CHANGED' }
           # for the third image of the variant with the id 3 the image url changed
           # which should result in a remove+add action
           { action: 'removeImage', variantId: 3, imageUrl: '//example.com/image3.png' }
@@ -878,10 +878,10 @@ describe 'ProductSync', ->
         variantActionTypes = @sync._doMapVariantActions(NEW, OLD)
 
         expected_update = [
-          { action: 'setProductVariantKey', variantId: 1, key: 'newKey' }
-          { action: 'setProductVariantKey', variantId: 2, key: 'newVariantKey' }
-          { action: 'setProductVariantKey', variantId: 3, key: undefined }
-          { action: 'setProductVariantKey', variantId: 4, key: 'newVariantKey3' }
+          { action: 'setProductVariantKey', sku: 'masterSku', key: 'newKey' }
+          { action: 'setProductVariantKey', sku: 'variantSku', key: 'newVariantKey' }
+          { action: 'setProductVariantKey', sku: 'variantSku2', key: undefined }
+          { action: 'setProductVariantKey', sku: 'variantSku3', key: 'newVariantKey3' }
         ]
         expect(variantActionTypes.variantUpdateActions).toEqual expected_update
 
@@ -1139,8 +1139,8 @@ describe 'ProductSync', ->
         update = @sync._doMapVariantActions newProduct, oldProduct
         expected_update =
           [
-            { action: 'setAttribute', variantId: 1, name: 'testAttribute1', value: false },
-            { action: 'setAttribute', variantId: 1, name: 'testAttribute2' }
+            { action: 'setAttribute', sku: 'test_sku_1', name: 'testAttribute1', value: false },
+            { action: 'setAttribute', sku: 'test_sku_1', name: 'testAttribute2' }
           ]
         # should not modify original old project
         expect(oldProductClone.masterVariant.attributes).toEqual oldProduct.masterVariant.attributes
@@ -1374,9 +1374,9 @@ describe 'ProductSync', ->
       update = @sync.buildActions(newProduct, oldProduct).getUpdatePayload()
       expected_update =
         actions: [
-          { action: 'setAttribute', variantId: 1, name: 'foo', value: 'new value' }
-          { action: 'setAttribute', variantId: 2, name: 'foo', value: 'another value' }
-          { action: 'setAttribute', variantId: 3, name: 'foo', value: 'yet another' }
+          { action: 'setAttribute', sku: 'v1', name: 'foo', value: 'new value' }
+          { action: 'setAttribute', sku: 'v2', name: 'foo', value: 'another value' }
+          { action: 'setAttribute', sku: 'v3', name: 'foo', value: 'yet another' }
           { action: 'addVariant', id: 4, sku: 'v4', attributes: [{ name: 'foo', value: 'i dont care' }] }
         ]
         version: oldProduct.version
