@@ -483,6 +483,24 @@ describe 'ProductUtils', ->
       actions = @utils.findVariantInList(newVariant, oldVariants)
       expect(actions).toEqual(undefined)
 
+    it 'should not find variant if sku does not match', ->
+      variant = {
+        id: 1,
+        sku: 3
+      }
+      variantList = [
+        {
+          id: 1,
+          sku: 'sku1'
+        },
+        {
+          id: 21,
+          sku: 'sku2'
+        }
+      ]
+      foundVariant = @utils.findVariantInList(variant, variantList, 'sku')
+      expect(foundVariant).not.toBeDefined()
+
   describe ':: buildVariantPriceActions', ->
 
     it 'should return an empty array when no price diff is provided', ->

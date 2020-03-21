@@ -32,8 +32,9 @@ class ProductSync extends BaseSync
     # Override base utils
     @_utils = new ProductUtils
 
-  buildActions: (new_obj, old_obj, sameForAllAttributeNames = []) ->
+  buildActions: (new_obj, old_obj, sameForAllAttributeNames = [], matchVariantsByAttr) ->
     @sameForAllAttributeNames = sameForAllAttributeNames
+    @matchVariantsByAttr = matchVariantsByAttr
     super new_obj, old_obj
 
   _ensureDefaultProperties: (variant) ->
@@ -87,7 +88,7 @@ class ProductSync extends BaseSync
     # if variant does not exist yet, create also addVariant action
     newVariants.forEach (newVariant) =>
       # find existing variant
-      oldVariant = @_utils.findVariantInList(newVariant, oldVariants)
+      oldVariant = @_utils.findVariantInList(newVariant, oldVariants, @matchVariantsByAttr)
 
       # if variant does not exist, add it
       if not oldVariant
