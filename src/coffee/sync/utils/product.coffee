@@ -118,7 +118,7 @@ class ProductUtils extends BaseUtils
   # match variant against variants in list - match first by sku, then by key and then by id
   findVariantInList: (variant, variantList, attributeToMatchBy) ->
     if (attributeToMatchBy)
-      return @matchesBy(attributeToMatchBy)
+      return variantList.find((oldVariant) => @matchesBy(variant, oldVariant, attributeToMatchBy))
     else
       return variantList.find((oldVariant) => @matchesBySku(variant, oldVariant)) or
         variantList.find((oldVariant) => @matchesByKey(variant, oldVariant)) or
