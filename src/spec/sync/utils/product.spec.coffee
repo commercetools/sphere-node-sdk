@@ -501,6 +501,58 @@ describe 'ProductUtils', ->
       foundVariant = @utils.findVariantInList(variant, variantList, 'sku')
       expect(foundVariant).not.toBeDefined()
 
+    it 'should match variants with sku', ->
+      variant = {
+        id: 2,
+        sku: 'sku2'
+      }
+      variantList = [
+        {
+          id: 1,
+          sku: 'sku1'
+        },
+        {
+          id: 3,
+          sku: 'sku2'
+        }
+      ]
+      foundVariant = @utils.findVariantInList(variant, variantList, 'sku')
+      expect(foundVariant).toEqual({ id: 3, sku: 'sku2' })
+
+    it 'should match variants with keys', ->
+      variant = {
+        id: 2,
+        key: 'key2'
+      }
+      variantList = [
+        {
+          id: 1,
+          key: 'key1'
+        },
+        {
+          id: 3,
+          key: 'key2'
+        }
+      ]
+      foundVariant = @utils.findVariantInList(variant, variantList, 'key')
+      expect(foundVariant).toEqual({ id: 3, key: 'key2' })
+
+    it 'should match variants with ids', ->
+      variant = {
+        id: 2
+      }
+      variantList = [
+        {
+          id: 1
+        },
+        {
+          id: 2
+        }
+      ]
+      foundVariant = @utils.findVariantInList(variant, variantList, 'id')
+      expect(foundVariant).toEqual({ id: 2 })
+
+
   describe ':: buildVariantPriceActions', ->
 
     it 'should return an empty array when no price diff is provided', ->
