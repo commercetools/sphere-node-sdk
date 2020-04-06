@@ -61,7 +61,7 @@
     "jasmine-node": "github:daern91/jasmine-node",
     "semver": "^7.0.0",
     "sphere-coffeelint": "git://github.com/sphereio/sphere-coffeelint.git#master",
-    "underscore": "1.9.x",
+    "underscore": "1.10.x",
     "validate-commit-msg": "2.14.0"
   },
   "keywords": [
