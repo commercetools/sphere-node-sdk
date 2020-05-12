@@ -43,7 +43,7 @@
     "coffeelint": "^2.0.0",
     "commitizen": "^4.0.0",
     "coveralls": "^3.0.2",
-    "cz-conventional-changelog": "3.1.0",
+    "cz-conventional-changelog": "3.2.0",
     "express": "4.17.x",
     "gh-pages": "^2.0.1",
     "ghooks": "2.0.4",
