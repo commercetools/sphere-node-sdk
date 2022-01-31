@@ -26,6 +26,7 @@ retryKeywords = [
   'write EPIPE'
   'connect ECONNRESET'
   'Timed out while waiting for handshake'
+  'HttpError: aborted'
 ]
 
 # Public: A `RepeaterTaskQueue` adds request repeater on particular response errors

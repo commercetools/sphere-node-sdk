@@ -108,6 +108,7 @@ describe 'RepeaterTaskQueue', ->
       'write EPIPE'
       'connect ECONNRESET'
       'Timed out while waiting for handshake'
+      'HttpError: aborted'
     ]
     task = new RepeaterTaskQueue {}, {}
     expect(_.isEqual(task.repeaterOptions.retryKeywords, retryKeywords)).toEqual true
