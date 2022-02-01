@@ -17,7 +17,7 @@ We now have a central repository for the sdk and our tools. Gradually, we will b
     ```bash
     $ ./create_config.sh
     ```
-    Make sure you have _SPHERE_PROJECT_KEY_, _SPHERE_CLIENT_ID_, _SPHERE_CLIENT_SECRET_ in your environment variables before running. To run integration tests you need also _IRON_MQ_URL_, _IRON_PROJECT_ID_ and _IRON_TOKEN_ environment variables which leads to a MQv3 queue on [Iron.io](https://www.iron.io/). 
+    Make sure you have _SPHERE_PROJECT_KEY_, _SPHERE_CLIENT_ID_, _SPHERE_CLIENT_SECRET_ in your environment variables before running. 
     You can see the credentials generated in `config.js`
 4. To run all packages tests simply do `grunt test` (we use [jasmine-node](https://github.com/mhevery/jasmine-node)).
 5. Linting and static checks are done by `grunt lint`.
