@@ -1,10 +1,10 @@
-# ⛔ [Deprecated]
+<div style="background-color: yellow; color: black; padding: 10px; text-align: center; font-weight: bold;">
+  <h2>🚨 Non-maintainable 🚨</h2>
+  <p>Starting January 1, 2025, we will no longer provide maintenance or updates for the CLI ImpEx tools. After this date, this tool will no longer receive bug fixes, security patches, or new features.</p>
+</div>
 
-This repo has been deprecated and the code migrated to this [repo](https://github.com/commercetools/nodejs).
 
-For migration, please follow this [guide](https://commercetools.github.io/nodejs/sdk/upgrading-from-sphere-node-sdk.html).
-
-![commercetools logo](https://cdn.rawgit.com/commercetools/press-kit/master/PNG/72DPI/CT%20logo%20horizontal%20RGB%2072dpi.png)
+<img src="https://impex.europe-west1.gcp.commercetools.com/static/images/ct-logo.svg" alt="commercetools logo" width="200">
 
 # Node.js SDK
 
